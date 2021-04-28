@@ -1,13 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './components/App/App';
+import Authentication from './components/Authentication/Authentication';
 import reportWebVitals from './reportWebVitals';
+import Router from './Router';
+
+const routes = [
+  { path: '/', exact: true, render: <App /> },
+  { path: '/login', exact: true, render: <Authentication /> }
+];
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Router routes={routes} />,
   document.getElementById('root')
 );
 
