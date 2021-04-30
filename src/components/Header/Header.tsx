@@ -14,7 +14,9 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
     return (
         <ul className="Header">
             {links.map((link, index) => (
-                <li key={index}><a href={link.link}>{link.name}</a></li>
+                <li key={index} className={(index === 0) ? 'Header-main' : ''}>
+                    <a href={link.link}>{link.name}</a>
+                </li>
             ))}
         </ul>
     );

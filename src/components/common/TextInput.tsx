@@ -1,12 +1,14 @@
 import React from 'react';
+import './index.css';
 
 interface ITextInputProps {
+    type: string;
     label: string;
     value: string;
     setValue: (value: string) => void;
 }
 
-const TextInput: React.FC<ITextInputProps> = ({ label, value, setValue }) => {
+const TextInput: React.FC<ITextInputProps> = ({ type, label, value, setValue }) => {
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setValue(e.target.value);
@@ -14,8 +16,12 @@ const TextInput: React.FC<ITextInputProps> = ({ label, value, setValue }) => {
 
     return (
         <div>
-            <label>{label} :</label>
-            <input value={value} onChange={handleInput} />
+            <input
+                type={type}
+                value={value}
+                placeholder={label}
+                onChange={handleInput}
+            />
         </div>
     );
 }
