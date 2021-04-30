@@ -7,13 +7,13 @@ import reportWebVitals from './reportWebVitals';
 import Router from './Router';
 
 const routes = [
-  { path: '/', exact: true, render: <App /> },
-  { path: '/login', exact: true, render: <Authentication /> }
+    { path: '/', exact: true, render: <App /> },
+    { path: '/login', exact: true, render: <Authentication /> }
 ];
 
 ReactDOM.render(
-  <Router routes={routes} />,
-  document.getElementById('root')
+    <Router routes={routes} />,
+    document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

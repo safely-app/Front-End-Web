@@ -4,3 +4,8 @@
     background-color: #fff;
     text-align: center;
 }
+
+.Authentication h1 {
+    font-size: 40px;
+    color: #6f6862;
+}

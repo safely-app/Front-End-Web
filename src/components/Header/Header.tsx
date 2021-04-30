@@ -4,6 +4,7 @@ import './Header.css';
 interface HeaderLink {
     link: string;
     name: string;
+    class?: string;
 }
 
 interface IHeaderProps {
@@ -14,7 +15,7 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
     return (
         <ul className="Header">
             {links.map((link, index) => (
-                <li key={index} className={(index === 0) ? 'Header-main' : ''}>
+                <li key={index} className={link.class}>
                     <a href={link.link}>{link.name}</a>
                 </li>
             ))}
@@ -24,7 +25,7 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
 
 export const AppHeader: React.FC = () => {
     const links = [
-        { link: "/", name: "Dashboard" },
+        { link: "/", name: "Dashboard", class: "Header-main" },
         { link: "/login", name: "Login" }
     ];
 

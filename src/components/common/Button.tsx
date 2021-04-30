@@ -13,9 +13,11 @@ const Button: React.FC<IButtonProps> = ({ text, onClick }) => {
     };
 
     return (
-        <button onClick={handleClick}>
-            {text}
-        </button>
+        <div>
+            <button onClick={handleClick}>
+                {text}
+            </button>
+        </div>
     );
 
 }

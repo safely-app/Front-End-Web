@@ -3,12 +3,13 @@ import './index.css';
 
 interface ITextInputProps {
     type: string;
+    role: string;
     label: string;
     value: string;
     setValue: (value: string) => void;
 }
 
-const TextInput: React.FC<ITextInputProps> = ({ type, label, value, setValue }) => {
+const TextInput: React.FC<ITextInputProps> = ({ type, role, label, value, setValue }) => {
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setValue(e.target.value);
@@ -18,6 +19,7 @@ const TextInput: React.FC<ITextInputProps> = ({ type, label, value, setValue }) 
         <div>
             <input
                 type={type}
+                role={role}
                 value={value}
                 placeholder={label}
                 onChange={handleInput}
