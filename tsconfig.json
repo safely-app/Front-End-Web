@@ -1,4 +1,8 @@
 {
+  "typeRoots": [
+    "../node_modules/@types",
+    "../@types"
+  ],
   "compilerOptions": {
     "target": "es5",
     "lib": [
