@@ -1,11 +1,12 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import Authentication from './Authentication';
 
 test('renders authentication sign up component', () => {
     render(<Authentication />);
     expect(screen.getByText(/Déjà inscrit/i)).toBeInTheDocument();
     expect(screen.getByRole("email")).toBeInTheDocument();
+    expect(screen.getByRole("username")).toBeInTheDocument();
     expect(screen.getAllByRole("password").length).toEqual(2);
 });
 

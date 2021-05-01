@@ -62,10 +62,10 @@ const SignUpView: React.FC<IAuthProps> = ({
     return (
         <div className="Authentication">
             <h1>S'inscrire</h1>
-            <TextInput type="text" role="" label="Pseudo" value={username} setValue={setUsername} />
-            <TextInput type="text" role="email" label="Email" value={email} setValue={setEmail} />
-            <TextInput type="text" role="password" label="Mot de passe" value={password} setValue={setPassword} />
-            <TextInput type="text" role="password" label="Confirmer mot de passe" value={confirmedPassword} setValue={setConfirmedPassword} />
+            <TextInput type="text" role="username" label="Pseudo" value={username} setValue={setUsername} />
+            <TextInput type="email" role="email" label="Email" value={email} setValue={setEmail} />
+            <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
+            <TextInput type="password" role="password" label="Confirmer mot de passe" value={confirmedPassword} setValue={setConfirmedPassword} />
             <Button text="S'inscrire" onClick={handleClick} />
             <Button text="Déjà inscrit ?" onClick={updateIsOnSignUp} />
         </div>
