@@ -57,7 +57,7 @@ const Authentication: React.FC = () => {
     };
 
     return (
-        <div>
+        <div className="Authentication-container">
             <AppHeader />
             {selectView()}
         </div>
