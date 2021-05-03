@@ -36,5 +36,5 @@ jobs:
         - name: Quickmetrics
           uses: screendriver/quickmetrics-action@v1
           with:
-            name: fake-deploy
+            name: fake-deploy-front
             api-key: ${{ secrets.QUICKMETRICS_API_KEY }}
