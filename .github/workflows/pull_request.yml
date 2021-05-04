@@ -4,9 +4,9 @@
 name: Node.js CI
 
 on:
-  push:
+  pull_request:
     branches: [ main ]
-    
+
 jobs:
   build:
 
@@ -34,11 +34,11 @@ jobs:
         - name: Quickmetrics
           uses: screendriver/quickmetrics-action@v1
           with:
-            name: fake-deploy-front
+            name: pull-request-front
             api-key: ${{ secrets.QUICKMETRICS_API_KEY }}
         - name: Discord notification
           env:
             DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           uses: Ilshidur/action-discord@master
           with:
-            args: 'Webapp has been deployed.'
+            args: 'New pull request for webapp.'
