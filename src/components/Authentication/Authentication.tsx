@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { AppHeader } from '../Header/Header';
 import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
-import User from '../../services/User';
 import './Authentication.css';
+import { loginUser, registerUser } from '../../redux';
+import { useDispatch } from 'react-redux';
 
 interface IAuthProps {
     setConnected: (value: boolean) => void;
@@ -14,25 +14,19 @@ const SignInView: React.FC<IAuthProps> = ({
     setConnected,
     updateIsOnSignUp
 }) => {
+    const dispatch = useDispatch();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const handleClick = () => {
-        User.login({
-            email: email,
-            username: "",
-            password: password
-        }).then(response => {
-            console.log(response);
-            setConnected(true);
-        }).catch(err => console.error(err));
+        dispatch(loginUser(email, "", password));
     };
 
     return (
         <div className="Authentication">
             <h1>Se connecter</h1>
-            <TextInput type="text" role="email" label="Email" value={email} setValue={setEmail} />
-            <TextInput type="text" role="password" label="Mot de passe" value={password} setValue={setPassword} />
+            <TextInput type="email" role="email" label="Email" value={email} setValue={setEmail} />
+            <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <Button text="Se connecter" onClick={handleClick} />
             <Button text="Pas encore inscrit ?" onClick={updateIsOnSignUp} />
         </div>
@@ -43,20 +37,14 @@ const SignUpView: React.FC<IAuthProps> = ({
     setConnected,
     updateIsOnSignUp
 }) => {
+    const dispatch = useDispatch();
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmedPassword, setConfirmedPassword] = useState("");
 
     const handleClick = () => {
-        User.register({
-            email: email,
-            username: username,
-            password: password
-        }).then(response => {
-            console.log(response);
-            setConnected(true);
-        }).catch(err => console.error(err));
+        dispatch(registerUser(email, username, password));
     };
 
     return (
@@ -88,7 +76,6 @@ const Authentication: React.FC = () => {
 
     return (
         <div className="Authentication-container">
-            <AppHeader />
             {selectView()}
             {connected && <Redirect to="/" />}
         </div>

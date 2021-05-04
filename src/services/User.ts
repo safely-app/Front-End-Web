@@ -8,11 +8,14 @@ interface UserData {
 
 class User {
     register(data: UserData) {
-        return http.post("/register");
+        return http.post("/register", data);
     }
 
     login(data: UserData) {
-        return http.post("/login");
+        return http.post("/login", {
+            email: data.email,
+            password: data.password
+        });
     }
 }
 

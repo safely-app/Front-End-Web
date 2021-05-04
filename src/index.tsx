@@ -5,6 +5,8 @@ import App from './components/App/App';
 import Authentication from './components/Authentication/Authentication';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
+import { Provider } from 'react-redux';
+import { store } from './redux';
 
 const routes = [
     { path: '/', exact: true, render: <App /> },
@@ -12,7 +14,9 @@ const routes = [
 ];
 
 ReactDOM.render(
-    <Router routes={routes} />,
+    <Provider store={store}>
+        <Router routes={routes} />
+    </Provider>,
     document.getElementById('root')
 );
 
