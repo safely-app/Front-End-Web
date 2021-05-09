@@ -36,9 +36,8 @@ jobs:
           with:
             name: fake-deploy-front
             api-key: ${{ secrets.QUICKMETRICS_API_KEY }}
-        - name: Discord notification
+        - name: Invoke deployment hook
+          uses: distributhor/workflow-webhook@v1
           env:
-            DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          uses: Ilshidur/action-discord@master
-          with:
-            args: 'Webapp has been deployed.'
+            webhook_url: ${{ secrets.WEBHOOK_URL }}
+            webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
