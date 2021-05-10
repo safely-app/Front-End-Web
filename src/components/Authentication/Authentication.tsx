@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import './Authentication.css';
 import { loginUser, registerUser } from '../../redux';
 import { useDispatch } from 'react-redux';
+import { isEmailValid } from './utils';
 
 interface IAuthProps {
     setConnected: (value: boolean) => void;
@@ -19,7 +20,10 @@ const SignInView: React.FC<IAuthProps> = ({
     const [password, setPassword] = useState("");
 
     const handleClick = () => {
-        dispatch(loginUser(email, "", password));
+        if (isEmailValid(email) && !!password) {
+            dispatch(loginUser(email, "", password));
+            setConnected(true);
+        }
     };
 
     return (
@@ -44,7 +48,10 @@ const SignUpView: React.FC<IAuthProps> = ({
     const [confirmedPassword, setConfirmedPassword] = useState("");
 
     const handleClick = () => {
-        dispatch(registerUser(email, username, password));
+        if (isEmailValid(email) && !!password && password === confirmedPassword) {
+            dispatch(registerUser(email, username, password));
+            setConnected(true);
+        }
     };
 
     return (
