@@ -1,10 +1,13 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux';
 import './Header.css';
 
 interface HeaderLink {
     link: string;
     name: string;
     class?: string;
+    onAuth?: boolean;
 }
 
 interface IHeaderProps {
@@ -12,11 +15,19 @@ interface IHeaderProps {
 }
 
 export const Header: React.FC<IHeaderProps> = ({ links }) => {
+    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
+
+    const isAuthenticated = () => {
+        return !!userCredientialsId;
+    };
+
     return (
         <ul className="Header">
-            {links.map((link, index) => (
-                <li key={index} className={link.class}>
-                    <a href={link.link}>{link.name}</a>
+            {links
+                .filter(link => link.onAuth === undefined || link.onAuth === false || isAuthenticated() === true)
+                .map((link, index) => (
+                <li key={index} className={`Header-li ${link.class}`}>
+                    <a className="Header-a" href={link.link}>{link.name}</a>
                 </li>
             ))}
         </ul>
@@ -26,7 +37,9 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
 export const AppHeader: React.FC = () => {
     const links = [
         { link: "/", name: "Dashboard", class: "Header-main" },
-        { link: "/login", name: "Login" }
+        { link: "/login", name: "Login" },
+        { link: "/admin", name: "Admin", onAuth: true },
+        { link: "/logout", name: "Logout", onAuth: true }
     ];
 
     return (

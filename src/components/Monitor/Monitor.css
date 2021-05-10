@@ -1,0 +1,9 @@
+.Monitor-list {
+    list-style: none;
+}
+
+.Monitor-list-element {
+    background-color: white;
+    padding: 1em;
+    margin: 1em;
+}

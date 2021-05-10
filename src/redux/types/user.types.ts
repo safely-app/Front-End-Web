@@ -7,7 +7,7 @@ export interface IUserCredentials {
 
 export interface UserAuthenticateAction {
     type: typeof SET_AUTHENTICATED;
-    payload: IUserCredentials;
+    payload?: IUserCredentials;
 }
 
 export type UserActionTypes = UserAuthenticateAction;

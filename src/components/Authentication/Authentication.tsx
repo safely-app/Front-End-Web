@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
 import './Authentication.css';
-import { loginUser, registerUser } from '../../redux';
-import { useDispatch } from 'react-redux';
+import { disconnectUser, loginUser, registerUser, RootState } from '../../redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isEmailValid } from './utils';
 
 interface IAuthProps {
-    setConnected: (value: boolean) => void;
     updateIsOnSignUp: () => void;
 }
 
 const SignInView: React.FC<IAuthProps> = ({
-    setConnected,
     updateIsOnSignUp
 }) => {
     const dispatch = useDispatch();
@@ -22,7 +20,6 @@ const SignInView: React.FC<IAuthProps> = ({
     const handleClick = () => {
         if (isEmailValid(email) && !!password) {
             dispatch(loginUser(email, "", password));
-            setConnected(true);
         }
     };
 
@@ -38,7 +35,6 @@ const SignInView: React.FC<IAuthProps> = ({
 }
 
 const SignUpView: React.FC<IAuthProps> = ({
-    setConnected,
     updateIsOnSignUp
 }) => {
     const dispatch = useDispatch();
@@ -50,7 +46,6 @@ const SignUpView: React.FC<IAuthProps> = ({
     const handleClick = () => {
         if (isEmailValid(email) && !!password && password === confirmedPassword) {
             dispatch(registerUser(email, username, password));
-            setConnected(true);
         }
     };
 
@@ -67,8 +62,8 @@ const SignUpView: React.FC<IAuthProps> = ({
     );
 }
 
-const Authentication: React.FC = () => {
-    const [connected, setConnected] = useState(false);
+export const Authentication: React.FC = () => {
+    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
     const [isOnSignUp, setIsOnSignUp] = useState(true);
 
     const updateIsOnSignUp = () => {
@@ -77,16 +72,25 @@ const Authentication: React.FC = () => {
 
     const selectView = (): JSX.Element => {
         return (isOnSignUp)
-            ? <SignUpView setConnected={setConnected} updateIsOnSignUp={updateIsOnSignUp} />
-            : <SignInView setConnected={setConnected} updateIsOnSignUp={updateIsOnSignUp} />;
+            ? <SignUpView updateIsOnSignUp={updateIsOnSignUp} />
+            : <SignInView updateIsOnSignUp={updateIsOnSignUp} />;
     };
 
     return (
         <div className="Authentication-container">
             {selectView()}
-            {connected && <Redirect to="/" />}
+            {!!userCredientialsId && <Redirect to="/" />}
         </div>
     );
 }
 
-export default Authentication;
+export const SignOut: React.FC = () => {
+    const dispatch = useDispatch();
+    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
+
+    useEffect(() => {
+        dispatch(disconnectUser());
+    });
+
+    return <div>{!userCredientialsId && <Redirect to="/login" />}</div>;
+}

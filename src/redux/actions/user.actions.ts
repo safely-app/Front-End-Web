@@ -12,6 +12,18 @@ const authenticationSuccess: ActionCreator<UserActionTypes> = (
     };
 }
 
+export function disconnectUser() {
+    return dispatch => {
+        dispatch(authenticationSuccess({
+            type: SET_AUTHENTICATED,
+            payload: {
+                _id: "",
+                token: ""
+            }
+        }));
+    };
+}
+
 export function registerUser(email: string, username: string, password: string) {
     return dispatch => {
         dispatch(request());

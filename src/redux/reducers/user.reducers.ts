@@ -21,8 +21,8 @@ export function userReducer(
                 ...state,
                 credentials: {
                     ...state.credentials,
-                    _id: action.payload._id,
-                    token: action.payload.token
+                    _id: (action.payload) ? action.payload._id : state.credentials._id,
+                    token: (action.payload) ? action.payload.token : state.credentials.token
                 }
             };
         }

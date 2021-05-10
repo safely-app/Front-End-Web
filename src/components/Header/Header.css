@@ -6,11 +6,11 @@
     overflow: hidden;
 }
 
-.Header li {
+.Header-li {
     float: left;
 }
 
-.Header li a {
+.Header-a {
     display: block;
     color: #a19b96;
     text-align: center;
