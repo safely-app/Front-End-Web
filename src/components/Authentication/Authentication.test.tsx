@@ -1,9 +1,16 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import Authentication from './Authentication';
+import { Provider } from 'react-redux';
+import { store } from '../../redux';
 
 test('renders authentication sign up component', () => {
-    render(<Authentication />);
+    render(
+        <Provider store={store}>
+            <Authentication />
+        </Provider>
+    );
+
     expect(screen.getByText(/Déjà inscrit/i)).toBeInTheDocument();
     expect(screen.getByRole("email")).toBeInTheDocument();
     expect(screen.getByRole("username")).toBeInTheDocument();
@@ -11,7 +18,11 @@ test('renders authentication sign up component', () => {
 });
 
 test('renders authentication sign in component', () => {
-    render(<Authentication />);
+    render(
+        <Provider store={store}>
+            <Authentication />
+        </Provider>
+    );
 
     const switchViewButton = screen.getByText(/Déjà inscrit/i);
     expect(switchViewButton).toBeInTheDocument();
