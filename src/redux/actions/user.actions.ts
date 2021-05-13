@@ -34,7 +34,7 @@ export function registerUser(email: string, username: string, password: string) 
             }).then(response => {
                 dispatch(authenticationSuccess(response.data));
             }).catch(error => {
-                dispatch(failure(`Register failed: ${error}`));
+                dispatch(failure(`Register failed: ${error.response.data}`));
             });
     };
 }
@@ -47,10 +47,16 @@ export function loginUser(email: string, username: string, password: string) {
                 username: username,
                 password: password
             }).then(response => {
-                console.log(response.data);
                 dispatch(authenticationSuccess(response.data));
             }).catch(error => {
-                dispatch(failure(`Login failed: ${error}`));
+                const errorResponse = error.response;
+                const errorData = (errorResponse) ? errorResponse.data : undefined;
+                const errorMsg = (errorData) ? errorData.error : undefined;
+
+                console.error(errorResponse);
+                console.error(errorData);
+                console.error(errorMsg);
+                dispatch(failure(`Login failed: ${errorMsg}`));
             });
     };
 }

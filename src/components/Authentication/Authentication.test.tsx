@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { Authentication } from './Authentication';
+import { Authentication, ForgottenPassword } from './Authentication';
 import { Provider } from 'react-redux';
 import { store } from '../../redux';
 
@@ -34,4 +34,15 @@ test('renders authentication sign in component', () => {
     expect(screen.getByRole("username")).toBeInTheDocument();
     expect(screen.getAllByRole("password").length).toEqual(2);
     expect(screen.getAllByRole("button").length).toEqual(2);
-})
+});
+
+test('renders authentication forgotten password component', () => {
+    render(
+        <Provider store={store}>
+            <ForgottenPassword />
+        </Provider>
+    );
+
+    expect(screen.getByRole("email")).toBeInTheDocument();
+    expect(screen.getByRole("button")).toBeInTheDocument();
+});

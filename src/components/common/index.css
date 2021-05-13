@@ -5,7 +5,7 @@ input {
     font-size: large;
 }
 
-button {
+.btn {
     margin-top: 1em;
     width: 60%;
     padding: 1.2%;
@@ -19,7 +19,7 @@ button {
     display: inline-block;
 }
 
-button:hover {
+.btn:hover {
     background-color: #fff;
     color: #a19b96;
     border: #a19b96;

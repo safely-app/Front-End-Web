@@ -14,7 +14,7 @@ const Button: React.FC<IButtonProps> = ({ text, onClick }) => {
 
     return (
         <div>
-            <button onClick={handleClick}>
+            <button className="btn" onClick={handleClick}>
                 {text}
             </button>
         </div>

@@ -21,6 +21,12 @@ class User {
             password: data.password
         });
     }
+
+    forgotPassword(data: UserData) {
+        return createHttpConfig().post("/forgotPassword", {
+            email: data.email
+        });
+    }
 }
 
 export default new User();
