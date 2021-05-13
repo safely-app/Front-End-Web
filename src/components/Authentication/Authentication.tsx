@@ -64,7 +64,7 @@ const SignUpView: React.FC<IAuthProps> = ({
 
 export const Authentication: React.FC = () => {
     const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
-    const [isOnSignUp, setIsOnSignUp] = useState(true);
+    const [isOnSignUp, setIsOnSignUp] = useState(false);
 
     const updateIsOnSignUp = () => {
         setIsOnSignUp(!isOnSignUp);

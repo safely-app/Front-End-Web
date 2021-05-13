@@ -11,10 +11,9 @@ test('renders authentication sign up component', () => {
         </Provider>
     );
 
-    expect(screen.getByText(/Déjà inscrit/i)).toBeInTheDocument();
+    expect(screen.getByText(/Pas encore inscrit/i)).toBeInTheDocument();
     expect(screen.getByRole("email")).toBeInTheDocument();
-    expect(screen.getByRole("username")).toBeInTheDocument();
-    expect(screen.getAllByRole("password").length).toEqual(2);
+    expect(screen.getByRole("password")).toBeInTheDocument();
     expect(screen.getAllByRole("button").length).toEqual(2);
 });
 
@@ -25,13 +24,14 @@ test('renders authentication sign in component', () => {
         </Provider>
     );
 
-    const switchViewButton = screen.getByText(/Déjà inscrit/i);
+    const switchViewButton = screen.getByText(/Pas encore inscrit/i);
     expect(switchViewButton).toBeInTheDocument();
 
     fireEvent.click(switchViewButton);
 
-    expect(screen.getByText(/Pas encore inscrit/i)).toBeInTheDocument();
+    expect(screen.getByText(/Déjà inscrit/i)).toBeInTheDocument();
     expect(screen.getByRole("email")).toBeInTheDocument();
-    expect(screen.getByRole("password")).toBeInTheDocument();
+    expect(screen.getByRole("username")).toBeInTheDocument();
+    expect(screen.getAllByRole("password").length).toEqual(2);
     expect(screen.getAllByRole("button").length).toEqual(2);
 })
