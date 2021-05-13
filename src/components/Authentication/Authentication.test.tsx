@@ -15,6 +15,7 @@ test('renders authentication sign up component', () => {
     expect(screen.getByRole("email")).toBeInTheDocument();
     expect(screen.getByRole("username")).toBeInTheDocument();
     expect(screen.getAllByRole("password").length).toEqual(2);
+    expect(screen.getAllByRole("button").length).toEqual(2);
 });
 
 test('renders authentication sign in component', () => {
