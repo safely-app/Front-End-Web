@@ -3,14 +3,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { User } from '../../services';
 import { AppHeader } from '../Header/Header';
+import IUser from '../interfaces/IUser';
 import './Monitor.css';
-
-interface IUser {
-    id: string;
-    username: string;
-    email: string;
-    role: string;
-}
 
 const UserInfo: React.FC<IUser> = (user) => {
     return (

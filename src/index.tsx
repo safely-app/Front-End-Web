@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { App, Authentication, Monitor, SignOut } from './components';
+import { App, Authentication, Monitor, SignOut, Profile } from './components';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
 import { Provider } from 'react-redux';
@@ -13,6 +13,7 @@ const routes = [
     { path: '/login', exact: true, protected: false, render: <Authentication /> },
     { path: '/logout', exact: true, protected: false, render: <SignOut /> },
     { path: '/admin', exact: true, protected: true, render: <Monitor /> },
+    { path: '/profile', exact: true, protected: true, render: <Profile /> }
 ];
 
 ReactDOM.render(

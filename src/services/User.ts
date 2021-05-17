@@ -11,6 +11,14 @@ class User {
         return createHttpConfig(token).get("/user");
     }
 
+    get(id: string, token: string) {
+        return createHttpConfig(token).get(`/user/${id}`);
+    }
+
+    update(id: string, data: UserData, token: string) {
+        return createHttpConfig(token).put(`/user/${id}`, data);
+    }
+
     register(data: UserData) {
         return createHttpConfig().post("/register", data);
     }

@@ -24,7 +24,7 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
     return (
         <ul className="Header">
             {links
-                .filter(link => link.onAuth === undefined || link.onAuth === false || isAuthenticated() === true)
+                .filter(link => link.onAuth === undefined || link.onAuth === isAuthenticated())
                 .map((link, index) => (
                 <li key={index} className={`Header-li ${link.class}`}>
                     <a className="Header-a" href={link.link}>{link.name}</a>
@@ -37,7 +37,8 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
 export const AppHeader: React.FC = () => {
     const links = [
         { link: "/", name: "Dashboard", class: "Header-main" },
-        { link: "/login", name: "Connexion" },
+        { link: "/login", name: "Connexion", onAuth: false },
+        { link: "/profile", name: "Profile", onAuth: true },
         { link: "/admin", name: "Administration", onAuth: true },
         { link: "/logout", name: "Déconnexion", onAuth: true }
     ];
