@@ -2,21 +2,17 @@
   "user": [
     {
       "id": 1,
-      "firstName": "Billy",
-      "lastName": "Le Singe",
+      "username": "Billy",
       "email": "billy@lesinge.com",
-      "dateOfBirth": "25-09-2000",
-      "emailVerified": false,
-      "createDate": "22-05-2021"
+      "password": "billylesinge",
+      "role": "admin"
     },
     {
       "id": 2,
-      "firstName": "Benjamin",
-      "lastName": "Le Gorille",
+      "username": "Benjamin",
       "email": "benjamin@legorille.com",
-      "dateOfBirth": "09-09-1999",
-      "emailVerified": false,
-      "createDate": "05-22-2021"
+      "password": "benjaminlegorille",
+      "role": "user"
     }
   ]
 }

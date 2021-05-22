@@ -1,3 +1,4 @@
+import IUser from '../components/interfaces/IUser';
 import { createHttpConfig } from '../http-common';
 
 interface UserData {
@@ -15,7 +16,7 @@ class User {
         return createHttpConfig(token).get(`/user/${id}`);
     }
 
-    update(id: string, data: UserData, token: string) {
+    update(id: string, data: IUser, token: string) {
         return createHttpConfig(token).put(`/user/${id}`, data);
     }
 

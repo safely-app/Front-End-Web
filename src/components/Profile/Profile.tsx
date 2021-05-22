@@ -36,11 +36,11 @@ const Profile: React.FC = () => {
     };
 
     const saveUserModification = () => {
-        User.update(userCredientials._id, {
-            email: user.email,
-            username: user.username,
-            password: ""
-        }, userCredientials.token)
+        User.update(userCredientials._id, user, userCredientials.token)
+            .then(response => {
+                console.log(response)
+                updateIsUpdateView();
+            }).catch(error => console.error(error));
     };
 
     useEffect(() => {
