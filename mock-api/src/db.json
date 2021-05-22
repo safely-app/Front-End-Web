@@ -1,0 +1,22 @@
+{
+  "user": [
+    {
+      "id": 1,
+      "firstName": "Billy",
+      "lastName": "Le Singe",
+      "email": "billy@lesinge.com",
+      "dateOfBirth": "25-09-2000",
+      "emailVerified": false,
+      "createDate": "22-05-2021"
+    },
+    {
+      "id": 2,
+      "firstName": "Benjamin",
+      "lastName": "Le Gorille",
+      "email": "benjamin@legorille.com",
+      "dateOfBirth": "09-09-1999",
+      "emailVerified": false,
+      "createDate": "05-22-2021"
+    }
+  ]
+}
