@@ -36,9 +36,9 @@ jobs:
           with:
             name: pull-request-front
             api-key: ${{ secrets.QUICKMETRICS_API_KEY }}
-        #- name: Discord notification
-        #  env:
-        #    DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        #  uses: Ilshidur/action-discord@master
-        #  with:
-        #    args: 'New pull request for webapp.'
+        - name: Discord notification
+          env:
+            DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          uses: Ilshidur/action-discord@master
+          with:
+            args: 'New pull request for webapp.'
