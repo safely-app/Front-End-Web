@@ -1,0 +1,18 @@
+{
+  "user": [
+    {
+      "id": 1,
+      "username": "Billy",
+      "email": "billy@lesinge.com",
+      "password": "billylesinge",
+      "role": "admin"
+    },
+    {
+      "id": 2,
+      "username": "Benjamin",
+      "email": "benjamin@legorille.com",
+      "password": "benjaminlegorille",
+      "role": "user"
+    }
+  ]
+}

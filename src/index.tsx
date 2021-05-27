@@ -1,21 +1,32 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './components/App/App';
-import Authentication from './components/Authentication/Authentication';
+import { App, Authentication, Monitor, SignOut, Profile } from './components';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
 import { Provider } from 'react-redux';
-import { store } from './redux';
+import { store, persistor } from './redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import log from 'loglevel';
 
 const routes = [
-    { path: '/', exact: true, render: <App /> },
-    { path: '/login', exact: true, render: <Authentication /> }
+    { path: '/', exact: true, protected: false, render: <App /> },
+    { path: '/login', exact: true, protected: false, render: <Authentication /> },
+    { path: '/logout', exact: true, protected: false, render: <SignOut /> },
+    { path: '/admin', exact: true, protected: true, render: <Monitor /> },
+    { path: '/profile', exact: true, protected: true, render: <Profile /> }
 ];
+
+log.setLevel((process.env.REACT_APP_STAGE === "prod")
+    ? log.levels.SILENT
+    : log.levels.TRACE
+);
 
 ReactDOM.render(
     <Provider store={store}>
-        <Router routes={routes} />
+        <PersistGate persistor={persistor}>
+            <Router routes={routes} />
+        </PersistGate>
     </Provider>,
     document.getElementById('root')
 );

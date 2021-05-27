@@ -7,9 +7,10 @@ interface ITextInputProps {
     label: string;
     value: string;
     setValue: (value: string) => void;
+    readonly?: boolean;
 }
 
-const TextInput: React.FC<ITextInputProps> = ({ type, role, label, value, setValue }) => {
+const TextInput: React.FC<ITextInputProps> = ({ type, role, label, value, setValue, readonly }) => {
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setValue(e.target.value);
@@ -23,6 +24,7 @@ const TextInput: React.FC<ITextInputProps> = ({ type, role, label, value, setVal
                 value={value}
                 placeholder={label}
                 onChange={handleInput}
+                readOnly={readonly !== undefined ? readonly : false}
             />
         </div>
     );
