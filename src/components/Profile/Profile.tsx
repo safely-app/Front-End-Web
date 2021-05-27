@@ -6,6 +6,7 @@ import { RootState } from '../../redux';
 import IUser from '../interfaces/IUser';
 import './Profile.css';
 import { TextInput, Button } from '../common';
+import log from 'loglevel';
 
 const Profile: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
@@ -38,9 +39,11 @@ const Profile: React.FC = () => {
     const saveUserModification = () => {
         User.update(userCredientials._id, user, userCredientials.token)
             .then(response => {
-                console.log(response)
+                log.log(response)
                 updateIsUpdateView();
-            }).catch(error => console.error(error));
+            }).catch(error => {
+                log.error(error)
+            });
     };
 
     useEffect(() => {
@@ -50,7 +53,7 @@ const Profile: React.FC = () => {
         ).then(response => {
             setUser(response.data);
         }).catch(error => {
-            console.error(error);
+            log.error(error);
         });
     }, [userCredientials]);
 

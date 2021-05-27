@@ -7,6 +7,7 @@ import Router from './Router';
 import { Provider } from 'react-redux';
 import { store, persistor } from './redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import log from 'loglevel';
 
 const routes = [
     { path: '/', exact: true, protected: false, render: <App /> },
@@ -15,6 +16,11 @@ const routes = [
     { path: '/admin', exact: true, protected: true, render: <Monitor /> },
     { path: '/profile', exact: true, protected: true, render: <Profile /> }
 ];
+
+log.setLevel((process.env.REACT_APP_STAGE === "prod")
+    ? log.levels.SILENT
+    : log.levels.TRACE
+);
 
 ReactDOM.render(
     <Provider store={store}>

@@ -7,6 +7,7 @@ import { AppHeader } from '../Header/Header';
 import IUser from '../interfaces/IUser';
 import '../Profile/Profile.css';
 import './Monitor.css';
+import log from 'loglevel';
 
 interface IUserInfoViewProps {
     user: IUser;
@@ -41,9 +42,11 @@ const UserInfoView: React.FC<IUserInfoViewProps> = ({ user, updateIsListView, se
     const saveUserModification = () => {
         User.update(user.id, user, userCredientials.token)
             .then(response => {
-                console.log(response)
+                log.log(response)
                 updateIsListView();
-            }).catch(error => console.error(error));
+            }).catch(error => {
+                log.error(error)
+            });
     };
 
     return (
@@ -110,7 +113,7 @@ const Monitor: React.FC = () => {
 
             setUsers(gotUsers);
         }).catch(error => {
-            console.error(error);
+            log.error(error);
         });
     }, [userCredientials]);
 

@@ -8,6 +8,7 @@ import { User } from '../../services';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Authentication.css';
+import log from 'loglevel';
 
 interface IAuthProps {
     updateIsOnSignUp: () => void;
@@ -127,9 +128,9 @@ export const ForgottenPassword: React.FC = () => {
                 username: "",
                 password: ""
             }).then(response => {
-                console.log(response);
+                log.log(response);
             }).catch(error => {
-                console.error(error);
+                log.error(error);
             });
         }
     };

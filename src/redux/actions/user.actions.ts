@@ -2,6 +2,7 @@ import { request, failure } from './common.actions';
 import {ActionCreator} from 'redux';
 import { User } from '../../services';
 import { IUserCredentials, SET_AUTHENTICATED, UserActionTypes } from '../types';
+import log from 'loglevel';
 
 const authenticationSuccess: ActionCreator<UserActionTypes> = (
     credentials: IUserCredentials
@@ -53,9 +54,9 @@ export function loginUser(email: string, username: string, password: string) {
                 const errorData = (errorResponse) ? errorResponse.data : undefined;
                 const errorMsg = (errorData) ? errorData.error : undefined;
 
-                console.error(errorResponse);
-                console.error(errorData);
-                console.error(errorMsg);
+                log.error(errorResponse);
+                log.error(errorData);
+                log.error(errorMsg);
                 dispatch(failure(`Login failed: ${errorMsg}`));
             });
     };
