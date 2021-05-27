@@ -59,7 +59,7 @@ const Profile: React.FC = () => {
             <AppHeader />
             <div className="Profile">
                 <TextInput type="text" role="username" label="Nom d'utilisateur" value={user.username} setValue={setUsername} readonly={!isUpdateView} />
-                <TextInput type="text" role="email" label="Email" value={user.email} setValue={setEmail} readonly={!isUpdateView} />
+                <TextInput type="text" role="email" label="Adresse email" value={user.email} setValue={setEmail} readonly={!isUpdateView} />
                 {isUpdateView
                     ? <Button text="Sauvegarder" onClick={saveUserModification} />
                     : <Button text="Modifier" onClick={updateIsUpdateView} /> }

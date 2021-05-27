@@ -73,9 +73,9 @@ const UserInfoListElement: React.FC<IUserInfoListElementProps> = ({ user, update
         <li key={user.id} className="Monitor-list-element">
             <button className="Monitor-list-element-btn" onClick={handleClick}>
                 <ul className="Monitor-list">
-                    <li key={`${user.id}-id`}><b>ID : </b>{user.id}</li>
-                    <li key={`${user.id}-username`}><b>Username : </b>{user.username}</li>
-                    <li key={`${user.id}-email`}><b>Email : </b>{user.email}</li>
+                    <li key={`${user.id}-id`}><b>Identifiant : </b>{user.id}</li>
+                    <li key={`${user.id}-username`}><b>Nom d'utilisateur : </b>{user.username}</li>
+                    <li key={`${user.id}-email`}><b>Adresse email : </b>{user.email}</li>
                     <li key={`${user.id}-role`}><b>Role : </b>{user.role}</li>
                 </ul>
             </button>
