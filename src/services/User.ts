@@ -21,7 +21,7 @@ class User {
     }
 
     delete(id: string, token: string) {
-        return createHttpConfig(token).get(`/user/${id}`);
+        return createHttpConfig(token).delete(`/user/${id}`);
     }
 
     register(data: UserData) {
