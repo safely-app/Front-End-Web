@@ -13,9 +13,9 @@ const Profile: React.FC = () => {
     const [isUpdateView, setIsUpdateView] = useState(false);
     const [user, setUser] = useState<IUser>({
         id: "1",
-        username: "Billy",
-        email: "billy@lesinge.com",
-        role: "admin"
+        username: "Random user",
+        email: "random@user.com",
+        role: "user"
     });
 
     const setUsername = (value: string) => {
@@ -42,7 +42,17 @@ const Profile: React.FC = () => {
                 log.log(response)
                 updateIsUpdateView();
             }).catch(error => {
-                log.error(error)
+                log.error(error);
+            });
+    };
+
+    const deleteUser = () => {
+        User.delete(userCredientials._id, userCredientials.token)
+            .then(response => {
+                log.log(response);
+                updateIsUpdateView();
+            }).catch(error => {
+                log.error(error);
             });
     };
 
@@ -67,6 +77,7 @@ const Profile: React.FC = () => {
                     ? <Button text="Sauvegarder" onClick={saveUserModification} />
                     : <Button text="Modifier" onClick={updateIsUpdateView} /> }
                 {isUpdateView && <Button text="Annuler" onClick={updateIsUpdateView} /> }
+                <Button text="Supprimer" onClick={deleteUser} type="warning" />
             </div>
         </div>
     );

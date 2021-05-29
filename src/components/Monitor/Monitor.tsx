@@ -45,7 +45,17 @@ const UserInfoView: React.FC<IUserInfoViewProps> = ({ user, updateIsListView, se
                 log.log(response)
                 updateIsListView();
             }).catch(error => {
-                log.error(error)
+                log.error(error);
+            });
+    };
+
+    const deleteUser = () => {
+        User.delete(user.id, userCredientials.token)
+            .then(response => {
+                log.log(response);
+                updateIsListView();
+            }).catch(error => {
+                log.error(error);
             });
     };
 
@@ -56,6 +66,7 @@ const UserInfoView: React.FC<IUserInfoViewProps> = ({ user, updateIsListView, se
             <TextInput key={`${user.id}-role`} type="text" role="role" label="Role" value={user.role} setValue={setRole} />
             <Button text="Sauvegarder" onClick={saveUserModification} />
             <Button text="Annuler" onClick={updateIsListView} />
+            <Button text="Supprimer" onClick={deleteUser} type="warning" />
         </div>
     );
 };
@@ -115,7 +126,7 @@ const Monitor: React.FC = () => {
         }).catch(error => {
             log.error(error);
         });
-    }, [userCredientials]);
+    }, [userCredientials, isListView]);
 
     return (
         <div className="Monitor">

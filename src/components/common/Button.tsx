@@ -4,9 +4,14 @@ import './index.css';
 interface IButtonProps {
     text: string;
     onClick: () => void;
+    type?: string;
 }
 
-const Button: React.FC<IButtonProps> = ({ text, onClick }) => {
+const Button: React.FC<IButtonProps> = ({
+    text,
+    onClick,
+    type
+}) => {
 
     const handleClick = (_e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         onClick();
@@ -14,7 +19,10 @@ const Button: React.FC<IButtonProps> = ({ text, onClick }) => {
 
     return (
         <div>
-            <button className="btn" onClick={handleClick}>
+            <button
+                className={type === "warning" ? "btn-warning" : "btn"}
+                onClick={handleClick}
+            >
                 {text}
             </button>
         </div>

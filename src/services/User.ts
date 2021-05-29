@@ -20,6 +20,10 @@ class User {
         return createHttpConfig(token).put(`/user/${id}`, data);
     }
 
+    delete(id: string, token: string) {
+        return createHttpConfig(token).get(`/user/${id}`);
+    }
+
     register(data: UserData) {
         return createHttpConfig().post("/register", data);
     }

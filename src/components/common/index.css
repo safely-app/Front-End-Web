@@ -19,10 +19,33 @@ input {
     display: inline-block;
 }
 
+.btn-warning {
+    margin-top: 1em;
+    width: 60%;
+    padding: 1.2%;
+    font-size: large;
+    background-color: #f74a44;
+    color: #fff;
+    border: #fff;
+    border-style: solid;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+}
+
 .btn:hover {
     background-color: #fff;
     color: #a19b96;
     border: #a19b96;
+    border-style: solid;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-warning:hover {
+    background-color: #fff;
+    color: #f74a44;
+    border: #f74a44;
     border-style: solid;
     border-radius: 8px;
     font-weight: bold;
