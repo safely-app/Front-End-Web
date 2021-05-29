@@ -27,7 +27,10 @@ const SignInView: React.FC<IAuthProps> = ({
         if (isEmailValid(email) && !!password) {
             dispatch(loginUser(email, "", password));
         } else {
-            notifyError("Email ou mot de passe invalide");
+            notifyError(!isEmailValid(email)
+                ? "Email invalide"
+                : "Mot de passe invalide"
+            );
         }
     };
 
@@ -58,7 +61,10 @@ const SignUpView: React.FC<IAuthProps> = ({
         if (isEmailValid(email) && !!password && password === confirmedPassword) {
             dispatch(registerUser(email, username, password));
         } else {
-            notifyError("Email ou mot de passe invalide");
+            notifyError(!isEmailValid(email)
+                ? "Email invalide"
+                : "Mot de passe invalide"
+            );
         }
     };
 
