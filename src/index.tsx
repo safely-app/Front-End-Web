@@ -1,7 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { App, Authentication, Monitor, SignOut, Profile } from './components';
+import {
+    App,
+    Authentication,
+    Monitor,
+    SignOut,
+    Profile
+} from './components';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
 import { Provider } from 'react-redux';

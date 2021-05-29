@@ -19,6 +19,14 @@ input {
     display: inline-block;
 }
 
+.btn-link {
+    margin-top: 1em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #a19b96;
+}
+
 .btn-warning {
     margin-top: 1em;
     width: 60%;
@@ -39,6 +47,11 @@ input {
     border: #a19b96;
     border-style: solid;
     border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-link:hover {
+    color: #a19b96;
     font-weight: bold;
 }
 

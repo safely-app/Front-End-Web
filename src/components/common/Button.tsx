@@ -13,6 +13,12 @@ const Button: React.FC<IButtonProps> = ({
     type
 }) => {
 
+    const types = {
+        "default": "btn",
+        "link": "btn-link",
+        "warning": "btn-warning"
+    };
+
     const handleClick = (_e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         onClick();
     };
@@ -20,7 +26,7 @@ const Button: React.FC<IButtonProps> = ({
     return (
         <div>
             <button
-                className={type === "warning" ? "btn-warning" : "btn"}
+                className={type !== undefined ? types[type] : "btn"}
                 onClick={handleClick}
             >
                 {text}
