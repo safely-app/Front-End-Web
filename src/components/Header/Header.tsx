@@ -40,6 +40,7 @@ export const AppHeader: React.FC = () => {
         { link: "/login", name: "Connexion", onAuth: false },
         { link: "/profile", name: "Profile", onAuth: true },
         { link: "/admin", name: "Administration", onAuth: true },
+        { link: "/safeplace", name: "SafePlace", onAuth: true },
         { link: "/logout", name: "Déconnexion", onAuth: true }
     ];
 

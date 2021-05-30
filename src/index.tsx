@@ -5,6 +5,7 @@ import {
     App,
     Authentication,
     Monitor,
+    Safeplace,
     SignOut,
     Profile
 } from './components';
@@ -20,6 +21,7 @@ const routes = [
     { path: '/login', exact: true, protected: false, render: <Authentication /> },
     { path: '/logout', exact: true, protected: false, render: <SignOut /> },
     { path: '/admin', exact: true, protected: true, render: <Monitor /> },
+    { path: '/safeplace', exact: true, protected: true, render: <Safeplace /> },
     { path: '/profile', exact: true, protected: true, render: <Profile /> }
 ];
 
