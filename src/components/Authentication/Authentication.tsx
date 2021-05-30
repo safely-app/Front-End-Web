@@ -10,13 +10,19 @@ import 'react-toastify/dist/ReactToastify.css';
 import './Authentication.css';
 import log from 'loglevel';
 
+enum View {
+    SIGNIN,
+    SIGNUP,
+    FORGOT
+}
+
 interface IAuthProps {
-    updateIsOnSignUp: () => void;
+    setView: (value: View) => void;
     notifyError: (msg: string) => void;
 }
 
 const SignInView: React.FC<IAuthProps> = ({
-    updateIsOnSignUp,
+    setView,
     notifyError
 }) => {
     const dispatch = useDispatch();
@@ -40,15 +46,15 @@ const SignInView: React.FC<IAuthProps> = ({
             <TextInput type="email" role="email" label="Email" value={email} setValue={setEmail} />
             <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <Button text="Se connecter" onClick={handleClick} />
-            <Button text="Pas encore inscrit ?" onClick={updateIsOnSignUp} />
-            <Button text="Mot de passe oublié ?" onClick={() => log.log('Clicked')} type="link" />
+            <Button text="Pas encore inscrit ?" onClick={() => setView(View.SIGNUP)} />
+            <Button text="Mot de passe oublié ?" onClick={() => setView(View.FORGOT)} type="link" />
             <ToastContainer />
         </div>
     );
 }
 
 const SignUpView: React.FC<IAuthProps> = ({
-    updateIsOnSignUp,
+    setView,
     notifyError
 }) => {
     const dispatch = useDispatch();
@@ -76,46 +82,13 @@ const SignUpView: React.FC<IAuthProps> = ({
             <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <TextInput type="password" role="password" label="Confirmer mot de passe" value={confirmedPassword} setValue={setConfirmedPassword} />
             <Button text="S'inscrire" onClick={handleClick} />
-            <Button text="Déjà inscrit ?" onClick={updateIsOnSignUp} />
+            <Button text="Déjà inscrit ?" onClick={() => setView(View.SIGNIN)} />
             <ToastContainer />
         </div>
     );
 }
 
-export const Authentication: React.FC = () => {
-    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
-    const [isOnSignUp, setIsOnSignUp] = useState(false);
-
-    const updateIsOnSignUp = () => {
-        setIsOnSignUp(!isOnSignUp);
-    };
-
-    const selectView = (): JSX.Element => {
-        return (isOnSignUp)
-            ? <SignUpView notifyError={notifyError} updateIsOnSignUp={updateIsOnSignUp} />
-            : <SignInView notifyError={notifyError} updateIsOnSignUp={updateIsOnSignUp} />;
-    };
-
-    return (
-        <div className="Authentication-container">
-            {selectView()}
-            {!!userCredientialsId && <Redirect to="/" />}
-        </div>
-    );
-}
-
-export const SignOut: React.FC = () => {
-    const dispatch = useDispatch();
-    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
-
-    useEffect(() => {
-        dispatch(disconnectUser());
-    });
-
-    return <div>{!userCredientialsId && <Redirect to="/login" />}</div>;
-}
-
-export const ForgottenPassword: React.FC = () => {
+const ForgottenPassword: React.FC = () => {
     const [email, setEmail] = useState("");
 
     const handleClick = () => {
@@ -137,8 +110,43 @@ export const ForgottenPassword: React.FC = () => {
             <div className="Authentication">
                 <h1>Mot de passe oublié ?</h1>
                 <TextInput type="email" role="email" label="Email" value={email} setValue={setEmail} />
-                <Button text="S'inscrire" onClick={handleClick} />
+                <Button text="Réinitialiser le mot de passe" onClick={handleClick} />
             </div>
         </div>
     );
+}
+
+export const Authentication: React.FC = () => {
+    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
+    const [view, setView] = useState(View.SIGNIN);
+
+    const selectView = (): JSX.Element => {
+        switch (view) {
+            case View.SIGNUP:
+                return <SignUpView notifyError={notifyError} setView={setView} />;
+
+            case View.FORGOT:
+                return <ForgottenPassword />
+            default:
+                return <SignInView notifyError={notifyError} setView={setView} />;
+        }
+    };
+
+    return (
+        <div className="Authentication-container">
+            {selectView()}
+            {!!userCredientialsId && <Redirect to="/" />}
+        </div>
+    );
+}
+
+export const SignOut: React.FC = () => {
+    const dispatch = useDispatch();
+    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
+
+    useEffect(() => {
+        dispatch(disconnectUser());
+    });
+
+    return <div>{!userCredientialsId && <Redirect to="/login" />}</div>;
 }
