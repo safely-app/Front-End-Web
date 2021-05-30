@@ -3,9 +3,9 @@ import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
 import { disconnectUser, loginUser, registerUser, RootState } from '../../redux';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmailValid } from './utils';
+import { isEmailValid, notifyError } from './utils';
 import { User } from '../../services';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Authentication.css';
 import log from 'loglevel';
@@ -89,16 +89,6 @@ export const Authentication: React.FC = () => {
     const updateIsOnSignUp = () => {
         setIsOnSignUp(!isOnSignUp);
     };
-
-    const notifyError = (msg: string) => toast.error(msg, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-    });
 
     const selectView = (): JSX.Element => {
         return (isOnSignUp)

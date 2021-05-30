@@ -4,12 +4,14 @@ import './index.css';
 interface IButtonProps {
     text: string;
     onClick: () => void;
+    width?: string;
     type?: string;
 }
 
 const Button: React.FC<IButtonProps> = ({
     text,
     onClick,
+    width,
     type
 }) => {
 
@@ -27,6 +29,7 @@ const Button: React.FC<IButtonProps> = ({
         <div>
             <button
                 className={type !== undefined ? types[type] : "btn"}
+                style={{ width: width !== undefined ? width : "60%" }}
                 onClick={handleClick}
             >
                 {text}

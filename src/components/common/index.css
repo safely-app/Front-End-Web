@@ -7,7 +7,6 @@ input {
 
 .btn {
     margin-top: 1em;
-    width: 60%;
     padding: 1.2%;
     font-size: large;
     background-color: #a19b96;
@@ -29,7 +28,6 @@ input {
 
 .btn-warning {
     margin-top: 1em;
-    width: 60%;
     padding: 1.2%;
     font-size: large;
     background-color: #f74a44;
