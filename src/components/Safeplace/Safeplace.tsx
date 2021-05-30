@@ -11,12 +11,12 @@ import log from 'loglevel';
 interface ISafeplaceInfoListElementProps {
     safeplace: ISafeplace;
     updateIsListView: () => void;
-    setSafeplaceId: (value: string) => void;
+    //setSafeplaceId: (value: string) => void;
 }
 
-const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({ safeplace, updateIsListView, setSafeplaceId }) => {
+const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({ safeplace, updateIsListView}) => {
     const handleClick = () => {
-        setSafeplaceId(safeplace.id);
+        //setSafeplaceId(safeplace.id);
         updateIsListView();
     };
 
@@ -41,14 +41,10 @@ const Safeplace: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [isListView, setIsListView] = useState(true);
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
-    const [safeplaceId, setSafeplaceId] = useState("");
+    //const [safeplaceId, setSafeplaceId] = useState("");
 
     const updateIsListView = () => {
         setIsListView(!isListView);
-    };
-
-    const setSafeplace = (safeplace: ISafeplace) => {
-        setSafeplaces(safeplaces.map(safeplaceElement => safeplaceElement.id === safeplace.id ? safeplace : safeplaceElement));
     };
 
     useEffect(() => {
@@ -81,7 +77,6 @@ const Safeplace: React.FC = () => {
                     <SafeplaceInfoListElement
                         safeplace={safeplace}
                         updateIsListView={updateIsListView}
-                        setSafeplaceId={setSafeplaceId}
                         key={safeplace.id}
                     />
                 )}
