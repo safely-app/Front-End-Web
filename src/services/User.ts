@@ -36,7 +36,7 @@ class User {
     }
 
     forgotPassword(data: UserData) {
-        return createHttpConfig().post("/forgotPassword", {
+        return createHttpConfig().post("/user/forgotPassword", {
             email: data.email
         });
     }
