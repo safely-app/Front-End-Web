@@ -40,6 +40,14 @@ class User {
             email: data.email
         });
     }
+
+    changePassword(id: string, token: string, data: UserData) {
+        return createHttpConfig().post("/user/changePassword", {
+            userId: id,
+            token: token,
+            password: data.password
+        });
+    }
 }
 
 export default new User();

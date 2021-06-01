@@ -3,7 +3,7 @@ import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
 import { disconnectUser, loginUser, registerUser, RootState } from '../../redux';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmailValid, notifyError } from './utils';
+import { isEmailValid, isPasswordValid, notifyError } from './utils';
 import { User } from '../../services';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -30,7 +30,7 @@ const SignInView: React.FC<IAuthProps> = ({
     const [password, setPassword] = useState("");
 
     const handleClick = () => {
-        if (isEmailValid(email) && !!password) {
+        if (isEmailValid(email) && isPasswordValid(password)) {
             dispatch(loginUser(email, "", password));
         } else {
             notifyError(!isEmailValid(email)
@@ -64,7 +64,7 @@ const SignUpView: React.FC<IAuthProps> = ({
     const [confirmedPassword, setConfirmedPassword] = useState("");
 
     const handleClick = () => {
-        if (isEmailValid(email) && !!password && password === confirmedPassword) {
+        if (isEmailValid(email) && isPasswordValid(password) && password === confirmedPassword) {
             dispatch(registerUser(email, username, password));
         } else {
             notifyError(!isEmailValid(email)
@@ -149,4 +149,61 @@ export const SignOut: React.FC = () => {
     });
 
     return <div>{!userCredientialsId && <Redirect to="/login" />}</div>;
+}
+
+interface ResetProps {
+    id: string;
+    token: string;
+}
+
+export const ResetPassword: React.FC = () => {
+    const [redirect, setRedirect] = useState(false);
+    const [password, setPassword] = useState("");
+    const [confirmedPassword, setConfirmedPassword] = useState("");
+    const [resetProps, setResetProps] = useState<ResetProps>({
+        id: "",
+        token: ""
+    });
+
+    const parseUrl = (url: string): ResetProps => {
+        const regex = new RegExp("/reset/(.*)/token/(.*)");
+        const found = url.match(regex) || ["", ""];
+
+        return {
+            id: found[1],
+            token: found[2]
+        };
+    };
+
+    const handleClick = () => {
+        if (isPasswordValid(password) && password === confirmedPassword) {
+            User.changePassword(resetProps.id, resetProps.token, {
+                email: "",
+                username: "",
+                password: password
+            }).then(response => {
+                log.log(response);
+                setRedirect(true);
+            }).catch(error => {
+                log.error(error);
+            });
+        } else {
+            notifyError("Mot de passe invalide");
+        }
+    };
+
+    useEffect(() => {
+        setResetProps(parseUrl(window.location.href));
+    }, []);
+
+    return (
+        <div className="Authentication">
+            <h1>Réinitialiser le mot de passe</h1>
+            <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
+            <TextInput type="password" role="password" label="Confirmer mot de passe" value={confirmedPassword} setValue={setConfirmedPassword} />
+            <Button text="Réinitialiser" onClick={handleClick} />
+            <ToastContainer />
+            {redirect && <Redirect to="/login" />}
+        </div>
+    );
 }
