@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { User } from '../../services';
 import { AppHeader } from '../Header/Header';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { disconnectUser, RootState } from '../../redux';
 import IUser from '../interfaces/IUser';
 import './Profile.css';
 import { TextInput, Button } from '../common';
+import { Redirect } from 'react-router-dom';
 import log from 'loglevel';
 
 const Profile: React.FC = () => {
+    const dispatch = useDispatch();
+    const userInfo = useSelector((state: RootState) => state.user.userInfo);
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const [isUserDeleted, setIsUserDeleted] = useState(false);
     const [isUpdateView, setIsUpdateView] = useState(false);
     const [user, setUser] = useState<IUser>({
-        id: "1",
-        username: "Billy",
-        email: "billy@lesinge.com",
-        role: "admin"
+        id: userInfo.id,
+        username: userInfo.username,
+        email: userInfo.email,
+        role: userInfo.role
     });
 
     const setUsername = (value: string) => {
@@ -42,7 +46,18 @@ const Profile: React.FC = () => {
                 log.log(response)
                 updateIsUpdateView();
             }).catch(error => {
-                log.error(error)
+                log.error(error);
+            });
+    };
+
+    const deleteUser = () => {
+        User.delete(userCredientials._id, userCredientials.token)
+            .then(response => {
+                log.log(response);
+                setIsUserDeleted(true);
+                dispatch(disconnectUser());
+            }).catch(error => {
+                log.error(error);
             });
     };
 
@@ -67,6 +82,8 @@ const Profile: React.FC = () => {
                     ? <Button text="Sauvegarder" onClick={saveUserModification} />
                     : <Button text="Modifier" onClick={updateIsUpdateView} /> }
                 {isUpdateView && <Button text="Annuler" onClick={updateIsUpdateView} /> }
+                <Button text="Supprimer" onClick={deleteUser} type="warning" />
+                {isUserDeleted && <Redirect to="/" />}
             </div>
         </div>
     );

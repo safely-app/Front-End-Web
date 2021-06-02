@@ -20,6 +20,10 @@ class User {
         return createHttpConfig(token).put(`/user/${id}`, data);
     }
 
+    delete(id: string, token: string) {
+        return createHttpConfig(token).delete(`/user/${id}`);
+    }
+
     register(data: UserData) {
         return createHttpConfig().post("/register", data);
     }
@@ -32,8 +36,16 @@ class User {
     }
 
     forgotPassword(data: UserData) {
-        return createHttpConfig().post("/forgotPassword", {
+        return createHttpConfig().post("/user/forgotPassword", {
             email: data.email
+        });
+    }
+
+    changePassword(id: string, token: string, data: UserData) {
+        return createHttpConfig().post("/user/changePassword", {
+            userId: id,
+            token: token,
+            password: data.password
         });
     }
 }

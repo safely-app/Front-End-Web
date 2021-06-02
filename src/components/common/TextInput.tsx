@@ -10,7 +10,14 @@ interface ITextInputProps {
     readonly?: boolean;
 }
 
-const TextInput: React.FC<ITextInputProps> = ({ type, role, label, value, setValue, readonly }) => {
+const TextInput: React.FC<ITextInputProps> = ({
+    type,
+    role,
+    label,
+    value,
+    setValue,
+    readonly
+}) => {
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setValue(e.target.value);

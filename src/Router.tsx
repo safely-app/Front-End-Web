@@ -32,7 +32,12 @@ const Router: React.FC<IRouterProps> = ({ routes }) => {
                         exact={route.exact}
                         render={() => route.render}
                     />
-                    : <Route key={index} component={() => <h1>403 Not Authorized!</h1>} />
+                    : <Route
+                        key={index}
+                        path={route.path}
+                        exact={route.exact}
+                        render={() => <h1>403 Not Authorized!</h1>}
+                    />
                 )}
 
                 <Route component={() => <h1>404 Not Found!</h1>} />

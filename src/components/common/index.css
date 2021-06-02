@@ -7,10 +7,30 @@ input {
 
 .btn {
     margin-top: 1em;
-    width: 60%;
     padding: 1.2%;
     font-size: large;
     background-color: #a19b96;
+    color: #fff;
+    border: #fff;
+    border-style: solid;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-link {
+    margin-top: 1em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #a19b96;
+}
+
+.btn-warning {
+    margin-top: 1em;
+    padding: 1.2%;
+    font-size: large;
+    background-color: #f74a44;
     color: #fff;
     border: #fff;
     border-style: solid;
@@ -23,6 +43,20 @@ input {
     background-color: #fff;
     color: #a19b96;
     border: #a19b96;
+    border-style: solid;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-link:hover {
+    color: #a19b96;
+    font-weight: bold;
+}
+
+.btn-warning:hover {
+    background-color: #fff;
+    color: #f74a44;
+    border: #f74a44;
     border-style: solid;
     border-radius: 8px;
     font-weight: bold;
