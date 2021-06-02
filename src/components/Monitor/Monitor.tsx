@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { registerUser, RootState } from '../../redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux';
 import { User } from '../../services';
 import { TextInput, Button } from '../common';
 import { AppHeader } from '../Header/Header';
@@ -107,7 +107,6 @@ enum View {
 }
 
 const Monitor: React.FC = () => {
-    const dispatch = useDispatch();
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [users, setUsers] = useState<IUser[]>([]);
     const [view, setView] = useState(View.LIST);
