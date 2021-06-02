@@ -17,14 +17,14 @@ interface IHeaderProps {
 
 export const Header: React.FC<IHeaderProps> = ({ links }) => {
     const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
-    const userInfoRole = useSelector((state: RootState) => state.user.userInfo.role);
+    const userInfo = useSelector((state: RootState) => state.user.userInfo);
 
     const isAuthenticated = () => {
         return !!userCredientialsId;
     };
 
     const isAdmin = () => {
-        return userInfoRole === "admin";
+        return userInfo !== undefined && userInfo.role === "admin";
     };
 
     return (
