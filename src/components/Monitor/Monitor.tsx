@@ -131,7 +131,16 @@ const Monitor: React.FC = () => {
 
     const createNewUser = (user: IUser) => {
         if (isEmailValid(user.email) && !!user.password && user.password === user.confirmedPassword) {
-            dispatch(registerUser(user.email, user.username, user.password));
+            User.register({
+                email: user.email,
+                username: user.username,
+                password: user.password
+            }).then(response => {
+                log.log(response);
+                setView(View.LIST);
+            }).catch(error => {
+                log.error(error);
+            });
         } else {
             notifyError(!isEmailValid(user.email)
                 ? "Email invalide"

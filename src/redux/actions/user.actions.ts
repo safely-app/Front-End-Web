@@ -1,7 +1,13 @@
 import { request, failure } from './common.actions';
 import {ActionCreator} from 'redux';
 import { User } from '../../services';
-import { IUserCredentials, SET_AUTHENTICATED, UserActionTypes } from '../types';
+import {
+    IUserCredentials,
+    IUserInfo,
+    SET_AUTHENTICATED,
+    SET_USER_INFO,
+    UserActionTypes
+} from '../types';
 import log from 'loglevel';
 
 const authenticationSuccess: ActionCreator<UserActionTypes> = (
@@ -10,6 +16,27 @@ const authenticationSuccess: ActionCreator<UserActionTypes> = (
     return {
         type: SET_AUTHENTICATED,
         payload: credentials
+    };
+}
+
+const getUserInfoSuccess: ActionCreator<UserActionTypes> = (
+    userInfo: IUserInfo
+) => {
+    return {
+        type: SET_USER_INFO,
+        payload: userInfo
+    };
+}
+
+export function getUserInfo(id: string, token: string) {
+    return dispatch => {
+        dispatch(request());
+        return User.get(id, token)
+            .then(response => {
+                dispatch(getUserInfoSuccess(response.data));
+            }).catch(error => {
+                dispatch(failure(`Getting user failed: ${error.response.data}`));
+            });
     };
 }
 

@@ -11,14 +11,15 @@ import log from 'loglevel';
 
 const Profile: React.FC = () => {
     const dispatch = useDispatch();
+    const userInfo = useSelector((state: RootState) => state.user.userInfo);
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [isUserDeleted, setIsUserDeleted] = useState(false);
     const [isUpdateView, setIsUpdateView] = useState(false);
     const [user, setUser] = useState<IUser>({
-        id: "1",
-        username: "Random user",
-        email: "random@user.com",
-        role: "user"
+        id: userInfo.id,
+        username: userInfo.username,
+        email: userInfo.email,
+        role: userInfo.role
     });
 
     const setUsername = (value: string) => {
