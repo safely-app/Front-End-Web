@@ -42,7 +42,7 @@ const SignInView: React.FC<IAuthProps> = ({
 
     return (
         <div className="Authentication">
-            <h1>Se connecter !</h1>
+            <h1>Se connecter</h1>
             <TextInput type="email" role="email" label="Email" value={email} setValue={setEmail} />
             <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <Button text="Se connecter" onClick={handleClick} />
