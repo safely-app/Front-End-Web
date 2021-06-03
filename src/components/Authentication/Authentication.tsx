@@ -3,20 +3,26 @@ import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
 import { disconnectUser, loginUser, registerUser, RootState } from '../../redux';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmailValid } from './utils';
+import { isEmailValid, isPasswordValid, notifyError } from './utils';
 import { User } from '../../services';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Authentication.css';
 import log from 'loglevel';
 
+enum View {
+    SIGNIN,
+    SIGNUP,
+    FORGOT
+}
+
 interface IAuthProps {
-    updateIsOnSignUp: () => void;
+    setView: (value: View) => void;
     notifyError: (msg: string) => void;
 }
 
 const SignInView: React.FC<IAuthProps> = ({
-    updateIsOnSignUp,
+    setView,
     notifyError
 }) => {
     const dispatch = useDispatch();
@@ -24,7 +30,7 @@ const SignInView: React.FC<IAuthProps> = ({
     const [password, setPassword] = useState("");
 
     const handleClick = () => {
-        if (isEmailValid(email) && !!password) {
+        if (isEmailValid(email) && isPasswordValid(password)) {
             dispatch(loginUser(email, "", password));
         } else {
             notifyError(!isEmailValid(email)
@@ -40,15 +46,15 @@ const SignInView: React.FC<IAuthProps> = ({
             <TextInput type="email" role="email" label="Email" value={email} setValue={setEmail} />
             <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <Button text="Se connecter" onClick={handleClick} />
-            <Button text="Pas encore inscrit ?" onClick={updateIsOnSignUp} />
-            <Button text="Mot de passe oublié ?" onClick={() => log.log('Clicked')} type="link" />
+            <Button text="Pas encore inscrit ?" onClick={() => setView(View.SIGNUP)} />
+            <Button text="Mot de passe oublié ?" onClick={() => setView(View.FORGOT)} type="link" />
             <ToastContainer />
         </div>
     );
 }
 
 const SignUpView: React.FC<IAuthProps> = ({
-    updateIsOnSignUp,
+    setView,
     notifyError
 }) => {
     const dispatch = useDispatch();
@@ -58,7 +64,7 @@ const SignUpView: React.FC<IAuthProps> = ({
     const [confirmedPassword, setConfirmedPassword] = useState("");
 
     const handleClick = () => {
-        if (isEmailValid(email) && !!password && password === confirmedPassword) {
+        if (isEmailValid(email) && isPasswordValid(password) && password === confirmedPassword) {
             dispatch(registerUser(email, username, password));
         } else {
             notifyError(!isEmailValid(email)
@@ -76,56 +82,13 @@ const SignUpView: React.FC<IAuthProps> = ({
             <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <TextInput type="password" role="password" label="Confirmer mot de passe" value={confirmedPassword} setValue={setConfirmedPassword} />
             <Button text="S'inscrire" onClick={handleClick} />
-            <Button text="Déjà inscrit ?" onClick={updateIsOnSignUp} />
+            <Button text="Déjà inscrit ?" onClick={() => setView(View.SIGNIN)} />
             <ToastContainer />
         </div>
     );
 }
 
-export const Authentication: React.FC = () => {
-    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
-    const [isOnSignUp, setIsOnSignUp] = useState(false);
-
-    const updateIsOnSignUp = () => {
-        setIsOnSignUp(!isOnSignUp);
-    };
-
-    const notifyError = (msg: string) => toast.error(msg, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined
-    });
-
-    const selectView = (): JSX.Element => {
-        return (isOnSignUp)
-            ? <SignUpView notifyError={notifyError} updateIsOnSignUp={updateIsOnSignUp} />
-            : <SignInView notifyError={notifyError} updateIsOnSignUp={updateIsOnSignUp} />;
-    };
-
-    return (
-        <div className="Authentication-container">
-            {selectView()}
-            {!!userCredientialsId && <Redirect to="/" />}
-        </div>
-    );
-}
-
-export const SignOut: React.FC = () => {
-    const dispatch = useDispatch();
-    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
-
-    useEffect(() => {
-        dispatch(disconnectUser());
-    });
-
-    return <div>{!userCredientialsId && <Redirect to="/login" />}</div>;
-}
-
-export const ForgottenPassword: React.FC = () => {
+const ForgottenPassword: React.FC = () => {
     const [email, setEmail] = useState("");
 
     const handleClick = () => {
@@ -147,8 +110,100 @@ export const ForgottenPassword: React.FC = () => {
             <div className="Authentication">
                 <h1>Mot de passe oublié ?</h1>
                 <TextInput type="email" role="email" label="Email" value={email} setValue={setEmail} />
-                <Button text="S'inscrire" onClick={handleClick} />
+                <Button text="Réinitialiser le mot de passe" onClick={handleClick} />
             </div>
+        </div>
+    );
+}
+
+export const Authentication: React.FC = () => {
+    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
+    const [view, setView] = useState(View.SIGNIN);
+
+    const selectView = (): JSX.Element => {
+        switch (view) {
+            case View.SIGNUP:
+                return <SignUpView notifyError={notifyError} setView={setView} />;
+
+            case View.FORGOT:
+                return <ForgottenPassword />
+            default:
+                return <SignInView notifyError={notifyError} setView={setView} />;
+        }
+    };
+
+    return (
+        <div className="Authentication-container">
+            {selectView()}
+            {!!userCredientialsId && <Redirect to="/" />}
+        </div>
+    );
+}
+
+export const SignOut: React.FC = () => {
+    const dispatch = useDispatch();
+    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
+
+    useEffect(() => {
+        dispatch(disconnectUser());
+    });
+
+    return <div>{!userCredientialsId && <Redirect to="/login" />}</div>;
+}
+
+interface ResetProps {
+    id: string;
+    token: string;
+}
+
+export const ResetPassword: React.FC = () => {
+    const [redirect, setRedirect] = useState(false);
+    const [password, setPassword] = useState("");
+    const [confirmedPassword, setConfirmedPassword] = useState("");
+    const [resetProps, setResetProps] = useState<ResetProps>({
+        id: "",
+        token: ""
+    });
+
+    const parseUrl = (url: string): ResetProps => {
+        const regex = new RegExp("/reset/(.*)/token/(.*)");
+        const found = url.match(regex) || ["", ""];
+
+        return {
+            id: found[1],
+            token: found[2]
+        };
+    };
+
+    const handleClick = () => {
+        if (isPasswordValid(password) && password === confirmedPassword) {
+            User.changePassword(resetProps.id, resetProps.token, {
+                email: "",
+                username: "",
+                password: password
+            }).then(response => {
+                log.log(response);
+                setRedirect(true);
+            }).catch(error => {
+                log.error(error);
+            });
+        } else {
+            notifyError("Mot de passe invalide");
+        }
+    };
+
+    useEffect(() => {
+        setResetProps(parseUrl(window.location.href));
+    }, []);
+
+    return (
+        <div className="Authentication">
+            <h1>Réinitialiser le mot de passe</h1>
+            <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
+            <TextInput type="password" role="password" label="Confirmer mot de passe" value={confirmedPassword} setValue={setConfirmedPassword} />
+            <Button text="Réinitialiser" onClick={handleClick} />
+            <ToastContainer />
+            {redirect && <Redirect to="/login" />}
         </div>
     );
 }

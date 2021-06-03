@@ -7,7 +7,8 @@ import {
     Monitor,
     Safeplace,
     SignOut,
-    Profile
+    Profile,
+    ResetPassword
 } from './components';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
@@ -23,6 +24,7 @@ const routes = [
     { path: '/admin', exact: true, protected: true, render: <Monitor /> },
     { path: '/safeplace', exact: true, protected: true, render: <Safeplace /> },
     { path: '/profile', exact: true, protected: true, render: <Profile /> }
+    { path: '/reset', exact: false, protected: false, render: <ResetPassword /> }
 ];
 
 log.setLevel((process.env.REACT_APP_STAGE === "prod")

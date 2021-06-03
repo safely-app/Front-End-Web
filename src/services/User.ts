@@ -36,8 +36,16 @@ class User {
     }
 
     forgotPassword(data: UserData) {
-        return createHttpConfig().post("/forgotPassword", {
+        return createHttpConfig().post("/user/forgotPassword", {
             email: data.email
+        });
+    }
+
+    changePassword(id: string, token: string, data: UserData) {
+        return createHttpConfig().post("/user/changePassword", {
+            userId: id,
+            token: token,
+            password: data.password
         });
     }
 }
