@@ -2,7 +2,7 @@ import IUser from '../components/interfaces/IUser';
 import axios from 'axios';
 
 const createHttpConfig = (token?: string) => axios.create({
-    baseURL: "http://localhost:8080/",
+    baseURL: "http://api.safely-app.fr:8081",
     headers: {
         "Content-type": "application/json",
         Authorization: `Bearer ${token}`
@@ -11,7 +11,7 @@ const createHttpConfig = (token?: string) => axios.create({
 
 class Safeplace {
     getAll(token: string) {
-        return createHttpConfig(token).get("/safeplace");
+        return createHttpConfig(token).get("/");
     }
 
     get(id: string, token: string) {

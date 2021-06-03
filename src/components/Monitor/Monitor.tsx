@@ -115,7 +115,7 @@ const Monitor: React.FC = () => {
         User.getAll(userCredientials.token).then(response => {
             const gotUsers = response.data.map(user => {
                 return {
-                    id: user.id,
+                    id: user._id,
                     username: user.username,
                     email: user.email,
                     role: user.role

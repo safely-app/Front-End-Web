@@ -20,6 +20,15 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({ sa
         updateIsListView();
     };
 
+    const displayTimetable = (timetable) => {
+        let days = ["Lundi", "Mardi","Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+        return days.map((day, index) => {
+            if (timetable[index])
+                return " " + day + ": " + timetable[index] + " |";
+            return null;
+          });
+    };
+
     return (
         <li key={safeplace.id} className="Safeplace-list-element">
             <button className="Safeplace-list-element-btn" onClick={handleClick}>
@@ -29,6 +38,7 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({ sa
                     <li key={`${safeplace.id}-name`}><b>Description : </b>{safeplace.description}</li>
                     <li key={`${safeplace.id}-name`}><b>Ville : </b>{safeplace.city}</li>
                     <li key={`${safeplace.id}-name`}><b>Adresse : </b>{safeplace.address}</li>
+                    <li key={`${safeplace.id}-name`}><b>Horaires : </b>{displayTimetable(safeplace.dayTimetable)}</li>
                     <li key={`${safeplace.id}-name`}><b>Note : </b>{safeplace.grade}</li>
                     <li key={`${safeplace.id}-name`}><b>Type : </b>{safeplace.type}</li>
                 </ul>
@@ -51,13 +61,14 @@ const Safeplace: React.FC = () => {
         Safeplaces.getAll(userCredientials.token).then(response => {
             const gotSafeplaces = response.data.map(safeplace => {
                 return {
-                    id: safeplace.id,
+                    id: safeplace._id,
                     name: safeplace.name,
                     description: safeplace.description,
                     city: safeplace.city ,
                     address: safeplace.address ,
                     grade: safeplace.grade ,
-                    type: safeplace.type
+                    type: safeplace.type,
+                    dayTimetable: safeplace.dayTimetable
                 };
             });
 

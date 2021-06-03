@@ -6,4 +6,5 @@ export default interface ISafeplace {
     address: string;
     grade: Int16Array;
     type: string;
+    dayTimetable: [];
 }
