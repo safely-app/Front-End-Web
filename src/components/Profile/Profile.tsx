@@ -5,8 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { disconnectUser, RootState } from '../../redux';
 import IUser from '../interfaces/IUser';
 import './Profile.css';
+import { ToastContainer } from 'react-toastify';
 import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
+import {
+    isEmailValid,
+    isUsernameValid,
+    notifyError
+} from '../Authentication/utils';
 import log from 'loglevel';
 
 const Profile: React.FC = () => {
@@ -41,13 +47,20 @@ const Profile: React.FC = () => {
     };
 
     const saveUserModification = () => {
-        User.update(userCredientials._id, user, userCredientials.token)
-            .then(response => {
-                log.log(response)
-                updateIsUpdateView();
-            }).catch(error => {
-                log.error(error);
-            });
+        if (isUsernameValid(user.username) && isEmailValid(user.email)) {
+            User.update(userCredientials._id, user, userCredientials.token)
+                .then(response => {
+                    log.log(response)
+                    updateIsUpdateView();
+                }).catch(error => {
+                    log.error(error);
+                });
+        } else {
+            notifyError(!isUsernameValid(user.username)
+                ? "Nom d'utilisateur invalide"
+                : "Email invalide"
+            );
+        }
     };
 
     const deleteUser = () => {
@@ -84,6 +97,7 @@ const Profile: React.FC = () => {
                 {isUpdateView && <Button text="Annuler" onClick={updateIsUpdateView} /> }
                 <Button text="Supprimer" onClick={deleteUser} type="warning" />
                 {isUserDeleted && <Redirect to="/" />}
+                <ToastContainer />
             </div>
         </div>
     );
