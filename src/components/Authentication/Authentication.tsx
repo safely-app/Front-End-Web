@@ -3,7 +3,7 @@ import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
 import { disconnectUser, loginUser, registerUser, RootState } from '../../redux';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmailValid, isPasswordValid, notifyError } from './utils';
+import { isEmailValid, isPasswordValid, isUsernameValid, notifyError } from './utils';
 import { User } from '../../services';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -64,13 +64,16 @@ const SignUpView: React.FC<IAuthProps> = ({
     const [confirmedPassword, setConfirmedPassword] = useState("");
 
     const handleClick = () => {
-        if (isEmailValid(email) && isPasswordValid(password) && password === confirmedPassword) {
+        if (isUsernameValid(username) && isEmailValid(email) && isPasswordValid(password) && password === confirmedPassword) {
             dispatch(registerUser(email, username, password));
         } else {
-            notifyError(!isEmailValid(email)
-                ? "Email invalide"
-                : "Mot de passe invalide"
-            );
+            if (!isUsernameValid(username)) {
+                notifyError("Nom d'utilisateur invalide");
+            } else if (!isEmailValid(email)) {
+                notifyError("Email invalide");
+            } else if (!isPasswordValid(password)) {
+                notifyError("Mot de passe invalide");
+            }
         }
     };
 
