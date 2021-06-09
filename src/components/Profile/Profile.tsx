@@ -9,10 +9,8 @@ import { ToastContainer } from 'react-toastify';
 import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
 import {
-    isEmailValid,
-    isUsernameValid,
     notifyError
-} from '../Authentication/utils';
+} from '../utils';
 import log from 'loglevel';
 
 const Profile: React.FC = () => {
@@ -47,7 +45,7 @@ const Profile: React.FC = () => {
     };
 
     const saveUserModification = () => {
-        if (isUsernameValid(user.username) && isEmailValid(user.email)) {
+        try {
             User.update(userCredientials._id, user, userCredientials.token)
                 .then(response => {
                     log.log(response)
@@ -55,11 +53,8 @@ const Profile: React.FC = () => {
                 }).catch(error => {
                     log.error(error);
                 });
-        } else {
-            notifyError(!isUsernameValid(user.username)
-                ? "Nom d'utilisateur invalide"
-                : "Email invalide"
-            );
+        } catch (e) {
+            notifyError((e as Error).message);
         }
     };
 

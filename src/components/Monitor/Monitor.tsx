@@ -4,14 +4,14 @@ import { RootState } from '../../redux';
 import { User } from '../../services';
 import { TextInput, Button } from '../common';
 import { AppHeader } from '../Header/Header';
-import IUser from '../interfaces/IUser';
+import IUser, { createNewUser } from '../interfaces/IUser';
 import '../Profile/Profile.css';
 import './Monitor.css';
 import log from 'loglevel';
 import {
-    isEmailValid,
     notifyError
-} from '../Authentication/utils';
+} from '../utils';
+import { ToastContainer } from 'react-toastify';
 
 interface IUserInfoProps {
     user: IUser;
@@ -70,6 +70,7 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
                 <TextInput key={`${user.id}-confirmedPassword`} type="password" role="password" label="Confirmer mot de passe" value={user.confirmedPassword} setValue={setConfirmedPassword} />
             </div>}
             {buttons.map(button => button)}
+            <ToastContainer />
         </div>
     );
 };
@@ -128,34 +129,37 @@ const Monitor: React.FC = () => {
         setUsers(users.map(userElement => userElement.id === user.id ? user : userElement));
     };
 
-    const createNewUser = (user: IUser) => {
-        if (isEmailValid(user.email) && !!user.password && user.password === user.confirmedPassword) {
+    const createUser = (user: IUser) => {
+        try {
             User.register({
+                ...createNewUser(),
                 email: user.email,
                 username: user.username,
-                password: user.password
+                password: user.password,
+                confirmedPassword: user.confirmedPassword
             }).then(response => {
                 log.log(response);
                 setView(View.LIST);
             }).catch(error => {
                 log.error(error);
             });
-        } else {
-            notifyError(!isEmailValid(user.email)
-                ? "Email invalide"
-                : "Mot de passe invalide"
-            );
+        } catch (e) {
+            notifyError((e as Error).message);
         }
     };
 
     const saveUserModification = (user: IUser) => {
-        User.update(user.id, user, userCredientials.token)
-            .then(response => {
-                log.log(response)
-                setView(View.LIST);
-            }).catch(error => {
-                log.error(error);
-            });
+        try {
+            User.update(user.id, user, userCredientials.token)
+                .then(response => {
+                    log.log(response)
+                    setView(View.LIST);
+                }).catch(error => {
+                    log.error(error);
+                });
+        } catch (e) {
+            notifyError((e as Error).message);
+        }
     };
 
     const deleteUser = (user: IUser) => {
@@ -176,7 +180,7 @@ const Monitor: React.FC = () => {
                         user={newUser}
                         setUser={setNewUser}
                         buttons={[
-                            <Button text="Créer un nouvel utilisateur" onClick={() => createNewUser(newUser)} />,
+                            <Button text="Créer un nouvel utilisateur" onClick={() => createUser(newUser)} />,
                             <Button text="Annuler" onClick={() => {
                                 setView(View.LIST);
                                 setUser({

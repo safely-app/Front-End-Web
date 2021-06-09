@@ -3,12 +3,13 @@ import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
 import { disconnectUser, loginUser, registerUser, RootState } from '../../redux';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmailValid, isPasswordValid, isUsernameValid, notifyError } from './utils';
+import { notifyError } from '../utils';
 import { User } from '../../services';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Authentication.css';
 import log from 'loglevel';
+import { createNewUser } from '../interfaces/IUser';
 
 enum View {
     SIGNIN,
@@ -30,14 +31,7 @@ const SignInView: React.FC<IAuthProps> = ({
     const [password, setPassword] = useState("");
 
     const handleClick = () => {
-        if (isEmailValid(email) && isPasswordValid(password)) {
-            dispatch(loginUser(email, "", password));
-        } else {
-            notifyError(!isEmailValid(email)
-                ? "Email invalide"
-                : "Mot de passe invalide"
-            );
-        }
+        dispatch(loginUser(email, "", password));
     };
 
     return (
@@ -64,17 +58,7 @@ const SignUpView: React.FC<IAuthProps> = ({
     const [confirmedPassword, setConfirmedPassword] = useState("");
 
     const handleClick = () => {
-        if (isUsernameValid(username) && isEmailValid(email) && isPasswordValid(password) && password === confirmedPassword) {
-            dispatch(registerUser(email, username, password));
-        } else {
-            if (!isUsernameValid(username)) {
-                notifyError("Nom d'utilisateur invalide");
-            } else if (!isEmailValid(email)) {
-                notifyError("Email invalide");
-            } else if (!isPasswordValid(password)) {
-                notifyError("Mot de passe invalide");
-            }
-        }
+        dispatch(registerUser(email, username, password, confirmedPassword));
     };
 
     return (
@@ -95,16 +79,17 @@ const ForgottenPassword: React.FC = () => {
     const [email, setEmail] = useState("");
 
     const handleClick = () => {
-        if (isEmailValid(email)) {
+        try {
             User.forgotPassword({
-                email: email,
-                username: "",
-                password: ""
+                ...createNewUser(),
+                email: email
             }).then(response => {
                 log.log(response);
             }).catch(error => {
                 log.error(error);
             });
+        } catch (e) {
+            notifyError((e as Error).message);
         }
     };
 
@@ -179,19 +164,19 @@ export const ResetPassword: React.FC = () => {
     };
 
     const handleClick = () => {
-        if (isPasswordValid(password) && password === confirmedPassword) {
+        try {
             User.changePassword(resetProps.id, resetProps.token, {
-                email: "",
-                username: "",
-                password: password
+                ...createNewUser(),
+                password: password,
+                confirmedPassword: confirmedPassword
             }).then(response => {
                 log.log(response);
                 setRedirect(true);
             }).catch(error => {
                 log.error(error);
             });
-        } else {
-            notifyError("Mot de passe invalide");
+        } catch (e) {
+            notifyError((e as Error).message);
         }
     };
 
