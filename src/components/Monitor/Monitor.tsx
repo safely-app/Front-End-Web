@@ -142,6 +142,7 @@ const Monitor: React.FC = () => {
                 setView(View.LIST);
             }).catch(error => {
                 log.error(error);
+                notifyError(error);
             });
         } catch (e) {
             notifyError((e as Error).message);
@@ -156,6 +157,7 @@ const Monitor: React.FC = () => {
                     setView(View.LIST);
                 }).catch(error => {
                     log.error(error);
+                    notifyError(error);
                 });
         } catch (e) {
             notifyError((e as Error).message);
@@ -244,6 +246,7 @@ const Monitor: React.FC = () => {
             setUsers(gotUsers);
         }).catch(error => {
             log.error(error);
+            notifyError(error);
         });
     }, [userCredientials, view]);
 
