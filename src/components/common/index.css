@@ -5,6 +5,20 @@ input {
     font-size: large;
 }
 
+select {
+    /* Hide dropdown arrow */
+    appearance: none;
+
+    margin-top: 1em;
+    width: 60%;
+    padding: 1%;
+    font-size: large;
+    border: 1px solid #bbb;
+    border-radius: 0.25em;
+    cursor: pointer;
+    background-color: #fff;
+}
+
 .btn {
     margin-top: 1em;
     padding: 1.2%;

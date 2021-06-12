@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { User } from '../../services';
-import { TextInput, Button } from '../common';
+import {
+    TextInput,
+    Button,
+    Dropdown
+} from '../common';
 import { AppHeader } from '../Header/Header';
 import IUser, { createNewUser } from '../interfaces/IUser';
 import '../Profile/Profile.css';
@@ -24,6 +28,10 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
     setUser,
     buttons
 }) => {
+    const USER_ROLES = [
+        "user", "admin"
+    ];
+
     const setUsername = (value: string) => {
         setUser({
             ...user,
@@ -63,7 +71,7 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
         <div className="Profile">
             <TextInput key={`${user.id}-username`} type="text" role="username" label="Nom d'utilisateur" value={user.username} setValue={setUsername} />
             <TextInput key={`${user.id}-email`} type="email" role="email" label="Email" value={user.email} setValue={setEmail} />
-            <TextInput key={`${user.id}-role`} type="text" role="role" label="Role" value={user.role} setValue={setRole} />
+            <Dropdown key={`${user.id}-role`} values={USER_ROLES} setValue={setRole} />
             {(user.password !== undefined && user.confirmedPassword !== undefined) &&
             <div>
                 <TextInput key={`${user.id}-password`} type="password" role="password" label="Mot de passe" value={user.password} setValue={setPassword} />
@@ -116,7 +124,7 @@ const Monitor: React.FC = () => {
         id: "",
         username: "",
         email: "",
-        role: "",
+        role: "user",
         password: "",
         confirmedPassword: ""
     });
