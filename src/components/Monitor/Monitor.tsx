@@ -135,8 +135,8 @@ const Monitor: React.FC = () => {
                 ...createNewUser(),
                 email: user.email,
                 username: user.username,
-                password: user.password,
-                confirmedPassword: user.confirmedPassword
+                password: user.password as string,
+                confirmedPassword: user.confirmedPassword as string
             }).then(response => {
                 log.log(response);
                 setView(View.LIST);
