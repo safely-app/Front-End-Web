@@ -5,8 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { disconnectUser, RootState } from '../../redux';
 import IUser from '../interfaces/IUser';
 import './Profile.css';
+import { ToastContainer } from 'react-toastify';
 import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
+import {
+    notifyError
+} from '../utils';
 import log from 'loglevel';
 
 const Profile: React.FC = () => {
@@ -41,13 +45,17 @@ const Profile: React.FC = () => {
     };
 
     const saveUserModification = () => {
-        User.update(userCredientials._id, user, userCredientials.token)
-            .then(response => {
-                log.log(response)
-                updateIsUpdateView();
-            }).catch(error => {
-                log.error(error);
-            });
+        try {
+            User.update(userCredientials._id, user, userCredientials.token)
+                .then(response => {
+                    log.log(response)
+                    updateIsUpdateView();
+                }).catch(error => {
+                    log.error(error);
+                });
+        } catch (e) {
+            notifyError((e as Error).message);
+        }
     };
 
     const deleteUser = () => {
@@ -84,6 +92,7 @@ const Profile: React.FC = () => {
                 {isUpdateView && <Button text="Annuler" onClick={updateIsUpdateView} /> }
                 <Button text="Supprimer" onClick={deleteUser} type="warning" />
                 {isUserDeleted && <Redirect to="/" />}
+                <ToastContainer />
             </div>
         </div>
     );

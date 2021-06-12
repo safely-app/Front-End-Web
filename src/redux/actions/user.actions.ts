@@ -9,6 +9,10 @@ import {
     UserActionTypes
 } from '../types';
 import log from 'loglevel';
+import {
+    createNewUser
+} from '../../components/interfaces/IUser';
+import { notifyError } from '../../components/utils';
 
 const authenticationSuccess: ActionCreator<UserActionTypes> = (
     credentials: IUserCredentials
@@ -52,39 +56,50 @@ export function disconnectUser() {
     };
 }
 
-export function registerUser(email: string, username: string, password: string) {
+export function registerUser(email: string, username: string, password: string, confirmedPassword: string) {
     return dispatch => {
         dispatch(request());
-        return User.register({
-                email: email,
-                username: username,
-                password: password
-            }).then(response => {
-                dispatch(authenticationSuccess(response.data));
-            }).catch(error => {
-                dispatch(failure(`Register failed: ${error.response.data}`));
-            });
+        try {
+            return User.register({
+                    ...createNewUser(),
+                    email: email,
+                    username: username,
+                    password: password,
+                    confirmedPassword: confirmedPassword
+                }).then(response => {
+                    dispatch(authenticationSuccess(response.data));
+                }).catch(error => {
+                    return notifyError(error.response.data);
+                });
+        } catch (e) {
+            return notifyError((e as Error).message);
+        }
     };
 }
 
 export function loginUser(email: string, username: string, password: string) {
     return dispatch => {
         dispatch(request());
-        return User.login({
-                email: email,
-                username: username,
-                password: password
-            }).then(response => {
-                dispatch(authenticationSuccess(response.data));
-            }).catch(error => {
-                const errorResponse = error.response;
-                const errorData = (errorResponse) ? errorResponse.data : undefined;
-                const errorMsg = (errorData) ? errorData.error : undefined;
+        try {
+            return User.login({
+                    ...createNewUser(),
+                    email: email,
+                    username: username,
+                    password: password
+                }).then(response => {
+                    dispatch(authenticationSuccess(response.data));
+                }).catch(error => {
+                    const errorResponse = error.response;
+                    const errorData = (errorResponse) ? errorResponse.data : undefined;
+                    const errorMsg = (errorData) ? errorData.error : undefined;
 
-                log.error(errorResponse);
-                log.error(errorData);
-                log.error(errorMsg);
-                dispatch(failure(`Login failed: ${errorMsg}`));
-            });
+                    log.error(errorResponse);
+                    log.error(errorData);
+                    log.error(errorMsg);
+                    return notifyError(errorMsg);
+                });
+        } catch (e) {
+            return notifyError((e as Error).message);
+        }
     };
 }
