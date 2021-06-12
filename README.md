@@ -1,5 +1,7 @@
 # Getting Started with Create React App
 
+![image info](https://www.code-inspector.com/project/23552/score/svg)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
