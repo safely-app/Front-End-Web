@@ -5,7 +5,8 @@ import { User } from '../../services';
 import {
     TextInput,
     Button,
-    Dropdown
+    Dropdown,
+    List
 } from '../common';
 import { AppHeader } from '../Header/Header';
 import IUser, { createNewUser } from '../interfaces/IUser';
@@ -115,6 +116,53 @@ enum View {
     UPDATE
 }
 
+const Monitor: React.FC = () => {
+    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const [users, setUsers] = useState<IUser[]>([]);
+    const [userId, setUserId] = useState("");
+
+    useEffect(() => {
+        User.getAll(userCredientials.token).then(response => {
+            const gotUsers = response.data.map(user => {
+                return {
+                    id: user._id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role
+                };
+            });
+
+            setUsers(gotUsers);
+        }).catch(error => {
+            log.error(error);
+            notifyError(error);
+        });
+    }, [userCredientials]);
+
+    return (
+        <div className="Monitor">
+            <AppHeader />
+            <div style={{textAlign: "center"}}>
+                <Button
+                    text="Créer un nouvel utilisateur"
+                    onClick={() => {}}
+                    width="98%"
+                />
+                <List items={users.map(user => {
+                    return (
+                        <UserInfoListElement
+                            user={user}
+                            updateIsListView={() => {}}
+                            setUserId={setUserId}
+                            key={user.id}
+                        />
+                    );
+                })} />
+            </div>
+        </div>
+    );
+};
+/*
 const Monitor: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [users, setUsers] = useState<IUser[]>([]);
@@ -265,5 +313,6 @@ const Monitor: React.FC = () => {
         </div>
     );
 }
+*/
 
 export default Monitor;
