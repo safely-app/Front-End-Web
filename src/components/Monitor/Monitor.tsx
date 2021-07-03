@@ -71,7 +71,7 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
         <div className="Profile">
             <TextInput key={`${user.id}-username`} type="text" role="username" label="Nom d'utilisateur" value={user.username} setValue={setUsername} />
             <TextInput key={`${user.id}-email`} type="email" role="email" label="Email" value={user.email} setValue={setEmail} />
-            <Dropdown key={`${user.id}-role`} values={USER_ROLES} setValue={setRole} />
+            <Dropdown key={`${user.id}-role`} values={USER_ROLES} setValue={setRole} defaultValue={user.role} />
             {(user.password !== undefined && user.confirmedPassword !== undefined) &&
             <div>
                 <TextInput key={`${user.id}-password`} type="password" role="password" label="Mot de passe" value={user.password} setValue={setPassword} />

@@ -4,11 +4,13 @@ import './index.css';
 interface IDropdownProps {
     values: string[];
     setValue: (value: string) => void;
+    defaultValue?: string;
 }
 
 const Dropdown: React.FC<IDropdownProps> = ({
     values,
-    setValue
+    setValue,
+    defaultValue
 }) => {
     const handleInput = (e: React.ChangeEvent<HTMLSelectElement>): void => {
         setValue(e.target.value);
@@ -16,7 +18,7 @@ const Dropdown: React.FC<IDropdownProps> = ({
 
     return (
         <div>
-            <select onChange={handleInput}>
+            <select onChange={handleInput} defaultValue={defaultValue}>
                 {values.map((value, index) => {
                     return (
                         <option key={index} value={value}>
