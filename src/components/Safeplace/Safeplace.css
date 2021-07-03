@@ -1,0 +1,24 @@
+.Safeplace-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.Safeplace-list-element {
+    background-color: white;
+    padding: 1em;
+    margin: 1em;
+}
+
+.Safeplace-list-element-btn {
+    background: none;
+    color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+}

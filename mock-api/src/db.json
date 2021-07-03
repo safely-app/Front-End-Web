@@ -14,5 +14,37 @@
       "password": "benjaminlegorille",
       "role": "user"
     }
+  ],
+  "safeplace": [
+    {
+      "id": 1,
+      "name": "Marché aux livres",
+      "description": "Petit stand de livre",
+      "city": "Strasbourg",
+      "address": "Place Kléber",
+      "coordinates": [
+        7.7481727,
+        48.5831908
+      ],
+      "dayTimetable": null,
+      "grade": 4,
+      "type": "market"
+
+    },
+    {
+      "id": 2,
+      "name": "Marché aux livres",
+      "description": "Petit stand de livre",
+      "city": "Strasbourg",
+      "address": "Place Kléber",
+      "coordinates": [
+        7.7481727,
+        48.5831908
+      ],
+      "dayTimetable": null,
+      "grade": 4,
+      "type": "market"
+
+    }
   ]
 }
