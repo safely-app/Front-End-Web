@@ -9,7 +9,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Authentication.css';
 import log from 'loglevel';
-import { createNewUser } from '../interfaces/IUser';
 
 enum View {
     SIGNIN,
@@ -80,14 +79,12 @@ const ForgottenPassword: React.FC = () => {
 
     const handleClick = () => {
         try {
-            User.forgotPassword({
-                ...createNewUser(),
-                email: email
-            }).then(response => {
-                log.log(response);
-            }).catch(error => {
-                log.error(error);
-            });
+            User.forgotPassword(email)
+                .then(response => {
+                    log.log(response);
+                }).catch(error => {
+                    log.error(error);
+                });
         } catch (e) {
             notifyError((e as Error).message);
         }
@@ -165,11 +162,12 @@ export const ResetPassword: React.FC = () => {
 
     const handleClick = () => {
         try {
-            User.changePassword(resetProps.id, resetProps.token, {
-                ...createNewUser(),
-                password: password,
-                confirmedPassword: confirmedPassword
-            }).then(response => {
+            User.changePassword(
+                resetProps.id,
+                resetProps.token,
+                password,
+                confirmedPassword
+            ).then(response => {
                 log.log(response);
                 setRedirect(true);
             }).catch(error => {

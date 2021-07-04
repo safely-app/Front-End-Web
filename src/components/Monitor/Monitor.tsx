@@ -9,7 +9,7 @@ import {
     List
 } from '../common';
 import { AppHeader } from '../Header/Header';
-import IUser, { createNewUser } from '../interfaces/IUser';
+import IUser from '../interfaces/IUser';
 import '../Profile/Profile.css';
 import './Monitor.css';
 import log from 'loglevel';
@@ -72,7 +72,7 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
         <div className="Profile">
             <TextInput key={`${user.id}-username`} type="text" role="username" label="Nom d'utilisateur" value={user.username} setValue={setUsername} />
             <TextInput key={`${user.id}-email`} type="email" role="email" label="Email" value={user.email} setValue={setEmail} />
-            <Dropdown key={`${user.id}-role`} values={USER_ROLES} setValue={setRole} />
+            <Dropdown key={`${user.id}-role`} values={USER_ROLES} setValue={setRole} defaultValue={user.role} />
             {(user.password !== undefined && user.confirmedPassword !== undefined) &&
             <div>
                 <TextInput key={`${user.id}-password`} type="password" role="password" label="Mot de passe" value={user.password} setValue={setPassword} />
@@ -188,9 +188,10 @@ const Monitor: React.FC = () => {
     const createUser = (user: IUser) => {
         try {
             User.register({
-                ...createNewUser(),
-                email: user.email,
+                id: "",
                 username: user.username,
+                email: user.email,
+                role: "",
                 password: user.password as string,
                 confirmedPassword: user.confirmedPassword as string
             }).then(response => {
