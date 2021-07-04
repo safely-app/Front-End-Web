@@ -8,7 +8,7 @@ import {
     Dropdown
 } from '../common';
 import { AppHeader } from '../Header/Header';
-import IUser, { createNewUser } from '../interfaces/IUser';
+import IUser from '../interfaces/IUser';
 import '../Profile/Profile.css';
 import './Monitor.css';
 import log from 'loglevel';
@@ -140,9 +140,10 @@ const Monitor: React.FC = () => {
     const createUser = (user: IUser) => {
         try {
             User.register({
-                ...createNewUser(),
-                email: user.email,
+                id: "",
                 username: user.username,
+                email: user.email,
+                role: "",
                 password: user.password as string,
                 confirmedPassword: user.confirmedPassword as string
             }).then(response => {

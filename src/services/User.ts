@@ -41,32 +41,32 @@ class User {
         });
     }
 
-    login(data: IUser) {
-        if (!isEmailValid(data.email))
+    login(email: string, password: string) {
+        if (!isEmailValid(email))
             throw new Error("Email invalide");
-        if (data.password === undefined || !isPasswordValid(data.password))
+        if (password === undefined || !isPasswordValid(password))
             throw new Error("Mot de passe invalide");
         return createHttpConfig().post("/login", {
-            email: data.email,
-            password: data.password
+            email: email,
+            password: password
         });
     }
 
-    forgotPassword(data: IUser) {
-        if (!isEmailValid(data.email))
+    forgotPassword(email: string) {
+        if (!isEmailValid(email))
             throw new Error("Email invalide");
         return createHttpConfig().post("/user/forgotPassword", {
-            email: data.email
+            email: email
         });
     }
 
-    changePassword(id: string, token: string, data: IUser) {
-        if (data.password === undefined || data.password !== data.confirmedPassword || !isPasswordValid(data.password))
+    changePassword(id: string, token: string, password: string, confirmedPassword: string) {
+        if (password === undefined || password !== confirmedPassword || !isPasswordValid(password))
             throw new Error("Mot de passe invalide");
         return createHttpConfig().post("/user/changePassword", {
             userId: id,
             token: token,
-            password: data.password
+            password: password
         });
     }
 }

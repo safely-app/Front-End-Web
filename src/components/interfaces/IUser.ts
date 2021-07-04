@@ -6,10 +6,3 @@ export default interface IUser {
     password?: string;
     confirmedPassword?: string;
 }
-
-export const createNewUser = (): IUser => ({
-    id: "",
-    username: "",
-    email: "",
-    role: ""
-})
