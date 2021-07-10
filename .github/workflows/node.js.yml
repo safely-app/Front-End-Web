@@ -25,23 +25,16 @@ jobs:
       with:
         name: lcov.info
         path: ./coverage/lcov.info
-    - uses: actions/cache@v2
+    - uses: codecov/codecov-action@v1
       with:
-        path: ./coverage/lcov.info
-        key: cov.info
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage/lcov.info
+
   deploy:
       name: Deploy with metrics
       runs-on: ubuntu-latest
       needs: [build]
       steps:
-        - uses: actions/cache@v2
-          with:
-            path: ./coverage/lcov.info
-            key: cov.info
-        - uses: codecov/codecov-action@v1
-          with:
-            token: ${{ secrets.CODECOV_TOKEN }}
-            file: ./coverage/lcov.info
         - name: Invoke deployment hook
           uses: distributhor/workflow-webhook@v1
           env:
