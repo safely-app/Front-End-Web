@@ -2,18 +2,27 @@ import React from 'react';
 import './index.css';
 
 interface IListProps {
-    items: JSX.Element[];
+    items: any[];
+    itemDisplayer: (item: any) => JSX.Element;
+    itemUpdater: (item: any) => JSX.Element;
+    focusItem: any | undefined;
 }
 
 const List: React.FC<IListProps> = ({
-    items
+    items,
+    itemDisplayer,
+    itemUpdater,
+    focusItem
 }) => {
     return (
-        <ul className="list">
-            {items.map(item => {
-                return item;
-            })}
-        </ul>
+        <div>
+            {(focusItem !== undefined) && itemUpdater(focusItem)}
+            <ul className="list">
+                {items.map(item => {
+                    return itemDisplayer(item);
+                })}
+            </ul>
+        </div>
     );
 };
 

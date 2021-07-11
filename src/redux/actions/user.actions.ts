@@ -36,7 +36,7 @@ export function getUserInfo(id: string, token: string) {
             .then(response => {
                 dispatch(getUserInfoSuccess(response.data));
             }).catch(error => {
-                dispatch(failure(`Getting user failed: ${error.response.data}`));
+                dispatch(failure(`Getting user failed: ${error.response?.data}`));
             });
     };
 }
@@ -80,7 +80,7 @@ export function loginUser(email: string, username: string, password: string) {
         dispatch(request());
         try {
             return User.login(
-                    username,
+                    email,
                     password
                 ).then(response => {
                     dispatch(authenticationSuccess(response.data));
