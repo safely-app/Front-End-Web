@@ -1,4 +1,4 @@
-input {
+.input {
     appearance: none;
 
     margin: 0;
@@ -14,7 +14,7 @@ input {
     border-radius: 0.25em;
 }
 
-select {
+.select {
     /* Hide dropdown arrow */
     appearance: none;
 
@@ -89,4 +89,20 @@ select {
     border-style: solid;
     border-radius: 8px;
     font-weight: bold;
+}
+
+.modal {
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    padding-bottom: 1em;
+    width: 80%;
+    background-color: #fff;
+    border: #a19b96;
+    border-style: solid;
+    border-radius: 8px;
 }
