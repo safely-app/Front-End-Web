@@ -5,17 +5,17 @@ interface IButtonProps {
     text: string;
     onClick: () => void;
     width?: string;
-    type?: string;
+    styleType?: string;
 }
 
 const Button: React.FC<IButtonProps> = ({
     text,
     onClick,
     width,
-    type
+    styleType
 }) => {
 
-    const types = {
+    const styles = {
         "default": "btn",
         "link": "btn-link",
         "warning": "btn-warning"
@@ -28,7 +28,7 @@ const Button: React.FC<IButtonProps> = ({
     return (
         <div>
             <button
-                className={type !== undefined ? types[type] : "btn"}
+                className={styleType !== undefined ? styles[styleType] : "btn"}
                 style={{ width: width !== undefined ? width : "60%" }}
                 onClick={handleClick}
             >
