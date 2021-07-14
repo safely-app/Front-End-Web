@@ -27,7 +27,7 @@ jobs:
         path: ./coverage/lcov.info
     - uses: actions/upload-artifact@v1
       with:
-        name: lcov.info
+        name: HTML Report
         path: ./coverage/lcov-report
     - uses: codecov/codecov-action@v1
       with:
@@ -55,5 +55,5 @@ jobs:
         - name: Upload results as an artifact
           uses: actions/upload-artifact@master
           with:
-            name: report
+            name: LightHouse report
             path: './report'
