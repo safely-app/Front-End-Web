@@ -80,7 +80,7 @@ export function loginUser(email: string, username: string, password: string) {
         dispatch(request());
         try {
             return User.login(
-                    username,
+                    email,
                     password
                 ).then(response => {
                     dispatch(authenticationSuccess(response.data));
