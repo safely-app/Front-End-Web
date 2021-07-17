@@ -137,12 +137,16 @@ const UserMonitor: React.FC = () => {
     const createNewUser = (user: IUser) => {
         try {
             User.register(user).then(response => {
-                log.log(response);
-                addUser(user);
-                saveUserModification({
+                const createdUser = {
                     ...user,
-                    id: response.data._id
-                });
+                    id: response.data._id,
+                    password: undefined,
+                    confirmedPassword: undefined
+                };
+
+                log.log(response);
+                addUser(createdUser);
+                saveUserModification(createdUser);
             }).catch(error => {
                 log.error(error);
                 notifyError(error);
@@ -213,7 +217,7 @@ const UserMonitor: React.FC = () => {
                 user={newUser}
                 setUser={setNewUser}
                 buttons={[
-                    <Button key="create-id" text="Créer un nouvel utilisateur" onClick={() => {
+                    <Button key="create-id" text="Créer un utilisateur" onClick={() => {
                         createNewUser(newUser);
                         setShowModal(false);
                         setNewUser({
@@ -243,6 +247,7 @@ const UserMonitor: React.FC = () => {
                     />
                 }
             />
+            <ToastContainer />
         </div>
     );
 };
