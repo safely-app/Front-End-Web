@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-export const baseURL = "https://api.safely-app.fr";
-
-const createHttpConfigWithAuthorization = (token: string) => axios.create({
+const createHttpConfigWithAuthorization = (baseURL: string, token: string) => axios.create({
     baseURL: baseURL,
     headers: {
         "Content-type": "application/json",
@@ -10,13 +8,13 @@ const createHttpConfigWithAuthorization = (token: string) => axios.create({
     }
 });
 
-const createHttpConfigWithoutAuthorization = () => axios.create({
+const createHttpConfigWithoutAuthorization = (baseURL: string) => axios.create({
     baseURL: baseURL,
     headers: {
         "Content-type": "application/json"
     }
 });
 
-export const createHttpConfig = (token?: string) => (token !== undefined)
-    ? createHttpConfigWithAuthorization(token)
-    : createHttpConfigWithoutAuthorization();
+export const createHttpConfig = (baseURL: string, token?: string) => (token !== undefined)
+    ? createHttpConfigWithAuthorization(baseURL, token)
+    : createHttpConfigWithoutAuthorization(baseURL);

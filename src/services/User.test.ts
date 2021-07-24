@@ -1,7 +1,8 @@
 import IUser from '../components/interfaces/IUser';
-import { baseURL } from '../http-common';
 import { User } from './index';
 import nock from 'nock';
+
+const baseURL = 'https://api.safely-app.fr';
 
 it('register new user', async () => {
     const scopeRegister = nock(baseURL)
