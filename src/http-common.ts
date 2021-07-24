@@ -15,6 +15,7 @@ const createHttpConfigWithoutAuthorization = (baseURL: string) => axios.create({
     }
 });
 
-export const createHttpConfig = (baseURL: string, token?: string) => (token !== undefined)
-    ? createHttpConfigWithAuthorization(baseURL, token)
-    : createHttpConfigWithoutAuthorization(baseURL);
+export const createHttpConfig = (baseURL: string, token?: string) =>
+    (token !== undefined && token !== "")
+        ? createHttpConfigWithAuthorization(baseURL, token)
+        : createHttpConfigWithoutAuthorization(baseURL);
