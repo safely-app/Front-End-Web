@@ -161,6 +161,7 @@ const UserMonitor: React.FC = () => {
             User.update(user.id, user, userCredientials.token)
                 .then(response => {
                     log.log(response);
+                    setUser(focusUser as IUser);
                     setFocusUser(undefined);
                     setNewUser({
                         id: "",
@@ -238,7 +239,7 @@ const UserMonitor: React.FC = () => {
                     <UserInfoForm
                         shown={!showModal}
                         user={item}
-                        setUser={setUser}
+                        setUser={setFocusUser}
                         buttons={[
                             <Button key="save-id" text="Sauvegarder" onClick={() => saveUserModification(item)} />,
                             <Button key="stop-id" text="Annuler" onClick={() => setFocusUser(undefined)} />,
