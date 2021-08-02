@@ -8,6 +8,7 @@ interface ITextInputProps {
     value: string;
     setValue: (value: string) => void;
     readonly?: boolean;
+    width?: string;
 }
 
 const TextInput: React.FC<ITextInputProps> = ({
@@ -16,7 +17,8 @@ const TextInput: React.FC<ITextInputProps> = ({
     label,
     value,
     setValue,
-    readonly
+    readonly,
+    width
 }) => {
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -32,6 +34,7 @@ const TextInput: React.FC<ITextInputProps> = ({
                 placeholder={label}
                 onChange={handleInput}
                 readOnly={readonly !== undefined ? readonly : false}
+                style={{ width: width !== undefined ? width : "60%" }}
             />
         </div>
     );
