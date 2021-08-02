@@ -13,11 +13,6 @@ const SearchBar: React.FC<ISearchBarProps> = ({
     value,
     setValue
 }) => {
-
-    const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setValue(e.target.value);
-    };
-
     return <TextInput
         type="text"
         role="search-bar"
