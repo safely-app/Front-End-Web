@@ -9,7 +9,6 @@ import {
 } from '../common';
 import { AppHeader } from '../Header/Header';
 import IUser from '../interfaces/IUser';
-import '../Profile/Profile.css';
 import './Monitor.css';
 import log from 'loglevel';
 import {

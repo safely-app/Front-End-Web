@@ -7,7 +7,7 @@ import {
     Monitor,
     Safeplace,
     SignOut,
-    Profile,
+    UserProfile,
     ResetPassword
 } from './components';
 import reportWebVitals from './reportWebVitals';
@@ -23,7 +23,7 @@ const routes = [
     { path: '/logout', exact: true, protected: false, render: <SignOut /> },
     { path: '/admin', exact: true, protected: true, render: <Monitor /> },
     { path: '/safeplace', exact: true, protected: true, render: <Safeplace /> },
-    { path: '/profile', exact: true, protected: true, render: <Profile /> },
+    { path: '/profile', exact: true, protected: true, render: <UserProfile /> },
     { path: '/reset', exact: false, protected: false, render: <ResetPassword /> }
 ];
 

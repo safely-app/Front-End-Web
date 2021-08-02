@@ -1,6 +1,7 @@
 import React from 'react';
 import { AppHeader } from "../Header/Header";
 import { ToastContainer } from 'react-toastify';
+import './index.css';
 
 interface IProfileProps {
     elements: JSX.Element[];

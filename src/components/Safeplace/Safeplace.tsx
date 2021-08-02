@@ -4,7 +4,6 @@ import { RootState } from '../../redux';
 import { Safeplaces } from '../../services';
 import { AppHeader } from '../Header/Header';
 import ISafeplace from '../interfaces/ISafeplace';
-import '../Profile/Profile.css';
 import './Safeplace.css';
 import log from 'loglevel';
 

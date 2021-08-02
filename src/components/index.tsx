@@ -5,7 +5,7 @@ import {
     ResetPassword
 } from './Authentication/Authentication';
 import Monitor from './Monitor/Monitor';
-import Profile from './Profile/Profile';
+import UserProfile from './UserProfile/UserProfile';
 import Safeplace from './Safeplace/Safeplace';
 
 export {
@@ -15,5 +15,5 @@ export {
     ResetPassword,
     Monitor,
     Safeplace,
-    Profile
+    UserProfile
 };
