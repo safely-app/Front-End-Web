@@ -7,12 +7,14 @@ import {
 } from './utils';
 
 class User {
+    private url: string = "https://api.safely-app.fr";
+
     getAll(token: string) {
-        return createHttpConfig(token).get("/user");
+        return createHttpConfig(this.url, token).get("/user");
     }
 
     get(id: string, token: string) {
-        return createHttpConfig(token).get(`/user/${id}`);
+        return createHttpConfig(this.url, token).get(`/user/${id}`);
     }
 
     update(id: string, data: IUser, token: string) {
@@ -20,11 +22,11 @@ class User {
 
         if (validateUser.isValid === false)
             throw new Error(validateUser.error);
-        return createHttpConfig(token).put(`/user/${id}`, data);
+        return createHttpConfig(this.url, token).put(`/user/${id}`, data);
     }
 
     delete(id: string, token: string) {
-        return createHttpConfig(token).delete(`/user/${id}`);
+        return createHttpConfig(this.url, token).delete(`/user/${id}`);
     }
 
     register(data: IUser) {
@@ -34,39 +36,39 @@ class User {
             throw new Error(validateUser.error);
         if (data.password !== data.confirmedPassword)
             throw new Error("Mot de passe invalide");
-        return createHttpConfig().post("/register", {
+        return createHttpConfig(this.url).post("/register", {
             username: data.username,
             email: data.email,
             password: data.password,
         });
     }
 
-    login(data: IUser) {
-        if (!isEmailValid(data.email))
+    login(email: string, password: string) {
+        if (!isEmailValid(email))
             throw new Error("Email invalide");
-        if (data.password === undefined || !isPasswordValid(data.password))
+        if (password === undefined || !isPasswordValid(password))
             throw new Error("Mot de passe invalide");
-        return createHttpConfig().post("/login", {
-            email: data.email,
-            password: data.password
+        return createHttpConfig(this.url).post("/login", {
+            email: email,
+            password: password
         });
     }
 
-    forgotPassword(data: IUser) {
-        if (!isEmailValid(data.email))
+    forgotPassword(email: string) {
+        if (!isEmailValid(email))
             throw new Error("Email invalide");
-        return createHttpConfig().post("/user/forgotPassword", {
-            email: data.email
+        return createHttpConfig(this.url).post("/user/forgotPassword", {
+            email: email
         });
     }
 
-    changePassword(id: string, token: string, data: IUser) {
-        if (data.password === undefined || data.password !== data.confirmedPassword || !isPasswordValid(data.password))
+    changePassword(id: string, token: string, password: string, confirmedPassword: string) {
+        if (password === undefined || password !== confirmedPassword || !isPasswordValid(password))
             throw new Error("Mot de passe invalide");
-        return createHttpConfig().post("/user/changePassword", {
+        return createHttpConfig(this.url).post("/user/changePassword", {
             userId: id,
             token: token,
-            password: data.password
+            password: password
         });
     }
 }

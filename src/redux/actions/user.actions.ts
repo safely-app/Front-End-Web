@@ -9,9 +9,6 @@ import {
     UserActionTypes
 } from '../types';
 import log from 'loglevel';
-import {
-    createNewUser
-} from '../../components/interfaces/IUser';
 import { notifyError } from '../../components/utils';
 
 const authenticationSuccess: ActionCreator<UserActionTypes> = (
@@ -39,7 +36,7 @@ export function getUserInfo(id: string, token: string) {
             .then(response => {
                 dispatch(getUserInfoSuccess(response.data));
             }).catch(error => {
-                dispatch(failure(`Getting user failed: ${error.response.data}`));
+                dispatch(failure(`Getting user failed: ${error.response?.data}`));
             });
     };
 }
@@ -61,7 +58,8 @@ export function registerUser(email: string, username: string, password: string, 
         dispatch(request());
         try {
             return User.register({
-                    ...createNewUser(),
+                    id: "",
+                    role: "",
                     email: email,
                     username: username,
                     password: password,
@@ -81,12 +79,10 @@ export function loginUser(email: string, username: string, password: string) {
     return dispatch => {
         dispatch(request());
         try {
-            return User.login({
-                    ...createNewUser(),
-                    email: email,
-                    username: username,
-                    password: password
-                }).then(response => {
+            return User.login(
+                    email,
+                    password
+                ).then(response => {
                     dispatch(authenticationSuccess(response.data));
                 }).catch(error => {
                     const errorResponse = error.response;

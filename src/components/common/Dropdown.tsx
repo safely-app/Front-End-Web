@@ -18,7 +18,11 @@ const Dropdown: React.FC<IDropdownProps> = ({
 
     return (
         <div>
-            <select onChange={handleInput} defaultValue={defaultValue}>
+            <select
+                onChange={handleInput}
+                defaultValue={defaultValue}
+                className="select"
+            >
                 {values.map((value, index) => {
                     return (
                         <option key={index} value={value}>

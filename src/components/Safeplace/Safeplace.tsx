@@ -20,13 +20,13 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({ sa
         updateIsListView();
     };
 
-    const displayTimetable = (timetable) => {
-        let days = ["Lundi", "Mardi","Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+    const displayTimetable = (timetable): (string | null)[] => {
+        const days = ["Lundi", "Mardi","Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
         return days.map((day, index) => {
             if (timetable[index])
                 return " " + day + ": " + timetable[index] + " |";
             return null;
-          });
+        });
     };
 
     return (
@@ -64,16 +64,16 @@ const Safeplace: React.FC = () => {
                     id: safeplace._id,
                     name: safeplace.name,
                     description: safeplace.description,
-                    city: safeplace.city ,
-                    address: safeplace.address ,
-                    grade: safeplace.grade ,
+                    city: safeplace.city,
+                    address: safeplace.address,
+                    grade: safeplace.grade,
                     type: safeplace.type,
                     dayTimetable: safeplace.dayTimetable
                 };
             });
 
             setSafeplaces(gotSafeplaces);
-            console.log(gotSafeplaces);
+            log.log(gotSafeplaces);
         }).catch(error => {
             log.error(error);
         });
@@ -83,7 +83,7 @@ const Safeplace: React.FC = () => {
         <div className="Safeplace">
             <AppHeader />
             <ul className="Safeplace-list">
-                {console.log(safeplaces)}
+                {log.log(safeplaces)}
                 {safeplaces.map(safeplace =>
                     <SafeplaceInfoListElement
                         safeplace={safeplace}

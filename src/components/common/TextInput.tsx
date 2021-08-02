@@ -32,6 +32,7 @@ const TextInput: React.FC<ITextInputProps> = ({
                 placeholder={label}
                 onChange={handleInput}
                 readOnly={readonly !== undefined ? readonly : false}
+                className="input"
             />
         </div>
     );

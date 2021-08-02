@@ -9,7 +9,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Authentication.css';
 import log from 'loglevel';
-import { createNewUser } from '../interfaces/IUser';
 
 enum View {
     SIGNIN,
@@ -41,7 +40,7 @@ const SignInView: React.FC<IAuthProps> = ({
             <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <Button text="Se connecter" onClick={handleClick} />
             <Button text="Pas encore inscrit ?" onClick={() => setView(View.SIGNUP)} />
-            <Button text="Mot de passe oublié ?" onClick={() => setView(View.FORGOT)} type="link" />
+            <Button text="Mot de passe oublié ?" onClick={() => setView(View.FORGOT)} styleType="link" width="fit-content" />
             <ToastContainer />
         </div>
     );
@@ -80,14 +79,12 @@ const ForgottenPassword: React.FC = () => {
 
     const handleClick = () => {
         try {
-            User.forgotPassword({
-                ...createNewUser(),
-                email: email
-            }).then(response => {
-                log.log(response);
-            }).catch(error => {
-                log.error(error);
-            });
+            User.forgotPassword(email)
+                .then(response => {
+                    log.log(response);
+                }).catch(error => {
+                    log.error(error);
+                });
         } catch (e) {
             notifyError((e as Error).message);
         }
@@ -165,11 +162,12 @@ export const ResetPassword: React.FC = () => {
 
     const handleClick = () => {
         try {
-            User.changePassword(resetProps.id, resetProps.token, {
-                ...createNewUser(),
-                password: password,
-                confirmedPassword: confirmedPassword
-            }).then(response => {
+            User.changePassword(
+                resetProps.id,
+                resetProps.token,
+                password,
+                confirmedPassword
+            ).then(response => {
                 log.log(response);
                 setRedirect(true);
             }).catch(error => {
