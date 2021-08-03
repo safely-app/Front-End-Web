@@ -6,9 +6,9 @@ input {
 
     margin-top: 1em;
     width: 60%;
-    text-indent: 2%;
-    padding-top: 1%;
-    padding-bottom: 1%;
+    text-indent: .5em;
+    padding-top: .5em;
+    padding-bottom: .5em;
     font-size: large;
     border: 1px solid #bbb;
     border-radius: 0.25em;

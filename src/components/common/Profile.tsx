@@ -14,7 +14,11 @@ const Profile: React.FC<IProfileProps> = ({
         <div className="Profile-container">
             <AppHeader />
             <div className="Profile">
-                {elements.map(element => element)}
+                {elements.map((element, index) =>
+                    <li key={index} style={{ listStyleType: "none" }}>
+                        {element}
+                    </li>
+                )}
                 <ToastContainer />
             </div>
         </div>
