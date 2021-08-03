@@ -18,6 +18,8 @@ test('renders trader profile text fields', () => {
         </Provider>
     );
 
+    fireEvent.click(screen.getByText("Afficher les informations optionelles"));
+
     expect(screen.getByRole("companyName")).toBeInTheDocument();
     expect(screen.getByRole("companyAddress")).toBeInTheDocument();
     expect(screen.getByRole("companyAddress2")).toBeInTheDocument();
