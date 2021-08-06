@@ -90,7 +90,7 @@ const Profile: React.FC = () => {
                     ? <Button text="Sauvegarder" onClick={saveUserModification} />
                     : <Button text="Modifier" onClick={updateIsUpdateView} /> }
                 {isUpdateView && <Button text="Annuler" onClick={updateIsUpdateView} /> }
-                <Button text="Supprimer" onClick={deleteUser} type="warning" />
+                <Button text="Supprimer" onClick={deleteUser} styleType="warning" />
                 {isUserDeleted && <Redirect to="/" />}
                 <ToastContainer />
             </div>

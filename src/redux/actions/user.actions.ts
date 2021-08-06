@@ -36,7 +36,7 @@ export function getUserInfo(id: string, token: string) {
             .then(response => {
                 dispatch(getUserInfoSuccess(response.data));
             }).catch(error => {
-                dispatch(failure(`Getting user failed: ${error.response.data}`));
+                dispatch(failure(`Getting user failed: ${error.response?.data}`));
             });
     };
 }

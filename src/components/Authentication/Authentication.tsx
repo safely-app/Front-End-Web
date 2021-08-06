@@ -40,7 +40,7 @@ const SignInView: React.FC<IAuthProps> = ({
             <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <Button text="Se connecter" onClick={handleClick} />
             <Button text="Pas encore inscrit ?" onClick={() => setView(View.SIGNUP)} />
-            <Button text="Mot de passe oublié ?" onClick={() => setView(View.FORGOT)} type="link" />
+            <Button text="Mot de passe oublié ?" onClick={() => setView(View.FORGOT)} styleType="link" width="fit-content" />
             <ToastContainer />
         </div>
     );

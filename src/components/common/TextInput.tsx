@@ -35,6 +35,7 @@ const TextInput: React.FC<ITextInputProps> = ({
                 onChange={handleInput}
                 readOnly={readonly !== undefined ? readonly : false}
                 style={{ width: width !== undefined ? width : "60%" }}
+                className="input"
             />
         </div>
     );
