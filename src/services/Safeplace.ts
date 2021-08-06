@@ -2,7 +2,7 @@ import IUser from '../components/interfaces/IUser';
 import { createHttpConfig } from '../http-common';
 
 class Safeplace {
-    private url: string = "http://api.safely-app.fr/safeplace";
+    private url: string = "https://api.safely-app.fr/safeplace";
 
     getAll(token: string) {
         return createHttpConfig(this.url, token).get("/");
