@@ -7,7 +7,7 @@ import {
 } from './utils';
 
 class User {
-    private url: string = "https://api.safely-app.fr";
+    private url: string = process.env.REACT_APP_SERVER_URL as string;
 
     getAll(token: string) {
         return createHttpConfig(this.url, token).get("/user");
