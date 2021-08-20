@@ -30,6 +30,7 @@ const Button: React.FC<IButtonProps> = ({
             <button
                 className={styleType !== undefined ? styles[styleType] : "btn"}
                 style={{ width: width !== undefined ? width : "60%" }}
+                data-testid={`${text}-button-id`}
                 onClick={handleClick}
             >
                 {text}
