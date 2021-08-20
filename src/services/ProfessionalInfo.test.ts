@@ -60,6 +60,9 @@ it('create new professional', async () => {
 });
 
 it('update professional', async () => {
+    const optionsScope = nock(baseURL)
+        .options('/professionalinfo/1')
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
     const scope = nock(baseURL)
         .put('/professionalinfo/1')
         .reply(200, {
@@ -86,6 +89,9 @@ it('update professional', async () => {
 });
 
 it('delete professional', async () => {
+    const optionsScope = nock(baseURL)
+        .options('/professionalinfo/1')
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
     const scope = nock(baseURL)
         .delete('/professionalinfo/1')
         .reply(200, {
