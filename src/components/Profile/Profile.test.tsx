@@ -3,10 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { store } from '../../redux';
 import Profile from './Profile';
-import nock from 'nock';
-
-const delay = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
 
 test('renders profile', () => {
     render(
