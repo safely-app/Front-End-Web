@@ -18,12 +18,10 @@ enum View {
 
 interface IAuthProps {
     setView: (value: View) => void;
-    notifyError: (msg: string) => void;
 }
 
 const SignInView: React.FC<IAuthProps> = ({
-    setView,
-    notifyError
+    setView
 }) => {
     const dispatch = useDispatch();
     const [email, setEmail] = useState("");
@@ -47,8 +45,7 @@ const SignInView: React.FC<IAuthProps> = ({
 }
 
 const SignUpView: React.FC<IAuthProps> = ({
-    setView,
-    notifyError
+    setView
 }) => {
     const dispatch = useDispatch();
     const [email, setEmail] = useState("");
@@ -108,12 +105,12 @@ export const Authentication: React.FC = () => {
     const selectView = (): JSX.Element => {
         switch (view) {
             case View.SIGNUP:
-                return <SignUpView notifyError={notifyError} setView={setView} />;
+                return <SignUpView setView={setView} />;
 
             case View.FORGOT:
                 return <ForgottenPassword />
             default:
-                return <SignInView notifyError={notifyError} setView={setView} />;
+                return <SignInView setView={setView} />;
         }
     };
 

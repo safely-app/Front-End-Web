@@ -1,30 +1,38 @@
-import React, { useState } from 'react';
-import { Profile, TextInput, Button } from '../common';
+import React, { useEffect, useState } from 'react';
+import { Profile, TextInput, Button, CommonLoader } from '../common';
 import IProfessional from '../interfaces/IProfessional';
+import { ProfessionalInfo } from '../../services';
+import { AppHeader } from '../Header/Header';
 import { Redirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux';
+import { notifyError } from '../utils';
+import log from 'loglevel';
 import './Profiles.css';
 
-const TraderProfile: React.FC = () => {
-    const [isDeleted, setIsDeleted] = useState(false);
-    const [isUpdateView, setIsUpdateView] = useState(false);
-    const [isOptionalHidden, setIsOptionalHidden] = useState(true);
-    const [professional, setProfessional] = useState<IProfessional>({
-        userId: "",
-        companyName: "",
-        companyAddress: "",
-        companyAddress2: "",
-        billingAddress: "",
-        clientNumberTVA: "",
-        personalPhone: "",
-        companyPhone: "",
-        RCS: "",
-        registrationCity: "",
-        SIREN: "",
-        SIRET: "",
-        artisanNumber: "",
-        type: ""
-    });
+enum InfoSearcher {
+    SEARCHING,
+    NOTFOUND,
+    FOUND
+};
 
+interface ITraderProfileFieldsProps {
+    professional: IProfessional;
+    isOptionalHidden: boolean;
+    isUpdateView: boolean;
+    setProfessional: (value: IProfessional) => void;
+    setIsOptionalHidden: (value: boolean) => void;
+    additionalElements: JSX.Element[];
+}
+
+const TraderProfileFields: React.FC<ITraderProfileFieldsProps> = ({
+    professional,
+    isOptionalHidden,
+    isUpdateView,
+    setProfessional,
+    setIsOptionalHidden,
+    additionalElements
+}) => {
     const setCompanyName = (value: string) => {
         setProfessional({
             ...professional,
@@ -116,23 +124,6 @@ const TraderProfile: React.FC = () => {
         });
     };
 
-    const saveModification = () => {
-        setIsUpdateView(false);
-    };
-
-    const resetModification = () => {
-        const copyProfessional = professional;
-
-        setIsUpdateView(false);
-        Object.keys(copyProfessional)
-            .forEach(key => copyProfessional[key] = "");
-        setProfessional(copyProfessional);
-    };
-
-    const deleteProfessional = () => {
-        setIsDeleted(true);
-    };
-
     return (
         <Profile elements={[
             <TextInput type="text" role="companyName" label="Nom de l'entreprise" value={professional.companyName} setValue={setCompanyName} readonly={!isUpdateView} />,
@@ -157,11 +148,134 @@ const TraderProfile: React.FC = () => {
                 </div>
                 <TextInput type="text" role="artisanNumber" label="Numéro d'artisan" value={professional.artisanNumber as string} setValue={setArtisanNumber} readonly={!isUpdateView} />
             </div>,
-            isUpdateView ? <Button text="Sauvegarder" onClick={saveModification} /> : <Button text="Modifier" onClick={() => setIsUpdateView(true)} />,
-            isUpdateView ? <Button text="Annuler" onClick={resetModification} /> : <div />,
-            <Button text="Supprimer" onClick={deleteProfessional} type="warning" />,
-            isDeleted ? <Redirect to="/" /> : <div />
+            ...additionalElements
         ]} />
+    );
+};
+
+const TraderProfile: React.FC = () => {
+    const [isDeleted, setIsDeleted] = useState(false);
+    const [isUpdateView, setIsUpdateView] = useState(false);
+    const [isOptionalHidden, setIsOptionalHidden] = useState(true);
+    const [searcherState, setSearcherState] = useState(InfoSearcher.SEARCHING);
+    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const [professional, setProfessional] = useState<IProfessional>({
+        userId: "",
+        companyName: "",
+        companyAddress: "",
+        companyAddress2: "",
+        billingAddress: "",
+        clientNumberTVA: "",
+        personalPhone: "",
+        companyPhone: "",
+        RCS: "",
+        registrationCity: "",
+        SIREN: "",
+        SIRET: "",
+        artisanNumber: "",
+        type: ""
+    });
+
+    const createTraderAccount = () => {
+        try {
+            ProfessionalInfo.create(
+                professional,
+                userCredientials._id
+            ).then(response => {
+                setSearcherState(InfoSearcher.FOUND);
+                log.log(response);
+            }).catch(err => log.error(err));
+        } catch (e) {
+            notifyError((e as Error).message);
+            log.error(e);
+        }
+    };
+
+    const saveModification = () => {
+        ProfessionalInfo.update(
+            userCredientials._id,
+            professional,
+            userCredientials.token
+        ).then(response => {
+            setIsUpdateView(false);
+            log.log(response);
+        }).catch(err => log.error(err));
+    };
+
+    const resetModification = () => {
+        ProfessionalInfo.get(
+            userCredientials._id,
+            userCredientials.token
+        ).then(response => {
+            setProfessional(response.data);
+            setIsUpdateView(false);
+            log.log(response);
+        }).catch(err => log.error(err));
+    };
+
+    const deleteProfessional = () => {
+        ProfessionalInfo.delete(
+            userCredientials._id,
+            userCredientials.token
+        ).then(response => {
+            setIsDeleted(true);
+            log.log(response);
+        }).catch(err => log.error(err));
+    };
+
+    useEffect(() => {
+        ProfessionalInfo.get(
+            userCredientials._id,
+            userCredientials.token
+        ).then(response => {
+            setSearcherState(InfoSearcher.FOUND);
+            setProfessional(response.data);
+            log.log(response);
+        }).catch(err => {
+            setSearcherState(InfoSearcher.NOTFOUND);
+            log.error(err);
+        });
+    }, [userCredientials]);
+
+    const getView = (searcherState: InfoSearcher): JSX.Element => {
+        switch (searcherState) {
+            case InfoSearcher.SEARCHING:
+                return <CommonLoader height={80} width={80} color='#a19b96' />;
+            case InfoSearcher.NOTFOUND:
+                return <TraderProfileFields
+                    professional={professional}
+                    isOptionalHidden={isOptionalHidden}
+                    isUpdateView={true}
+                    setProfessional={setProfessional}
+                    setIsOptionalHidden={setIsOptionalHidden}
+                    additionalElements={[
+                        <Button text="Créer un compte commerçant" onClick={createTraderAccount} />
+                    ]}
+                />;
+            case InfoSearcher.FOUND:
+                return <TraderProfileFields
+                    professional={professional}
+                    isOptionalHidden={isOptionalHidden}
+                    isUpdateView={isUpdateView}
+                    setProfessional={setProfessional}
+                    setIsOptionalHidden={setIsOptionalHidden}
+                    additionalElements={[
+                        isUpdateView
+                            ? <Button text="Sauvegarder" onClick={saveModification} />
+                            : <Button text="Modifier" onClick={() => setIsUpdateView(true)} />,
+                        isUpdateView ? <Button text="Annuler" onClick={resetModification} /> : <div />,
+                        <Button text="Supprimer" onClick={deleteProfessional} type="warning" />,
+                        isDeleted ? <Redirect to="/" /> : <div />
+                    ]}
+                />;
+        }
+    };
+
+    return (
+        <div className="Profile-container">
+            <AppHeader />
+            {getView(searcherState)}
+        </div>
     );
 }
 

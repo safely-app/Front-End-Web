@@ -96,3 +96,16 @@ select {
     text-align: center;
     width: 92%;
 }
+
+.Loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Loader-main {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

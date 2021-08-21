@@ -22,11 +22,11 @@ export const isPhoneNumberValid = (phoneNumber: string): boolean => {
 };
 
 export const isSirenValid = (siren: string | undefined): boolean => {
-    return siren === undefined || (!!siren && siren.length === 9);
+    return siren === undefined || siren === '' || (!!siren && siren.length === 9);
 };
 
 export const isSiretValid = (siret: string | undefined): boolean => {
-    return siret === undefined || (!!siret && siret.length === 14);
+    return siret === undefined || siret === '' || (!!siret && siret.length === 14);
 };
 
 interface IValidationError {
