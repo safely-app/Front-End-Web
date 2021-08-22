@@ -2,7 +2,7 @@ import IUser from '../components/interfaces/IUser';
 import { createHttpConfig } from '../http-common';
 
 class Safeplace {
-    private url: string = "http://api.safely-app.fr:8081";
+    private url: string = process.env.REACT_APP_SERVER_URL as string;
 
     getAll(token: string) {
         return createHttpConfig(this.url, token).get("/");
