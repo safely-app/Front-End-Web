@@ -18,15 +18,15 @@ export const isClientNumberTVA = (clientNumberTVA: string): boolean => {
 };
 
 export const isPhoneNumberValid = (phoneNumber: string): boolean => {
-    return !!phoneNumber && phoneNumber.split('').filter(c => c !== ' ').join('').match(/(^\d{10}$)|(\+\d{11})/g) !== null;
+    return !!phoneNumber && phoneNumber.split('').filter(c => c !== ' ').join('').match(/(^\d{10}$)|(^\+\d{11}$)/g) !== null;
 };
 
 export const isSirenValid = (siren: string | undefined): boolean => {
-    return siren === undefined || siren === '' || (!!siren && siren.length === 9);
+    return siren === undefined || siren === '' || (!!siren && siren.match(/^\d{9}$/g) !== null);
 };
 
 export const isSiretValid = (siret: string | undefined): boolean => {
-    return siret === undefined || siret === '' || (!!siret && siret.length === 14);
+    return siret === undefined || siret === '' || (!!siret && siret.match(/^\d{14}$/g) !== null);
 };
 
 interface IValidationError {
