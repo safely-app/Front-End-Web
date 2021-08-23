@@ -13,6 +13,7 @@ test('renders profile', () => {
 
     expect(screen.getByRole('username')).toBeInTheDocument();
     expect(screen.getByRole('email')).toBeInTheDocument();
+    expect(screen.getAllByRole("button").length).toEqual(2);
 });
 
 test('renders profile update view', () => {
