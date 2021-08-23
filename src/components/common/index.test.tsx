@@ -1,7 +1,10 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { Button } from './index';
-import SearchBar from './SearchBar';
+import {
+    Button,
+    SearchBar,
+    Profile
+} from './index';
 
 test('simulate click', () => {
     const onClick = jest.fn();
@@ -26,4 +29,14 @@ test('test search bar', () => {
     });
 
     expect(setValue).toHaveBeenCalled();
+});
+
+test('test profile component', () => {
+    render(
+        <Profile elements={[
+            <p>Test text</p>
+        ]} />
+    );
+
+    expect(screen.getByText('Test text')).toBeInTheDocument();
 });
