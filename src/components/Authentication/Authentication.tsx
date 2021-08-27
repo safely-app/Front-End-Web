@@ -109,9 +109,8 @@ export const Authentication: React.FC = () => {
         switch (view) {
             case View.SIGNUP:
                 return <SignUpView notifyError={notifyError} setView={setView} />;
-
             case View.FORGOT:
-                return <ForgottenPassword />
+                return <ForgottenPassword />;
             default:
                 return <SignInView notifyError={notifyError} setView={setView} />;
         }
