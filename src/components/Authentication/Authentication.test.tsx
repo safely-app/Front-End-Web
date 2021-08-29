@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import {
     Authentication,
     ResetPassword,
@@ -8,7 +8,6 @@ import {
 import { Provider } from 'react-redux';
 import { store } from '../../redux';
 import nock from 'nock';
-import { act } from 'react-dom/test-utils';
 import { BrowserRouter } from 'react-router-dom';
 
 const testDelay = (ms: number): Promise<void> =>
