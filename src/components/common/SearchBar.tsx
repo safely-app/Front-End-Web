@@ -19,7 +19,7 @@ const SearchBar: React.FC<ISearchBarProps> = ({
         label={label}
         value={value}
         setValue={setValue}
-        width="98%"
+        width="100%"
     />;
 }
 
