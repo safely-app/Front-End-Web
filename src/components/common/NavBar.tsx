@@ -18,7 +18,11 @@ const NavBar: React.FC<INavBarProps> = ({
             <ul>
                 {elements.map((element, index) =>
                     <li key={index}>
-                        <button className='navbar-button' onClick={element.onClick}>
+                        <button
+                            data-testid={`${element.text}-navbar-button-id`}
+                            className='navbar-button'
+                            onClick={element.onClick}
+                        >
                             {element.text}
                         </button>
                     </li>
