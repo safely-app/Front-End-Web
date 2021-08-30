@@ -56,9 +56,9 @@ test('test search bar', () => {
 
 test('test list', () => {
     const items = [
-        <p>1</p>,
-        <p>2</p>,
-        <p>3</p>
+        <p key='1'>1</p>,
+        <p key='2'>2</p>,
+        <p key='3'>3</p>
     ];
 
     render(
