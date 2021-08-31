@@ -160,6 +160,7 @@ const TraderProfile: React.FC = () => {
     const [searcherState, setSearcherState] = useState(InfoSearcher.SEARCHING);
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [professional, setProfessional] = useState<IProfessional>({
+        id: userCredientials._id,
         userId: "",
         companyName: "",
         companyAddress: "",

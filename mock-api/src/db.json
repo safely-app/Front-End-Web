@@ -29,7 +29,6 @@
       "dayTimetable": null,
       "grade": 4,
       "type": "market"
-
     },
     {
       "id": 2,
@@ -44,7 +43,25 @@
       "dayTimetable": null,
       "grade": 4,
       "type": "market"
-
+    }
+  ],
+  "professionalinfo": [
+    {
+      "userId": "60e98e5394d77061eef206d1",
+      "companyName": "Tony Hawk Pro Skater 3",
+      "companyAddress": "18 Rue de la Merguez Azzoulay",
+      "companyAddress2": "67000 Strasbourg",
+      "billingAddress": "18 Rue de la Merguez Azzoulay 67000 Strasbourg",
+      "clientNumberTVA": "1234567898765",
+      "personalPhone": "0643444546",
+      "companyPhone": "0312131415",
+      "RCS": "",
+      "registrationCity": "",
+      "SIREN": "",
+      "SIRET": "",
+      "artisanNumber": "",
+      "type": "Distributeur de lunettes à verres fumées",
+      "id": "60e98e5394d77061eef206d1"
     }
   ]
 }

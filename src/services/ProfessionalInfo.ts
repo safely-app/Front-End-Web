@@ -4,7 +4,8 @@ import { isProfessionalValid } from './utils';
 
 class ProfessionalInfo {
 
-    private readonly baseURL = 'https://api.safely-app.fr';
+    // private readonly baseURL = 'https://api.safely-app.fr';
+    private readonly baseURL = 'http://localhost:8080';
 
     getAll(token: string) {
         return createHttpConfig(this.baseURL, token).get("/professionalinfo");

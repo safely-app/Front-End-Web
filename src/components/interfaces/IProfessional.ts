@@ -13,4 +13,5 @@ export default interface IProfessional {
     SIRET?: string;
     artisanNumber?: string;
     type: string;
+    id?: string;
 }
