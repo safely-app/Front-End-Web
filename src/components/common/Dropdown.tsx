@@ -20,7 +20,7 @@ const Dropdown: React.FC<IDropdownProps> = ({
 
     return (
         <span className="dropdown-container" style={{ width: width !== undefined ? width : '60%' }}>
-            <select onChange={handleInput} defaultValue={defaultValue}>
+            <select data-testid={`${values[0]}-dropdown-id`} onChange={handleInput} defaultValue={defaultValue}>
                 {values.map((value, index) => {
                     return (
                         <option key={index} value={value}>

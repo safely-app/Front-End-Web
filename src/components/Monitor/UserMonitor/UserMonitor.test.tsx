@@ -36,7 +36,7 @@ it('ensure that create new user is working', () => {
 
     const username = screen.getByRole('username');
     const email = screen.getByRole('email');
-    const role = screen.getByRole('combobox');
+    const role = screen.getByTestId('user-dropdown-id');
     const abortButton = screen.getByText(/Annuler/i);
 
     expect(username).toBeInTheDocument();
