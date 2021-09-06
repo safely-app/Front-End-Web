@@ -72,7 +72,6 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
                     </div>
                 }
                 {buttons.map(button => button)}
-                <ToastContainer />
             </div>
         }/>
     );

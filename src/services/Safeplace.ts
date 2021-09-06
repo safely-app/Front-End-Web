@@ -1,4 +1,4 @@
-import IUser from '../components/interfaces/IUser';
+import ISafeplace from '../components/interfaces/ISafeplace';
 import { createHttpConfig } from '../http-common';
 
 class Safeplace {
@@ -13,7 +13,7 @@ class Safeplace {
         return createHttpConfig(this.baseURL, token).get(`/safeplace/${id}`);
     }
 
-    update(id: string, data: IUser, token: string) {
+    update(id: string, data: ISafeplace, token: string) {
         return createHttpConfig(this.baseURL, token).put(`/safeplace/${id}`, data);
     }
 
