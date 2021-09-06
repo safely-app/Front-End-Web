@@ -110,7 +110,7 @@ it('ensure that user filtering is working', async () => {
     const userTypeDropdown = screen.getByTestId('all-dropdown-id');
     const userInfoSearchBar = screen.getByRole('search-bar');
 
-    await act(async () => await testDelay(3000));
+    await act(async () => await testDelay(2000));
     expect(userInfoSearchBar).toBeInTheDocument();
     expect(userTypeDropdown).toBeInTheDocument();
 
@@ -124,6 +124,10 @@ it('ensure that user filtering is working', async () => {
 
     expect(screen.getByDisplayValue('benjamin')).toBeInTheDocument();
     expect(screen.getByDisplayValue('user')).toBeInTheDocument();
+
+    await act(async () => await testDelay(2000));
+
+    expect(screen.queryByText('billy@lesinge.com')).toBeNull();
 
     scope.done();
 });
