@@ -13,47 +13,11 @@ import log from 'loglevel';
 import './SafeplaceMonitor.css';
 import { ToastContainer } from 'react-toastify';
 import { notifyError } from '../../utils';
-import { time } from 'console';
-
-export const displayTimetable = (timetable: (string | null)[]): string => {
-    const days = [
-        "Lundi",
-        "Mardi",
-        "Mercredi",
-        "Jeudi",
-        "Vendredi",
-        "Samedi",
-        "Dimanche"
-    ];
-
-    return timetable.map((time, index) => ({ time: time, index: index }))
-        .filter(item => item.time !== null)
-        .map(item => days[item.index] + " : " + item.time)
-        .join(" | ");
-};
-
-export const splitTimetable = (timetable: string): (string | null)[] => {
-    const days = [
-        "Lundi",
-        "Mardi",
-        "Mercredi",
-        "Jeudi",
-        "Vendredi",
-        "Samedi",
-        "Dimanche"
-    ];
-
-    const times = timetable.split(" | ");
-    const result = times.map(time => {
-        for (let index = 0; index < days.length; index++) {
-            if (time.includes(days[index]))
-                return { day: days[index], value: time.substring((days[index] + " : ").length) };
-        }
-    });
-
-    return days.map(day => result.find(item => item?.day === day)?.value)
-        .map(time => time !== undefined ? time : null);
-};
+import {
+    displayTimetable,
+    splitTimetable,
+    displayCoordinates
+} from './utils';
 
 interface ISafeplaceInfoProps {
     safeplace: ISafeplace;
@@ -73,10 +37,6 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
         setSafeplace({ ...safeplace, name: name });
     };
 
-    const setDescription = (description: string) => {
-        setSafeplace({ ...safeplace, description: description });
-    };
-
     const setCity = (city: string) => {
         setSafeplace({ ...safeplace, city: city });
     };
@@ -93,13 +53,19 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
         setSafeplace({ ...safeplace, dayTimetable: splitTimetable(dayTimetable) });
     };
 
+    const setLatitude = (latitude: string) => {
+        setSafeplace({ ...safeplace, coordinate: [ latitude, safeplace.coordinate[1] ] });
+    };
+
+    const setLongitude = (longitude: string) => {
+        setSafeplace({ ...safeplace, coordinate: [ safeplace.coordinate[0], longitude ] });
+    };
+
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
             <div className="Safeplace-Info">
                 <TextInput key={`${safeplace.id}-name`} type="text" role="name"
                     label="Nom de la safeplace" value={safeplace.name} setValue={setName} />
-                <TextInput key={`${safeplace.id}-description`} type="text" role="description"
-                    label="Description" value={safeplace.description} setValue={setDescription} />
                 <TextInput key={`${safeplace.id}-city`} type="text" role="city"
                     label="Ville" value={safeplace.city} setValue={setCity} />
                 <TextInput key={`${safeplace.id}-address`} type="text" role="address"
@@ -108,7 +74,13 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
                     label="Horaires" value={displayTimetable(safeplace.dayTimetable)} setValue={setDayTimetable} />
                 <TextInput key={`${safeplace.id}-type`} type="text" role="type"
                     label="Type" value={safeplace.type} setValue={setType} />
-                {buttons.map(button => button)}
+                <div className="grid-container">
+                    <TextInput key={`${safeplace.id}-coordinate1`} type="text" role="latitude" width="98%"
+                        label="Latitude" value={safeplace.coordinate[0]} setValue={setLatitude} />
+                    <TextInput key={`${safeplace.id}-coordinate2`} type="text" role="longitude" width="98%"
+                        label="Longitude" value={safeplace.coordinate[1]} setValue={setLongitude} />
+                </div>
+                {buttons}
             </div>
         }/>
     );
@@ -125,7 +97,7 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
 }) => {
     const handleClick = () => {
         onClick(safeplace);
-    }
+    };
 
     return (
         <li key={safeplace.id} className="Safeplace-list-element">
@@ -133,11 +105,11 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
                 <ul className="Safeplace-list">
                     <li key={`${safeplace.id}-id`}><b>ID : </b>{safeplace.id}</li>
                     <li key={`${safeplace.id}-name`}><b>Nom : </b>{safeplace.name}</li>
-                    <li key={`${safeplace.id}-description`}><b>Description : </b>{safeplace.description}</li>
                     <li key={`${safeplace.id}-city`}><b>Ville : </b>{safeplace.city}</li>
                     <li key={`${safeplace.id}-address`}><b>Adresse : </b>{safeplace.address}</li>
                     <li key={`${safeplace.id}-timetable`}><b>Horaires : </b>{displayTimetable(safeplace.dayTimetable)}</li>
                     <li key={`${safeplace.id}-type`}><b>Type : </b>{safeplace.type}</li>
+                    <li key={`${safeplace.id}-coordinate`}><b>Coordonnées : </b>{displayCoordinates(safeplace.coordinate)}</li>
                 </ul>
             </button>
         </li>
@@ -145,9 +117,8 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
 }
 
 const SafeplaceMonitor: React.FC = () => {
-    const safeplaceCredientials = useSelector((state: RootState) => state.user.credentials);
+    const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [focusSafeplace, setFocusSafeplace] = useState<ISafeplace | undefined>(undefined);
-    const [showModal, setShowModal] = useState(false);
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
 
     const setSafeplace = (safeplace: ISafeplace) => {
@@ -160,7 +131,7 @@ const SafeplaceMonitor: React.FC = () => {
 
     const saveSafeplaceModification = async (safeplace: ISafeplace) => {
         try {
-            await Safeplaces.update(safeplace.id, safeplace, safeplaceCredientials.token);
+            await Safeplaces.update(safeplace.id, safeplace, userCredientials.token);
             setSafeplace(focusSafeplace as ISafeplace);
             setFocusSafeplace(undefined);
         } catch (e) {
@@ -170,7 +141,7 @@ const SafeplaceMonitor: React.FC = () => {
 
     const deleteSafeplace = async (safeplace: ISafeplace) => {
         try {
-            await Safeplaces.delete(safeplace.id, safeplaceCredientials.token);
+            await Safeplaces.delete(safeplace.id, userCredientials.token);
             removeSafeplace(safeplace);
             setFocusSafeplace(undefined);
         } catch (e) {
@@ -179,26 +150,24 @@ const SafeplaceMonitor: React.FC = () => {
     };
 
     useEffect(() => {
-        Safeplaces.getAll(safeplaceCredientials.token).then(response => {
-            const gotSafeplaces = response.data.map(safeplace => {
-                return {
-                    id: safeplace._id,
-                    name: safeplace.name,
-                    description: safeplace.description,
-                    city: safeplace.city,
-                    address: safeplace.address,
-                    grade: safeplace.grade,
-                    type: safeplace.type,
-                    dayTimetable: safeplace.dayTimetable
-                };
-            });
+        Safeplaces.getAll().then(response => {
+            const gotSafeplaces = response.data.map(safeplace => ({
+                id: safeplace._id,
+                name: safeplace.name,
+                description: safeplace.description,
+                city: safeplace.city,
+                address: safeplace.address,
+                type: safeplace.type,
+                dayTimetable: safeplace.dayTimetable,
+                coordinate: safeplace.coordinate
+            }));
 
             setSafeplaces(gotSafeplaces);
             log.log(gotSafeplaces);
         }).catch(error => {
             log.error(error);
-        });
-    }, [safeplaceCredientials]);
+        })
+    }, [userCredientials]);
 
     return (
         <div style={{textAlign: "center"}}>
@@ -208,7 +177,7 @@ const SafeplaceMonitor: React.FC = () => {
                 itemDisplayer={(item) => <SafeplaceInfoListElement safeplace={item} onClick={(safeplace: ISafeplace) => setFocusSafeplace(safeplace)} />}
                 itemUpdater={(item) =>
                     <SafeplaceInfoForm
-                        shown={!showModal}
+                        shown={focusSafeplace !== undefined}
                         safeplace={item}
                         setSafeplace={setFocusSafeplace}
                         buttons={[

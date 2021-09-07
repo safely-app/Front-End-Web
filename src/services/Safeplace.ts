@@ -4,12 +4,12 @@ import { createHttpConfig } from '../http-common';
 class Safeplace {
     private readonly baseURL: string = process.env.REACT_APP_SERVER_URL as string;
 
-    getAll(token: string) {
-        return createHttpConfig(this.baseURL, token).get("/");
+    getAll() {
+        return createHttpConfig(this.baseURL).get("/safeplace");
     }
 
-    get(id: string, token: string) {
-        return createHttpConfig(this.baseURL, token).get(`/safeplace/${id}`);
+    get(id: string) {
+        return createHttpConfig(this.baseURL).get(`/safeplace/${id}`);
     }
 
     update(id: string, data: ISafeplace, token: string) {

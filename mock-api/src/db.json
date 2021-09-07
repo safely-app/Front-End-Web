@@ -19,31 +19,27 @@
   ],
   "safeplace": [
     {
-      "id": 1,
-      "name": "Marché aux livres",
-      "description": "Petit stand de livre",
+      "id": "1",
+      "name": "Marché aux grands livres",
       "city": "Strasbourg",
       "address": "Place Kléber",
-      "coordinates": [
-        7.7481727,
-        48.5831908
+      "coordinate": [
+        "48.5831908",
+        "7.7481727"
       ],
-      "dayTimetable": null,
-      "grade": 4,
+      "dayTimetable": [ null, null, null, null, null, null, null ],
       "type": "market"
     },
     {
-      "id": 2,
-      "name": "Marché aux livres",
-      "description": "Petit stand de livre",
+      "id": "2",
+      "name": "Marché aux petits livres",
       "city": "Strasbourg",
       "address": "Place Kléber",
-      "coordinates": [
-        7.7481727,
-        48.5831908
+      "coordinate": [
+        "48.5831908",
+        "7.7481727"
       ],
-      "dayTimetable": null,
-      "grade": 4,
+      "dayTimetable": [ null, null, null, null, null, null, null ],
       "type": "market"
     }
   ]
