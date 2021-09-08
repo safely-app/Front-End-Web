@@ -46,5 +46,14 @@
       "grade": 4,
       "type": "market"
     }
+  ],
+  "requestClaimSafeplace": [
+    {
+      "id": "1",
+      "userId": "1",
+      "safeplaceId": "1",
+      "status": "Pending",
+      "comment": "C'est en attente"
+    }
   ]
 }
