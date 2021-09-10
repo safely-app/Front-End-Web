@@ -42,6 +42,7 @@ test('ensure that creating a new request claim safeplace works', async () => {
         });
 
     const data: IRequestClaimSafeplace = {
+        id: '1',
         userId: '1',
         safeplaceId: '1',
         status: 'Pending',
@@ -66,6 +67,7 @@ test('ensure that updating a request claim safeplace works', async () => {
         });
 
         const data: IRequestClaimSafeplace = {
+            id: '1',
             userId: '1',
             safeplaceId: '1',
             status: 'Pending',
