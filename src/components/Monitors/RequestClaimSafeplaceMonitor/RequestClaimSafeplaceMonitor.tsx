@@ -15,12 +15,17 @@ import {
     notifyError
 } from '../../utils';
 import { ToastContainer } from 'react-toastify';
+import './RequestClaimSafeplaceMonitor.css';
+
+const ACCEPTED_REQUEST = "Accepted";
+const REFUSED_REQUEST = "Refused";
+const PENDING_REQUEST = "Pending";
 
 interface IRequestClaimSafeplaceInfoProps {
-    requestClaimSafeplace: IRequestClaimSafeplace;
+    requestClaimSafeplace: IRequestClaimSafeplace | undefined;
     setRequestClaimSafeplace: (requestClaimSafeplace: IRequestClaimSafeplace) => void;
     buttons: JSX.Element[];
-    shown?: boolean;
+    shown: boolean;
 }
 
 const RequestClaimSafeplaceInfoForm: React.FC<IRequestClaimSafeplaceInfoProps> = ({
@@ -30,50 +35,50 @@ const RequestClaimSafeplaceInfoForm: React.FC<IRequestClaimSafeplaceInfoProps> =
     shown
 }) => {
     const REQUEST_STATUS = [
-        "Pending",
-        "Accepted",
-        "Refused"
+        PENDING_REQUEST,
+        ACCEPTED_REQUEST,
+        REFUSED_REQUEST
     ];
 
     const setUserId = (userId: string) => {
         setRequestClaimSafeplace({
-            ...requestClaimSafeplace,
+            ...requestClaimSafeplace as IRequestClaimSafeplace,
             userId: userId
         });
     };
 
     const setSafeplaceId = (safeplaceId: string) => {
         setRequestClaimSafeplace({
-            ...requestClaimSafeplace,
+            ...requestClaimSafeplace as IRequestClaimSafeplace,
             safeplaceId: safeplaceId
         });
     };
 
     const setStatus = (status: string) => {
         setRequestClaimSafeplace({
-            ...requestClaimSafeplace,
+            ...requestClaimSafeplace as IRequestClaimSafeplace,
             status: status
         });
     };
 
     const setComment = (comment: string) => {
         setRequestClaimSafeplace({
-            ...requestClaimSafeplace,
+            ...requestClaimSafeplace as IRequestClaimSafeplace,
             comment: comment
         });
     };
 
     return (
-        <Modal shown={(shown !== undefined) ? shown : true} content={
+        <Modal shown={shown} content={
             <div className="RequestClaimSafeplace-Info">
-                <TextInput key={`${requestClaimSafeplace.id}-userId`} type="text" role="userId"
-                    label="Identifiant d'utilisateur" value={requestClaimSafeplace.userId} setValue={setUserId} />
-                <TextInput key={`${requestClaimSafeplace.id}-safeplaceId`} type="text" role="safeplaceId"
-                    label="Identifiant de safeplace" value={requestClaimSafeplace.safeplaceId} setValue={setSafeplaceId} />
-                <Dropdown key={`${requestClaimSafeplace.id}-status`} values={REQUEST_STATUS}
-                    setValue={setStatus} defaultValue={requestClaimSafeplace.status} />
-                <TextInput key={`${requestClaimSafeplace.id}-comment`} type="text" role="comment"
-                    label="Commentaire" value={requestClaimSafeplace.comment !== undefined ? requestClaimSafeplace.comment : ""} setValue={setComment} />
+                <TextInput key={`${requestClaimSafeplace?.id}-userId`} type="text" role="userId"
+                    label="Identifiant d'utilisateur" value={requestClaimSafeplace?.userId as string} setValue={setUserId} />
+                <TextInput key={`${requestClaimSafeplace?.id}-safeplaceId`} type="text" role="safeplaceId"
+                    label="Identifiant de safeplace" value={requestClaimSafeplace?.safeplaceId as string} setValue={setSafeplaceId} />
+                <Dropdown key={`${requestClaimSafeplace?.id}-status`} values={REQUEST_STATUS}
+                    setValue={setStatus} defaultValue={requestClaimSafeplace?.status as string} />
+                <TextInput key={`${requestClaimSafeplace?.id}-comment`} type="text" role="comment"
+                    label="Commentaire" value={requestClaimSafeplace?.comment !== undefined ? requestClaimSafeplace.comment : ""} setValue={setComment} />
                 {buttons.map(button => button)}
                 <ToastContainer />
             </div>
@@ -83,15 +88,81 @@ const RequestClaimSafeplaceInfoForm: React.FC<IRequestClaimSafeplaceInfoProps> =
 
 interface IRequestClaimSafeplaceInfoListElementProps {
     requestClaimSafeplace: IRequestClaimSafeplace;
+    showModal: boolean;
+    setShownModal: (value: boolean) => void;
     onClick: (requestClaimSafeplace: IRequestClaimSafeplace) => void;
+    setRequestClaimSafeplace: (requestClaimSafeplace: IRequestClaimSafeplace) => void;
 }
 
 const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoListElementProps> = ({
     requestClaimSafeplace,
-    onClick
+    showModal,
+    setShownModal,
+    onClick,
+    setRequestClaimSafeplace
 }) => {
+    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const [refusedMessage, setRefusedMessage] = useState<string | undefined>(undefined);
+    const [isMouseOverButton, setIsMouseOverButton] = useState(false);
+
     const handleClick = () => {
-        onClick(requestClaimSafeplace);
+        if (!isMouseOverButton) onClick(requestClaimSafeplace);
+    };
+
+    const onMouseOver = () => {
+        setIsMouseOverButton(true);
+    };
+
+    const onMouseOut = () => {
+        setIsMouseOverButton(false);
+    };
+
+    const openRefuseModal = () => {
+        if (!showModal) {
+            setShownModal(true);
+            setRefusedMessage("");
+        }
+    };
+
+    const closeRefuseModal = () => {
+        setRefusedMessage(undefined);
+        setShownModal(false);
+    };
+
+    const acceptRequest = async () => {
+        try {
+            const acceptedRequest = { ...requestClaimSafeplace, status: ACCEPTED_REQUEST };
+            const response = await RequestClaimSafeplace.update(
+                requestClaimSafeplace.id,
+                acceptedRequest,
+                userCredientials.token
+            );
+
+            log.log(response);
+            setRequestClaimSafeplace(acceptedRequest);
+        } catch (e) {
+            log.error(e);
+            notifyError((e as Error).message);
+        }
+    };
+
+    const refuseRequest = async () => {
+        try {
+            const refusedRequest = { ...requestClaimSafeplace, status: REFUSED_REQUEST, comment: refusedMessage };
+            const response = await RequestClaimSafeplace.update(
+                requestClaimSafeplace.id,
+                refusedRequest,
+                userCredientials.token
+            );
+
+            log.log(response);
+            setRequestClaimSafeplace(refusedRequest);
+            setRefusedMessage(undefined);
+            setShownModal(false);
+        } catch (e) {
+            log.error(e);
+            notifyError((e as Error).message);
+        }
     };
 
     return (
@@ -103,8 +174,24 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                     <li key={`${requestClaimSafeplace.id}-safeplaceId`}><b>Identifiant de safeplace : </b>{requestClaimSafeplace.safeplaceId}</li>
                     <li key={`${requestClaimSafeplace.id}-status`}><b>Status : </b>{requestClaimSafeplace.status}</li>
                     <li key={`${requestClaimSafeplace.id}-comment`}><b>Commentaire : </b>{requestClaimSafeplace.comment}</li>
+                    <li key={`${requestClaimSafeplace.id}-buttons`}>
+                        <div className="RequestClaimSafeplace-grid-container">
+                            <Button text="Accepter" onClick={acceptRequest} width="100%"
+                                onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
+                            <Button text="Refuser" onClick={openRefuseModal} width="100%" styleType="warning"
+                                onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
+                        </div>
+                    </li>
                 </ul>
             </button>
+            <Modal shown={refusedMessage !== undefined} content={
+                <div className="RequestClaimSafeplace-Info">
+                    <TextInput type="text" role="comment" label="Commentaire"
+                        value={refusedMessage as string} setValue={setRefusedMessage} />
+                    <Button text="Valider" onClick={refuseRequest} styleType="warning" />
+                    <Button text="Annuler" onClick={closeRefuseModal} />
+                </div>
+            }/>
         </li>
     );
 };
@@ -112,15 +199,9 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
 const RequestClaimSafeplaceMonitor: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [focusRequestClaimSafeplace, setFocusRequestClaimSafeplace] = useState<IRequestClaimSafeplace | undefined>(undefined);
-    const [showModal, setShowModal] = useState(false);
+    const [newRequestClaimSafeplace, setNewRequestClaimSafeplace] = useState<IRequestClaimSafeplace | undefined>(undefined);
     const [requestClaimSafeplaces, setRequestClaimSafeplaces] = useState<IRequestClaimSafeplace[]>([]);
-    const [newRequestClaimSafeplace, setNewRequestClaimSafeplace] = useState<IRequestClaimSafeplace>({
-        id: "",
-        userId: "",
-        safeplaceId: "",
-        status: "Pending",
-        comment: ""
-    });
+    const [showModal, setShowModal] = useState(false);
 
     const addRequestClaimSafeplace = (requestClaimSafeplace: IRequestClaimSafeplace) => {
         setRequestClaimSafeplaces([
@@ -147,6 +228,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
             log.log(response);
             addRequestClaimSafeplace(requestClaimSafeplace);
             saveRequestClaimSafeplaceModification(requestClaimSafeplace);
+            setShowModal(false);
         } catch (e) {
             log.error(e);
             notifyError((e as Error).message);
@@ -164,13 +246,8 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
             log.log(response);
             setRequestClaimSafeplace(focusRequestClaimSafeplace as IRequestClaimSafeplace);
             setFocusRequestClaimSafeplace(undefined);
-            setNewRequestClaimSafeplace({
-                id: "",
-                userId: "",
-                safeplaceId: "",
-                status: "",
-                comment: ""
-            });
+            setNewRequestClaimSafeplace(undefined);
+            setShowModal(false);
         } catch (e) {
             log.error(e);
             notifyError((e as Error).message);
@@ -184,9 +261,35 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
             log.log(response);
             removeRequestClaimSafeplace(requestClaimSafeplace);
             setFocusRequestClaimSafeplace(undefined);
+            setShowModal(false);
         } catch (e) {
             log.error(e);
             notifyError((e as Error).message);
+        }
+    };
+
+    const onListElementClick = (requestClaimSafeplace: IRequestClaimSafeplace) => {
+        if (!showModal) {
+            setShowModal(true);
+            setFocusRequestClaimSafeplace(requestClaimSafeplace);
+        }
+    };
+
+    const onListElementStopButtonClick = () => {
+        setFocusRequestClaimSafeplace(undefined);
+        setShowModal(false);
+    };
+
+    const onCreateButtonClick = () => {
+        if (!showModal) {
+            setShowModal(true);
+            setNewRequestClaimSafeplace({
+                id: "",
+                userId: "",
+                safeplaceId: "",
+                status: "Pending",
+                comment: ""
+            });
         }
     };
 
@@ -212,38 +315,43 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     return (
         <div style={{textAlign: "center"}}>
             <Button text="Créer une nouvelle requête de safeplace"
-                width="98%" onClick={() => setShowModal(true)} />
+                width="98%" onClick={onCreateButtonClick} />
             <RequestClaimSafeplaceInfoForm
-                shown={showModal}
-                requestClaimSafeplace={newRequestClaimSafeplace}
+                shown={newRequestClaimSafeplace !== undefined}
+                requestClaimSafeplace={newRequestClaimSafeplace as IRequestClaimSafeplace}
                 setRequestClaimSafeplace={setNewRequestClaimSafeplace}
                 buttons={[
                     <Button key="create-id" text="Créer une requête de safeplace" onClick={() => {
-                        createNewRequestClaimSafeplace(newRequestClaimSafeplace);
+                        createNewRequestClaimSafeplace(newRequestClaimSafeplace as IRequestClaimSafeplace);
+                        setNewRequestClaimSafeplace(undefined);
                         setShowModal(false);
-                        setNewRequestClaimSafeplace({
-                            id: "",
-                            userId: "",
-                            safeplaceId: "",
-                            status: "Pending",
-                            comment: ""
-                        })
                     }} />,
-                    <Button key="stop-id" text="Annuler" onClick={() => setShowModal(false)} />
+                    <Button key="stop-id" text="Annuler" onClick={() => {
+                        setNewRequestClaimSafeplace(undefined);
+                        setShowModal(false);
+                    }} />
                 ]}
             />
             <List
                 items={requestClaimSafeplaces}
                 focusItem={focusRequestClaimSafeplace}
-                itemDisplayer={(item) => <RequestClaimSafeplaceInfoListElement requestClaimSafeplace={item} onClick={(requestClaimSafeplace: IRequestClaimSafeplace) => setFocusRequestClaimSafeplace(requestClaimSafeplace)} />}
+                itemDisplayer={(item) =>
+                    <RequestClaimSafeplaceInfoListElement
+                        requestClaimSafeplace={item}
+                        showModal={showModal}
+                        setShownModal={setShowModal}
+                        onClick={onListElementClick}
+                        setRequestClaimSafeplace={setRequestClaimSafeplace}
+                    />
+                }
                 itemUpdater={(item) =>
                     <RequestClaimSafeplaceInfoForm
-                        shown={!showModal}
+                        shown={focusRequestClaimSafeplace !== undefined}
                         requestClaimSafeplace={item}
                         setRequestClaimSafeplace={setFocusRequestClaimSafeplace}
                         buttons={[
                             <Button key="save-id" text="Sauvegarder" onClick={() => saveRequestClaimSafeplaceModification(item)} />,
-                            <Button key="stop-id" text="Annuler" onClick={() => setFocusRequestClaimSafeplace(undefined)} />,
+                            <Button key="stop-id" text="Annuler" onClick={onListElementStopButtonClick} />,
                             <Button key="delete-id" text="Supprimer" onClick={() => deleteRequestClaimSafeplace(item)} styleType="warning" />
                         ]}
                     />
