@@ -4,8 +4,7 @@ import { isProfessionalValid } from './utils';
 
 class ProfessionalInfo {
 
-    // private readonly baseURL = 'https://api.safely-app.fr';
-    private readonly baseURL = 'http://localhost:8080';
+    private readonly baseURL = process.env.REACT_APP_SERVER_URL as string;
 
     getAll(token: string) {
         return createHttpConfig(this.baseURL, token).get("/professionalinfo");
