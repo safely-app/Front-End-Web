@@ -4,21 +4,26 @@ import { AppHeader } from '../Header/Header';
 import './Monitor.css';
 import UserMonitor from './UserMonitor/UserMonitor';
 import Safeplace from './SafeplaceMonitor/SafeplaceMonitor';
+import InvoiceMonitor from './InvoiceMonitor/InvoiceMonitor';
 
 enum MonitorView {
     USER,
-    SAFEPLACE
+    SAFEPLACE,
+    INVOICE
 }
 
 const Monitor: React.FC = () => {
     const [view, setView] = useState(MonitorView.USER);
     const navBarElements = [
         { text: "Utilisateurs", onClick: () => setView(MonitorView.USER) },
-        { text: "Safeplaces", onClick: () => setView(MonitorView.SAFEPLACE) }
+        { text: "Safeplaces", onClick: () => setView(MonitorView.SAFEPLACE) },
+        { text: "Factures", onClick: () => setView(MonitorView.INVOICE) }
     ];
 
     const getView = (): JSX.Element => {
         switch (view) {
+            case MonitorView.INVOICE:
+                return <InvoiceMonitor />;
             case MonitorView.SAFEPLACE:
                 return <Safeplace />;
             case MonitorView.USER:
