@@ -1,5 +1,6 @@
 import ISafeplace from '../components/interfaces/ISafeplace';
 import { createHttpConfig } from '../http-common';
+import { isSafeplaceValid } from './utils';
 
 class Safeplace {
     private readonly baseURL: string = process.env.REACT_APP_SERVER_URL as string;
@@ -13,6 +14,10 @@ class Safeplace {
     }
 
     update(id: string, data: ISafeplace, token: string) {
+        const validateSafeplace = isSafeplaceValid(data);
+
+        if (validateSafeplace.isValid === false)
+            throw new Error(validateSafeplace.error);
         return createHttpConfig(this.baseURL, token).put(`/safeplace/${id}`, data);
     }
 
