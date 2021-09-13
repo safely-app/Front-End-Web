@@ -13,7 +13,8 @@ import {
 } from '../../common';
 import log from 'loglevel';
 import {
-    notifyError
+    notifyError,
+    convertStringToRegex
 } from '../../utils';
 import { ToastContainer } from 'react-toastify';
 import './UserMonitor.css';
@@ -218,7 +219,7 @@ const UserMonitor: React.FC = () => {
     };
 
     const filterUsers = (): IUser[] => {
-        const lowerSearchText = searchText.toLocaleLowerCase();
+        const lowerSearchText = convertStringToRegex(searchText.toLocaleLowerCase());
 
         return users
             .filter(user => userRole !== 'all' ? userRole === user.role : true)

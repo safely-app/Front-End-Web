@@ -131,3 +131,41 @@ it('ensure that user filtering is working', async () => {
 
     scope.done();
 });
+
+test('ensure that invalid input does not crash the user filtering', async () => {
+    const scope = nock('https://api.safely-app.fr')
+        .get('/user')
+        .reply(200, [
+            {
+                _id: "1",
+                username: "Billy",
+                email: "billy@lesinge",
+                password: "billylesinge",
+                role: "admin"
+            }
+        ], {
+            'Access-Control-Allow-Origin': '*'
+        });
+
+    render(
+        <Provider store={store}>
+            <UserMonitor />
+        </Provider>
+    );
+
+    const userTypeDropdown = screen.getByTestId('all-dropdown-id');
+    const userInfoSearchBar = screen.getByRole('search-bar');
+
+    await act(async () => await testDelay(2000));
+    expect(userInfoSearchBar).toBeInTheDocument();
+    expect(userTypeDropdown).toBeInTheDocument();
+
+    fireEvent.change(userInfoSearchBar, {
+        target: { value: 'eujffeojwefokfewkpo[' }
+    });
+
+    expect(screen.getByDisplayValue('eujffeojwefokfewkpo[')).toBeInTheDocument();
+
+    await act(async () => await testDelay(2000));
+    scope.done();
+});
