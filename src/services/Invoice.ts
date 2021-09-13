@@ -3,8 +3,7 @@ import { createHttpConfig } from '../http-common';
 
 class Invoice {
 
-    // private readonly baseURL = process.env.REACT_APP_SERVER_URL as string;
-    private readonly baseURL = 'http://localhost:8080';
+    private readonly baseURL = process.env.REACT_APP_SERVER_URL as string;
 
     getAll(token: string) {
         return createHttpConfig(this.baseURL, token).get("/invoice");

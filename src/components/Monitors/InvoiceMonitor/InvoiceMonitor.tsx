@@ -225,12 +225,7 @@ const InvoiceMonitor: React.FC = () => {
             <List
                 items={invoices}
                 focusItem={focusInvoice}
-                itemDisplayer={(item) =>
-                    <InvoiceInfoListElement
-                        invoice={item}
-                        onClick={onListElementClick}
-                    />
-                }
+                itemDisplayer={(item) => <InvoiceInfoListElement invoice={item} onClick={onListElementClick} />}
                 itemUpdater={(item) =>
                     <InvoiceInfoForm
                         shown={focusInvoice !== undefined}
