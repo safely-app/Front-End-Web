@@ -6,6 +6,7 @@ import {
 } from './Authentication/Authentication';
 import Monitor from './Monitors/Monitor';
 import Profile from './Profile/Profile';
+import Safeplaces from './Safeplaces/Safeplaces';
 
 export {
     App,
@@ -13,5 +14,6 @@ export {
     SignOut,
     ResetPassword,
     Monitor,
-    Profile
+    Profile,
+    Safeplaces
 };

@@ -46,6 +46,7 @@ export const AppHeader: React.FC = () => {
         { link: "/", name: "Dashboard", class: "Header-main" },
         { link: "/login", name: "Connexion", onAuth: false },
         { link: "/profile", name: "Profile", onAuth: true },
+        { link: "/shops", name: "Commerces", onAuth: true },
         { link: "/admin", name: "Administration", onAuth: true, onAdmin: true },
         { link: "/logout", name: "Déconnexion", onAuth: true }
     ];

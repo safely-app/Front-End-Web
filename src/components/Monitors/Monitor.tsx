@@ -3,7 +3,7 @@ import { NavBar } from '../common';
 import { AppHeader } from '../Header/Header';
 import './Monitor.css';
 import UserMonitor from './UserMonitor/UserMonitor';
-import Safeplace from './SafeplaceMonitor/SafeplaceMonitor';
+import SafeplaceMonitor from './SafeplaceMonitor/SafeplaceMonitor';
 import RequestClaimSafeplace from './RequestClaimSafeplaceMonitor/RequestClaimSafeplaceMonitor';
 
 enum MonitorView {
@@ -25,7 +25,7 @@ const Monitor: React.FC = () => {
             case MonitorView.REQUESTCLAIMSAFEPLACE:
                 return <RequestClaimSafeplace />;
             case MonitorView.SAFEPLACE:
-                return <Safeplace />;
+                return <SafeplaceMonitor />;
             case MonitorView.USER:
             default:
                 return <UserMonitor />;
