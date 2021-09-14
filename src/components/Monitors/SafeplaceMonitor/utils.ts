@@ -29,11 +29,12 @@ export const splitTimetable = (timetable: string): (string | null)[] => {
     const times = timetable.split(" | ");
     const result = times.map(time => {
         for (let index = 0; index < days.length; index++) {
-            if (time.includes(days[index]))
+            if (time.includes(days[index])) {
                 return { day: days[index], value: time.substring((days[index] + " : ").length) };
+            }
         }
 
-        return undefined;
+        throw new Error('Invalid timetable');
     });
 
     return days.map(day => result.find(item => item?.day === day)?.value)

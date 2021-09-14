@@ -32,6 +32,7 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
     buttons,
     shown
 }) => {
+    const [displayedTimetable, setDisplayedTimetable] = useState(displayTimetable(safeplace.dayTimetable));
 
     const setName = (name: string) => {
         setSafeplace({ ...safeplace, name: name });
@@ -50,7 +51,13 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
     };
 
     const setDayTimetable = (dayTimetable: string) => {
-        setSafeplace({ ...safeplace, dayTimetable: splitTimetable(dayTimetable) });
+        setDisplayedTimetable(dayTimetable);
+
+        try {
+            setSafeplace({ ...safeplace, dayTimetable: splitTimetable(dayTimetable) });
+        } catch (e) {
+            log.error(e);
+        }
     };
 
     const setLatitude = (latitude: string) => {
@@ -71,7 +78,7 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
                 <TextInput key={`${safeplace.id}-address`} type="text" role="address"
                     label="Adresse" value={safeplace.address} setValue={setAddress} />
                 <TextInput key={`${safeplace.id}-timetable`} type="text" role="timetable"
-                    label="Horaires" value={displayTimetable(safeplace.dayTimetable)} setValue={setDayTimetable} />
+                    label="Horaires" value={displayedTimetable} setValue={setDayTimetable} />
                 <TextInput key={`${safeplace.id}-type`} type="text" role="type"
                     label="Type" value={safeplace.type} setValue={setType} />
                 <div className="grid-container">
