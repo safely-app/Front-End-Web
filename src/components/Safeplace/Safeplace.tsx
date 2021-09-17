@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux';
 import { Safeplace } from '../../services';
 import { AppHeader } from '../Header/Header';
 import ISafeplace from '../interfaces/ISafeplace';

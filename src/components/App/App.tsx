@@ -69,7 +69,7 @@ const App: React.FC = () => {
         }).catch(error => {
             log.error(error);
         });
-    }, [userCredientials]);
+    }, [userCredientials, dispatch]);
 
     return (
         <div className="App">
