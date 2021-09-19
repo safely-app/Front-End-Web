@@ -18,7 +18,7 @@ interface IMapProps {
     safeplaces: ISafeplace[];
 }
 
-const Map: React.FC<IMapProps> = ({
+export const Map: React.FC<IMapProps> = ({
     safeplaces
 }) => {
     return (
@@ -34,8 +34,8 @@ const Map: React.FC<IMapProps> = ({
                 <TileLayer
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                {safeplaces.map(safeplace => (
-                    <Marker position={[
+                {safeplaces.map((safeplace, index) => (
+                    <Marker key={index} position={[
                         Number(safeplace.coordinate[0]),
                         Number(safeplace.coordinate[1])
                     ]}>
