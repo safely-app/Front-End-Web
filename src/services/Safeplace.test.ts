@@ -1,12 +1,13 @@
 import IUser from '../components/interfaces/IUser';
-import { Safeplaces } from './index';
+import { Safeplace } from './index';
 import nock from 'nock';
+import ISafeplace from '../components/interfaces/ISafeplace';
 
-const baseURL = 'http://api.safely-app.fr:8081';
+const baseURL = process.env.REACT_APP_SERVER_URL as string;
 
 it('get all safeplaces', async () => {
     const scope = nock(baseURL)
-        .get('/')
+        .get('/safeplace')
         .reply(200, [
             { id: "1", name: "kebab" },
             { id: "2", name: "marché" },
@@ -16,7 +17,7 @@ it('get all safeplaces', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const response = await Safeplaces.getAll("");
+    const response = await Safeplace.getAll();
     expect(response.status).toEqual(200);
     scope.done();
 });
@@ -30,7 +31,7 @@ it('get safeplace', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const response = await Safeplaces.get("1", "");
+    const response = await Safeplace.get("1");
     expect(response.status).toEqual(200);
     scope.done();
 });
@@ -50,14 +51,17 @@ it('update safeplace', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const user: IUser = {
+    const data: ISafeplace = {
         id: "1",
-        username: "",
-        email: "",
-        role: ""
+        name: "Magasin stylé",
+        city: "Paris",
+        address: "12 Avenue de la Poiscaille",
+        type: "Top",
+        dayTimetable: [],
+        coordinate: []
     };
 
-    const response = await Safeplaces.update("1", user, "");
+    const response = await Safeplace.update("1", data, "");
     expect(response.status).toEqual(200);
     scope.done();
 });
@@ -77,7 +81,7 @@ it('delete safeplace', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const response = await Safeplaces.delete("1", "");
+    const response = await Safeplace.delete("1", "");
     expect(response.status).toEqual(200);
     scope.done();
 });
