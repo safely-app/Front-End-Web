@@ -1,9 +1,13 @@
 import React from 'react';
-import { findByLabelText, fireEvent, queryByDisplayValue, queryByRole, render, screen } from '@testing-library/react';
-import { Button } from './index';
-import { TextInput } from './index';
-import { Dropdown } from './index';
-import SearchBar from './SearchBar';
+import { fireEvent, render, screen } from '@testing-library/react';
+import {
+    Button,
+    TextInput,
+    Dropdown,
+    SearchBar,
+    List,
+    NavBar
+} from './index';
 
 test('simulate click', () => {
     const onClick = jest.fn();
@@ -48,4 +52,51 @@ test('test search bar', () => {
     });
 
     expect(setValue).toHaveBeenCalled();
+});
+
+test('test list', () => {
+    const items = [
+        <p key='1'>1</p>,
+        <p key='2'>2</p>,
+        <p key='3'>3</p>
+    ];
+
+    render(
+        <List
+            items={items}
+            focusItem={undefined}
+            itemDisplayer={(item) => <li>{item}</li>}
+            itemUpdater={() => <div />}
+        />
+    );
+
+    const firstParagraph = screen.getByText('1');
+    const secondParagraph = screen.getByText('2');
+    const thirdParagraph = screen.getByText('3');
+    expect(firstParagraph).toBeInTheDocument();
+    expect(secondParagraph).toBeInTheDocument();
+    expect(thirdParagraph).toBeInTheDocument();
+});
+
+test('test navbar', () => {
+    const firstFn = jest.fn();
+    const secondFn = jest.fn();
+
+    render(
+        <NavBar elements={[
+            { text: '1', onClick: firstFn },
+            { text: '2', onClick: secondFn }
+        ]} />
+    );
+
+    const firstButton = screen.getByTestId('1-navbar-button-id');
+    const secondButton = screen.getByTestId('2-navbar-button-id');
+    expect(firstButton).toBeInTheDocument();
+    expect(secondButton).toBeInTheDocument();
+
+    fireEvent.click(firstButton);
+    fireEvent.click(secondButton);
+
+    expect(firstFn).toHaveBeenCalled();
+    expect(secondFn).toHaveBeenCalled();
 });
