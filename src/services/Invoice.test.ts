@@ -80,13 +80,6 @@ test('ensure that delete occurs without technical errors', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-        const data: IInvoice = {
-            id: '1',
-            userId: '132',
-            amount: 100,
-            date: '13-09-2021'
-        };
-
         const response = await Invoice.delete("1", "");
         expect(response.status).toBe(200);
         scopeOptions.done();
