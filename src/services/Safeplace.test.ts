@@ -1,12 +1,13 @@
 import IUser from '../components/interfaces/IUser';
 import { Safeplaces } from './index';
 import nock from 'nock';
+import ISafeplace from '../components/interfaces/ISafeplace';
 
-const baseURL = 'http://api.safely-app.fr:8081';
+const baseURL = 'https://api.safely-app.fr';
 
-it('get all safeplaces', async () => {
+test('get all safeplaces', async () => {
     const scope = nock(baseURL)
-        .get('/')
+        .get('/safeplace')
         .reply(200, [
             { id: "1", name: "kebab" },
             { id: "2", name: "marché" },
@@ -16,12 +17,12 @@ it('get all safeplaces', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const response = await Safeplaces.getAll("");
+    const response = await Safeplaces.getAll();
     expect(response.status).toEqual(200);
     scope.done();
 });
 
-it('get safeplace', async () => {
+test('get safeplace', async () => {
     const scope = nock(baseURL)
         .get('/safeplace/1')
         .reply(200, {
@@ -30,12 +31,12 @@ it('get safeplace', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const response = await Safeplaces.get("1", "");
+    const response = await Safeplaces.get("1");
     expect(response.status).toEqual(200);
     scope.done();
 });
 
-it('update safeplace', async () => {
+test('update safeplace', async () => {
     const scopeOptions = nock(baseURL)
         .options('/safeplace/1')
         .reply(200, {}, {
@@ -50,19 +51,23 @@ it('update safeplace', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const user: IUser = {
+    const safeplace: ISafeplace = {
         id: "1",
-        username: "",
-        email: "",
-        role: ""
+        name: "",
+        city: "",
+        address: "",
+        type: "",
+        dayTimetable: [],
+        coordinate: []
     };
 
-    const response = await Safeplaces.update("1", user, "");
+    const response = await Safeplaces.update("1", safeplace, "");
     expect(response.status).toEqual(200);
+    scopeOptions.done();
     scope.done();
 });
 
-it('delete safeplace', async () => {
+test('delete safeplace', async () => {
     const scopeOptions = nock(baseURL)
         .options('/safeplace/1')
         .reply(200, {}, {
@@ -79,5 +84,6 @@ it('delete safeplace', async () => {
 
     const response = await Safeplaces.delete("1", "");
     expect(response.status).toEqual(200);
+    scopeOptions.done();
     scope.done();
 });

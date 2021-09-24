@@ -4,7 +4,7 @@ import nock from 'nock';
 
 const baseURL = 'https://api.safely-app.fr';
 
-it('register new user', async () => {
+test('register new user', async () => {
     const scopeRegister = nock(baseURL)
         .post('/register')
         .reply(200, {
@@ -27,7 +27,7 @@ it('register new user', async () => {
     scopeRegister.done();
 });
 
-it('login user', async () => {
+test('login user', async () => {
     const scopeRegister = nock(baseURL)
         .post('/login')
         .reply(200, {
