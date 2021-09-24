@@ -5,18 +5,35 @@ import { store } from '../../../redux';
 import RequestClaimSafeplace from './RequestClaimSafeplaceMonitor';
 import nock from 'nock';
 
+const baseURL = process.env.REACT_APP_SERVER_URL as string;
+
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-test('renders requestclaimsafeplace monitor', () => {
+test('renders requestclaimsafeplace monitor', async () => {
+    const scope = nock(baseURL)
+        .get('/requestClaimSafeplace')
+        .reply(200, [], {
+            'Access-Control-Allow-Origin': '*'
+        });
+
     render(
         <Provider store={store}>
             <RequestClaimSafeplace />
         </Provider>
     );
+
+    await act(async () => testDelay(1000));
+    scope.done();
 });
 
-test('ensure that create button is working', () => {
+test('ensure that create button is working', async () => {
+    const scope = nock(baseURL)
+        .get('/requestClaimSafeplace')
+        .reply(200, [], {
+            'Access-Control-Allow-Origin': '*'
+        });
+
     render(
         <Provider store={store}>
             <RequestClaimSafeplace />
@@ -34,10 +51,19 @@ test('ensure that create button is working', () => {
 
     expect(stopButton).toBeInTheDocument();
     fireEvent.click(stopButton);
+
+    await act(async () => testDelay(1000));
+    scope.done();
 });
 
 test('ensure that new request creation occurs without technical errors', async () => {
-    const scope = nock(process.env.REACT_APP_SERVER_URL as string)
+    const scopeOptions = nock(baseURL)
+        .options('/requestClaimSafeplace')
+        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+    const scopeGet = nock(baseURL)
+        .get('/requestClaimSafeplace')
+        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+    const scopePost = nock(process.env.REACT_APP_SERVER_URL as string)
         .post('/requestClaimSafeplace')
         .reply(201, {
             message: 'Success'
@@ -72,5 +98,7 @@ test('ensure that new request creation occurs without technical errors', async (
 
     await act(async () => await testDelay(2000));
 
-    scope.done();
+    scopeOptions.done();
+    scopePost.done();
+    scopeGet.done();
 });

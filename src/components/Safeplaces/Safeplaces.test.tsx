@@ -23,7 +23,7 @@ test('renders Safeplaces', async () => {
         </Provider>
     );
 
-    await act(async () => await testDelay(1000));
+    await act(async () => await testDelay(2000));
 
     scope.done();
 });
@@ -44,7 +44,7 @@ test('renders Safeplaces search bar', async () => {
     const searchBar = screen.getByRole('search-bar');
     expect(searchBar).toBeInTheDocument();
 
-    await act(async () => await testDelay(1000));
+    await act(async () => await testDelay(2000));
 
     scope.done();
 });

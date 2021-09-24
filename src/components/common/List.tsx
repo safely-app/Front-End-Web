@@ -18,8 +18,8 @@ const List: React.FC<IListProps> = ({
         <div>
             {(focusItem !== undefined) && itemUpdater !== undefined && itemUpdater(focusItem)}
             <ul className="list">
-                {items.map(item => {
-                    return itemDisplayer(item);
+                {items.map((item, index) => {
+                    return <li key={index}>{itemDisplayer(item)}</li>;
                 })}
             </ul>
         </div>
