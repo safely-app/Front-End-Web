@@ -5,24 +5,22 @@ interface IDropdownProps {
     values: string[];
     setValue: (value: string) => void;
     defaultValue?: string;
+    width?: string;
 }
 
 const Dropdown: React.FC<IDropdownProps> = ({
     values,
     setValue,
-    defaultValue
+    defaultValue,
+    width
 }) => {
     const handleInput = (e: React.ChangeEvent<HTMLSelectElement>): void => {
         setValue(e.target.value);
     };
 
     return (
-        <div>
-            <select
-                onChange={handleInput}
-                defaultValue={defaultValue}
-                className="select"
-            >
+        <span className="dropdown-container" style={{ width: width !== undefined ? width : '60%' }}>
+            <select data-testid={`${values[0]}-dropdown-id`} onChange={handleInput} defaultValue={defaultValue}>
                 {values.map((value, index) => {
                     return (
                         <option key={index} value={value}>
@@ -31,7 +29,7 @@ const Dropdown: React.FC<IDropdownProps> = ({
                     );
                 })}
             </select>
-        </div>
+        </span>
     );
 };
 

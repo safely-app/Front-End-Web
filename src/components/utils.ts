@@ -8,3 +8,6 @@ export const notifyError = (msg: string) => toast.error(msg, {
     pauseOnHover: true,
     draggable: true
 });
+
+export const convertStringToRegex = (value: string): RegExp =>
+    new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));

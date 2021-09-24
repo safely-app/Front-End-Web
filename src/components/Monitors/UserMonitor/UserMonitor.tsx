@@ -8,11 +8,13 @@ import {
     Dropdown,
     List,
     TextInput,
-    Modal
+    Modal,
+    SearchBar
 } from '../../common';
 import log from 'loglevel';
 import {
-    notifyError
+    notifyError,
+    convertStringToRegex
 } from '../../utils';
 import { ToastContainer } from 'react-toastify';
 import './UserMonitor.css';
@@ -104,9 +106,34 @@ const UserInfoListElement: React.FC<IUserInfoListElementProps> = ({
     );
 }
 
+interface IUserMonitorFilterProps {
+    searchBarValue: string;
+    setDropdownValue: (value: string) => void;
+    setSearchBarValue: (value: string) => void;
+}
+
+const UserMonitorFilter: React.FC<IUserMonitorFilterProps> = ({
+    searchBarValue,
+    setDropdownValue,
+    setSearchBarValue
+}) => {
+    return (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(100, 1fr)', paddingLeft: '1%', paddingRight: '1%' }}>
+            <div style={{ gridColumn: '2 / 10', gridRow: '1' }}>
+                <Dropdown width='100%' defaultValue='all' values={[ 'all', 'user', 'admin' ]} setValue={setDropdownValue} />
+            </div>
+            <div style={{ gridColumn: '11 / 100', gridRow: '1' }}>
+                <SearchBar label="Rechercher un utilisateur" value={searchBarValue} setValue={setSearchBarValue} />
+            </div>
+        </div>
+    );
+};
+
 const UserMonitor: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [focusUser, setFocusUser] = useState<IUser | undefined>(undefined);
+    const [userRole, setUserRole] = useState('all');
+    const [searchText, setSearchText] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [users, setUsers] = useState<IUser[]>([]);
     const [newUser, setNewUser] = useState<IUser>({
@@ -190,6 +217,17 @@ const UserMonitor: React.FC = () => {
             });
     };
 
+    const filterUsers = (): IUser[] => {
+        const lowerSearchText = convertStringToRegex(searchText.toLocaleLowerCase());
+
+        return users
+            .filter(user => userRole !== 'all' ? userRole === user.role : true)
+            .filter(user => searchText !== ''
+                ? user.id.toLowerCase().match(lowerSearchText) !== null
+                || user.email.toLowerCase().match(lowerSearchText) !== null
+                || user.username.toLowerCase().match(lowerSearchText) !== null : true);
+    };
+
     useEffect(() => {
         User.getAll(userCredientials.token).then(response => {
             const gotUsers = response.data.map(user => {
@@ -210,8 +248,8 @@ const UserMonitor: React.FC = () => {
 
     return (
         <div style={{textAlign: "center"}}>
-            <Button text="Créer un nouvel utilisateur"
-                width="98%" onClick={() => setShowModal(true)} />
+            <Button text="Créer un nouvel utilisateur" width="98%" onClick={() => setShowModal(true)} />
+            <UserMonitorFilter searchBarValue={searchText} setDropdownValue={setUserRole} setSearchBarValue={setSearchText} />
             <UserInfoForm
                 shown={showModal}
                 user={newUser}
@@ -231,7 +269,7 @@ const UserMonitor: React.FC = () => {
                 ]}
             />
             <List
-                items={users}
+                items={filterUsers()}
                 focusItem={focusUser}
                 itemDisplayer={(item) => <UserInfoListElement user={item} onClick={(user: IUser) => setFocusUser(user)} />}
                 itemUpdater={(item) =>
