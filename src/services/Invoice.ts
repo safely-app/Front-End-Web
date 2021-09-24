@@ -6,23 +6,23 @@ class Invoice {
     private readonly baseURL = process.env.REACT_APP_SERVER_URL as string;
 
     getAll(token: string) {
-        return createHttpConfig(this.baseURL, token).get("/invoice");
+        return createHttpConfig(this.baseURL, token).get("/mock/invoice");
     }
 
     get(id: string, token: string) {
-        return createHttpConfig(this.baseURL, token).get(`/invoice/${id}`);
+        return createHttpConfig(this.baseURL, token).get(`/mock/invoice/${id}`);
     }
 
     create(data: IInvoice, token: string) {
-        return createHttpConfig(this.baseURL, token).post(`/invoice`, data);
+        return createHttpConfig(this.baseURL, token).post(`/mock/invoice`, data);
     }
 
     update(id: string, data: IInvoice, token: string) {
-        return createHttpConfig(this.baseURL, token).put(`/invoice/${id}`, data);
+        return createHttpConfig(this.baseURL, token).put(`/mock/invoice/${id}`, data);
     }
 
     delete(id: string, token: string) {
-        return createHttpConfig(this.baseURL, token).delete(`/invoice/${id}`);
+        return createHttpConfig(this.baseURL, token).delete(`/mock/invoice/${id}`);
     }
 }
 
