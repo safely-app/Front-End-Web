@@ -18,9 +18,9 @@ test('renders InvoiceMonitor', () => {
 
 test('renders InvoiceMonitor create button', async () => {
     const scopeGet = nock(process.env.REACT_APP_SERVER_URL as string)
-        .get('/invoice').reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+        .get('/mock/invoice').reply(200, [], { 'Access-Control-Allow-Origin': '*' });
     const scopeCreate = nock(process.env.REACT_APP_SERVER_URL as string)
-        .post('/invoice').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+        .post('/mock/invoice').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
 
     render(
         <Provider store={store}>

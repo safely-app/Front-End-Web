@@ -6,7 +6,7 @@ const testURL: string = process.env.REACT_APP_SERVER_URL as string;
 
 test('ensure that getAll occurs without technical errors', async () => {
     const scope = nock(testURL)
-        .get('/invoice')
+        .get('/mock/invoice')
         .reply(200, [], {
             'Access-Control-Allow-Origin': '*'
         });
@@ -18,7 +18,7 @@ test('ensure that getAll occurs without technical errors', async () => {
 
 test('ensure that get occurs without technical errors', async () => {
     const scope = nock(testURL)
-        .get('/invoice/1')
+        .get('/mock/invoice/1')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
@@ -30,7 +30,7 @@ test('ensure that get occurs without technical errors', async () => {
 
 test('ensure that create occurs without technical errors', async () => {
     const scope = nock(testURL)
-        .post('/invoice')
+        .post('/mock/invoice')
         .reply(201, {}, {
             'Access-Control-Allow-Origin': '*'
         });
@@ -49,10 +49,10 @@ test('ensure that create occurs without technical errors', async () => {
 
 test('ensure thata update occurs without technical occurs', async () => {
     const scopeOptions = nock(testURL)
-        .options('/invoice/1')
+        .options('/mock/invoice/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
     const scope = nock(testURL)
-        .put('/invoice/1')
+        .put('/mock/invoice/1')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
@@ -72,10 +72,10 @@ test('ensure thata update occurs without technical occurs', async () => {
 
 test('ensure that delete occurs without technical errors', async () => {
     const scopeOptions = nock(testURL)
-        .options('/invoice/1')
+        .options('/mock/invoice/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
     const scope = nock(testURL)
-        .delete('/invoice/1')
+        .delete('/mock/invoice/1')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
