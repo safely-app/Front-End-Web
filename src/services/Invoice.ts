@@ -1,5 +1,6 @@
 import IInvoice from '../components/interfaces/IInvoice';
 import { createHttpConfig } from '../http-common';
+import { isInvoiceValid } from './utils';
 
 class Invoice {
 
@@ -14,10 +15,18 @@ class Invoice {
     }
 
     create(data: IInvoice, token: string) {
+        const validateInvoice = isInvoiceValid(data);
+
+        if (validateInvoice.isValid === false)
+            throw new Error(validateInvoice.error);
         return createHttpConfig(this.baseURL, token).post(`/mock/invoice`, data);
     }
 
     update(id: string, data: IInvoice, token: string) {
+        const validateInvoice = isInvoiceValid(data);
+
+        if (validateInvoice.isValid === false)
+            throw new Error(validateInvoice.error);
         return createHttpConfig(this.baseURL, token).put(`/mock/invoice/${id}`, data);
     }
 
