@@ -7,7 +7,7 @@ const baseURL = process.env.REACT_APP_SERVER_URL as string;
 
 it('get all safeplaces', async () => {
     const scope = nock(baseURL)
-        .get('/safeplace')
+        .get('/safeplace/safeplace')
         .reply(200, [
             { id: "1", name: "kebab" },
             { id: "2", name: "marché" },
@@ -24,7 +24,7 @@ it('get all safeplaces', async () => {
 
 it('get safeplace', async () => {
     const scope = nock(baseURL)
-        .get('/safeplace/1')
+        .get('/safeplace/safeplace/1')
         .reply(200, {
             id: "1", name: "kebab"
         }, {
@@ -38,13 +38,13 @@ it('get safeplace', async () => {
 
 it('update safeplace', async () => {
     const scopeOptions = nock(baseURL)
-        .options('/safeplace/1')
+        .options('/safeplace/safeplace/1')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
 
     const scope = nock(baseURL)
-        .put('/safeplace/1')
+        .put('/safeplace/safeplace/1')
         .reply(200, {
             id: "1", name: "kebab"
         }, {
@@ -68,13 +68,13 @@ it('update safeplace', async () => {
 
 it('delete safeplace', async () => {
     const scopeOptions = nock(baseURL)
-        .options('/safeplace/1')
+        .options('/safeplace/safeplace/1')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
 
     const scope = nock(baseURL)
-        .delete('/safeplace/1')
+        .delete('/safeplace/safeplace/1')
         .reply(200, {
             id: "1", name: "kebab"
         }, {

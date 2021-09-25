@@ -16,7 +16,7 @@ test('renders app', async () => {
         .get('/user/')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
     const scopeSafeplace = nock(baseURL)
-        .get('/safeplace')
+        .get('/safeplace/safeplace')
         .reply(200, [], {
             'Access-Control-Allow-Origin': '*'
         });
