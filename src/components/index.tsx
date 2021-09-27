@@ -7,6 +7,7 @@ import {
 import Monitor from './Monitor/Monitor';
 import Profile from './Profile/Profile';
 import Safeplace from './Safeplace/Safeplace';
+import Version from './Version/Version';
 
 export {
     App,
@@ -15,5 +16,6 @@ export {
     ResetPassword,
     Monitor,
     Safeplace,
-    Profile
+    Profile,
+    Version
 };

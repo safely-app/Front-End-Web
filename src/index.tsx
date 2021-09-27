@@ -8,7 +8,8 @@ import {
     Safeplace,
     SignOut,
     Profile,
-    ResetPassword
+    ResetPassword,
+    Version
 } from './components';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
@@ -24,7 +25,8 @@ const routes = [
     { path: '/admin', exact: true, protected: true, render: <Monitor /> },
     { path: '/safeplace', exact: true, protected: true, render: <Safeplace /> },
     { path: '/profile', exact: true, protected: true, render: <Profile /> },
-    { path: '/reset', exact: false, protected: false, render: <ResetPassword /> }
+    { path: '/reset', exact: false, protected: false, render: <ResetPassword /> },
+    { path: '/version', exact: false, protected: false, render: <Version /> }
 ];
 
 log.setLevel((process.env.REACT_APP_STAGE === "prod")
