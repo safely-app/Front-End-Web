@@ -6,19 +6,19 @@ class Safeplace {
     private readonly baseURL = process.env.REACT_APP_SERVER_URL as string;
 
     getAll() {
-        return createHttpConfig(this.baseURL).get("/safeplace");
+        return createHttpConfig(this.baseURL).get("/safeplace/safeplace");
     }
 
     get(id: string) {
-        return createHttpConfig(this.baseURL).get(`/safeplace/${id}`);
+        return createHttpConfig(this.baseURL).get(`/safeplace/safeplace/${id}`);
     }
 
     update(id: string, data: ISafeplace, token: string) {
-        return createHttpConfig(this.baseURL, token).put(`/safeplace/${id}`, data);
+        return createHttpConfig(this.baseURL, token).put(`/safeplace/safeplace/${id}`, data);
     }
 
     delete(id: string, token: string) {
-        return createHttpConfig(this.baseURL, token).delete(`/safeplace/${id}`);
+        return createHttpConfig(this.baseURL, token).delete(`/safeplace/safeplace/${id}`);
     }
 }
 

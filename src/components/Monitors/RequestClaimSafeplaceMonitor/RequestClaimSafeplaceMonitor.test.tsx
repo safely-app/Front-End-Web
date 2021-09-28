@@ -57,9 +57,6 @@ test('ensure that create button is working', async () => {
 });
 
 test('ensure that new request creation occurs without technical errors', async () => {
-    const scopeOptions = nock(baseURL)
-        .options('/requestClaimSafeplace')
-        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
     const scopeGet = nock(baseURL)
         .get('/requestClaimSafeplace')
         .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
@@ -98,7 +95,6 @@ test('ensure that new request creation occurs without technical errors', async (
 
     await act(async () => await testDelay(2000));
 
-    scopeOptions.done();
     scopePost.done();
     scopeGet.done();
 });

@@ -12,7 +12,7 @@ const testDelay = (ms: number): Promise<void> =>
 
 test('renders Safeplaces', async () => {
     const scope = nock(testURL)
-        .get('/safeplace')
+        .get('/safeplace/safeplace')
         .reply(200, [], {
             'Access-Control-Allow-Origin': '*'
         });
@@ -30,7 +30,7 @@ test('renders Safeplaces', async () => {
 
 test('renders Safeplaces search bar', async () => {
     const scope = nock(testURL)
-        .get('/safeplace')
+        .get('/safeplace/safeplace')
         .reply(200, [], {
             'Access-Control-Allow-Origin': '*'
         });
