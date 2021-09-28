@@ -81,7 +81,7 @@ const Safeplaces: React.FC = () => {
     useEffect(() => {
         Safeplace.getAll().then(response => {
             const gotSafeplaces = response.data.map(safeplace => ({
-                id: safeplace.id,
+                id: safeplace._id,
                 name: safeplace.name,
                 city: safeplace.city,
                 address: safeplace.address,
