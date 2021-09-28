@@ -14,12 +14,13 @@ class ProfessionalInfo {
         return createHttpConfig(this.baseURL, token).get(`/professionalinfo/${id}`);
     }
 
-    create(data: IProfessional, token: string) {
+    create(data: IProfessional) {
+        const { id, ...tmpData } = data;
         const validateProfessional = isProfessionalValid(data);
 
         if (validateProfessional.isValid === false)
             throw new Error(validateProfessional.error);
-        return createHttpConfig(this.baseURL, token).post("/professionalinfo", data);
+        return createHttpConfig(this.baseURL).post("/professionalinfo", tmpData);
     }
 
     update(id: string, data: IProfessional, token: string) {

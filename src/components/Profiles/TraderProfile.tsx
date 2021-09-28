@@ -160,8 +160,8 @@ const TraderProfile: React.FC = () => {
     const [searcherState, setSearcherState] = useState(InfoSearcher.SEARCHING);
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [professional, setProfessional] = useState<IProfessional>({
-        id: userCredientials._id,
-        userId: "",
+        id: "",
+        userId: userCredientials._id,
         companyName: "",
         companyAddress: "",
         companyAddress2: "",
@@ -177,61 +177,76 @@ const TraderProfile: React.FC = () => {
         type: ""
     });
 
-    const createTraderAccount = () => {
+    const createTraderAccount = async () => {
         try {
-            ProfessionalInfo.create(
-                professional,
-                userCredientials._id
-            ).then(response => {
-                setSearcherState(InfoSearcher.FOUND);
-                log.log(response);
-            }).catch(err => log.error(err));
+            const response = await ProfessionalInfo.create(professional);
+
+            log.log(response);
+            setSearcherState(InfoSearcher.FOUND);
         } catch (e) {
-            notifyError((e as Error).message);
             log.error(e);
+            notifyError((e as Error).message);
         }
     };
 
-    const saveModification = () => {
-        ProfessionalInfo.update(
-            userCredientials._id,
-            professional,
-            userCredientials.token
-        ).then(response => {
-            setIsUpdateView(false);
+    const saveModification = async () => {
+        try {
+            const response = await ProfessionalInfo.update(
+                userCredientials._id,
+                professional,
+                userCredientials.token
+            );
+
             log.log(response);
-        }).catch(err => log.error(err));
+            setIsUpdateView(false);
+        } catch (e) {
+            log.error(e);
+            notifyError((e as Error).message);
+        }
     };
 
-    const resetModification = () => {
-        ProfessionalInfo.get(
-            userCredientials._id,
-            userCredientials.token
-        ).then(response => {
+    const resetModification = async () => {
+        try {
+            const response = await ProfessionalInfo.get(
+                userCredientials._id,
+                userCredientials.token
+            );
+
+            log.log(response);
             setProfessional(response.data);
             setIsUpdateView(false);
-            log.log(response);
-        }).catch(err => log.error(err));
+        } catch (e) {
+            log.error(e);
+            notifyError((e as Error).message);
+        }
     };
 
-    const deleteProfessional = () => {
-        ProfessionalInfo.delete(
-            userCredientials._id,
-            userCredientials.token
-        ).then(response => {
+    const deleteProfessional = async () => {
+        try {
+            const response = await ProfessionalInfo.delete(
+                userCredientials._id,
+                userCredientials.token
+            );
+
             setIsDeleted(true);
             log.log(response);
-        }).catch(err => log.error(err));
+        } catch (e) {
+            log.error(e);
+            notifyError((e as Error).message);
+        }
     };
 
     useEffect(() => {
-        ProfessionalInfo.get(
-            userCredientials._id,
+        ProfessionalInfo.getAll(
             userCredientials.token
         ).then(response => {
-            setSearcherState(InfoSearcher.FOUND);
-            setProfessional(response.data);
-            log.log(response);
+            const professional = (response.data as IProfessional[]).find(pro => pro.userId === userCredientials._id);
+
+            if (professional !== undefined) {
+                setSearcherState(InfoSearcher.FOUND);
+                setProfessional(professional);
+                log.log(response);
+            }
         }).catch(err => {
             setSearcherState(InfoSearcher.NOTFOUND);
             log.error(err);
