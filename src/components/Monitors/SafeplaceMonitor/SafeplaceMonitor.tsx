@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux';
-import { Safeplaces } from '../../../services';
+import { Safeplace } from '../../../services';
 import ISafeplace from '../../interfaces/ISafeplace';
 import {
     List,
@@ -138,7 +138,7 @@ const SafeplaceMonitor: React.FC = () => {
 
     const saveSafeplaceModification = async (safeplace: ISafeplace) => {
         try {
-            await Safeplaces.update(safeplace.id, safeplace, userCredientials.token);
+            await Safeplace.update(safeplace.id, safeplace, userCredientials.token);
             setSafeplace(focusSafeplace as ISafeplace);
             setFocusSafeplace(undefined);
         } catch (e) {
@@ -148,7 +148,7 @@ const SafeplaceMonitor: React.FC = () => {
 
     const deleteSafeplace = async (safeplace: ISafeplace) => {
         try {
-            await Safeplaces.delete(safeplace.id, userCredientials.token);
+            await Safeplace.delete(safeplace.id, userCredientials.token);
             removeSafeplace(safeplace);
             setFocusSafeplace(undefined);
         } catch (e) {
@@ -157,7 +157,7 @@ const SafeplaceMonitor: React.FC = () => {
     };
 
     useEffect(() => {
-        Safeplaces.getAll().then(response => {
+        Safeplace.getAll().then(response => {
             const gotSafeplaces = response.data.map(safeplace => ({
                 id: safeplace._id,
                 name: safeplace.name,

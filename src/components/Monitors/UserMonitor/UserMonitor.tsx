@@ -160,61 +160,57 @@ const UserMonitor: React.FC = () => {
         setUsers(users.filter(userElement => userElement.id !== user.id));
     };
 
-    const createNewUser = (user: IUser) => {
+    const createNewUser = async (user: IUser) => {
         try {
-            User.register(user).then(response => {
-                const createdUser = {
-                    ...user,
-                    id: response.data._id,
-                    password: undefined,
-                    confirmedPassword: undefined
-                };
+            const response = await User.register(user);
+            const createdUser = {
+                ...user,
+                id: response.data._id,
+                password: undefined,
+                confirmedPassword: undefined
+            };
 
-                log.log(response);
-                addUser(createdUser);
-                saveUserModification(createdUser);
-            }).catch(error => {
-                log.error(error);
-                notifyError(error);
-            });
+            log.log(response);
+            addUser(createdUser);
+            saveUserModification(createdUser);
         } catch (e) {
+            log.error(e);
             notifyError((e as Error).message);
         }
     };
 
-    const saveUserModification = (user: IUser) => {
+    const saveUserModification = async (user: IUser) => {
         try {
-            User.update(user.id, user, userCredientials.token)
-                .then(response => {
-                    log.log(response);
-                    setUser(focusUser as IUser);
-                    setFocusUser(undefined);
-                    setNewUser({
-                        id: "",
-                        username: "",
-                        email: "",
-                        role: "user",
-                        password: "",
-                        confirmedPassword: ""
-                    });
-                }).catch(error => {
-                    log.error(error);
-                    notifyError(error);
-                });
+            const response = await User.update(user.id, user, userCredientials.token);
+
+            log.log(response);
+            setUser(focusUser as IUser);
+            setFocusUser(undefined);
+            setNewUser({
+                id: "",
+                username: "",
+                email: "",
+                role: "user",
+                password: "",
+                confirmedPassword: ""
+            });
         } catch (e) {
+            log.error(e);
             notifyError((e as Error).message);
         }
     };
 
-    const deleteUser = (user: IUser) => {
-        User.delete(user.id, userCredientials.token)
-            .then(response => {
-                log.log(response);
-                removeUser(user);
-                setFocusUser(undefined);
-            }).catch(error => {
-                log.error(error);
-            });
+    const deleteUser = async (user: IUser) => {
+        try {
+            const response = await User.delete(user.id, userCredientials.token);
+
+            log.log(response);
+            removeUser(user);
+            setFocusUser(undefined);
+        } catch (e) {
+            log.error(e);
+            notifyError((e as Error).message);
+        }
     };
 
     const filterUsers = (): IUser[] => {

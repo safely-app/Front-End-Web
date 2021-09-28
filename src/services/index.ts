@@ -1,7 +1,7 @@
 import User from './User';
-import Safeplaces from './Safeplace';
+import Safeplace from './Safeplace';
 
 export {
     User,
-    Safeplaces
+    Safeplace
 };

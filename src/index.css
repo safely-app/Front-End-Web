@@ -32,3 +32,12 @@ code {
     padding-right: 20%;
     width: 60%;
 }
+
+#mapid {
+    height: 600px;
+}
+
+.leaflet-container {
+    width: 100%;
+    height: 600px;
+}

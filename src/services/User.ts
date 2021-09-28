@@ -17,12 +17,13 @@ class User {
         return createHttpConfig(this.baseURL, token).get(`/user/${id}`);
     }
 
-    update(id: string, data: IUser, token: string) {
+    update(_id: string, data: IUser, token: string) {
+        const { id, ...idLessData } = data;
         const validateUser = isUserValid(data);
 
         if (validateUser.isValid === false)
             throw new Error(validateUser.error);
-        return createHttpConfig(this.baseURL, token).put(`/user/${id}`, data);
+        return createHttpConfig(this.baseURL, token).put(`/user/${_id}`, idLessData);
     }
 
     delete(id: string, token: string) {

@@ -1,13 +1,13 @@
 import IUser from '../components/interfaces/IUser';
-import { Safeplaces } from './index';
-import nock from 'nock';
+import { Safeplace } from './index';
 import ISafeplace from '../components/interfaces/ISafeplace';
+import nock from 'nock';
 
-const baseURL = 'https://api.safely-app.fr';
+const baseURL = process.env.REACT_APP_SERVER_URL as string;
 
 test('get all safeplaces', async () => {
     const scope = nock(baseURL)
-        .get('/safeplace')
+        .get('/safeplace/safeplace')
         .reply(200, [
             { id: "1", name: "kebab" },
             { id: "2", name: "marché" },
@@ -17,51 +17,51 @@ test('get all safeplaces', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const response = await Safeplaces.getAll();
+    const response = await Safeplace.getAll();
     expect(response.status).toEqual(200);
     scope.done();
 });
 
 test('get safeplace', async () => {
     const scope = nock(baseURL)
-        .get('/safeplace/1')
+        .get('/safeplace/safeplace/1')
         .reply(200, {
             id: "1", name: "kebab"
         }, {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const response = await Safeplaces.get("1");
+    const response = await Safeplace.get("1");
     expect(response.status).toEqual(200);
     scope.done();
 });
 
 test('update safeplace', async () => {
     const scopeOptions = nock(baseURL)
-        .options('/safeplace/1')
+        .options('/safeplace/safeplace/1')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
 
     const scope = nock(baseURL)
-        .put('/safeplace/1')
+        .put('/safeplace/safeplace/1')
         .reply(200, {
             id: "1", name: "kebab"
         }, {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const safeplace: ISafeplace = {
+    const data: ISafeplace = {
         id: "1",
-        name: "",
-        city: "",
-        address: "",
-        type: "",
+        name: "Magasin stylé",
+        city: "Paris",
+        address: "12 Avenue de la Poiscaille",
+        type: "Top",
         dayTimetable: [],
         coordinate: []
     };
 
-    const response = await Safeplaces.update("1", safeplace, "");
+    const response = await Safeplace.update("1", data, "");
     expect(response.status).toEqual(200);
     scopeOptions.done();
     scope.done();
@@ -69,20 +69,20 @@ test('update safeplace', async () => {
 
 test('delete safeplace', async () => {
     const scopeOptions = nock(baseURL)
-        .options('/safeplace/1')
+        .options('/safeplace/safeplace/1')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
 
     const scope = nock(baseURL)
-        .delete('/safeplace/1')
+        .delete('/safeplace/safeplace/1')
         .reply(200, {
             id: "1", name: "kebab"
         }, {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const response = await Safeplaces.delete("1", "");
+    const response = await Safeplace.delete("1", "");
     expect(response.status).toEqual(200);
     scopeOptions.done();
     scope.done();
