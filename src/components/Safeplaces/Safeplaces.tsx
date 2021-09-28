@@ -64,7 +64,10 @@ const Safeplaces: React.FC = () => {
                 id: '',
                 userId: userCredientials._id,
                 safeplaceId: safeplace.id,
-                status: 'Pending'
+                safeplaceName: safeplace.name,
+                status: 'Pending',
+                safeplaceDescription: (safeplace?.description !== undefined) ? safeplace?.description : "Vide",
+                coordinate: safeplace.coordinate
             }, userCredientials.token);
 
             log.log(response);

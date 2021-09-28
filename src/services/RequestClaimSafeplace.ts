@@ -6,23 +6,25 @@ class RequestClaimSafeplace {
     private readonly baseURL: string = process.env.REACT_APP_SERVER_URL as string;
 
     getAll(token: string) {
-        return createHttpConfig(this.baseURL, token).get("/requestClaimSafeplace");
+        return createHttpConfig(this.baseURL, token).get("/safeplace/requestClaimSafeplace");
     }
 
     get(id: string, token: string) {
-        return createHttpConfig(this.baseURL, token).get(`/requestClaimSafeplace/${id}`);
+        return createHttpConfig(this.baseURL, token).get(`/safeplace/requestClaimSafeplace/${id}`);
     }
 
     create(data: IRequestClaimSafeplace, token: string) {
-        return createHttpConfig(this.baseURL, token).post("/requestClaimSafeplace", data);
+        const { id, ...tmpData } = data;
+        return createHttpConfig(this.baseURL, token).post("/safeplace/requestClaimSafeplace", tmpData);
     }
 
-    update(id: string, data: IRequestClaimSafeplace, token: string) {
-        return createHttpConfig(this.baseURL, token).put(`/requestClaimSafeplace/${id}`, data);
+    update(_id: string, data: IRequestClaimSafeplace, token: string) {
+        const { id, ...tmpData } = data;
+        return createHttpConfig(this.baseURL, token).put(`/safeplace/requestClaimSafeplace/${id}`, tmpData);
     }
 
     delete(id: string, token: string) {
-        return createHttpConfig(this.baseURL, token).delete(`/requestClaimSafeplace/${id}`);
+        return createHttpConfig(this.baseURL, token).delete(`/safeplace/requestClaimSafeplace/${id}`);
     }
 }
 

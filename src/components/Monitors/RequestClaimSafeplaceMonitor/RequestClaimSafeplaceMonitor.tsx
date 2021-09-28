@@ -64,7 +64,7 @@ const RequestClaimSafeplaceInfoForm: React.FC<IRequestClaimSafeplaceInfoProps> =
     const setComment = (comment: string) => {
         setRequestClaimSafeplace({
             ...requestClaimSafeplace as IRequestClaimSafeplace,
-            comment: comment
+            adminComment: comment
         });
     };
 
@@ -78,7 +78,7 @@ const RequestClaimSafeplaceInfoForm: React.FC<IRequestClaimSafeplaceInfoProps> =
                 <Dropdown key={`${requestClaimSafeplace?.id}-status`} values={REQUEST_STATUS}
                     setValue={setStatus} defaultValue={requestClaimSafeplace?.status as string} />
                 <TextInput key={`${requestClaimSafeplace?.id}-comment`} type="text" role="comment"
-                    label="Commentaire" value={requestClaimSafeplace?.comment !== undefined ? requestClaimSafeplace.comment : ""} setValue={setComment} />
+                    label="Commentaire" value={requestClaimSafeplace?.adminComment !== undefined ? requestClaimSafeplace.adminComment : ""} setValue={setComment} />
                 {buttons.map(button => button)}
                 <ToastContainer />
             </div>
@@ -148,7 +148,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
 
     const refuseRequest = async () => {
         try {
-            const refusedRequest = { ...requestClaimSafeplace, status: REFUSED_REQUEST, comment: refusedMessage };
+            const refusedRequest = { ...requestClaimSafeplace, status: REFUSED_REQUEST, adminComment: refusedMessage };
             const response = await RequestClaimSafeplace.update(
                 requestClaimSafeplace.id,
                 refusedRequest,
@@ -173,7 +173,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                     <li key={`${requestClaimSafeplace.id}-userId`}><b>Identifiant d'utilisateur : </b>{requestClaimSafeplace.userId}</li>
                     <li key={`${requestClaimSafeplace.id}-safeplaceId`}><b>Identifiant de safeplace : </b>{requestClaimSafeplace.safeplaceId}</li>
                     <li key={`${requestClaimSafeplace.id}-status`}><b>Status : </b>{requestClaimSafeplace.status}</li>
-                    <li key={`${requestClaimSafeplace.id}-comment`}><b>Commentaire : </b>{requestClaimSafeplace.comment}</li>
+                    <li key={`${requestClaimSafeplace.id}-comment`}><b>Commentaire : </b>{requestClaimSafeplace.adminComment}</li>
                     <li key={`${requestClaimSafeplace.id}-buttons`}>
                         <div className="RequestClaimSafeplace-grid-container">
                             <Button text="Accepter" onClick={acceptRequest} width="100%"
@@ -287,8 +287,13 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
                 id: "",
                 userId: "",
                 safeplaceId: "",
-                status: "Pending",
-                comment: ""
+                safeplaceName: "",
+                status: "",
+                adminComment: "",
+                safeplaceDescription: "",
+                coordinate: [],
+                adminId: "",
+                userComment: ""
             });
         }
     };
@@ -297,11 +302,15 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         RequestClaimSafeplace.getAll(userCredientials.token).then(response => {
             const gotRequestClaimSafeplaces = response.data.map(requestClaimSafeplace => {
                 return {
-                    id: requestClaimSafeplace.id,
+                    id: requestClaimSafeplace._id,
                     userId: requestClaimSafeplace.userId,
                     safeplaceId: requestClaimSafeplace.safeplaceId,
                     status: requestClaimSafeplace.status,
-                    comment: requestClaimSafeplace.comment
+                    adminComment: requestClaimSafeplace.adminComment,
+                    safeplaceDescription: requestClaimSafeplace.safeplaceDescription,
+                    coordinate: requestClaimSafeplace.coordinate,
+                    adminId: requestClaimSafeplace.adminId,
+                    userComment: requestClaimSafeplace.userComment
                 };
             });
 

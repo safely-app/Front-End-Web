@@ -12,7 +12,7 @@ const testDelay = (ms: number): Promise<void> =>
 
 test('renders requestclaimsafeplace monitor', async () => {
     const scope = nock(baseURL)
-        .get('/requestClaimSafeplace')
+        .get('/safeplace/requestClaimSafeplace')
         .reply(200, [], {
             'Access-Control-Allow-Origin': '*'
         });
@@ -29,7 +29,7 @@ test('renders requestclaimsafeplace monitor', async () => {
 
 test('ensure that create button is working', async () => {
     const scope = nock(baseURL)
-        .get('/requestClaimSafeplace')
+        .get('/safeplace/requestClaimSafeplace')
         .reply(200, [], {
             'Access-Control-Allow-Origin': '*'
         });
@@ -58,10 +58,10 @@ test('ensure that create button is working', async () => {
 
 test('ensure that new request creation occurs without technical errors', async () => {
     const scopeGet = nock(baseURL)
-        .get('/requestClaimSafeplace')
+        .get('/safeplace/requestClaimSafeplace')
         .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
     const scopePost = nock(process.env.REACT_APP_SERVER_URL as string)
-        .post('/requestClaimSafeplace')
+        .post('/safeplace/requestClaimSafeplace')
         .reply(201, {
             message: 'Success'
         }, {
