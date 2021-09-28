@@ -42,5 +42,19 @@
       "dayTimetable": [ null, null, null, null, null, null, null ],
       "type": "market"
     }
+  ],
+  "invoice": [
+    {
+      "id": "1",
+      "userId": "1",
+      "amount": 10,
+      "date": "13-07-2022"
+    },
+    {
+      "id": "2",
+      "userId": "2",
+      "amount": 20,
+      "date": "28-11-2034"
+    }
   ]
 }
