@@ -173,14 +173,18 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                     <li key={`${requestClaimSafeplace.id}-userId`}><b>Identifiant d'utilisateur : </b>{requestClaimSafeplace.userId}</li>
                     <li key={`${requestClaimSafeplace.id}-safeplaceId`}><b>Identifiant de safeplace : </b>{requestClaimSafeplace.safeplaceId}</li>
                     <li key={`${requestClaimSafeplace.id}-status`}><b>Status : </b>{requestClaimSafeplace.status}</li>
-                    <li key={`${requestClaimSafeplace.id}-comment`}><b>Commentaire : </b>{requestClaimSafeplace.adminComment}</li>
+                    <li key={`${requestClaimSafeplace.id}-userComment`}><b>Commentaire utilisateur : </b>{requestClaimSafeplace.userComment}</li>
+                    <li key={`${requestClaimSafeplace.id}-adminComment`}><b>Commentaire administrateur : </b>{requestClaimSafeplace.adminComment}</li>
                     <li key={`${requestClaimSafeplace.id}-buttons`}>
-                        <div className="RequestClaimSafeplace-grid-container">
-                            <Button text="Accepter" onClick={acceptRequest} width="100%"
-                                onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
-                            <Button text="Refuser" onClick={openRefuseModal} width="100%" styleType="warning"
-                                onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
-                        </div>
+                        {requestClaimSafeplace.status !== PENDING_REQUEST
+                            ? <div />
+                            : <div className="RequestClaimSafeplace-grid-container">
+                                <Button text="Accepter" onClick={acceptRequest} width="100%"
+                                    onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
+                                <Button text="Refuser" onClick={openRefuseModal} width="100%" styleType="warning"
+                                    onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
+                            </div>
+                        }
                     </li>
                 </ul>
             </button>
