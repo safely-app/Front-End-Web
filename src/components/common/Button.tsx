@@ -6,13 +6,15 @@ interface IButtonProps {
     onClick: () => void;
     width?: string;
     type?: string;
+    disabled?: boolean;
 }
 
 const Button: React.FC<IButtonProps> = ({
     text,
     onClick,
     width,
-    type
+    type,
+    disabled
 }) => {
 
     const types = {
@@ -31,6 +33,7 @@ const Button: React.FC<IButtonProps> = ({
                 className={type !== undefined ? types[type] : "btn"}
                 style={{ width: width !== undefined ? width : "60%" }}
                 onClick={handleClick}
+                disabled={disabled !== undefined ? disabled : false}
             >
                 {text}
             </button>

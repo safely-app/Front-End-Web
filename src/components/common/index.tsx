@@ -4,6 +4,7 @@ import Dropdown from './Dropdown';
 import SearchBar from './SearchBar';
 import Profile from './Profile';
 import CommonLoader from './Loader';
+import Modal from './Modal';
 
 export {
     TextInput,
@@ -11,5 +12,6 @@ export {
     Dropdown,
     SearchBar,
     Profile,
-    CommonLoader
+    CommonLoader,
+    Modal
 };

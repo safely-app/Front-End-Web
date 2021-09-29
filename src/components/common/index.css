@@ -109,3 +109,19 @@ select {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.modal {
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    position: fixed;
+    padding-bottom: 1em;
+    width: 80%;
+    background-color: #fff;
+    border: #a19b96;
+    border-style: solid;
+    border-radius: 8px;
+}

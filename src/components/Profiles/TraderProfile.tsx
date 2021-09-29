@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Profile, TextInput, Button, CommonLoader } from '../common';
+import { Profile, TextInput, Button, CommonLoader, Modal } from '../common';
 import IProfessional from '../interfaces/IProfessional';
 import { ProfessionalInfo } from '../../services';
 import { AppHeader } from '../Header/Header';
@@ -7,6 +7,7 @@ import { Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { notifyError } from '../utils';
+import Stripe from './Stripe';
 import log from 'loglevel';
 import './Profiles.css';
 
@@ -156,6 +157,7 @@ const TraderProfileFields: React.FC<ITraderProfileFieldsProps> = ({
 const TraderProfile: React.FC = () => {
     const [isDeleted, setIsDeleted] = useState(false);
     const [isUpdateView, setIsUpdateView] = useState(false);
+    const [isStripeOpen, setIsStripeOpen] = useState(false);
     const [isOptionalHidden, setIsOptionalHidden] = useState(true);
     const [searcherState, setSearcherState] = useState(InfoSearcher.SEARCHING);
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
@@ -207,17 +209,20 @@ const TraderProfile: React.FC = () => {
 
     const resetModification = async () => {
         try {
-            const response = await ProfessionalInfo.get(
-                userCredientials._id,
-                userCredientials.token
-            );
+            const response = await ProfessionalInfo.getAll(userCredientials.token);
+            const gotProfessional = (response.data as IProfessional[]).find(pro => pro.userId === userCredientials._id);
+
+            if (gotProfessional === undefined) {
+                throw Error("Commerçant inconnu");
+            }
 
             log.log(response);
-            setProfessional(response.data);
+            setProfessional(gotProfessional);
             setIsUpdateView(false);
         } catch (e) {
             log.error(e);
             notifyError((e as Error).message);
+            setIsUpdateView(false);
         }
     };
 
@@ -246,6 +251,8 @@ const TraderProfile: React.FC = () => {
                 setSearcherState(InfoSearcher.FOUND);
                 setProfessional(professional);
                 log.log(response);
+            } else {
+                setSearcherState(InfoSearcher.NOTFOUND);
             }
         }).catch(err => {
             setSearcherState(InfoSearcher.NOTFOUND);
@@ -276,6 +283,9 @@ const TraderProfile: React.FC = () => {
                     setProfessional={setProfessional}
                     setIsOptionalHidden={setIsOptionalHidden}
                     additionalElements={[
+                        <Button
+                            text="Enregistrer une solution de payement"
+                            onClick={() => setIsStripeOpen(true)} />,
                         isUpdateView
                             ? <Button text="Sauvegarder" onClick={saveModification} />
                             : <Button text="Modifier" onClick={() => setIsUpdateView(true)} />,
@@ -291,6 +301,18 @@ const TraderProfile: React.FC = () => {
         <div className="Profile-container">
             <AppHeader />
             {getView(searcherState)}
+            <Modal
+                shown={isStripeOpen}
+                content={
+                    <div style={{ textAlign: 'center', padding: '3em' }}>
+                        <Stripe />
+                        <Button
+                            text="Annuler"
+                            onClick={() => setIsStripeOpen(false)}
+                        />
+                    </div>
+                }
+            />
         </div>
     );
 }
