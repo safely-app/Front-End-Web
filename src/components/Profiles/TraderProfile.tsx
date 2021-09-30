@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
+import { PaymentMethod } from '@stripe/stripe-js';
 import { Profile, TextInput, Button, CommonLoader, Modal } from '../common';
 import IProfessional from '../interfaces/IProfessional';
-import { ProfessionalInfo } from '../../services';
+import IUser from '../interfaces/IUser';
+import {
+    ProfessionalInfo,
+    User,
+    Stripe
+} from '../../services';
 import { AppHeader } from '../Header/Header';
 import { Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux';
 import { notifyError } from '../utils';
-import Stripe from './Stripe';
+import StripeCard from './StripeCard';
 import log from 'loglevel';
 import './Profiles.css';
+import IStripe from '../interfaces/IStripe';
 
 enum InfoSearcher {
     SEARCHING,
@@ -241,6 +248,45 @@ const TraderProfile: React.FC = () => {
         }
     };
 
+    const createStripeUser = async (userObj: IUser): Promise<string> => {
+        const stripeInfo = await Stripe.create({
+            id: '',
+            name: professional.companyName,
+            address: professional.billingAddress,
+            phone: professional.personalPhone,
+            description: ''
+        }, userCredientials.token);
+        const stripeObj = stripeInfo.data as IStripe;
+
+        await User.update(userCredientials._id, {
+            stripeId: stripeObj.id,
+            ...userObj
+        }, userCredientials.token);
+
+        return stripeObj.id;
+    };
+
+    const linkCardToUser = async (value: PaymentMethod) => {
+        try {
+            const userInfo = await User.get(userCredientials._id, userCredientials.token);
+            const userObj = (userInfo.data as IUser);
+
+            if (userObj !== undefined) {
+                const userInfoStripeId = (userObj.stripeId === undefined)
+                    ? await createStripeUser(userObj)
+                    : userObj.stripeId;
+
+                await Stripe.linkCard({
+                    cardId: value.id,
+                    stripeId: userInfoStripeId as string
+                }, userCredientials.token);
+            }
+        } catch (error) {
+            log.error(error);
+            notifyError((error as Error).message);
+        }
+    };
+
     useEffect(() => {
         ProfessionalInfo.getAll(
             userCredientials.token
@@ -305,7 +351,7 @@ const TraderProfile: React.FC = () => {
                 shown={isStripeOpen}
                 content={
                     <div style={{ textAlign: 'center', padding: '3em' }}>
-                        <Stripe />
+                        <StripeCard onSubmit={linkCardToUser} />
                         <Button
                             text="Annuler"
                             onClick={() => setIsStripeOpen(false)}

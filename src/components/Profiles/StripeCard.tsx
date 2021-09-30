@@ -1,5 +1,5 @@
 import React from 'react';
-import { loadStripe, StripeCardElement } from '@stripe/stripe-js';
+import { loadStripe, PaymentMethod, StripeCardElement } from '@stripe/stripe-js';
 import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
 import { notifyError } from '../utils';
 import { Button } from '../common';
@@ -10,7 +10,13 @@ import './Profiles.css';
 // recreating the `Stripe` object on every render.
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC as string);
 
-const CardRegister: React.FC = () => {
+interface ICardRegister {
+    onSubmit: (value: PaymentMethod) => void;
+}
+
+const CardRegister: React.FC<ICardRegister> = ({
+    onSubmit
+}) => {
     const stripe = useStripe();
     const elements = useElements();
 
@@ -41,8 +47,9 @@ const CardRegister: React.FC = () => {
         if (error) {
             log.error(error);
             notifyError(error.message as string);
-        } else {
+        } else if (paymentMethod) {
             log.log("Success!", paymentMethod);
+            onSubmit(paymentMethod);
         }
     };
 
@@ -63,12 +70,18 @@ const CardRegister: React.FC = () => {
     );
 };
 
-const Stripe: React.FC = () => {
+interface IStripe {
+    onSubmit: (value: PaymentMethod) => void;
+}
+
+const StripeCard: React.FC<IStripe> = ({
+    onSubmit
+}) => {
     return (
         <Elements stripe={stripePromise}>
-            <CardRegister />
+            <CardRegister onSubmit={onSubmit} />
         </Elements>
     );
 };
 
-export default Stripe;
+export default StripeCard;
