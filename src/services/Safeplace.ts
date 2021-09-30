@@ -5,12 +5,12 @@ import { isSafeplaceValid } from './utils';
 class Safeplace {
     private readonly baseURL: string = process.env.REACT_APP_SERVER_URL as string;
 
-    getAll() {
-        return createHttpConfig(this.baseURL).get("/safeplace/safeplace");
+    getAll(token: string) {
+        return createHttpConfig(this.baseURL, token).get("/safeplace/safeplace");
     }
 
-    get(id: string) {
-        return createHttpConfig(this.baseURL).get(`/safeplace/safeplace/${id}`);
+    get(id: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/safeplace/safeplace/${id}`);
     }
 
     update(id: string, data: ISafeplace, token: string) {

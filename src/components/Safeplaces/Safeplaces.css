@@ -1,0 +1,19 @@
+.Safeplaces-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+}
+
+.Safeplaces-list-element {
+    background-color: white;
+    padding: 1em;
+    margin: 1em;
+}
+
+.Safeplaces-grid-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}

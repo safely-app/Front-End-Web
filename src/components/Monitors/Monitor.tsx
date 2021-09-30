@@ -5,11 +5,13 @@ import './Monitor.css';
 import UserMonitor from './UserMonitor/UserMonitor';
 import SafeplaceMonitor from './SafeplaceMonitor/SafeplaceMonitor';
 import InvoiceMonitor from './InvoiceMonitor/InvoiceMonitor';
+import RequestClaimSafeplace from './RequestClaimSafeplaceMonitor/RequestClaimSafeplaceMonitor';
 
 enum MonitorView {
     USER,
     SAFEPLACE,
-    INVOICE
+    INVOICE,
+    REQUESTCLAIMSAFEPLACE
 }
 
 const Monitor: React.FC = () => {
@@ -17,13 +19,16 @@ const Monitor: React.FC = () => {
     const navBarElements = [
         { text: "Utilisateurs", onClick: () => setView(MonitorView.USER) },
         { text: "Safeplaces", onClick: () => setView(MonitorView.SAFEPLACE) },
-        { text: "Factures", onClick: () => setView(MonitorView.INVOICE) }
+        { text: "Factures", onClick: () => setView(MonitorView.INVOICE) },
+        { text: "Requêtes de safeplace", onClick: () => setView(MonitorView.REQUESTCLAIMSAFEPLACE) }
     ];
 
     const getView = (): JSX.Element => {
         switch (view) {
             case MonitorView.INVOICE:
                 return <InvoiceMonitor />;
+            case MonitorView.REQUESTCLAIMSAFEPLACE:
+                return <RequestClaimSafeplace />;
             case MonitorView.SAFEPLACE:
                 return <SafeplaceMonitor />;
             case MonitorView.USER:

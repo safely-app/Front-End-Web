@@ -56,5 +56,14 @@
       "amount": 20,
       "date": "28-11-2034"
     }
+  ],
+  "requestClaimSafeplace": [
+    {
+      "id": "1",
+      "userId": "1",
+      "safeplaceId": "1",
+      "status": "Pending",
+      "comment": "C'est en attente"
+    }
   ]
 }

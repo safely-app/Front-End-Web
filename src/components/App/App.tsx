@@ -54,7 +54,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         dispatch(getUserInfo(userCredientials._id, userCredientials.token));
-        Safeplace.getAll().then(response => {
+        Safeplace.getAll(userCredientials.token).then(response => {
             const gotSafeplaces = response.data.map(safeplace => ({
                 id: safeplace.id,
                 name: safeplace.name,

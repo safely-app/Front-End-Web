@@ -157,7 +157,7 @@ const SafeplaceMonitor: React.FC = () => {
     };
 
     useEffect(() => {
-        Safeplace.getAll().then(response => {
+        Safeplace.getAll(userCredientials.token).then(response => {
             const gotSafeplaces = response.data.map(safeplace => ({
                 id: safeplace._id,
                 name: safeplace.name,

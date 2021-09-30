@@ -1,6 +1,5 @@
-import IUser from '../components/interfaces/IUser';
-import { Safeplace } from './index';
 import ISafeplace from '../components/interfaces/ISafeplace';
+import { Safeplace } from './index';
 import nock from 'nock';
 
 const baseURL = process.env.REACT_APP_SERVER_URL as string;
@@ -57,7 +56,7 @@ test('update safeplace', async () => {
         city: "Paris",
         address: "12 Avenue de la Poiscaille",
         type: "Top",
-        dayTimetable: [],
+        dayTimetable: [ null, null, null, null, null, null, null ],
         coordinate: []
     };
 
