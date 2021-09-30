@@ -201,7 +201,7 @@ const TraderProfile: React.FC = () => {
     const saveModification = async () => {
         try {
             const response = await ProfessionalInfo.update(
-                userCredientials._id,
+                professional.id as string,
                 professional,
                 userCredientials.token
             );
@@ -291,7 +291,10 @@ const TraderProfile: React.FC = () => {
         ProfessionalInfo.getAll(
             userCredientials.token
         ).then(response => {
-            const professional = (response.data as IProfessional[]).find(pro => pro.userId === userCredientials._id);
+            const professional = response.data.map(pro => ({
+                id: pro._id,
+                ...pro
+            }) as IProfessional).find(pro => pro.userId === userCredientials._id);
 
             if (professional !== undefined) {
                 setSearcherState(InfoSearcher.FOUND);
