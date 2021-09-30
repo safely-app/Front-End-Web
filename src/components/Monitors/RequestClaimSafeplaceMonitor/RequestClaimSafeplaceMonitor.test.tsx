@@ -87,7 +87,11 @@ test('ensure that new request creation occurs without technical errors', async (
         target: { value: '1' }
     });
 
-    fireEvent.change(screen.getByRole('comment'), {
+    fireEvent.change(screen.getByRole('userComment'), {
+        target: { value: 'Test comment' }
+    });
+
+    fireEvent.change(screen.getByRole('adminComment'), {
         target: { value: 'Test comment' }
     });
 
