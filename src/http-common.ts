@@ -1,9 +1,21 @@
 import axios from 'axios';
 
-export const createHttpConfig = (url: string, token?: string) => axios.create({
-    baseURL: url,
+const createHttpConfigWithAuthorization = (baseURL: string, token: string) => axios.create({
+    baseURL: baseURL,
     headers: {
         "Content-type": "application/json",
         Authorization: `Bearer ${token}`
     }
 });
+
+const createHttpConfigWithoutAuthorization = (baseURL: string) => axios.create({
+    baseURL: baseURL,
+    headers: {
+        "Content-type": "application/json"
+    }
+});
+
+export const createHttpConfig = (baseURL: string, token?: string) =>
+    (token !== undefined && token !== "")
+        ? createHttpConfigWithAuthorization(baseURL, token)
+        : createHttpConfigWithoutAuthorization(baseURL);

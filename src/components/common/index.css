@@ -14,18 +14,72 @@
     border-radius: 0.25em;
 }
 
-.select {
-    /* Hide dropdown arrow */
-    appearance: none;
-
+.dropdown-container {
     margin-top: 1em;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 1.2em;
     width: 60%;
-    padding: 1%;
-    font-size: large;
-    border: 1px solid #bbb;
-    border-radius: 0.25em;
-    cursor: pointer;
-    background-color: #fff;
+}
+
+.dropdown-container select {
+    width: 100%;
+    background-color: #a19b96;
+    color: #fff;
+    font-size: inherit;
+    padding: .5em;
+    padding-right: 2.5em;
+    border: 0;
+    margin: 0;
+    border-radius: 3px;
+    text-indent: 0.01px;
+    text-overflow: '';
+    /*Hiding the select arrow for firefox*/
+    -moz-appearance: none;
+    /*Hiding the select arrow for chrome*/
+    -webkit-appearance:none;
+    /*Hiding the select arrow default implementation*/
+    appearance: none;
+}
+
+.dropdown-container select option {
+    width: 100%;
+}
+
+/*Hiding the select arrow for IE10*/
+.dropdown-container select::-ms-expand {
+    display: none;
+}
+
+.dropdown-container::before,
+.dropdown-container::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+}
+
+.dropdown-container::after { /*  Custom dropdown arrow */
+    content: "\25BC";
+    height: 1em;
+    font-size: .625em;
+    line-height: 1;
+    right: 1.2em;
+    top: 50%;
+    margin-top: -.5em;
+}
+
+.dropdown-container::before { /*  Custom dropdown arrow cover */
+    width: 2em;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border-radius: 0 3px 3px 0;
+    background-color: rgba(0,0,0,.2);
+}
+
+.dropdown-container::after {
+    color: rgba(0,0,0,.6);
 }
 
 .list {
@@ -105,4 +159,39 @@
     border: #a19b96;
     border-style: solid;
     border-radius: 8px;
+}
+
+.navbar {
+    padding-left: 1%;
+    padding-right: 1%;
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #fff;
+    margin-top: 1em;
+    border: #a19b96;
+    border-style: solid;
+    border-radius: 8px;
+}
+
+.navbar ul li {
+    float: left;
+}
+
+.navbar-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #bbb;
+    padding: 1em;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.navbar-button:hover {
+    color: #a19b96;
 }

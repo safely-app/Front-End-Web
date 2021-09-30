@@ -8,11 +8,13 @@ import {
     Dropdown,
     List,
     TextInput,
-    Modal
+    Modal,
+    SearchBar
 } from '../../common';
 import log from 'loglevel';
 import {
-    notifyError
+    notifyError,
+    convertStringToRegex
 } from '../../utils';
 import { ToastContainer } from 'react-toastify';
 import './UserMonitor.css';
@@ -72,7 +74,6 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
                     </div>
                 }
                 {buttons.map(button => button)}
-                <ToastContainer />
             </div>
         }/>
     );
@@ -105,9 +106,34 @@ const UserInfoListElement: React.FC<IUserInfoListElementProps> = ({
     );
 }
 
+interface IUserMonitorFilterProps {
+    searchBarValue: string;
+    setDropdownValue: (value: string) => void;
+    setSearchBarValue: (value: string) => void;
+}
+
+const UserMonitorFilter: React.FC<IUserMonitorFilterProps> = ({
+    searchBarValue,
+    setDropdownValue,
+    setSearchBarValue
+}) => {
+    return (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(100, 1fr)', paddingLeft: '1%', paddingRight: '1%' }}>
+            <div style={{ gridColumn: '2 / 10', gridRow: '1' }}>
+                <Dropdown width='100%' defaultValue='all' values={[ 'all', 'user', 'admin' ]} setValue={setDropdownValue} />
+            </div>
+            <div style={{ gridColumn: '11 / 100', gridRow: '1' }}>
+                <SearchBar label="Rechercher un utilisateur" value={searchBarValue} setValue={setSearchBarValue} />
+            </div>
+        </div>
+    );
+};
+
 const UserMonitor: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [focusUser, setFocusUser] = useState<IUser | undefined>(undefined);
+    const [userRole, setUserRole] = useState('all');
+    const [searchText, setSearchText] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [users, setUsers] = useState<IUser[]>([]);
     const [newUser, setNewUser] = useState<IUser>({
@@ -134,61 +160,68 @@ const UserMonitor: React.FC = () => {
         setUsers(users.filter(userElement => userElement.id !== user.id));
     };
 
-    const createNewUser = (user: IUser) => {
+    const createNewUser = async (user: IUser) => {
         try {
-            User.register(user).then(response => {
-                const createdUser = {
-                    ...user,
-                    id: response.data._id,
-                    password: undefined,
-                    confirmedPassword: undefined
-                };
+            const response = await User.register(user);
+            const createdUser = {
+                ...user,
+                id: response.data._id,
+                password: undefined,
+                confirmedPassword: undefined
+            };
 
-                log.log(response);
-                addUser(createdUser);
-                saveUserModification(createdUser);
-            }).catch(error => {
-                log.error(error);
-                notifyError(error);
-            });
+            log.log(response);
+            addUser(createdUser);
+            saveUserModification(createdUser);
         } catch (e) {
+            log.error(e);
             notifyError((e as Error).message);
         }
     };
 
-    const saveUserModification = (user: IUser) => {
+    const saveUserModification = async (user: IUser) => {
         try {
-            User.update(user.id, user, userCredientials.token)
-                .then(response => {
-                    log.log(response);
-                    setUser(focusUser as IUser);
-                    setFocusUser(undefined);
-                    setNewUser({
-                        id: "",
-                        username: "",
-                        email: "",
-                        role: "user",
-                        password: "",
-                        confirmedPassword: ""
-                    });
-                }).catch(error => {
-                    log.error(error);
-                    notifyError(error);
-                });
+            const response = await User.update(user.id, user, userCredientials.token);
+
+            log.log(response);
+            setUser(focusUser as IUser);
+            setFocusUser(undefined);
+            setNewUser({
+                id: "",
+                username: "",
+                email: "",
+                role: "user",
+                password: "",
+                confirmedPassword: ""
+            });
         } catch (e) {
+            log.error(e);
             notifyError((e as Error).message);
         }
     };
 
-    const deleteUser = (user: IUser) => {
-        User.delete(user.id, userCredientials.token)
-            .then(response => {
-                log.log(response);
-                removeUser(user);
-                setFocusUser(undefined);
-            }).catch(error => {
-                log.error(error);
-            });
+    const deleteUser = async (user: IUser) => {
+        try {
+            const response = await User.delete(user.id, userCredientials.token);
+
+            log.log(response);
+            removeUser(user);
+            setFocusUser(undefined);
+        } catch (e) {
+            log.error(e);
+            notifyError((e as Error).message);
+        }
+    };
+
+    const filterUsers = (): IUser[] => {
+        const lowerSearchText = convertStringToRegex(searchText.toLocaleLowerCase());
+
+        return users
+            .filter(user => userRole !== 'all' ? userRole === user.role : true)
+            .filter(user => searchText !== ''
+                ? user.id.toLowerCase().match(lowerSearchText) !== null
+                || user.email.toLowerCase().match(lowerSearchText) !== null
+                || user.username.toLowerCase().match(lowerSearchText) !== null : true);
     };
 
     useEffect(() => {
@@ -211,8 +244,8 @@ const UserMonitor: React.FC = () => {
 
     return (
         <div style={{textAlign: "center"}}>
-            <Button text="Créer un nouvel utilisateur"
-                width="98%" onClick={() => setShowModal(true)} />
+            <Button text="Créer un nouvel utilisateur" width="98%" onClick={() => setShowModal(true)} />
+            <UserMonitorFilter searchBarValue={searchText} setDropdownValue={setUserRole} setSearchBarValue={setSearchText} />
             <UserInfoForm
                 shown={showModal}
                 user={newUser}
@@ -232,7 +265,7 @@ const UserMonitor: React.FC = () => {
                 ]}
             />
             <List
-                items={users}
+                items={filterUsers()}
                 focusItem={focusUser}
                 itemDisplayer={(item) => <UserInfoListElement user={item} onClick={(user: IUser) => setFocusUser(user)} />}
                 itemUpdater={(item) =>

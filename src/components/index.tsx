@@ -4,9 +4,10 @@ import {
     SignOut,
     ResetPassword
 } from './Authentication/Authentication';
-import Monitor from './Monitor/Monitor';
+import Monitor from './Monitors/Monitor';
 import Profile from './Profile/Profile';
-import Safeplace from './Safeplace/Safeplace';
+import Version from './Version/Version';
+import Safeplaces from './Safeplaces/Safeplaces';
 
 export {
     App,
@@ -14,6 +15,7 @@ export {
     SignOut,
     ResetPassword,
     Monitor,
-    Safeplace,
-    Profile
+    Profile,
+    Version,
+    Safeplaces
 };

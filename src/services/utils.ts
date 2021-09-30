@@ -1,3 +1,5 @@
+import ISafeplace from "../components/interfaces/ISafeplace";
+import IInvoice from "../components/interfaces/IInvoice";
 import IUser from "../components/interfaces/IUser";
 
 export const isEmailValid = (email: string): boolean => {
@@ -12,17 +14,48 @@ export const isPasswordValid = (password: string): boolean => {
     return !!password && password.length >= 3;
 };
 
-interface IUserError {
+export const isTimetableValid = (timetable: (string | null)[]): boolean => {
+    if (timetable.length !== 7) {
+        return false;
+    }
+
+    for (let index = 0; index < 7; index++) {
+        console.log(timetable[index]);
+        if (timetable[index] === null) continue;
+        if (timetable[index]?.match(/\d{1,2}h à \d{1,2}h/g) === null)
+            return false;
+    }
+
+    return true;
+};
+
+export const isDateValid = (date: string): boolean => {
+    return date !== "" && date.match(/^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/g) !== null;
+};
+
+interface IError {
     isValid: boolean;
     error?: string;
 }
 
-export const isUserValid = (user: IUser): IUserError => {
+export const isUserValid = (user: IUser): IError => {
     if (!isEmailValid(user.email))
         return { isValid: false, error: "Email invalide" };
     if (!isUsernameValid(user.username))
         return { isValid: false, error: "Nom d'utilisateur invalide" };
     if (user.password !== undefined && !isPasswordValid(user.password))
         return { isValid: false, error: "Mot de passe invalide" };
+    return { isValid: true };
+};
+
+export const isSafeplaceValid = (safeplace: ISafeplace): IError => {
+    if (!isTimetableValid(safeplace.dayTimetable))
+        return { isValid: false, error: "Horaires invalides" };
+    return { isValid: true };
+};
+
+export const isInvoiceValid = (invoice: IInvoice): IError => {
+    if (!isDateValid(invoice.date))
+        return { isValid: false, error: "Date invalide" };
     return { isValid: true };
 };

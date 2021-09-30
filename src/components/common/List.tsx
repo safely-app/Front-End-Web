@@ -4,8 +4,8 @@ import './index.css';
 interface IListProps {
     items: any[];
     itemDisplayer: (item: any) => JSX.Element;
-    itemUpdater: (item: any) => JSX.Element;
-    focusItem: any | undefined;
+    itemUpdater?: (item: any) => JSX.Element;
+    focusItem?: any | undefined;
 }
 
 const List: React.FC<IListProps> = ({
@@ -16,10 +16,10 @@ const List: React.FC<IListProps> = ({
 }) => {
     return (
         <div>
-            {(focusItem !== undefined) && itemUpdater(focusItem)}
+            {(focusItem !== undefined) && itemUpdater !== undefined && itemUpdater(focusItem)}
             <ul className="list">
-                {items.map(item => {
-                    return itemDisplayer(item);
+                {items.map((item, index) => {
+                    return <li key={index}>{itemDisplayer(item)}</li>;
                 })}
             </ul>
         </div>
