@@ -5,4 +5,5 @@ export default interface IUser {
     role: string;
     password?: string;
     confirmedPassword?: string;
+    stripeId?: string;
 }
