@@ -9,17 +9,12 @@ import {
     Modal,
     TextInput
 } from '../common';
-import { convertStringToRegex, notifyError, notifySuccess, } from '../utils';
+import { notifyError, notifySuccess, } from '../utils';
 import log from 'loglevel';
 import './Safeplaces.css';
 import { Safeplace, RequestClaimSafeplace } from '../../services';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux';
-import {
-    displayTimetable,
-    splitTimetable,
-    displayCoordinates
-} from '../Monitors/SafeplaceMonitor/utils';
 
 interface ISafeplaceInfoProps {
     safeplace: ISafeplace;
@@ -33,14 +28,8 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
     safeplace,
     setSafeplace,
     buttons,
-    shown,
-    onClickClaim
+    shown
 }) => {
-    const handleClick = () => {
-        onClickClaim(safeplace);
-    };
-
-    const [displayedTimetable, setDisplayedTimetable] = useState(displayTimetable(safeplace.dayTimetable));
 
     const setName = (name: string) => {
         setSafeplace({ ...safeplace, name: name });
@@ -52,28 +41,6 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
 
     const setAddress = (address: string) => {
         setSafeplace({ ...safeplace, address: address });
-    };
-
-    const setType = (type: string) => {
-        setSafeplace({ ...safeplace, type: type });
-    };
-
-    const setDayTimetable = (dayTimetable: string) => {
-        setDisplayedTimetable(dayTimetable);
-
-        try {
-            setSafeplace({ ...safeplace, dayTimetable: splitTimetable(dayTimetable) });
-        } catch (e) {
-            log.error(e);
-        }
-    };
-
-    const setLatitude = (latitude: string) => {
-        setSafeplace({ ...safeplace, coordinate: [latitude, safeplace.coordinate[1]] });
-    };
-
-    const setLongitude = (longitude: string) => {
-        setSafeplace({ ...safeplace, coordinate: [safeplace.coordinate[0], longitude] });
     };
 
     return (
@@ -131,16 +98,6 @@ const Safeplaces: React.FC = () => {
     const [searchBarValue, setSearchBarValue] = useState<string>('');
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
     const [focusSafeplace, setFocusSafeplace] = useState<ISafeplace | undefined>(undefined);
-
-    const filterSafeplaces = (): ISafeplace[] => {
-        const lowerSearchText = convertStringToRegex(searchBarValue.toLowerCase());
-
-        return safeplaces
-            .filter(safeplace => searchBarValue !== ''
-                ? safeplace.name.toLowerCase().match(lowerSearchText)
-                || safeplace.address.toLowerCase().match(lowerSearchText)
-                || safeplace.city.toLowerCase().match(lowerSearchText) : true);
-    };
 
     const claimSafeplace = async (safeplace: ISafeplace) => {
         try {
