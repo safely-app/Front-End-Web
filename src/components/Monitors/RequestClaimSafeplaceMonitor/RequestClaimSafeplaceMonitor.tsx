@@ -208,7 +208,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                             : <div className="RequestClaimSafeplace-grid-container">
                                 <Button text="Accepter" onClick={acceptRequest} width="100%"
                                     onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
-                                <Button text="Refuser" onClick={openRefuseModal} width="100%" styleType="warning"
+                                <Button text="Refuser" onClick={openRefuseModal} width="100%" type="warning"
                                     onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
                             </div>
                         }
@@ -219,7 +219,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                 <div className="RequestClaimSafeplace-Info">
                     <TextInput type="text" role="comment" label="Commentaire"
                         value={refusedMessage as string} setValue={setRefusedMessage} />
-                    <Button text="Valider" onClick={refuseRequest} styleType="warning" />
+                    <Button text="Valider" onClick={refuseRequest} type="warning" />
                     <Button text="Annuler" onClick={closeRefuseModal} />
                 </div>
             }/>
@@ -402,7 +402,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
                         buttons={[
                             <Button key="save-id" text="Sauvegarder" onClick={() => saveRequestClaimSafeplaceModification(item)} />,
                             <Button key="stop-id" text="Annuler" onClick={onListElementStopButtonClick} />,
-                            <Button key="delete-id" text="Supprimer" onClick={() => deleteRequestClaimSafeplace(item)} styleType="warning" />
+                            <Button key="delete-id" text="Supprimer" onClick={() => deleteRequestClaimSafeplace(item)} type="warning" />
                         ]}
                     />
                 }

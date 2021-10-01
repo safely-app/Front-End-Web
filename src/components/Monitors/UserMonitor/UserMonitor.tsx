@@ -276,7 +276,7 @@ const UserMonitor: React.FC = () => {
                         buttons={[
                             <Button key="save-id" text="Sauvegarder" onClick={() => saveUserModification(item)} />,
                             <Button key="stop-id" text="Annuler" onClick={() => setFocusUser(undefined)} />,
-                            <Button key="delete-id" text="Supprimer" onClick={() => deleteUser(item)} styleType="warning" />
+                            <Button key="delete-id" text="Supprimer" onClick={() => deleteUser(item)} type="warning" />
                         ]}
                     />
                 }

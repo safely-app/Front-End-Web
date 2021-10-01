@@ -18,12 +18,10 @@ enum View {
 
 interface IAuthProps {
     setView: (value: View) => void;
-    notifyError: (msg: string) => void;
 }
 
 const SignInView: React.FC<IAuthProps> = ({
-    setView,
-    notifyError
+    setView
 }) => {
     const dispatch = useDispatch();
     const [email, setEmail] = useState("");
@@ -40,15 +38,14 @@ const SignInView: React.FC<IAuthProps> = ({
             <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <Button text="Se connecter" onClick={handleClick} />
             <Button text="Pas encore inscrit ?" onClick={() => setView(View.SIGNUP)} />
-            <Button text="Mot de passe oublié ?" onClick={() => setView(View.FORGOT)} styleType="link" width="fit-content" />
+            <Button text="Mot de passe oublié ?" onClick={() => setView(View.FORGOT)} type="link" width="fit-content" />
             <ToastContainer />
         </div>
     );
 }
 
 const SignUpView: React.FC<IAuthProps> = ({
-    setView,
-    notifyError
+    setView
 }) => {
     const dispatch = useDispatch();
     const [email, setEmail] = useState("");
@@ -108,11 +105,11 @@ export const Authentication: React.FC = () => {
     const selectView = (): JSX.Element => {
         switch (view) {
             case View.SIGNUP:
-                return <SignUpView notifyError={notifyError} setView={setView} />;
+                return <SignUpView setView={setView} />;
             case View.FORGOT:
                 return <ForgottenPassword />;
             default:
-                return <SignInView notifyError={notifyError} setView={setView} />;
+                return <SignInView setView={setView} />;
         }
     };
 

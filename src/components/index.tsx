@@ -4,18 +4,20 @@ import {
     SignOut,
     ResetPassword
 } from './Authentication/Authentication';
-import Monitor from './Monitors/Monitor';
-import Profile from './Profile/Profile';
 import Version from './Version/Version';
+import UserProfile from './Profiles/UserProfile';
+import TraderProfile from './Profiles/TraderProfile';
 import Safeplaces from './Safeplaces/Safeplaces';
+import Monitor from './Monitors/Monitor';
 
 export {
     App,
     Authentication,
     SignOut,
     ResetPassword,
-    Monitor,
-    Profile,
     Version,
-    Safeplaces
+    Safeplaces,
+    UserProfile,
+    Monitor,
+    TraderProfile
 };

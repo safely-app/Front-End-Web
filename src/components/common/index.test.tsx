@@ -6,7 +6,8 @@ import {
     Dropdown,
     SearchBar,
     List,
-    NavBar
+    NavBar,
+    Profile
 } from './index';
 
 test('simulate click', () => {
@@ -131,4 +132,14 @@ test('test list click', () => {
     expect(screen.getByText("est")).toBeInTheDocument();
     expect(screen.getByText("un")).toBeInTheDocument();
     expect(screen.getByText("exemple")).toBeInTheDocument();
+});
+
+test('test profile component', () => {
+    render(
+        <Profile elements={[
+            <p>Test text</p>
+        ]} />
+    );
+
+    expect(screen.getByText('Test text')).toBeInTheDocument();
 });

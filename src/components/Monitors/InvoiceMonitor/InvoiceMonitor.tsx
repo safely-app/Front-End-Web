@@ -234,7 +234,7 @@ const InvoiceMonitor: React.FC = () => {
                         buttons={[
                             <Button key="save-id" text="Sauvegarder" onClick={() => saveInvoiceModification(item)} />,
                             <Button key="stop-id" text="Annuler" onClick={onStopButtonClick} />,
-                            <Button key="delete-id" text="Supprimer" onClick={() => deleteInvoice(item)} styleType="warning" />
+                            <Button key="delete-id" text="Supprimer" onClick={() => deleteInvoice(item)} type="warning" />
                         ]}
                     />
                 }

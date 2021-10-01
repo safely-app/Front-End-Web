@@ -5,18 +5,20 @@ interface IButtonProps {
     text: string;
     onClick: () => void;
     width?: string;
-    styleType?: string;
+    type?: string;
     onMouseOver?: () => void;
     onMouseOut?: () => void;
+    disabled?: boolean;
 }
 
 const Button: React.FC<IButtonProps> = ({
     text,
     onClick,
     width,
-    styleType,
+    type,
     onMouseOver,
-    onMouseOut
+    onMouseOut,
+    disabled
 }) => {
 
     const styles = {
@@ -40,12 +42,13 @@ const Button: React.FC<IButtonProps> = ({
     return (
         <div>
             <button
-                className={styleType !== undefined ? styles[styleType] : "btn"}
+                className={type !== undefined ? styles[type] : "btn"}
                 style={{ width: width !== undefined ? width : "60%" }}
                 data-testid={`${text}-button-id`}
                 onClick={handleClick}
                 onMouseOver={handleMouseOver}
                 onMouseOut={handleMouseOut}
+                disabled={disabled !== undefined ? disabled : false}
             >
                 {text}
             </button>

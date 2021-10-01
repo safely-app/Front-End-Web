@@ -201,7 +201,7 @@ const Safeplaces: React.FC = () => {
                             buttons={[
                                 <Button key="save-id" text="Publier les modififications" onClick={() => saveSafeplaceModification(item)} />,
                                 <Button key="stop-id" text="Annuler" onClick={() => setFocusSafeplace(undefined)} />,
-                                <Button key="delete-id" text="Dépublier le commerce" onClick={() => deleteSafeplace(item)} styleType="warning" />,
+                                <Button key="delete-id" text="Dépublier le commerce" onClick={() => deleteSafeplace(item)} type="warning" />,
                                 <Button key="archive-id" text="Archiver le commerce" onClick={() => archiveSafeplace(item)} />
                             ]}
                         />

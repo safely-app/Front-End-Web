@@ -3,8 +3,10 @@ import Button from './Button';
 import Dropdown from './Dropdown';
 import SearchBar from './SearchBar';
 import List from './List';
-import Modal from './Modal';
 import NavBar from './NavBar';
+import Profile from './Profile';
+import CommonLoader from './Loader';
+import Modal from './Modal';
 
 export {
     TextInput,
@@ -13,5 +15,7 @@ export {
     SearchBar,
     List,
     Modal,
-    NavBar
+    NavBar,
+    Profile,
+    CommonLoader
 };
