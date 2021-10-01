@@ -260,7 +260,10 @@ const TraderProfile: React.FC = () => {
 
         await User.update(userCredientials._id, {
             stripeId: stripeObj.id,
-            ...userObj
+            id: userObj.id,
+            username: userObj.username,
+            email: userObj.email,
+            role: userObj.role
         }, userCredientials.token);
 
         return stripeObj.id;
@@ -272,14 +275,11 @@ const TraderProfile: React.FC = () => {
             const userObj = (userInfo.data as IUser);
 
             if (userObj !== undefined) {
-                const userInfoStripeId = (userObj.stripeId === undefined)
-                    ? await createStripeUser(userObj)
-                    : userObj.stripeId;
+                if (userObj.stripeId === undefined) {
+                    await createStripeUser(userObj);
+                }
 
-                await Stripe.linkCard({
-                    cardId: value.id,
-                    stripeId: userInfoStripeId as string
-                }, userCredientials.token);
+                await Stripe.linkCard(value.id, userCredientials.token);
             }
         } catch (error) {
             log.error(error);

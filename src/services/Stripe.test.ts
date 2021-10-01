@@ -6,7 +6,7 @@ const baseURL = process.env.REACT_APP_SERVER_URL as string;
 
 test('get stripe by id', async () => {
     const scope = nock(baseURL)
-        .get('/Stripe/user/1')
+        .get('/stripe/stripe/user/1')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
@@ -18,7 +18,7 @@ test('get stripe by id', async () => {
 
 test('create stripe', async () => {
     const scope = nock(baseURL)
-        .post('/Stripe/user')
+        .post('/stripe/stripe/user')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
@@ -38,10 +38,10 @@ test('create stripe', async () => {
 
 test('update stripe by id', async () => {
     const scopeOptions = nock(baseURL)
-        .options('/Stripe/user/1')
+        .options('/stripe/stripe/user/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
     const scope = nock(baseURL)
-        .put('/Stripe/user/1')
+        .put('/stripe/stripe/user/1')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
@@ -62,17 +62,12 @@ test('update stripe by id', async () => {
 
 test('link card to stripe user', async () => {
     const scope = nock(baseURL)
-        .post('/Stripe/cardLink')
+        .post('/stripe/stripe/cardLink')
         .reply(200, {}, {
             'Access-Control-Allow-Origin': '*'
         });
 
-    const data = {
-        cardId: "1",
-        stripeId: "1"
-    };
-
-    const response = await Stripe.linkCard(data, "");
+    const response = await Stripe.linkCard("1", "");
     expect(response.status).toEqual(200);
     scope.done();
 });
