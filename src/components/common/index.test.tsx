@@ -1,13 +1,9 @@
-import React from 'react';
-import { useState } from 'react';
-import { findByLabelText, fireEvent, queryByDisplayValue, queryByRole, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Button } from './index';
 import { TextInput } from './index';
 import { Dropdown } from './index';
 import SearchBar from './SearchBar';
 import List from './List';
-import { User } from '../../services/index';
-import IUser from '../../components/interfaces/IUser';
 
 
 test('simulate click', () => {
@@ -55,7 +51,8 @@ test('test search bar', () => {
     expect(setValue).toHaveBeenCalled();
 });
 
-test('register new user with email not valid', () => {
+test('test list', () => {
+    const handleClick = jest.fn();
     const listOfStrings = [
         "ceci",
         "est",
@@ -63,10 +60,8 @@ test('register new user with email not valid', () => {
         "exemple"
     ];
 
-    const [focusItem, setFocusItem] = useState<string | undefined>(undefined);
-
     const itemDisplayerFunction = (item: string): JSX.Element => {
-        return <p onClick={() => setFocusItem(item)}>{item}</p>;
+        return <p onClick={handleClick}>{item}</p>;
     };
 
     const itemUpdaterFunction = (item: string): JSX.Element => {
@@ -78,7 +73,7 @@ test('register new user with email not valid', () => {
             items={listOfStrings}
             itemDisplayer={itemDisplayerFunction}
             itemUpdater={itemUpdaterFunction}
-            focusItem={focusItem}
+            focusItem={undefined}
         />
     );
 
@@ -86,5 +81,4 @@ test('register new user with email not valid', () => {
     expect(screen.getByText("est")).toBeInTheDocument();
     expect(screen.getByText("un")).toBeInTheDocument();
     expect(screen.getByText("exemple")).toBeInTheDocument();
-    expect(screen.queryByDisplayValue("ceci")).toBeInTheDocument();
 });

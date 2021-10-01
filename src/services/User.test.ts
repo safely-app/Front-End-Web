@@ -61,14 +61,6 @@ test('change password throw invalid password', () => {
 });
 
 it('register new user with no informations', async () => {
-    const scopeRegister = nock(baseURL)
-        .post('/register')
-        .reply(200, {
-            message: 'Success'
-        }, {
-            'Access-Control-Allow-Origin': '*'
-        });
-
     const user: IUser = {
         id: "",
         email: "",
@@ -78,9 +70,9 @@ it('register new user with no informations', async () => {
         role: ""
     };
 
-    const response = await User.register(user);
-    expect(response.status).toEqual(401);
-    scopeRegister.done();
+    expect(() => {
+        User.register(user);
+    }).toThrowError("Email invalide");
 });
 
 it('login user', async () => {
@@ -101,20 +93,12 @@ it('login user', async () => {
 });
 
 it('login user with no informations', async () => {
-    const scopeRegister = nock(baseURL)
-        .post('/login')
-        .reply(200, {
-            message: 'Success'
-        }, {
-            'Access-Control-Allow-Origin': '*'
-        });
-
     const email = '';
     const password = '';
 
-    const response = await User.login(email, password);
-    expect(response.status).toEqual(401);
-    scopeRegister.done();
+    expect(() => {
+        User.login(email, password);
+    }).toThrowError("Email invalide");
 });
 
 test('isUserValid invalid password', async () => {
@@ -149,7 +133,7 @@ test('isUserValid invalid username', async () => {
     }).toThrowError("Nom d'utilisateur invalide");
 });
 
-test('isUserValid invalid password', async () => {
+test('isUserValid invalid email', async () => {
 
     const user: IUser = {
         id: "",

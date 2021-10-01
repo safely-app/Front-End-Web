@@ -1,6 +1,5 @@
 import IUser from '../components/interfaces/IUser';
 import { isUserValid } from './utils';
-import { User } from './index';
 
 test('isUserValid invalid password', async () => {
 
@@ -13,9 +12,11 @@ test('isUserValid invalid password', async () => {
         role: ""
     };
 
-    expect(() => {
-        isUserValid(user);
-    }).toThrowError("Mot de passe invalide");
+    const result = isUserValid(user);
+    expect(result).toEqual({
+        isValid: false,
+        error: "Mot de passe invalide"
+    });
 });
 
 test('isUserValid invalid username', async () => {
@@ -29,23 +30,27 @@ test('isUserValid invalid username', async () => {
         role: ""
     };
 
-    expect(() => {
-        isUserValid(user);
-    }).toThrowError("Nom d'utilisateur invalide");
+    const result = isUserValid(user);
+    expect(result).toEqual({
+        isValid: false,
+        error: "Nom d'utilisateur invalide"
+    });
 });
 
-test('isUserValid invalid password', async () => {
+test('isUserValid invalid email', async () => {
 
     const user: IUser = {
         id: "",
         email: "te",
         username: "test",
         password: "test",
-        confirmedPassword: "test",
+        confirmedPassword: "tes",
         role: ""
     };
 
-    expect(() => {
-        isUserValid(user);
-    }).toThrowError("Email invalide");
+    const result = isUserValid(user);
+    expect(result).toEqual({
+        isValid: false,
+        error: "Email invalide"
+    });
 });
