@@ -5,25 +5,107 @@ import { AppHeader } from '../Header/Header';
 import {
     Button,
     List,
-    SearchBar
+    SearchBar,
+    Modal,
+    TextInput
 } from '../common';
-import { convertStringToRegex, notifyError, notifySuccess } from '../utils';
+import { convertStringToRegex, notifyError, notifySuccess, } from '../utils';
 import log from 'loglevel';
 import './Safeplaces.css';
 import { Safeplace, RequestClaimSafeplace } from '../../services';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux';
+import {
+    displayTimetable,
+    splitTimetable,
+    displayCoordinates
+} from '../Monitors/SafeplaceMonitor/utils';
 
-interface ISafeplaceInfoListElementProps {
+interface ISafeplaceInfoProps {
     safeplace: ISafeplace;
     onClickClaim: (safeplace: ISafeplace) => void;
+    setSafeplace: (safeplace: ISafeplace) => void;
+    buttons: JSX.Element[];
+    shown?: boolean;
 };
 
-const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
+const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
     safeplace,
+    setSafeplace,
+    buttons,
+    shown,
     onClickClaim
 }) => {
     const handleClick = () => {
+        onClickClaim(safeplace);
+    };
+
+    const [displayedTimetable, setDisplayedTimetable] = useState(displayTimetable(safeplace.dayTimetable));
+
+    const setName = (name: string) => {
+        setSafeplace({ ...safeplace, name: name });
+    };
+
+    const setCity = (city: string) => {
+        setSafeplace({ ...safeplace, city: city });
+    };
+
+    const setAddress = (address: string) => {
+        setSafeplace({ ...safeplace, address: address });
+    };
+
+    const setType = (type: string) => {
+        setSafeplace({ ...safeplace, type: type });
+    };
+
+    const setDayTimetable = (dayTimetable: string) => {
+        setDisplayedTimetable(dayTimetable);
+
+        try {
+            setSafeplace({ ...safeplace, dayTimetable: splitTimetable(dayTimetable) });
+        } catch (e) {
+            log.error(e);
+        }
+    };
+
+    const setLatitude = (latitude: string) => {
+        setSafeplace({ ...safeplace, coordinate: [latitude, safeplace.coordinate[1]] });
+    };
+
+    const setLongitude = (longitude: string) => {
+        setSafeplace({ ...safeplace, coordinate: [safeplace.coordinate[0], longitude] });
+    };
+
+    return (
+        <Modal shown={(shown !== undefined) ? shown : true} content={
+            <div className="Safeplace-Info">
+                <TextInput key={`${safeplace.id}-name`} type="text" role="name"
+                    label="Nom de la safeplace" value={safeplace.name} setValue={setName} />
+                <TextInput key={`${safeplace.id}-city`} type="text" role="city"
+                    label="Ville" value={safeplace.city} setValue={setCity} />
+                <TextInput key={`${safeplace.id}-address`} type="text" role="address"
+                    label="Adresse" value={safeplace.address} setValue={setAddress} />
+                {buttons}
+            </div>
+        } />
+    );
+};
+
+interface ISafeplaceInfoListElementProps {
+    safeplace: ISafeplace;
+    onClick: (safeplace: ISafeplace) => void;
+    onClickClaim: (safeplace: ISafeplace) => void;
+}
+
+const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
+    safeplace,
+    onClick,
+    onClickClaim
+}) => {
+    const handleClick = () => {
+        onClick(safeplace);
+    };
+    const handleClickClaim = () => {
         onClickClaim(safeplace);
     };
 
@@ -35,18 +117,20 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
                 <li key={`${safeplace.id}-address`}><b>Adresse : </b>{safeplace.address}</li>
                 <li key={`${safeplace.id}-buttons`}>
                     <div className="Safeplaces-grid-container">
-                        <Button text="Réclamer ce commerce" onClick={handleClick} width="100%" />
+                        <Button text="Réclamer ce commerce" onClick={handleClickClaim} width="100%" />
+                        <Button text="Modifier" onClick={handleClick} width="100%" />
                     </div>
                 </li>
             </ul>
         </li>
     );
-};
+}
 
 const Safeplaces: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [searchBarValue, setSearchBarValue] = useState<string>('');
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
+    const [focusSafeplace, setFocusSafeplace] = useState<ISafeplace | undefined>(undefined);
 
     const filterSafeplaces = (): ISafeplace[] => {
         const lowerSearchText = convertStringToRegex(searchBarValue.toLowerCase());
@@ -98,21 +182,71 @@ const Safeplaces: React.FC = () => {
         })
     }, [userCredientials]);
 
+    const setSafeplace = (safeplace: ISafeplace) => {
+        setSafeplaces(safeplaces.map(safeplaceElement => safeplaceElement.id === safeplace.id ? safeplace : safeplaceElement));
+    };
+
+    const removeSafeplace = (safeplace: ISafeplace) => {
+        setSafeplaces(safeplaces.filter(safeplaceElement => safeplaceElement.id !== safeplace.id));
+    }
+
+    const saveSafeplaceModification = async (safeplace: ISafeplace) => {
+        try {
+            await Safeplace.update(safeplace.id, safeplace, userCredientials.token);
+            setSafeplace(focusSafeplace as ISafeplace);
+            setFocusSafeplace(undefined);
+        } catch (e) {
+            notifyError((e as Error).message);
+        }
+    };
+
+    const deleteSafeplace = async (safeplace: ISafeplace) => {
+        try {
+            await Safeplace.delete(safeplace.id, userCredientials.token);
+            removeSafeplace(safeplace);
+            setFocusSafeplace(undefined);
+        } catch (e) {
+            notifyError((e as Error).message);
+        }
+    };
+
+    const archiveSafeplace = async (safeplace: ISafeplace) => {
+        try {
+            await Safeplace.delete(safeplace.id, userCredientials.token);
+            removeSafeplace(safeplace);
+            setFocusSafeplace(undefined);
+        } catch (e) {
+            notifyError((e as Error).message);
+        }
+    };
+
     return (
         <div>
             <AppHeader />
-            <div style={{textAlign: "center"}}>
+            <div style={{ textAlign: "center" }}>
                 <SearchBar
                     label="Rechercher un commerce"
                     value={searchBarValue}
                     setValue={setSearchBarValue}
                 />
                 <List
-                    items={filterSafeplaces()}
-                    itemDisplayer={(item) =>
-                        <SafeplaceInfoListElement
+                    items={safeplaces}
+                    focusItem={focusSafeplace}
+                    itemDisplayer={(item) => <SafeplaceInfoListElement safeplace={item} onClick={(safeplace: ISafeplace) => setFocusSafeplace(safeplace)} onClickClaim={function (safeplace: ISafeplace): void {
+                        throw new Error('Function not implemented.');
+                    }} />}
+                    itemUpdater={(item) =>
+                        <SafeplaceInfoForm
                             safeplace={item}
+                            shown={focusSafeplace !== undefined}
                             onClickClaim={claimSafeplace}
+                            setSafeplace={setFocusSafeplace}
+                            buttons={[
+                                <Button key="save-id" text="Publier les modififications" onClick={() => saveSafeplaceModification(item)} />,
+                                <Button key="stop-id" text="Annuler" onClick={() => setFocusSafeplace(undefined)} />,
+                                <Button key="delete-id" text="Dépublier le commerce" onClick={() => deleteSafeplace(item)} styleType="warning" />,
+                                <Button key="archive-id" text="Archiver le commerce" onClick={() => archiveSafeplace(item)} />
+                            ]}
                         />
                     }
                 />
