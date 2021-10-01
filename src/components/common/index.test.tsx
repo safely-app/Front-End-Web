@@ -23,10 +23,10 @@ test('simulate click', () => {
 test('simulate TextInput', () => {
     const setValue = jest.fn();
     render(
-        <TextInput type="test" role="test" value="" setValue={setValue} label="test"/>
+        <TextInput type="test" role="test" value="" setValue={setValue} label="test" />
     );
     const TextInputTest = screen.getByRole("test")
-    fireEvent.change(TextInputTest, {target: {value: "test"}});
+    fireEvent.change(TextInputTest, { target: { value: "test" } });
     expect(screen.getByRole("test")).toBeInTheDocument();
     //expect(screen.getByDisplayValue("test")).toBeInTheDocument();
 });
@@ -99,4 +99,36 @@ test('test navbar', () => {
 
     expect(firstFn).toHaveBeenCalled();
     expect(secondFn).toHaveBeenCalled();
+});
+
+test('test list click', () => {
+    const handleClick = jest.fn();
+    const listOfStrings = [
+        "ceci",
+        "est",
+        "un",
+        "exemple"
+    ];
+
+    const itemDisplayerFunction = (item: string): JSX.Element => {
+        return <p onClick={handleClick}>{item}</p>;
+    };
+
+    const itemUpdaterFunction = (item: string): JSX.Element => {
+        return <p>J'ai clické sur : {item}</p>
+    };
+
+    render(
+        <List
+            items={listOfStrings}
+            itemDisplayer={itemDisplayerFunction}
+            itemUpdater={itemUpdaterFunction}
+            focusItem={undefined}
+        />
+    );
+
+    expect(screen.getByText("ceci")).toBeInTheDocument();
+    expect(screen.getByText("est")).toBeInTheDocument();
+    expect(screen.getByText("un")).toBeInTheDocument();
+    expect(screen.getByText("exemple")).toBeInTheDocument();
 });
