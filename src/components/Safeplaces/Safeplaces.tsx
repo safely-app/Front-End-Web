@@ -18,7 +18,6 @@ import { RootState } from '../../redux';
 
 interface ISafeplaceInfoProps {
     safeplace: ISafeplace;
-    onClickClaim: (safeplace: ISafeplace) => void;
     setSafeplace: (safeplace: ISafeplace) => void;
     buttons: JSX.Element[];
     shown?: boolean;
@@ -189,14 +188,11 @@ const Safeplaces: React.FC = () => {
                 <List
                     items={safeplaces}
                     focusItem={focusSafeplace}
-                    itemDisplayer={(item) => <SafeplaceInfoListElement safeplace={item} onClick={(safeplace: ISafeplace) => setFocusSafeplace(safeplace)} onClickClaim={function (safeplace: ISafeplace): void {
-                        throw new Error('Function not implemented.');
-                    }} />}
+                    itemDisplayer={(item) => <SafeplaceInfoListElement safeplace={item} onClick={safeplace => setFocusSafeplace(safeplace)} onClickClaim={claimSafeplace} />}
                     itemUpdater={(item) =>
                         <SafeplaceInfoForm
                             safeplace={item}
                             shown={focusSafeplace !== undefined}
-                            onClickClaim={claimSafeplace}
                             setSafeplace={setFocusSafeplace}
                             buttons={[
                                 <Button key="save-id" text="Publier les modififications" onClick={() => saveSafeplaceModification(item)} />,
