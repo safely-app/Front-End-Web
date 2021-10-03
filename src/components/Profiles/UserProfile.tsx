@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { User } from '../../services';
-import { AppHeader } from '../Header/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import { disconnectUser, RootState } from '../../redux';
 import IUser from '../interfaces/IUser';
-import './Profile.css';
-import { ToastContainer } from 'react-toastify';
-import { TextInput, Button } from '../common';
+import { TextInput, Button, Profile } from '../common';
+import { AppHeader } from "../Header/Header";
 import { Redirect } from 'react-router-dom';
 import {
     notifyError
 } from '../utils';
 import log from 'loglevel';
 
-const Profile: React.FC = () => {
+const UserProfile: React.FC = () => {
     const dispatch = useDispatch();
     const userInfo = useSelector((state: RootState) => state.user.userInfo);
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
@@ -83,19 +81,16 @@ const Profile: React.FC = () => {
     return (
         <div className="Profile-container">
             <AppHeader />
-            <div className="Profile">
-                <TextInput type="text" role="username" label="Nom d'utilisateur" value={user.username} setValue={setUsername} readonly={!isUpdateView} />
-                <TextInput type="text" role="email" label="Adresse email" value={user.email} setValue={setEmail} readonly={!isUpdateView} />
-                {isUpdateView
-                    ? <Button text="Sauvegarder" onClick={saveUserModification} />
-                    : <Button text="Modifier" onClick={updateIsUpdateView} /> }
-                {isUpdateView && <Button text="Annuler" onClick={updateIsUpdateView} /> }
-                <Button text="Supprimer" onClick={deleteUser} styleType="warning" />
-                {isUserDeleted && <Redirect to="/" />}
-                <ToastContainer />
-            </div>
+            <Profile elements={[
+                <TextInput type="text" role="username" label="Nom d'utilisateur" value={user.username} setValue={setUsername} readonly={!isUpdateView} />,
+                <TextInput type="text" role="email" label="Adresse email" value={user.email} setValue={setEmail} readonly={!isUpdateView} />,
+                isUpdateView ? <Button text="Sauvegarder" onClick={saveUserModification} /> : <Button text="Modifier" onClick={updateIsUpdateView} />,
+                isUpdateView ? <Button text="Annuler" onClick={updateIsUpdateView} /> : <div />,
+                <Button text="Supprimer" onClick={deleteUser} type="warning" />,
+                isUserDeleted ? <Redirect to="/" /> : <div />
+            ]} />
         </div>
     );
 }
 
-export default Profile;
+export default UserProfile;

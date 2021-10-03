@@ -190,7 +190,7 @@ const SafeplaceMonitor: React.FC = () => {
                         buttons={[
                             <Button key="save-id" text="Sauvegarder" onClick={() => saveSafeplaceModification(item)} />,
                             <Button key="stop-id" text="Annuler" onClick={() => setFocusSafeplace(undefined)} />,
-                            <Button key="delete-id" text="Supprimer" onClick={() => deleteSafeplace(item)} styleType="warning" />
+                            <Button key="delete-id" text="Supprimer" onClick={() => deleteSafeplace(item)} type="warning" />
                         ]}
                     />
                 }
