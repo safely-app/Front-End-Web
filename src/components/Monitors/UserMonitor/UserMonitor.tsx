@@ -117,10 +117,16 @@ const UserMonitorFilter: React.FC<IUserMonitorFilterProps> = ({
     setDropdownValue,
     setSearchBarValue
 }) => {
+    const USER_ROLES = [
+        'all',
+        'user',
+        'admin'
+    ];
+
     return (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(100, 1fr)', paddingLeft: '1%', paddingRight: '1%' }}>
             <div style={{ gridColumn: '2 / 10', gridRow: '1' }}>
-                <Dropdown width='100%' defaultValue='all' values={[ 'all', 'user', 'admin' ]} setValue={setDropdownValue} />
+                <Dropdown width='100%' defaultValue='all' values={USER_ROLES} setValue={setDropdownValue} />
             </div>
             <div style={{ gridColumn: '11 / 100', gridRow: '1' }}>
                 <SearchBar label="Rechercher un utilisateur" value={searchBarValue} setValue={setSearchBarValue} />
