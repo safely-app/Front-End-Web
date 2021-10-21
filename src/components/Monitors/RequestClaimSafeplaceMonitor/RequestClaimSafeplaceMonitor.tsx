@@ -8,11 +8,13 @@ import {
     Dropdown,
     List,
     TextInput,
-    Modal
+    Modal,
+    SearchBar
 } from '../../common';
 import log from 'loglevel';
 import {
-    notifyError
+    notifyError,
+    convertStringToRegex
 } from '../../utils';
 import { ToastContainer } from 'react-toastify';
 import './RequestClaimSafeplaceMonitor.css';
@@ -227,12 +229,44 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
     );
 };
 
+interface IRequestClaimSafeplaceMonitorFilterProps {
+    searchBarValue: string;
+    setDropdownValue: (value: string) => void;
+    setSearchBarValue: (value: string) => void;
+}
+
+const RequestClaimSafeplaceMonitorFilter: React.FC<IRequestClaimSafeplaceMonitorFilterProps> = ({
+    searchBarValue,
+    setDropdownValue,
+    setSearchBarValue
+}) => {
+    const REQUEST_TYPES = [
+        'all',
+        PENDING_REQUEST,
+        ACCEPTED_REQUEST,
+        REFUSED_REQUEST
+    ];
+
+    return (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(100, 1fr)', paddingLeft: '1%', paddingRight: '1%' }}>
+            <div style={{ gridColumn: '2 / 10', gridRow: '1' }}>
+                <Dropdown width='100%' defaultValue='all' values={REQUEST_TYPES} setValue={setDropdownValue} />
+            </div>
+            <div style={{ gridColumn: '11 / 100', gridRow: '1' }}>
+                <SearchBar label="Rechercher un utilisateur" value={searchBarValue} setValue={setSearchBarValue} />
+            </div>
+        </div>
+    );
+};
+
 const RequestClaimSafeplaceMonitor: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [focusRequestClaimSafeplace, setFocusRequestClaimSafeplace] = useState<IRequestClaimSafeplace | undefined>(undefined);
     const [newRequestClaimSafeplace, setNewRequestClaimSafeplace] = useState<IRequestClaimSafeplace | undefined>(undefined);
     const [requestClaimSafeplaces, setRequestClaimSafeplaces] = useState<IRequestClaimSafeplace[]>([]);
+    const [requestClaimSafeplaceStatus, setRequestClaimSafeplaceStatus] = useState('all');
     const [showModal, setShowModal] = useState(false);
+    const [searchText, setSearchText] = useState('');
 
     const addRequestClaimSafeplace = (requestClaimSafeplace: IRequestClaimSafeplace) => {
         setRequestClaimSafeplaces([
@@ -340,6 +374,23 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         }
     };
 
+    const filterRequestClaimSafeplaces = (): IRequestClaimSafeplace[] => {
+        const lowerSearchText = convertStringToRegex(searchText.toLocaleLowerCase());
+
+        return requestClaimSafeplaces
+            .filter(requestClaimSafeplace => requestClaimSafeplaceStatus !== 'all' ? requestClaimSafeplaceStatus === requestClaimSafeplace.status : true)
+            .filter(requestClaimSafeplace => searchText !== ''
+                ? requestClaimSafeplace.id.toLowerCase().match(lowerSearchText) !== null
+                || requestClaimSafeplace.userId.toLowerCase().match(lowerSearchText) !== null
+                || requestClaimSafeplace.safeplaceId.toLowerCase().match(lowerSearchText) !== null
+                || requestClaimSafeplace.safeplaceName.toLowerCase().match(lowerSearchText) !== null
+                || requestClaimSafeplace.safeplaceDescription.toLowerCase().match(lowerSearchText) !== null
+                || (requestClaimSafeplace.adminId !== undefined && requestClaimSafeplace.adminId.toLowerCase().match(lowerSearchText) !== null)
+                || (requestClaimSafeplace.userComment !== undefined && requestClaimSafeplace.userComment.toLowerCase().match(lowerSearchText) !== null)
+                || (requestClaimSafeplace.adminComment !== undefined && requestClaimSafeplace.adminComment.toLowerCase().match(lowerSearchText) !== null)
+                : true);
+    };
+
     useEffect(() => {
         RequestClaimSafeplace.getAll(userCredientials.token).then(response => {
             const gotRequestClaimSafeplaces = response.data.map(requestClaimSafeplace => ({
@@ -366,6 +417,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         <div style={{textAlign: "center"}}>
             <Button text="Créer une nouvelle requête de safeplace"
                 width="98%" onClick={onCreateButtonClick} />
+            <RequestClaimSafeplaceMonitorFilter searchBarValue={searchText} setDropdownValue={setRequestClaimSafeplaceStatus} setSearchBarValue={setSearchText} />
             <RequestClaimSafeplaceInfoForm
                 shown={newRequestClaimSafeplace !== undefined}
                 requestClaimSafeplace={newRequestClaimSafeplace as IRequestClaimSafeplace}
@@ -383,7 +435,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
                 ]}
             />
             <List
-                items={requestClaimSafeplaces}
+                items={filterRequestClaimSafeplaces()}
                 focusItem={focusRequestClaimSafeplace}
                 itemDisplayer={(item) =>
                     <RequestClaimSafeplaceInfoListElement
