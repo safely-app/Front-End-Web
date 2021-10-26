@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserInfo, RootState } from '../../redux';
+import {
+    setInfo,
+    useAppSelector,
+    useAppDispatch
+} from '../../redux';
 import ISafeplace from '../interfaces/ISafeplace';
 import { AppHeader } from '../Header/Header';
-import { Safeplace } from '../../services';
+import { Safeplace, User } from '../../services';
+import { notifyError } from '../utils';
 import log from 'loglevel';
 import {
     MapContainer,
@@ -48,12 +52,17 @@ export const Map: React.FC<IMapProps> = ({
 };
 
 const App: React.FC = () => {
-    const dispatch = useDispatch();
-    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const dispatch = useAppDispatch();
+    const userCredientials = useAppSelector(state => state.user.credentials);
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
 
-    useEffect(() => {
-        dispatch(getUserInfo(userCredientials._id, userCredientials.token));
+    const getUserInfo = () => {
+        User.get(userCredientials._id, userCredientials.token)
+            .then(response => dispatch(setInfo(response.data)))
+            .catch(error => notifyError(error.message));
+    };
+
+    const getSafeplaces = () => {
         Safeplace.getAll(userCredientials.token).then(response => {
             const gotSafeplaces = response.data.map(safeplace => ({
                 id: safeplace.id,
@@ -69,6 +78,11 @@ const App: React.FC = () => {
         }).catch(error => {
             log.error(error);
         });
+    };
+
+    useEffect(() => {
+        getUserInfo();
+        getSafeplaces();
     }, [userCredientials, dispatch]);
 
     return (
