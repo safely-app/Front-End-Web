@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+    useState,
+    useEffect
+} from 'react';
 import {
     setInfo,
     useAppSelector,
@@ -56,31 +59,31 @@ const App: React.FC = () => {
     const userCredientials = useAppSelector(state => state.user.credentials);
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
 
-    const getUserInfo = () => {
-        User.get(userCredientials._id, userCredientials.token)
-            .then(response => dispatch(setInfo(response.data)))
-            .catch(error => notifyError(error.message));
-    };
-
-    const getSafeplaces = () => {
-        Safeplace.getAll(userCredientials.token).then(response => {
-            const gotSafeplaces = response.data.map(safeplace => ({
-                id: safeplace.id,
-                name: safeplace.name,
-                city: safeplace.city,
-                address: safeplace.address,
-                type: safeplace.type,
-                dayTimetable: safeplace.dayTimetable,
-                coordinate: safeplace.coordinate
-            }));
-
-            setSafeplaces(gotSafeplaces);
-        }).catch(error => {
-            log.error(error);
-        });
-    };
-
     useEffect(() => {
+        const getUserInfo = () => {
+            User.get(userCredientials._id, userCredientials.token)
+                .then(response => dispatch(setInfo(response.data)))
+                .catch(error => notifyError(error.message));
+        };
+
+        const getSafeplaces = () => {
+            Safeplace.getAll(userCredientials.token).then(response => {
+                const gotSafeplaces = response.data.map(safeplace => ({
+                    id: safeplace.id,
+                    name: safeplace.name,
+                    city: safeplace.city,
+                    address: safeplace.address,
+                    type: safeplace.type,
+                    dayTimetable: safeplace.dayTimetable,
+                    coordinate: safeplace.coordinate
+                }));
+
+                setSafeplaces(gotSafeplaces);
+            }).catch(error => {
+                log.error(error);
+            });
+        };
+
         getUserInfo();
         getSafeplaces();
     }, [userCredientials, dispatch]);
