@@ -96,7 +96,7 @@ test('ensure that safeplace filtering is working', async () => {
     const safeplaceTypeDropdown = screen.getByTestId('all-dropdown-id');
     const safeplaceTypeInfoSearchBar = screen.getByRole('search-bar');
 
-    await act(async () => await testDelay(2000));
+    await act(async () => await testDelay(1000));
     expect(safeplaceTypeDropdown).toBeInTheDocument();
     expect(safeplaceTypeInfoSearchBar).toBeInTheDocument();
 
@@ -111,7 +111,7 @@ test('ensure that safeplace filtering is working', async () => {
     expect(screen.getByDisplayValue('flan')).toBeInTheDocument();
     expect(screen.getByDisplayValue('market')).toBeInTheDocument();
 
-    await act(async () => await testDelay(2000));
+    await act(async () => await testDelay(1000));
 
     expect(screen.queryByText('cookie')).toBeNull();
 
@@ -134,7 +134,7 @@ test('ensure that invalid input does not crash the safeplace filtering', async (
     const userTypeDropdown = screen.getByTestId('all-dropdown-id');
     const userInfoSearchBar = screen.getByRole('search-bar');
 
-    await act(async () => await testDelay(2000));
+    await act(async () => await testDelay(1000));
     expect(userInfoSearchBar).toBeInTheDocument();
     expect(userTypeDropdown).toBeInTheDocument();
 
@@ -144,6 +144,6 @@ test('ensure that invalid input does not crash the safeplace filtering', async (
 
     expect(screen.getByDisplayValue('eujffeojwefokfewkpo[')).toBeInTheDocument();
 
-    await act(async () => await testDelay(2000));
+    await act(async () => await testDelay(1000));
     scope.done();
 });
