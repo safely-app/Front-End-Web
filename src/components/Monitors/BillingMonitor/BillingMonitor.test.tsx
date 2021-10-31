@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { store } from '../../../redux';
-import InvoiceMonitor from './InvoiceMonitor';
+import InvoiceMonitor from './BillingMonitor';
 import nock from 'nock';
 
 const testDelay = (ms: number): Promise<void> =>
