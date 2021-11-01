@@ -253,7 +253,7 @@ const RequestClaimSafeplaceMonitorFilter: React.FC<IRequestClaimSafeplaceMonitor
                 <Dropdown width='100%' defaultValue='all' values={REQUEST_TYPES} setValue={setDropdownValue} />
             </div>
             <div style={{ gridColumn: '11 / 100', gridRow: '1' }}>
-                <SearchBar label="Rechercher un utilisateur" value={searchBarValue} setValue={setSearchBarValue} />
+                <SearchBar label="Rechercher une requête de safeplace" value={searchBarValue} setValue={setSearchBarValue} />
             </div>
         </div>
     );
