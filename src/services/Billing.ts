@@ -26,7 +26,11 @@ class Billing {
 
         // if (validateInvoice.isValid === false)
         //     throw new Error(validateInvoice.error);
-        return createHttpConfig(this.baseURL, token).put(`/stripe/stripe/billing/${id}`, data);
+        return createHttpConfig(this.baseURL, token).put(`/stripe/stripe/billing/${id}`, {
+            stripeId: "",
+            description: data.description,
+            receipt_email: data.receiptEmail
+        });
     }
 
     delete(id: string, token: string) {
