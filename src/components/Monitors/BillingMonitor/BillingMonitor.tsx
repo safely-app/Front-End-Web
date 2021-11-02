@@ -14,41 +14,32 @@ import { notifyError } from '../../utils';
 import log from 'loglevel';
 import './BillingMonitor.css';
 
-interface IBillingInfoProps {
+interface IBillingCreateProps {
     billing: IBilling | undefined;
     setBilling: (billing: IBilling) => void;
     buttons: JSX.Element[];
     shown?: boolean;
 }
 
-const BillingInfoForm: React.FC<IBillingInfoProps> = ({
+const BillingCreateForm: React.FC<IBillingCreateProps> = ({
     billing,
     setBilling,
     buttons,
     shown
 }) => {
 
-    const setDescription = (description: string) => {
+    const setAmount = (amount: string) => {
         setBilling({
             ...billing as IBilling,
-            description: description
-        });
-    };
-
-    const setReceiptEmail = (receiptEmail: string) => {
-        setBilling({
-            ...billing as IBilling,
-            receiptEmail: receiptEmail
+            amount: Number(amount)
         });
     };
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
             <div className="Billing-Info">
-                <TextInput key={`${billing?.id}-description`} type="text" role="descrition"
-                    label="Description" value={billing?.description as string} setValue={setDescription} />
-                <TextInput key={`${billing?.id}-receiptEmail`} type="text" role="receiptEmail"
-                    label="Email de réception" value={billing?.receiptEmail as string} setValue={setReceiptEmail} />
+                <TextInput key={`${billing?.id}-amount`} type="number" role="amount"
+                    label="Montant" value={`${billing?.amount}`} setValue={setAmount} />
                 {buttons.map(button => button)}
             </div>
         }/>
@@ -98,16 +89,6 @@ const BillingMonitor: React.FC = () => {
         ]);
     };
 
-    const setBilling = (billing: IBilling) => {
-        setBillings(billings.map(billingElement =>
-            billingElement.id === billing.id ? billing : billingElement));
-    };
-
-    const removeBilling = (billing: IBilling) => {
-        setBillings(billings.filter(
-            billingElement => billingElement.id !== billing.id));
-    };
-
     const createNewBilling = async (billing: IBilling) => {
         try {
             const response = await Billing.create(billing, userCredientials.token);
@@ -119,41 +100,6 @@ const BillingMonitor: React.FC = () => {
             log.log(response);
             addBilling(createdBilling);
             setNewBilling(undefined);
-            setShowModal(false);
-        } catch (e) {
-            log.error(e);
-            notifyError((e as Error).message);
-        }
-    };
-
-    const saveBillingModification = async (billing: IBilling) => {
-        try {
-            const response = await Billing.update(
-                billing.id,
-                billing,
-                userCredientials.token
-            );
-
-            log.log(response);
-            setBilling(billing);
-            setFocusBilling(undefined);
-            setShowModal(false);
-        } catch (e) {
-            log.error(e);
-            notifyError((e as Error).message);
-        }
-    };
-
-    const deleteBilling = async (billing: IBilling) => {
-        try {
-            const response = await Billing.delete(
-                billing.id,
-                userCredientials.token
-            );
-
-            log.log(response);
-            removeBilling(billing);
-            setFocusBilling(undefined);
             setShowModal(false);
         } catch (e) {
             log.error(e);
@@ -212,7 +158,7 @@ const BillingMonitor: React.FC = () => {
         <div style={{textAlign: "center"}}>
             <Button text="Créer une nouvelle facture"
                 width="98%" onClick={onCreateButtonClick} />
-            <BillingInfoForm
+            <BillingCreateForm
                 shown={newBilling !== undefined}
                 billing={newBilling}
                 setBilling={setNewBilling}
@@ -225,18 +171,7 @@ const BillingMonitor: React.FC = () => {
                 items={billings}
                 focusItem={focusBilling}
                 itemDisplayer={(item) => <BillingInfoListElement billing={item} onClick={onListElementClick} />}
-                itemUpdater={(item) =>
-                    <BillingInfoForm
-                        shown={focusBilling !== undefined}
-                        billing={item}
-                        setBilling={setFocusBilling}
-                        buttons={[
-                            <Button key="save-id" text="Sauvegarder" onClick={() => saveBillingModification(item)} />,
-                            <Button key="stop-id" text="Annuler" onClick={onStopButtonClick} />,
-                            <Button key="delete-id" text="Supprimer" onClick={() => deleteBilling(item)} type="warning" />
-                        ]}
-                    />
-                }
+                itemUpdater={() => <div />}
             />
             <ToastContainer />
         </div>

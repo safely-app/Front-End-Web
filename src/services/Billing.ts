@@ -1,5 +1,6 @@
 import IBilling from '../components/interfaces/IBilling';
 import { createHttpConfig } from '../http-common';
+import { isBillingValid } from './utils';
 
 class Billing {
 
@@ -14,20 +15,20 @@ class Billing {
     }
 
     create(data: IBilling, token: string) {
-        // const validateInvoice = isInvoiceValid(data);
+        const validateBilling = isBillingValid(data);
 
-        // if (validateInvoice.isValid === false)
-        //     throw new Error(validateInvoice.error);
+        if (validateBilling.isValid === false)
+            throw new Error(validateBilling.error);
         return createHttpConfig(this.baseURL, token).post("/stripe/stripe/billing", data);
     }
 
-    update(id: string, data: IBilling, token: string) {
-        // const validateInvoice = isInvoiceValid(data);
+    update(id: string, stripeId: string, data: IBilling, token: string) {
+        const validateBilling = isBillingValid(data);
 
-        // if (validateInvoice.isValid === false)
-        //     throw new Error(validateInvoice.error);
+        if (validateBilling.isValid === false)
+            throw new Error(validateBilling.error);
         return createHttpConfig(this.baseURL, token).put(`/stripe/stripe/billing/${id}`, {
-            stripeId: "",
+            stripeId: stripeId,
             description: data.description,
             receipt_email: data.receiptEmail
         });
