@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { PaymentMethod } from '@stripe/stripe-js';
-import { Profile, TextInput, Button, CommonLoader, Modal } from '../common';
+import {
+    Profile,
+    TextInput,
+    Button,
+    CommonLoader,
+    Modal,
+    List
+} from '../common';
 import IProfessional from '../interfaces/IProfessional';
 import IUser from '../interfaces/IUser';
 import {
@@ -22,6 +29,32 @@ enum InfoSearcher {
     SEARCHING,
     NOTFOUND,
     FOUND
+};
+
+const PaymentSolutionList: React.FC = () => {
+    const user = useSelector((state: RootState) => state.user);
+    const [paymentSolutions, setPaymentSolutions] = useState<string[]>([]);
+
+    useEffect(() => {
+        log.log(user.userInfo.stripeId,
+            user.credentials.token);
+        Stripe.get(
+            user.userInfo.stripeId as string,
+            user.credentials.token
+        ).then(result => {
+            const paymentMethod = result.data.invoice_settings.default_payment_method;
+            setPaymentSolutions([ paymentMethod ]);
+        }).catch(err => log.error(err));
+    }, [user])
+
+    return (
+        <List
+            items={paymentSolutions}
+            itemDisplayer={(item) =>
+                <li key={item}><b>Solution de paiement : </b>{item}</li>
+            }
+        />
+    );
 };
 
 interface ITraderProfileFieldsProps {
@@ -341,7 +374,8 @@ const TraderProfile: React.FC = () => {
                             : <Button text="Modifier" onClick={() => setIsUpdateView(true)} />,
                         isUpdateView ? <Button text="Annuler" onClick={resetModification} /> : <div />,
                         <Button text="Supprimer" onClick={deleteProfessional} type="warning" />,
-                        isDeleted ? <Redirect to="/" /> : <div />
+                        isDeleted ? <Redirect to="/" /> : <div />,
+                        <PaymentSolutionList />
                     ]}
                 />;
         }
