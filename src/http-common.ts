@@ -15,7 +15,20 @@ const createHttpConfigWithoutAuthorization = (baseURL: string) => axios.create({
     }
 });
 
-export const createHttpConfig = (baseURL: string, token?: string) =>
-    (token !== undefined && token !== "")
+export const createHttpConfig = (baseURL: string, token?: string) => {
+    const axios_instance = (token !== undefined && token !== "")
         ? createHttpConfigWithAuthorization(baseURL, token)
         : createHttpConfigWithoutAuthorization(baseURL);
+
+    axios_instance.interceptors.response.use((response) => {
+        return response;
+    }, (error) => {
+        const errorStatus = error.response.status;
+
+        if (errorStatus === 401)
+            window.location.href = `${process.env.PUBLIC_URL}/logout`;
+        return Promise.reject(error);
+    });
+
+    return axios_instance;
+};
