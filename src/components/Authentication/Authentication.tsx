@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { TextInput, Button } from '../common';
 import { Redirect } from 'react-router-dom';
-import { disconnectUser, loginUser, registerUser, RootState } from '../../redux';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+    disconnect,
+    setCredentials,
+    useAppSelector,
+    useAppDispatch
+} from '../../redux';
 import { notifyError } from '../utils';
 import { User } from '../../services';
 import { ToastContainer } from 'react-toastify';
@@ -23,12 +27,18 @@ interface IAuthProps {
 const SignInView: React.FC<IAuthProps> = ({
     setView
 }) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleClick = () => {
-        dispatch(loginUser(email, "", password));
+    const handleClick = async () => {
+        try {
+            const response = await User.login(email, password);
+
+            dispatch(setCredentials(response.data));
+        } catch (e) {
+            notifyError((e as Error).message);
+        }
     };
 
     return (
@@ -47,14 +57,27 @@ const SignInView: React.FC<IAuthProps> = ({
 const SignUpView: React.FC<IAuthProps> = ({
     setView
 }) => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const [email, setEmail] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmedPassword, setConfirmedPassword] = useState("");
 
-    const handleClick = () => {
-        dispatch(registerUser(email, username, password, confirmedPassword));
+    const handleClick = async () => {
+        try {
+            const response = await User.register({
+                id: "",
+                role: "",
+                email: email,
+                username: username,
+                password: password,
+                confirmedPassword: confirmedPassword
+            });
+
+            dispatch(setCredentials(response.data));
+        } catch (e) {
+            notifyError((e as Error).message);
+        }
     };
 
     return (
@@ -74,14 +97,11 @@ const SignUpView: React.FC<IAuthProps> = ({
 const ForgottenPassword: React.FC = () => {
     const [email, setEmail] = useState("");
 
-    const handleClick = () => {
+    const handleClick = async () => {
         try {
-            User.forgotPassword(email)
-                .then(response => {
-                    log.log(response);
-                }).catch(error => {
-                    log.error(error);
-                });
+            const response = await User.forgotPassword(email);
+
+            log.log(response);
         } catch (e) {
             notifyError((e as Error).message);
         }
@@ -99,7 +119,7 @@ const ForgottenPassword: React.FC = () => {
 }
 
 export const Authentication: React.FC = () => {
-    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
+    const userCredientialsId = useAppSelector(state => state.user.credentials._id);
     const [view, setView] = useState(View.SIGNIN);
 
     const selectView = (): JSX.Element => {
@@ -122,11 +142,13 @@ export const Authentication: React.FC = () => {
 }
 
 export const SignOut: React.FC = () => {
-    const dispatch = useDispatch();
-    const userCredientialsId = useSelector((state: RootState) => state.user.credentials._id);
+    const dispatch = useAppDispatch();
+    const userCredientialsId = useAppSelector(state => state.user.credentials._id);
 
     useEffect(() => {
-        dispatch(disconnectUser());
+        dispatch(disconnect());
+        console.log("JE SUIS LA");
+        console.log(userCredientialsId);
     });
 
     return <div>{!userCredientialsId && <Redirect to="/login" />}</div>;
