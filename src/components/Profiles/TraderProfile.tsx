@@ -6,7 +6,8 @@ import IUser from '../interfaces/IUser';
 import {
     ProfessionalInfo,
     User,
-    Stripe
+    Stripe,
+    Safeplace
 } from '../../services';
 import { AppHeader } from '../Header/Header';
 import { Redirect } from 'react-router-dom';
@@ -17,6 +18,7 @@ import StripeCard from './StripeCard';
 import log from 'loglevel';
 import './Profiles.css';
 import IStripe from '../interfaces/IStripe';
+import ISafeplace from '../interfaces/ISafeplace';
 
 enum InfoSearcher {
     SEARCHING,
@@ -158,6 +160,21 @@ const TraderProfileFields: React.FC<ITraderProfileFieldsProps> = ({
             </div>,
             ...additionalElements
         ]} />
+    );
+};
+
+const TraderProfileShopList: React.FC = () => {
+    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const [shops, setShops] = useState<ISafeplace[]>([]);
+
+    useEffect(() => {
+        Safeplace.getByOwnerId(userCredientials._id, userCredientials.token)
+            .then(response => console.log(response.data))
+            .catch(err => console.error(err));
+    });
+
+    return (
+        <div></div>
     );
 };
 
@@ -341,6 +358,7 @@ const TraderProfile: React.FC = () => {
                             : <Button text="Modifier" onClick={() => setIsUpdateView(true)} />,
                         isUpdateView ? <Button text="Annuler" onClick={resetModification} /> : <div />,
                         <Button text="Supprimer" onClick={deleteProfessional} type="warning" />,
+                        <TraderProfileShopList />,
                         isDeleted ? <Redirect to="/" /> : <div />
                     ]}
                 />;
