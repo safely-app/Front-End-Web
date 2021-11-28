@@ -10,7 +10,8 @@ import {
     Safeplaces,
     UserProfile,
     TraderProfile,
-    ResetPassword
+    ResetPassword,
+    VerifyHours
 } from './components';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
@@ -29,7 +30,8 @@ const routes = [
     { path: '/version', exact: false, protected: false, render: <Version /> },
     { path: '/profile', exact: true, protected: true, render: <UserProfile /> },
     { path: '/trader-profile', exact: true, protected: true, render: <TraderProfile /> },
-    { path: '/reset', exact: false, protected: false, render: <ResetPassword /> }
+    { path: '/reset', exact: false, protected: false, render: <ResetPassword /> },
+    { path: '/verifyHours', exact: false, protected: false, render: <VerifyHours /> }
 ];
 
 log.setLevel((process.env.REACT_APP_STAGE === "prod")
