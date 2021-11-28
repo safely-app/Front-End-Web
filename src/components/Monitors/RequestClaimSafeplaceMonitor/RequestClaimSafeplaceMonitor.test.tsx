@@ -102,3 +102,90 @@ test('ensure that new request creation occurs without technical errors', async (
     scopePost.done();
     scopeGet.done();
 });
+
+test('ensure that request claim safeplace filtering is working', async () => {
+    const scope = nock(baseURL)
+        .get('/safeplace/requestClaimSafeplace')
+        .reply(200, [
+            {
+                _id: '1',
+                userId: '1',
+                safeplaceId: '1',
+                safeplaceName: 'oui',
+                safeplaceDescription: 'oui',
+                status: 'Pending',
+                userComment: 'This is great'
+            },
+            {
+                _id: '2',
+                userId: '1',
+                safeplaceId: '3',
+                safeplaceName: 'non',
+                safeplaceDescription: 'non',
+                status: 'Refused',
+                comment: 'This is not great'
+            }
+        ], {
+            'Access-Control-Allow-Origin': '*'
+        });
+
+    render(
+        <Provider store={store}>
+            <RequestClaimSafeplace />
+        </Provider>
+    );
+
+    const safeplaceTypeDropdown = screen.getByTestId('all-dropdown-id');
+    const safeplaceTypeInfoSearchBar = screen.getByRole('search-bar');
+
+    await act(async () => await testDelay(2000));
+    expect(safeplaceTypeDropdown).toBeInTheDocument();
+    expect(safeplaceTypeInfoSearchBar).toBeInTheDocument();
+
+    fireEvent.change(safeplaceTypeDropdown, {
+        target: { value: 'Pending' }
+    });
+
+    fireEvent.change(safeplaceTypeInfoSearchBar, {
+        target: { value: 'is great' }
+    });
+
+    expect(screen.getByDisplayValue('is great')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Pending')).toBeInTheDocument();
+
+    await act(async () => await testDelay(2000));
+
+    expect(screen.queryByText('not great')).toBeNull();
+
+    scope.done();
+});
+
+test('ensure that invalid input does not crash the request claim safeplace filtering', async () => {
+    const scope = nock(baseURL)
+        .get('/safeplace/requestClaimSafeplace')
+        .reply(200, [], {
+            'Access-Control-Allow-Origin': '*'
+        });
+
+    render(
+        <Provider store={store}>
+            <RequestClaimSafeplace />
+        </Provider>
+    );
+
+    const userTypeDropdown = screen.getByTestId('all-dropdown-id');
+    const userInfoSearchBar = screen.getByRole('search-bar');
+
+    await act(async () => await testDelay(2000));
+    expect(userInfoSearchBar).toBeInTheDocument();
+    expect(userTypeDropdown).toBeInTheDocument();
+
+    fireEvent.change(userInfoSearchBar, {
+        target: { value: 'eujffeojwefokfewkpo[' }
+    });
+
+    expect(screen.getByDisplayValue('eujffeojwefokfewkpo[')).toBeInTheDocument();
+
+    await act(async () => await testDelay(2000));
+    scope.done();
+});
