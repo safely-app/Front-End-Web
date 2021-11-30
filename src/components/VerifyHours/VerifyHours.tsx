@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { Safeplace } from "../../services";
+import { Button } from "../common";
+import { notifyError, notifySuccess } from '../utils';
+import { ToastContainer } from 'react-toastify';
+import log from "loglevel";
 
 interface VerifyHoursDayProps {
     name: string;
@@ -43,6 +48,24 @@ const VerifyHours: React.FC = () => {
             element === undefined ? "" : element);
     };
 
+    const joinDayTimetable = (dayTimetable: VerifyHoursDayProps[]): string[] => {
+        return dayTimetable
+            .map(element => (!element.isChecked) ? { ...element, timetable: new Array(4).fill("") } : element)
+            .map(element => {
+                const validTimes = element.timetable.filter(elT => elT !== "");
+
+                if (validTimes.length === 0)
+                    return "";
+
+                const firstPart = validTimes.slice(0, 2).join('-');
+                const secondPart = validTimes.slice(2, 4).join('-');
+
+                return (validTimes.length > 2)
+                    ? `${firstPart},${secondPart}`
+                    : firstPart;
+            });
+    }
+
     const setDayTimetable = (day: VerifyHoursDayProps) => {
         setTimetable(timetable.map(
             element => (element.name === day.name)
@@ -63,14 +86,29 @@ const VerifyHours: React.FC = () => {
         });
     };
 
+    const updateTimetable = async () => {
+        try {
+            const joinedTimetable = joinDayTimetable(timetable);
+            const response = await Safeplace.updateTimetable(safeplaceId, joinedTimetable);
+
+            notifySuccess("Horaires mises à jour.");
+            log.log(response);
+        } catch (e) {
+            notifyError((e as Error).message);
+            log.error(e);
+        }
+    };
+
     const renderDayHours = (day: VerifyHoursDayProps): JSX.Element => {
         return (
             <li key={day.name} style={{ margin: '0.5em' }}>
                 <table>
                     <tr>
-                        <th style={{ width: '10em', fontSize: 18 }}>{day.name}</th>
-                        <td style={{ width: '4em' }}>Ouvert ?</td>
-                        <td style={{ width: '5em' }}><input type="checkbox" checked={day.isChecked} onChange={() => setDayTimetable({...day, isChecked: !day.isChecked})} /></td>
+                        <th style={{ width: '15em', fontSize: 18 }}>{day.name}</th>
+                        <td style={{ width: '10em' }}>Je suis ouvert ce jour</td>
+                        <td style={{ width: '5em' }}>
+                            <input type="checkbox" checked={day.isChecked} onChange={() => setDayTimetable({...day, isChecked: !day.isChecked})} />
+                        </td>
                     </tr>
                 </table>
                 <table hidden={!day.isChecked}>
@@ -141,6 +179,12 @@ const VerifyHours: React.FC = () => {
             <ul className="list">
                 {timetable.map(element => renderDayHours(element))}
             </ul>
+            <Button
+                width="100%"
+                text="Confirmer mes horaires"
+                onClick={updateTimetable}
+            />
+            <ToastContainer />
         </div>
     );
 };
