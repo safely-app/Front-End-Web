@@ -23,6 +23,10 @@ class Stripe {
             cardId: cardId
         });
     }
+
+    getCard(cardId: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/stripe/stripe/user/card/${cardId}`);
+    }
 }
 
 export default new Stripe();

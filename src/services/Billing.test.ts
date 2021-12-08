@@ -37,8 +37,12 @@ test('ensure that create occurs without technical errors', async () => {
 
     const data: IBilling = {
         id: '1',
+        paymentMethod: 'card',
+        receiptEmail: 'test@test.com',
+        description: 'test',
+        currency: 'eur',
+        status: 'test',
         amount: 100,
-        date: 1635439510
     };
 
     const response = await Billing.create(data, "");
@@ -56,16 +60,20 @@ test('ensure thata update occurs without technical occurs', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-        const data: IBilling = {
-            id: '1',
-            amount: 100,
-            date: 1635439510
-        };
+    const data: IBilling = {
+        id: '1',
+        paymentMethod: 'card',
+        receiptEmail: 'test@test.com',
+        description: 'test',
+        currency: 'eur',
+        status: 'test',
+        amount: 100,
+    };
 
-        const response = await Billing.update("1", data, "");
-        expect(response.status).toBe(200);
-        scopeOptions.done();
-        scope.done();
+    const response = await Billing.update("1", "1", data, "");
+    expect(response.status).toBe(200);
+    scopeOptions.done();
+    scope.done();
 });
 
 test('ensure that delete occurs without technical errors', async () => {
@@ -78,8 +86,20 @@ test('ensure that delete occurs without technical errors', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-        const response = await Billing.delete("1", "");
-        expect(response.status).toBe(200);
-        scopeOptions.done();
-        scope.done();
+    const response = await Billing.delete("1", "");
+    expect(response.status).toBe(200);
+    scopeOptions.done();
+    scope.done();
+});
+
+test('ensure that get billing by user id occurs without technical errors', async () => {
+    const scope = nock(testURL)
+        .get('/stripe/stripe/billingUser/1')
+        .reply(200, {}, {
+            'Access-Control-Allow-Origin': '*'
+        });
+
+    const response = await Billing.getByUser("1", "");
+    expect(response.status).toBe(200);
+    scope.done();
 });

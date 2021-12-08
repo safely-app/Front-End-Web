@@ -14,6 +14,10 @@ class Billing {
         return createHttpConfig(this.baseURL, token).get(`/stripe/stripe/billing/${id}`);
     }
 
+    getByUser(userId: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/stripe/stripe/billingUser/${userId}`);
+    }
+
     create(data: IBilling, token: string) {
         const validateBilling = isBillingValid(data);
 

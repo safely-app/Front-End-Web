@@ -23,17 +23,17 @@ test('create stripe', async () => {
             'Access-Control-Allow-Origin': '*'
         });
 
-        const data: IStripe = {
-            id: '1',
-            name: 'Bill Cosby',
-            address: '8 Avenue du Huit',
-            phone: '8888-8888',
-            description: 'Aime le huit neuf'
-        };
+    const data: IStripe = {
+        id: '1',
+        name: 'Bill Cosby',
+        address: '8 Avenue du Huit',
+        phone: '8888-8888',
+        description: 'Aime le huit neuf'
+    };
 
-        const response = await Stripe.create(data, "");
-        expect(response.status).toEqual(200);
-        scope.done();
+    const response = await Stripe.create(data, "");
+    expect(response.status).toEqual(200);
+    scope.done();
 });
 
 test('update stripe by id', async () => {
@@ -68,6 +68,18 @@ test('link card to stripe user', async () => {
         });
 
     const response = await Stripe.linkCard("1", "");
+    expect(response.status).toEqual(200);
+    scope.done();
+});
+
+test('ensure that get user card by id occurs without technical errors', async () => {
+    const scope = nock(baseURL)
+        .get('/stripe/stripe/user/card/1')
+        .reply(200, {}, {
+            'Access-Control-Allow-Origin': '*'
+        });
+
+    const response = await Stripe.getCard("1", "");
     expect(response.status).toEqual(200);
     scope.done();
 });
