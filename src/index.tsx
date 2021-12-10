@@ -10,7 +10,8 @@ import {
     Safeplaces,
     UserProfile,
     TraderProfile,
-    ResetPassword
+    ResetPassword,
+    SafeplaceSingle
 } from './components';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
@@ -29,6 +30,7 @@ const routes = [
     { path: '/version', exact: false, protected: false, render: <Version /> },
     { path: '/profile', exact: true, protected: true, render: <UserProfile /> },
     { path: '/trader-profile', exact: true, protected: true, render: <TraderProfile /> },
+    { path: '/safeplace-page', exact: false, protected: false, render: <SafeplaceSingle /> },
     { path: '/reset', exact: false, protected: false, render: <ResetPassword /> }
 ];
 
