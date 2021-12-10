@@ -7,4 +7,5 @@ export default interface ISafeplace {
     type: string;
     dayTimetable: (string | null)[];
     coordinate: string[];
+    ownerId?: string;
 }

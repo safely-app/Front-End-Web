@@ -68,6 +68,10 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
         setSafeplace({ ...safeplace, coordinate: [ safeplace.coordinate[0], longitude ] });
     };
 
+    const setOwnerId = (ownerId: string) => {
+        setSafeplace({ ...safeplace, ownerId: ownerId });
+    };
+
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
             <div className="Safeplace-Info">
@@ -87,6 +91,8 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
                     <TextInput key={`${safeplace.id}-coordinate2`} type="text" role="longitude" width="98%"
                         label="Longitude" value={safeplace.coordinate[1]} setValue={setLongitude} />
                 </div>
+                <TextInput key={`${safeplace.id}-ownerId`} type="text" role="ownerId"
+                    label="ID du propriétaire" value={safeplace.ownerId as string} setValue={setOwnerId} />
                 {buttons}
             </div>
         }/>
@@ -117,6 +123,7 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
                     <li key={`${safeplace.id}-timetable`}><b>Horaires : </b>{displayTimetable(safeplace.dayTimetable)}</li>
                     <li key={`${safeplace.id}-type`}><b>Type : </b>{safeplace.type}</li>
                     <li key={`${safeplace.id}-coordinate`}><b>Coordonnées : </b>{displayCoordinates(safeplace.coordinate)}</li>
+                    <li key={`${safeplace.id}-ownerId`} hidden={safeplace.ownerId === undefined}><b>ID du propriétaire : </b>{safeplace.ownerId}</li>
                 </ul>
             </button>
         </li>
@@ -166,8 +173,9 @@ const SafeplaceMonitor: React.FC = () => {
                 address: safeplace.address,
                 type: safeplace.type,
                 dayTimetable: safeplace.dayTimetable,
-                coordinate: safeplace.coordinate
-            }));
+                coordinate: safeplace.coordinate,
+                ownerId: safeplace.ownerId
+            }) as ISafeplace);
 
             setSafeplaces(gotSafeplaces);
             log.log(gotSafeplaces);

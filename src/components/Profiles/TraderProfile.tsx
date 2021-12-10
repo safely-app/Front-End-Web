@@ -21,33 +21,15 @@ import IStripe from '../interfaces/IStripe';
 import ISafeplace from '../interfaces/ISafeplace';
 import './Profiles.css';
 
-interface ITraderProfileShopListProps {
-    professional: IProfessional,
-}
-
-const TraderProfileShopList: React.FC<ITraderProfileShopListProps> = ({
-    professional
-}) => {
+const TraderProfileShopList: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [shops, setShops] = useState<ISafeplace[]>([]);
 
     useEffect(() => {
-        setShops([
-            {
-                id: "1",
-                name: "Safeplace de Test",
-                description: "Une description de test",
-                city: "Strasbourg",
-                address: "1 Avenue de La Rue Vraiment Sympa",
-                type: "restaurant",
-                dayTimetable: [],
-                coordinate: [],
-            }
-        ]);
-        // Safeplace.getByOwnerId(professional.id as string, userCredientials.token)
-        //     .then(response => setShops([ response.data as ISafeplace ]))
-        //     .catch(err => console.error(err));
-    });
+        Safeplace.getByOwnerId(userCredientials._id, userCredientials.token)
+            .then(response => setShops([ response.data as ISafeplace ]))
+            .catch(err => console.error(err));
+    }, []);
 
     return (
         <div style={{
@@ -395,7 +377,7 @@ const TraderProfile: React.FC = () => {
                             ? <Button text="Sauvegarder" onClick={saveModification} />
                             : <Button text="Modifier" onClick={() => setIsUpdateView(true)} />,
                         isUpdateView ? <Button text="Annuler" onClick={resetModification} /> : <div />,
-                        professional.id !== "" ? <TraderProfileShopList professional={professional} /> : <div />,
+                        professional.id !== "" ? <TraderProfileShopList /> : <div />,
                         <Button text="Supprimer mon compte" onClick={deleteProfessional} type="warning" />,
                         isDeleted ? <Redirect to="/" /> : <div />
                     ]}

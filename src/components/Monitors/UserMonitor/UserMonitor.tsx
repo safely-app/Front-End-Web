@@ -59,6 +59,8 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
             <div className="User-Info">
+                <TextInput key={`${user.id}-id`} type="text" role="username"
+                    label="Identifiant" value={user.id} setValue={() => {}} readonly={true} />
                 <TextInput key={`${user.id}-username`} type="text" role="username"
                     label="Nom d'utilisateur" value={user.username} setValue={setUsername} />
                 <TextInput key={`${user.id}-email`} type="email" role="email"
