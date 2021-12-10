@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PaymentMethod } from '@stripe/stripe-js';
-import { Profile, TextInput, Button, CommonLoader, Modal } from '../common';
+import { Profile, TextInput, Button, CommonLoader, Modal, List } from '../common';
 import IProfessional from '../interfaces/IProfessional';
 import IUser from '../interfaces/IUser';
 import {
@@ -19,6 +19,59 @@ import log from 'loglevel';
 import './Profiles.css';
 import IStripe from '../interfaces/IStripe';
 import ISafeplace from '../interfaces/ISafeplace';
+import './Profiles.css';
+
+interface ITraderProfileShopListProps {
+    professional: IProfessional,
+}
+
+const TraderProfileShopList: React.FC<ITraderProfileShopListProps> = ({
+    professional
+}) => {
+    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const [shops, setShops] = useState<ISafeplace[]>([]);
+
+    useEffect(() => {
+        setShops([
+            {
+                id: "1",
+                name: "Safeplace de Test",
+                description: "Une description de test",
+                city: "Strasbourg",
+                address: "1 Avenue de La Rue Vraiment Sympa",
+                type: "restaurant",
+                dayTimetable: [],
+                coordinate: [],
+            }
+        ]);
+        // Safeplace.getByOwnerId(professional.id as string, userCredientials.token)
+        //     .then(response => setShops([ response.data as ISafeplace ]))
+        //     .catch(err => console.error(err));
+    });
+
+    return (
+        <div style={{
+            width: '60%',
+            paddingLeft: '20%',
+            paddingRight: '20%',
+        }}>
+            <h2>Mes commerces</h2>
+            <List
+                items={shops}
+                itemDisplayer={(shop) =>
+                    <li key={shop.id} className="Shops-list-element">
+                        <ul className="Shops-list">
+                            <li key={`${shop.id}-name`}><b>Nom : </b>{shop.name}</li>
+                            <li key={`${shop.id}-city`}><b>Ville : </b>{shop.city}</li>
+                            <li key={`${shop.id}-address`}><b>Adresse : </b>{shop.address}</li>
+                            <li key={`${shop.id}-description`}><b>Description : </b>{shop.description}</li>
+                        </ul>
+                    </li>
+                }
+            />
+        </div>
+    );
+};
 
 enum InfoSearcher {
     SEARCHING,
@@ -160,21 +213,6 @@ const TraderProfileFields: React.FC<ITraderProfileFieldsProps> = ({
             </div>,
             ...additionalElements
         ]} />
-    );
-};
-
-const TraderProfileShopList: React.FC = () => {
-    const userCredientials = useSelector((state: RootState) => state.user.credentials);
-    const [shops, setShops] = useState<ISafeplace[]>([]);
-
-    useEffect(() => {
-        Safeplace.getByOwnerId(userCredientials._id, userCredientials.token)
-            .then(response => console.log(response.data))
-            .catch(err => console.error(err));
-    });
-
-    return (
-        <div></div>
     );
 };
 
@@ -357,8 +395,8 @@ const TraderProfile: React.FC = () => {
                             ? <Button text="Sauvegarder" onClick={saveModification} />
                             : <Button text="Modifier" onClick={() => setIsUpdateView(true)} />,
                         isUpdateView ? <Button text="Annuler" onClick={resetModification} /> : <div />,
-                        <Button text="Supprimer" onClick={deleteProfessional} type="warning" />,
-                        <TraderProfileShopList />,
+                        professional.id !== "" ? <TraderProfileShopList professional={professional} /> : <div />,
+                        <Button text="Supprimer mon compte" onClick={deleteProfessional} type="warning" />,
                         isDeleted ? <Redirect to="/" /> : <div />
                     ]}
                 />;
