@@ -23,11 +23,28 @@ import './Profiles.css';
 
 const TraderProfileShopList: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const [selectedShopId, setSelectedShopId] = useState<string | undefined>(undefined);
     const [shops, setShops] = useState<ISafeplace[]>([]);
+
+    const handleClick = (shop: ISafeplace) => {
+        log.log(shop);
+        setSelectedShopId(shop.id);
+    };
 
     useEffect(() => {
         Safeplace.getByOwnerId(userCredientials._id, userCredientials.token)
-            .then(response => setShops([ response.data as ISafeplace ]))
+            .then(response =>
+                setShops([ {
+                    id: response.data._id,
+                    name: response.data.name,
+                    description: response.data.description,
+                    city: response.data.city,
+                    address: response.data.address,
+                    type: response.data.type,
+                    dayTimetable: response.data.dayTimetable,
+                    coordinate: response.data.coordinate,
+                    ownerId: response.data.ownerId
+                } as ISafeplace ]))
             .catch(err => console.error(err));
     }, []);
 
@@ -42,15 +59,19 @@ const TraderProfileShopList: React.FC = () => {
                 items={shops}
                 itemDisplayer={(shop) =>
                     <li key={shop.id} className="Shops-list-element">
-                        <ul className="Shops-list">
-                            <li key={`${shop.id}-name`}><b>Nom : </b>{shop.name}</li>
-                            <li key={`${shop.id}-city`}><b>Ville : </b>{shop.city}</li>
-                            <li key={`${shop.id}-address`}><b>Adresse : </b>{shop.address}</li>
-                            <li key={`${shop.id}-description`}><b>Description : </b>{shop.description}</li>
-                        </ul>
+                        <button className="Safeplace-list-element-btn" onClick={() => handleClick(shop)}>
+                            <ul className="Shops-list">
+                                <li key={`${shop.id}-name`}><b>Nom : </b>{shop.name}</li>
+                                <li key={`${shop.id}-city`}><b>Ville : </b>{shop.city}</li>
+                                <li key={`${shop.id}-address`}><b>Adresse : </b>{shop.address}</li>
+                                <li key={`${shop.id}-description`}><b>Description : </b>{shop.description}</li>
+                            </ul>
+                        </button>
                     </li>
                 }
             />
+            {selectedShopId !== undefined
+                ? <Redirect to={`/safeplace-page/${selectedShopId}`} /> : <div />}
         </div>
     );
 };
