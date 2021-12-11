@@ -10,6 +10,7 @@ import TraderProfile from './Profiles/TraderProfile';
 import Safeplaces from './Safeplaces/Safeplaces';
 import Monitor from './Monitors/Monitor';
 import SafeplaceSingle from './SafeplaceSingle/Safeplace';
+import VerifyHours from './VerifyHours/VerifyHours';
 
 export {
     App,
@@ -21,5 +22,6 @@ export {
     UserProfile,
     Monitor,
     TraderProfile,
-    SafeplaceSingle
+    SafeplaceSingle,
+    VerifyHours
 };

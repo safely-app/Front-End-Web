@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { User } from '../../services';
-import { useDispatch, useSelector } from 'react-redux';
-import { disconnectUser, RootState } from '../../redux';
+import {
+    disconnect,
+    useAppSelector,
+    useAppDispatch
+} from '../../redux';
 import IUser from '../interfaces/IUser';
 import { TextInput, Button, Profile } from '../common';
 import { AppHeader } from "../Header/Header";
@@ -12,9 +15,9 @@ import {
 import log from 'loglevel';
 
 const UserProfile: React.FC = () => {
-    const dispatch = useDispatch();
-    const userInfo = useSelector((state: RootState) => state.user.userInfo);
-    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const dispatch = useAppDispatch();
+    const userInfo = useAppSelector(state => state.user.userInfo);
+    const userCredientials = useAppSelector(state => state.user.credentials);
     const [isUserDeleted, setIsUserDeleted] = useState(false);
     const [isUpdateView, setIsUpdateView] = useState(false);
     const [user, setUser] = useState<IUser>({
@@ -61,7 +64,7 @@ const UserProfile: React.FC = () => {
             .then(response => {
                 log.log(response);
                 setIsUserDeleted(true);
-                dispatch(disconnectUser());
+                dispatch(disconnect());
             }).catch(error => {
                 log.error(error);
             });
