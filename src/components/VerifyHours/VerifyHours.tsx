@@ -15,16 +15,6 @@ const VerifyHours: React.FC = () => {
     const [safeplaceId, setSafeplaceId] = useState("");
     const [timetable, setTimetable] = useState<VerifyHoursDayProps[]>([]);
 
-    const days = [
-        "Lundi",
-        "Mardi",
-        "Mercredi",
-        "Jeudi",
-        "Vendredi",
-        "Samedi",
-        "Dimanche"
-    ];
-
     const parseUrl = (url: string): string => {
         const regex = new RegExp("/verifyHours/(.*)");
         const found = url.match(regex) || [""];
@@ -143,6 +133,16 @@ const VerifyHours: React.FC = () => {
     };
 
     useEffect(() => {
+        const days = [
+            "Lundi",
+            "Mardi",
+            "Mercredi",
+            "Jeudi",
+            "Vendredi",
+            "Samedi",
+            "Dimanche"
+        ];
+
         const gotSafeplaceTimetable = [
             "10:00-13:00,14:00-18:00",
             "10:00-13:00,14:00-18:00",
