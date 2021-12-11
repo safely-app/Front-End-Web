@@ -95,7 +95,7 @@ const UserInfoListElement: React.FC<IUserInfoListElementProps> = ({
     };
 
     return (
-        <li key={user.id} className="Monitor-list-element">
+        <div key={user.id} className="Monitor-list-element">
             <button className="Monitor-list-element-btn" onClick={handleClick}>
                 <ul className="Monitor-list">
                     <li key={`${user.id}-id`}><b>Identifiant : </b>{user.id}</li>
@@ -104,7 +104,7 @@ const UserInfoListElement: React.FC<IUserInfoListElementProps> = ({
                     <li key={`${user.id}-role`}><b>Role : </b>{user.role}</li>
                 </ul>
             </button>
-        </li>
+        </div>
     );
 }
 

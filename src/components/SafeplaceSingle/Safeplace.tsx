@@ -26,7 +26,7 @@ const SafeplaceSingle: React.FC = () => {
         Safeplace.get(parseUrl(window.location.href), userCredientials.token)
             .then(response => setSafeplace(response.data as ISafeplace))
             .catch(err => log.error(err));
-    }, []);
+    }, [userCredientials]);
 
     return (
         <div className="Profile-container">

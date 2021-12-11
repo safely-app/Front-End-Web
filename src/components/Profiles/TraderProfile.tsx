@@ -27,7 +27,6 @@ const TraderProfileShopList: React.FC = () => {
     const [shops, setShops] = useState<ISafeplace[]>([]);
 
     const handleClick = (shop: ISafeplace) => {
-        log.log(shop);
         setSelectedShopId(shop.id);
     };
 
@@ -46,7 +45,7 @@ const TraderProfileShopList: React.FC = () => {
                     ownerId: response.data.ownerId
                 } as ISafeplace ]))
             .catch(err => console.error(err));
-    }, []);
+    }, [userCredientials]);
 
     return (
         <div style={{
@@ -58,7 +57,7 @@ const TraderProfileShopList: React.FC = () => {
             <List
                 items={shops}
                 itemDisplayer={(shop) =>
-                    <li key={shop.id} className="Shops-list-element">
+                    <div key={shop.id} className="Shops-list-element">
                         <button className="Safeplace-list-element-btn" onClick={() => handleClick(shop)}>
                             <ul className="Shops-list">
                                 <li key={`${shop.id}-name`}><b>Nom : </b>{shop.name}</li>
@@ -67,7 +66,7 @@ const TraderProfileShopList: React.FC = () => {
                                 <li key={`${shop.id}-description`}><b>Description : </b>{shop.description}</li>
                             </ul>
                         </button>
-                    </li>
+                    </div>
                 }
             />
             {selectedShopId !== undefined
