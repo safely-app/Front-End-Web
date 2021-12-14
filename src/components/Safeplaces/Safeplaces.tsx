@@ -9,7 +9,11 @@ import {
     Modal,
     TextInput
 } from '../common';
-import { notifyError, notifySuccess, } from '../utils';
+import {
+    convertStringToRegex,
+    notifyError,
+    notifySuccess
+} from '../utils';
 import log from 'loglevel';
 import './Safeplaces.css';
 import { Safeplace, RequestClaimSafeplace } from '../../services';
@@ -71,12 +75,13 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
     const handleClick = () => {
         onClick(safeplace);
     };
+
     const handleClickClaim = () => {
         onClickClaim(safeplace);
     };
 
     return (
-        <li key={safeplace.id} className="Safeplaces-list-element">
+        <div key={safeplace.id} className="Safeplaces-list-element">
             <ul className="Safeplaces-list">
                 <li key={`${safeplace.id}-name`}><b>Nom : </b>{safeplace.name}</li>
                 <li key={`${safeplace.id}-city`}><b>Ville : </b>{safeplace.city}</li>
@@ -88,7 +93,7 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
                     </div>
                 </li>
             </ul>
-        </li>
+        </div>
     );
 }
 
@@ -166,6 +171,19 @@ const Safeplaces: React.FC = () => {
         }
     };
 
+    const filterSafeplaces = (): ISafeplace[] => {
+        const lowerSearchText = convertStringToRegex(searchBarValue.toLocaleLowerCase());
+
+        return safeplaces
+            .filter(safeplace => searchBarValue !== ''
+                ? safeplace.id.toLowerCase().match(lowerSearchText) !== null
+                || safeplace.city.toLowerCase().match(lowerSearchText) !== null
+                || safeplace.name.toLowerCase().match(lowerSearchText) !== null
+                || safeplace.type.toLowerCase().match(lowerSearchText) !== null
+                || safeplace.address.toLowerCase().match(lowerSearchText) !== null : true);
+    };
+
+
     const archiveSafeplace = async (safeplace: ISafeplace) => {
         try {
             await Safeplace.delete(safeplace.id, userCredientials.token);
@@ -186,9 +204,13 @@ const Safeplaces: React.FC = () => {
                     setValue={setSearchBarValue}
                 />
                 <List
-                    items={safeplaces}
+                    items={filterSafeplaces()}
                     focusItem={focusSafeplace}
-                    itemDisplayer={(item) => <SafeplaceInfoListElement safeplace={item} onClick={safeplace => setFocusSafeplace(safeplace)} onClickClaim={claimSafeplace} />}
+                    itemDisplayer={(item) =>
+                        <SafeplaceInfoListElement
+                            safeplace={item}
+                            onClick={safeplace => setFocusSafeplace(safeplace)}
+                            onClickClaim={claimSafeplace} />}
                     itemUpdater={(item) =>
                         <SafeplaceInfoForm
                             safeplace={item}

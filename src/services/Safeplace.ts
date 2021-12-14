@@ -13,6 +13,10 @@ class Safeplace {
         return createHttpConfig(this.baseURL, token).get(`/safeplace/safeplace/${id}`);
     }
 
+    getByOwnerId(ownerId: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/safeplace/safeplace/ownerSafeplace/${ownerId}`);
+    }
+
     getTimetable(id: string) {
         return createHttpConfig(this.baseURL).get(`/safeplace/getHours/${id}`);
     }

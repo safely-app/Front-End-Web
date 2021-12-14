@@ -82,7 +82,7 @@ const InvoiceInfoListElement: React.FC<IInvoiceInfoListElementProps> = ({
     };
 
     return (
-        <li key={invoice.id} className="Monitor-list-element">
+        <div key={invoice.id} className="Monitor-list-element">
             <button className="Monitor-list-element-btn" onClick={handleClick}>
                 <ul className="Monitor-list">
                     <li key={`${invoice.id}-id`}><b>Identifiant : </b>{invoice.id}</li>
@@ -91,7 +91,7 @@ const InvoiceInfoListElement: React.FC<IInvoiceInfoListElementProps> = ({
                     <li key={`${invoice.id}-date`}><b>Date d'effet : </b>{invoice.date}</li>
                 </ul>
             </button>
-        </li>
+        </div>
     );
 }
 

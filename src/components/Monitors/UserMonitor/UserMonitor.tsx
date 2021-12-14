@@ -59,6 +59,8 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
             <div className="User-Info">
+                <TextInput key={`${user.id}-id`} type="text" role="id"
+                    label="Identifiant" value={user.id} setValue={() => {}} readonly={true} />
                 <TextInput key={`${user.id}-username`} type="text" role="username"
                     label="Nom d'utilisateur" value={user.username} setValue={setUsername} />
                 <TextInput key={`${user.id}-email`} type="email" role="email"
@@ -93,7 +95,7 @@ const UserInfoListElement: React.FC<IUserInfoListElementProps> = ({
     };
 
     return (
-        <li key={user.id} className="Monitor-list-element">
+        <div key={user.id} className="Monitor-list-element">
             <button className="Monitor-list-element-btn" onClick={handleClick}>
                 <ul className="Monitor-list">
                     <li key={`${user.id}-id`}><b>Identifiant : </b>{user.id}</li>
@@ -102,7 +104,7 @@ const UserInfoListElement: React.FC<IUserInfoListElementProps> = ({
                     <li key={`${user.id}-role`}><b>Role : </b>{user.role}</li>
                 </ul>
             </button>
-        </li>
+        </div>
     );
 }
 

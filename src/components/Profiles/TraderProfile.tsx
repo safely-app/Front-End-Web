@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { PaymentMethod } from '@stripe/stripe-js';
-import { Profile, TextInput, Button, CommonLoader, Modal } from '../common';
+import { Profile, TextInput, Button, CommonLoader, Modal, List } from '../common';
 import IProfessional from '../interfaces/IProfessional';
 import IUser from '../interfaces/IUser';
 import {
     ProfessionalInfo,
     User,
-    Stripe
+    Stripe,
+    Safeplace
 } from '../../services';
 import { AppHeader } from '../Header/Header';
 import { Redirect } from 'react-router-dom';
@@ -17,6 +18,62 @@ import StripeCard from './StripeCard';
 import log from 'loglevel';
 import './Profiles.css';
 import IStripe from '../interfaces/IStripe';
+import ISafeplace from '../interfaces/ISafeplace';
+import './Profiles.css';
+
+const TraderProfileShopList: React.FC = () => {
+    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const [selectedShopId, setSelectedShopId] = useState<string | undefined>(undefined);
+    const [shops, setShops] = useState<ISafeplace[]>([]);
+
+    const handleClick = (shop: ISafeplace) => {
+        setSelectedShopId(shop.id);
+    };
+
+    useEffect(() => {
+        Safeplace.getByOwnerId(userCredientials._id, userCredientials.token)
+            .then(response =>
+                setShops([ {
+                    id: response.data._id,
+                    name: response.data.name,
+                    description: response.data.description,
+                    city: response.data.city,
+                    address: response.data.address,
+                    type: response.data.type,
+                    dayTimetable: response.data.dayTimetable,
+                    coordinate: response.data.coordinate,
+                    ownerId: response.data.ownerId
+                } as ISafeplace ]))
+            .catch(err => console.error(err));
+    }, [userCredientials]);
+
+    return (
+        <div style={{
+            width: '60%',
+            paddingLeft: '20%',
+            paddingRight: '20%',
+        }}>
+            <h2>Mes commerces</h2>
+            <List
+                items={shops}
+                itemDisplayer={(shop) =>
+                    <div key={shop.id} className="Shops-list-element">
+                        <button className="Safeplace-list-element-btn" onClick={() => handleClick(shop)}>
+                            <ul className="Shops-list">
+                                <li key={`${shop.id}-name`}><b>Nom : </b>{shop.name}</li>
+                                <li key={`${shop.id}-city`}><b>Ville : </b>{shop.city}</li>
+                                <li key={`${shop.id}-address`}><b>Adresse : </b>{shop.address}</li>
+                                <li key={`${shop.id}-description`}><b>Description : </b>{shop.description}</li>
+                            </ul>
+                        </button>
+                    </div>
+                }
+            />
+            {selectedShopId !== undefined
+                ? <Redirect to={`/safeplace-page/${selectedShopId}`} /> : <div />}
+        </div>
+    );
+};
 
 enum InfoSearcher {
     SEARCHING,
@@ -340,7 +397,8 @@ const TraderProfile: React.FC = () => {
                             ? <Button text="Sauvegarder" onClick={saveModification} />
                             : <Button text="Modifier" onClick={() => setIsUpdateView(true)} />,
                         isUpdateView ? <Button text="Annuler" onClick={resetModification} /> : <div />,
-                        <Button text="Supprimer" onClick={deleteProfessional} type="warning" />,
+                        professional.id !== "" ? <TraderProfileShopList /> : <div />,
+                        <Button text="Supprimer mon compte" onClick={deleteProfessional} type="warning" />,
                         isDeleted ? <Redirect to="/" /> : <div />
                     ]}
                 />;

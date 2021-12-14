@@ -66,7 +66,7 @@ test('test list', () => {
         <List
             items={items}
             focusItem={undefined}
-            itemDisplayer={(item) => <li>{item}</li>}
+            itemDisplayer={(item) => item}
             itemUpdater={() => <div />}
         />
     );
