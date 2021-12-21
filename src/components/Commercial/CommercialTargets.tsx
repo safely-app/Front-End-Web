@@ -188,8 +188,8 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                 setTarget={setNewTarget}
                 shown={showModal}
                 buttons={[
-                    <Button text="Créer une cible" onClick={createTarget} />,
-                    <Button text="Annuler" onClick={cancelNewTarget} />
+                    <Button key={1} text="Créer une cible" onClick={createTarget} />,
+                    <Button key={2} text="Annuler" onClick={cancelNewTarget} />
                 ]}
             />
             <List
@@ -200,9 +200,9 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                         target={item}
                         setTarget={setFocusTarget}
                         buttons={[
-                            <Button text="Modifier" onClick={() => updateTarget(item)} />,
-                            <Button text="Annuler" onClick={() => setFocusTarget(undefined)} />,
-                            <Button text="Supprimer" type="warning" onClick={() => deleteTarget(item)} />
+                            <Button key={1} text="Modifier" onClick={() => updateTarget(item)} />,
+                            <Button key={2} text="Annuler" onClick={() => setFocusTarget(undefined)} />,
+                            <Button key={3} text="Supprimer" type="warning" onClick={() => deleteTarget(item)} />
                         ]}
                     />
                 }

@@ -234,8 +234,8 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                 targets={targets}
                 shown={showModal}
                 buttons={[
-                    <Button text="Créer une campagne" onClick={createCampaign} />,
-                    <Button text="Annuler" onClick={cancelNewCampaign} />
+                    <Button key={1} text="Créer une campagne" onClick={createCampaign} />,
+                    <Button key={2} text="Annuler" onClick={cancelNewCampaign} />
                 ]}
             />
             <List
@@ -247,9 +247,9 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                         setCampaign={setFocusCampaign}
                         targets={targets}
                         buttons={[
-                            <Button text="Modifier" onClick={() => updateCampaign(item)} />,
-                            <Button text="Annuler" onClick={() => setFocusCampaign(undefined)} />,
-                            <Button text="Supprimer" type="warning" onClick={() => deleteCampaign(item)} />
+                            <Button key={1} text="Modifier" onClick={() => updateCampaign(item)} />,
+                            <Button key={2} text="Annuler" onClick={() => setFocusCampaign(undefined)} />,
+                            <Button key={3} text="Supprimer" type="warning" onClick={() => deleteCampaign(item)} />
                         ]}
                     />
                 }
