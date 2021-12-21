@@ -6,7 +6,7 @@ import {
     Modal,
     TextInput
 } from '../common';
-import { convertStringToRegex, notifyError } from '../utils';
+import { notifyError } from '../utils';
 import { useAppSelector } from '../../redux';
 import { Commercial } from '../../services';
 import log from 'loglevel';
@@ -16,13 +16,17 @@ interface ITargetModalProps {
     target: ITarget;
     setTarget: (campaign: ITarget) => void;
     buttons: JSX.Element[];
+    shown?: boolean;
 };
 
 const TargetModal: React.FC<ITargetModalProps> = ({
     target,
     setTarget,
-    buttons
+    buttons,
+    shown
 }) => {
+    const [interestField, setInterestField] = useState("");
+
     const setName = (name: string) => {
         setTarget({ ...target, name: name });
     };
@@ -35,8 +39,22 @@ const TargetModal: React.FC<ITargetModalProps> = ({
         setTarget({ ...target, ageRange: ageRange });
     };
 
+    const removeInterest = (interest: string) => {
+        setTarget({
+            ...target,
+            interests: target.interests.filter(i => i !== interest)
+        });
+    };
+
+    const onEnterKeyPressed = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === "Enter") {
+            setTarget({ ...target, interests: [ ...target.interests, interestField ] });
+            setInterestField("");
+        }
+    };
+
     return (
-        <Modal shown={true} content={
+        <Modal shown={(shown !== undefined) ? shown : true} content={
             <div className="User-Info">
                 <TextInput key={`${target.id}-name`} type="text" role="name"
                     label="Nom" value={target.name} setValue={setName} />
@@ -44,8 +62,13 @@ const TargetModal: React.FC<ITargetModalProps> = ({
                     label="CSP" value={target.csp} setValue={setCSP} />
                 <TextInput key={`${target.id}-ageRange`} type="text" role="ageRange"
                     label="Fourchette d'âge" value={target.ageRange} setValue={setAgeRange} />
-                {/* <TextInput key={`${target.id}-name`} type="text" role="name"
-                    label="Nom" value={target.name} setValue={setName} /> */}
+                <TextInput key={`${target.id}-interestField`} type="text" role="interestField"
+                    label="Ajouter un centre d'intêret" value={interestField} setValue={setInterestField} onKeyPress={onEnterKeyPressed} />
+                <ul className="target-campaign-list">
+                    {target.interests.map((interest, index) => {
+                        return <li key={index}><button className="target-delete-btn" onClick={() => removeInterest(interest)}>x</button> {interest}</li>
+                    })}
+                </ul>
                 {buttons}
             </div>
         } />
@@ -81,17 +104,57 @@ const TargetInfoDisplayer: React.FC<ITargetInfoDisplayerProps> = ({
 
 interface ICommercialPageTargetsProps {
     targets: ITarget[];
+    addTarget: (target: ITarget) => void;
     setTarget: (target: ITarget) => void;
     removeTarget: (target: ITarget) => void;
 }
 
 const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
     targets,
+    addTarget,
     setTarget,
     removeTarget
 }) => {
+    const [showModal, setShowModal] = useState(false);
     const userCredentials = useAppSelector(state => state.user.credentials);
     const [focusTarget, setFocusTarget] = useState<ITarget | undefined>(undefined);
+    const [newTarget, setNewTarget] = useState<ITarget>({
+        id: "",
+        ownerId: "",
+        name: "",
+        csp: "",
+        ageRange: "",
+        interests: []
+    });
+
+    const cancelNewTarget = () => {
+        setShowModal(false);
+        setNewTarget({
+            id: "",
+            ownerId: "",
+            name: "",
+            csp: "",
+            ageRange: "",
+            interests: []
+        });
+    };
+
+    const createTarget = () => {
+        const finalTarget = {
+            ...newTarget,
+            ownerId: userCredentials._id
+        };
+
+        Commercial.createTarget(finalTarget, userCredentials.token)
+            .then(result => {
+                addTarget(finalTarget);
+                cancelNewTarget();
+                log.log(result);
+            }).catch(err => {
+                notifyError((err as Error).message);
+                log.error(err);
+            });
+    };
 
     const updateTarget = (target: ITarget) => {
         Commercial.updateTarget(target.id, target, userCredentials.token)
@@ -118,27 +181,39 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
     };
 
     return (
-        <List
-            items={targets}
-            focusItem={focusTarget}
-            itemUpdater={(item) =>
-                <TargetModal
-                    target={item}
-                    setTarget={setFocusTarget}
-                    buttons={[
-                        <Button text="Modifier" onClick={() => updateTarget(item)} />,
-                        <Button text="Annuler" onClick={() => setFocusTarget(undefined)} />,
-                        <Button text="Supprimer" type="warning" onClick={() => deleteTarget(item)} />
-                    ]}
-                />
-            }
-            itemDisplayer={(item) =>
-                <TargetInfoDisplayer
-                    target={item}
-                    onClick={setFocusTarget}
-                />
-            }
-        />
+        <div>
+            <Button text="Créer une nouvelle cible" width="100%" onClick={() => setShowModal(true)} />
+            <TargetModal
+                target={newTarget}
+                setTarget={setNewTarget}
+                shown={showModal}
+                buttons={[
+                    <Button text="Créer une cible" onClick={createTarget} />,
+                    <Button text="Annuler" onClick={cancelNewTarget} />
+                ]}
+            />
+            <List
+                items={targets}
+                focusItem={focusTarget}
+                itemUpdater={(item) =>
+                    <TargetModal
+                        target={item}
+                        setTarget={setFocusTarget}
+                        buttons={[
+                            <Button text="Modifier" onClick={() => updateTarget(item)} />,
+                            <Button text="Annuler" onClick={() => setFocusTarget(undefined)} />,
+                            <Button text="Supprimer" type="warning" onClick={() => deleteTarget(item)} />
+                        ]}
+                    />
+                }
+                itemDisplayer={(item) =>
+                    <TargetInfoDisplayer
+                        target={item}
+                        onClick={setFocusTarget}
+                    />
+                }
+            />
+        </div>
     );
 };
 

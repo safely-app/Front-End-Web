@@ -99,6 +99,7 @@
     border-radius: 8px;
     text-decoration: none;
     display: inline-block;
+    height: 2.5em;
 }
 
 .btn-link {
@@ -120,6 +121,7 @@
     border-radius: 8px;
     text-decoration: none;
     display: inline-block;
+    height: 2.5em;
 }
 
 .btn:hover {
@@ -129,6 +131,7 @@
     border-style: solid;
     border-radius: 8px;
     font-weight: bold;
+    height: 2.5em;
 }
 
 .btn-link:hover {
@@ -143,6 +146,7 @@
     border-style: solid;
     border-radius: 8px;
     font-weight: bold;
+    height: 2.5em;
 }
 
 .Profile-container {

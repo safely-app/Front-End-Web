@@ -19,6 +19,10 @@ const CommercialPage: React.FC = () => {
         setCampaigns([ ...campaigns, campaign ]);
     };
 
+    const addTarget = (target: ITarget) => {
+        setTargets([ ...targets, target ]);
+    };
+
     const setCampaign = (campaign: ICampaign) => {
         setCampaigns(campaigns.map(c => (c.id === campaign.id) ? campaign : c));
     };
@@ -79,6 +83,7 @@ const CommercialPage: React.FC = () => {
                 />
                 <CommercialPageTargets
                     targets={targets}
+                    addTarget={addTarget}
                     setTarget={setTarget}
                     removeTarget={removeTarget}
                 />
