@@ -73,7 +73,7 @@ const CommercialPage: React.FC = () => {
     return (
         <div className="Profile-container">
             <AppHeader />
-            <div className="Profile-grid-container">
+            <div className="Commercial-grid-container">
                 <CommercialPageCampaigns
                     campaigns={campaigns}
                     addCampaign={addCampaign}

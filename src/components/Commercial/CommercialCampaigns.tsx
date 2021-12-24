@@ -111,12 +111,14 @@ const CampaignModal: React.FC<ICampaignModalProps> = ({
 
 interface ICampaignInfoDisplayerProps {
     campaign: ICampaign;
-    onClick : (campaign: ICampaign | undefined) => void;
+    setCampaign: (campaign: ICampaign) => void;
+    onClick: (campaign: ICampaign | undefined) => void;
     targets: ITarget[];
 };
 
 const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
     campaign,
+    setCampaign,
     onClick,
     targets
 }) => {
@@ -124,13 +126,36 @@ const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
         return targets.find(target => target.id === targetId)?.name || targetId;
     };
 
-    const handleClick = () => {
-        onClick(campaign);
+    const setStatus = (status: string) => {
+        setCampaign({ ...campaign, status: status });
+    };
+
+    const getPauseButton = (): JSX.Element => {
+        switch (campaign.status) {
+            case "pause":
+                return (
+                    <Button
+                        width="3em"
+                        text="⏵"
+                        onClick={() => setStatus("active")}
+                    />
+                );
+            case "active":
+                return (
+                    <Button
+                        width="3em"
+                        text="⏸"
+                        onClick={() => setStatus("pause")}
+                    />
+                );
+            default:
+                return <div />;
+        }
     };
 
     return (
-        <div key={campaign.id} className="Monitor-list-element">
-            <button className="Monitor-list-element-btn" onClick={handleClick}>
+        <div key={campaign.id} className="Monitor-list-element Campaign-grid-container">
+            <button className="Monitor-list-element-btn" onClick={() => onClick(campaign)}>
                 <ul className="Monitor-list">
                     <li key={`${campaign.id}-name`}><b>Nom : </b>{campaign.name}</li>
                     <li key={`${campaign.id}-budget`}><b>Budget : </b>{campaign.budget}</li>
@@ -139,6 +164,7 @@ const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
                     <li key={`${campaign.id}-targets`}><b>Cibles : </b>{campaign.targets.map(targetId => getTargetName(targetId)).join(", ")}</li>
                 </ul>
             </button>
+            <div>{getPauseButton()}</div>
         </div>
     );
 };
@@ -256,6 +282,7 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                 itemDisplayer={(item) =>
                     <CampaignInfoDisplayer
                         campaign={item}
+                        setCampaign={setCampaign}
                         onClick={setFocusCampaign}
                         targets={targets}
                     />

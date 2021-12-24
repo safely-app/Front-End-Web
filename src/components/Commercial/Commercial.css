@@ -65,7 +65,12 @@
     text-align: center;
 }
 
-.Profile-grid-container {
+.Commercial-grid-container {
     display: grid;
     grid-template-columns: 70% 1fr;
+}
+
+.Campaign-grid-container {
+    display: grid;
+    grid-template-columns: 90% 1fr;
 }

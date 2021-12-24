@@ -90,7 +90,7 @@
 
 .btn {
     margin-top: 1em;
-    padding: 1.2%;
+    padding: 0.6em;
     font-size: large;
     background-color: #a19b96;
     color: #fff;
@@ -99,7 +99,6 @@
     border-radius: 8px;
     text-decoration: none;
     display: inline-block;
-    height: 2.5em;
 }
 
 .btn-link {
@@ -112,7 +111,7 @@
 
 .btn-warning {
     margin-top: 1em;
-    padding: 1.2%;
+    padding: 0.6em;
     font-size: large;
     background-color: #f74a44;
     color: #fff;
@@ -121,7 +120,6 @@
     border-radius: 8px;
     text-decoration: none;
     display: inline-block;
-    height: 2.5em;
 }
 
 .btn:hover {
@@ -131,7 +129,6 @@
     border-style: solid;
     border-radius: 8px;
     font-weight: bold;
-    height: 2.5em;
 }
 
 .btn-link:hover {
@@ -146,7 +143,6 @@
     border-style: solid;
     border-radius: 8px;
     font-weight: bold;
-    height: 2.5em;
 }
 
 .Profile-container {
