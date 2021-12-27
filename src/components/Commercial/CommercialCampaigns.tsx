@@ -20,7 +20,7 @@ interface ICampaignModalProps {
     buttons: JSX.Element[];
     targets: ITarget[];
     shown?: boolean;
-};
+}
 
 const CampaignModal: React.FC<ICampaignModalProps> = ({
     campaign,
@@ -117,7 +117,7 @@ interface ICampaignInfoDisplayerProps {
     onClick: (campaign: ICampaign | undefined) => void;
     createCampaignFromTemplate: (campaign: ICampaign) => void;
     targets: ITarget[];
-};
+}
 
 const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
     campaign,
@@ -195,7 +195,7 @@ interface ICommercialPageCampaignProps {
     setCampaign: (campaign: ICampaign) => void;
     removeCampaign: (campaign: ICampaign) => void;
     targets: ITarget[];
-};
+}
 
 const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
     campaigns,
@@ -288,6 +288,7 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
             <List
                 items={campaigns}
                 focusItem={focusCampaign}
+                style={{ maxHeight: '42em', overflow: 'auto' }}
                 itemUpdater={(item) =>
                     <CampaignModal
                         campaign={item}

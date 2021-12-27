@@ -17,7 +17,7 @@ interface ITargetModalProps {
     setTarget: (campaign: ITarget) => void;
     buttons: JSX.Element[];
     shown?: boolean;
-};
+}
 
 const TargetModal: React.FC<ITargetModalProps> = ({
     target,
@@ -78,7 +78,7 @@ const TargetModal: React.FC<ITargetModalProps> = ({
 interface ITargetInfoDisplayerProps {
     target: ITarget;
     onClick: (target: ITarget) => void;
-};
+}
 
 const TargetInfoDisplayer: React.FC<ITargetInfoDisplayerProps> = ({
     target,
@@ -147,7 +147,7 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
 
         Commercial.createTarget(finalTarget, userCredentials.token)
             .then(result => {
-                addTarget(finalTarget);
+                addTarget({ ...finalTarget, id: result.data._id });
                 cancelNewTarget();
                 log.log(result);
             }).catch(err => {
@@ -195,6 +195,7 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
             <List
                 items={targets}
                 focusItem={focusTarget}
+                style={{ maxHeight: '42em', overflow: 'auto' }}
                 itemUpdater={(item) =>
                     <TargetModal
                         target={item}
