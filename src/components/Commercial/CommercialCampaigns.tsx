@@ -50,9 +50,11 @@ const CampaignModal: React.FC<ICampaignModalProps> = ({
     const addTarget = (target: string) => {
         setTargetField("");
         if (campaign.targets.find(t => t === target) === undefined) {
-            setCampaign({ ...campaign, targets: [
-                ...campaign.targets, target
-            ] });
+            setCampaign({
+                ...campaign, targets: [
+                    ...campaign.targets, target
+                ]
+            });
         }
     };
 
@@ -113,6 +115,7 @@ interface ICampaignInfoDisplayerProps {
     campaign: ICampaign;
     setCampaign: (campaign: ICampaign) => void;
     onClick: (campaign: ICampaign | undefined) => void;
+    createCampaignFromTemplate: (campaign: ICampaign) => void;
     targets: ITarget[];
 };
 
@@ -120,6 +123,7 @@ const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
     campaign,
     setCampaign,
     onClick,
+    createCampaignFromTemplate,
     targets
 }) => {
     const getTargetName = (targetId: string): string => {
@@ -128,6 +132,14 @@ const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
 
     const setStatus = (status: string) => {
         setCampaign({ ...campaign, status: status });
+    };
+
+    const campaignStatusIsValid = (): boolean => {
+        return (
+            campaign.status === "pause" ||
+            campaign.status === "active" ||
+            campaign.status === "template"
+        );
     };
 
     const getPauseButton = (): JSX.Element => {
@@ -148,13 +160,21 @@ const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
                         onClick={() => setStatus("pause")}
                     />
                 );
+            case "template":
+                return (
+                    <Button
+                        width="3em"
+                        text="+"
+                        onClick={() => createCampaignFromTemplate(campaign)}
+                    />
+                );
             default:
                 return <div />;
         }
     };
 
     return (
-        <div key={campaign.id} className="Monitor-list-element Campaign-grid-container">
+        <div key={campaign.id} className={`Monitor-list-element ${campaignStatusIsValid() ? "Campaign-grid-container" : ""}`}>
             <button className="Monitor-list-element-btn" onClick={() => onClick(campaign)}>
                 <ul className="Monitor-list">
                     <li key={`${campaign.id}-name`}><b>Nom : </b>{campaign.name}</li>
@@ -210,15 +230,15 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
         });
     };
 
-    const createCampaign = () => {
+    const createCampaign = (campaign = newCampaign) => {
         const finalCampaign = {
-            ...newCampaign,
+            ...campaign,
             ownerId: userCredentials._id
         };
 
         Commercial.createCampaign(finalCampaign, userCredentials.token)
             .then(result => {
-                addCampaign(finalCampaign);
+                addCampaign({ ...finalCampaign, id: result.data._id });
                 cancelNewCampaign();
                 log.log(result);
             }).catch(err => {
@@ -261,7 +281,8 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                 shown={showModal}
                 buttons={[
                     <Button key={1} text="Créer une campagne" onClick={createCampaign} />,
-                    <Button key={2} text="Annuler" onClick={cancelNewCampaign} />
+                    <Button key={2} text="Créer un template" onClick={() => createCampaign({ ...newCampaign, status: "template" })} />,
+                    <Button key={3} text="Annuler" onClick={cancelNewCampaign} />
                 ]}
             />
             <List
@@ -284,6 +305,7 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                         campaign={item}
                         setCampaign={setCampaign}
                         onClick={setFocusCampaign}
+                        createCampaignFromTemplate={(campaign) => createCampaign(campaign)}
                         targets={targets}
                     />
                 }
