@@ -81,7 +81,7 @@ const CampaignModal: React.FC<ICampaignModalProps> = ({
             <div className="User-Info">
                 <TextInput key={`${campaign.id}-name`} type="text" role="name"
                     label="Nom" value={campaign.name} setValue={setName} />
-                <TextInput key={`${campaign.id}-budget`} type="text" role="budget"
+                <TextInput key={`${campaign.id}-budget`} type="number" role="budget"
                     label="Budget" value={campaign.budget} setValue={setBudget} />
                 <TextInput key={`${campaign.id}-status`} type="text" role="status"
                     label="Status" value={campaign.status} setValue={setStatus} />
