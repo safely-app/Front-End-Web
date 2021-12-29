@@ -8,6 +8,10 @@ class Stripe {
         return createHttpConfig(this.baseURL, token).get(`/stripe/stripe/user/${id}`);
     }
 
+    getCards(id: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/stripe/stripe/user/card/${id}`);
+    }
+
     create(data: IStripe, token: string) {
         const { id, ...stripeData } = data;
         return createHttpConfig(this.baseURL, token).post('/stripe/stripe/user', stripeData);

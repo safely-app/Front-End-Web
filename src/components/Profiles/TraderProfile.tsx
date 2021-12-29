@@ -8,6 +8,7 @@ import {
     Modal,
     List
 } from '../common';
+import IStripe, { IStripeCard } from '../interfaces/IStripe';
 import IProfessional from '../interfaces/IProfessional';
 import IUser from '../interfaces/IUser';
 import {
@@ -23,7 +24,6 @@ import { notifyError, notifySuccess } from '../utils';
 import StripeCard from './StripeCard';
 import log from 'loglevel';
 import './Profiles.css';
-import IStripe from '../interfaces/IStripe';
 
 enum InfoSearcher {
     SEARCHING,
@@ -31,29 +31,76 @@ enum InfoSearcher {
     FOUND
 };
 
+const months = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre"
+];
+
 const PaymentSolutionList: React.FC = () => {
     const user = useSelector((state: RootState) => state.user);
-    const [paymentSolutions, setPaymentSolutions] = useState<string[]>([]);
+    const [paymentSolutions, setPaymentSolutions] = useState<IStripeCard[]>([
+        {
+            id: "pm_1JfjkrBVXYxPaZEL9jQIE7oS",
+            customerId: "cus_KKMyIkzLHX5Che",
+            brand: "visa",
+            country: "US",
+            expMonth: 11,
+            expYear: 2022,
+            last4: "4242",
+        },
+        {
+            id: "pm_1Jfj1dBVXYxPaZELEXLi0AA4",
+            customerId: "cus_KKMyIkzLHX5Che",
+            brand: "visa",
+            country: "US",
+            expMonth: 4,
+            expYear: 2024,
+            last4: "4242",
+        }
+    ]);
 
     useEffect(() => {
-        log.log(user.userInfo.stripeId,
-            user.credentials.token);
-        Stripe.get(
-            user.userInfo.stripeId as string,
-            user.credentials.token
-        ).then(result => {
-            const paymentMethod = result.data.invoice_settings.default_payment_method;
-            setPaymentSolutions([ paymentMethod ]);
-        }).catch(err => log.error(err));
+        Stripe.getCards(user.userInfo.stripeId as string, user.credentials.token)
+            .then(result => {
+                const gotPaymentSolutions = result.data.map(paymentSolution => ({
+                    id: paymentSolution.id,
+                    customerId: paymentSolution.customer,
+                    brand: paymentSolution.card.brand,
+                    country: paymentSolution.card.country,
+                    expMonth: paymentSolution.card.exp_month,
+                    expYear: paymentSolution.card.exp_year,
+                    last4: paymentSolution.card.last4
+                }));
+
+                setPaymentSolutions(gotPaymentSolutions);
+            }).catch(err => log.error(err));
     }, [user])
 
     return (
-        <List
-            items={paymentSolutions}
-            itemDisplayer={(item) =>
-                <li key={item}><b>Solution de paiement : </b>{item}</li>
-            }
-        />
+        <div style={{ marginTop: '1em', paddingTop: '1em', marginLeft: '20%', marginRight: '20%' }}>
+            <h3>Solutions de paiement enregistrées</h3>
+            <List
+                items={paymentSolutions}
+                itemDisplayer={(item) =>
+                    <div key={item.id} style={{ marginLeft: '2%', marginRight: '2%' }}>
+                        <div className="Profile-list-element" style={{ textAlign: 'left', paddingLeft: '5%', border: '1px solid #a19b96', borderRadius: '8px' }}>
+                            <b style={{ fontSize: '20px' }}>{`${item.brand.charAt(0).toUpperCase() + item.brand.slice(1)} ···· ${item.last4}`}</b>
+                            <p style={{ fontSize: '14px' }}>{`Expire en ${months[item.expMonth]} ${item.expYear}`}</p>
+                        </div>
+                    </div>
+                }
+            />
+        </div>
     );
 };
 
