@@ -21,9 +21,8 @@ export const isTimetableValid = (timetable: (string | null)[]): boolean => {
     }
 
     for (let index = 0; index < 7; index++) {
-        console.log(timetable[index]);
-        if (timetable[index] === null) continue;
-        if (timetable[index]?.match(/\d{1,2}h à \d{1,2}h/g) === null)
+        if (timetable[index] === null || timetable[index] === "") continue;
+        if (timetable[index]?.match(/\d{1,2}h\d{0,2} à \d{1,2}h\d{0,2}/g) === null)
             return false;
     }
 
