@@ -13,13 +13,38 @@ interface VerifyHoursDayProps {
 
 const VerifyHours: React.FC = () => {
     const [safeplaceId, setSafeplaceId] = useState("");
-    const [timetable, setTimetable] = useState<VerifyHoursDayProps[]>([]);
+    const [timetable, setTimetable] = useState<VerifyHoursDayProps[]>([
+        { name: "Lundi", timetable: [], isChecked: false },
+        { name: "Mardi", timetable: [], isChecked: false },
+        { name: "Mercredi", timetable: [], isChecked: false },
+        { name: "Jeudi", timetable: [], isChecked: false },
+        { name: "Vendredi", timetable: [], isChecked: false },
+        { name: "Samedi", timetable: [], isChecked: false },
+        { name: "Dimanche", timetable: [], isChecked: false }
+    ]);
 
     const parseUrl = (url: string): string => {
         const regex = new RegExp("/verifyHours/(.*)");
         const found = url.match(regex) || [""];
 
         return found[1];
+    };
+
+    const formatTime = (strTime: string) => {
+        if (strTime === undefined)
+            return "";
+        if (strTime.includes('h')) {
+            if (strTime.split('h')[0].length === 1)
+                strTime = `0${strTime}`;
+            if (strTime.split('h')[1].length === 0)
+                return strTime.replace('h', ':00');
+            else return strTime.replace('h', ':');
+        }
+    };
+
+    const isAfternoon = (strTime: string) => {
+        if (strTime === undefined) return false;
+        return (Number(strTime.split(':')[0]) > 12);
     };
 
     const splitDayTimetable = (dayTimetable: string | null): string[] => {
@@ -29,26 +54,37 @@ const VerifyHours: React.FC = () => {
             return daySchedule;
 
         dayTimetable.split(',').forEach((element, index) => {
-            const hoursSplit = element.split('-');
-            daySchedule[index * 2] = hoursSplit[0];
-            daySchedule[index * 2 + 1] = hoursSplit[1];
+            const hoursSplit = element.split(' à ');
+            daySchedule[index * 2] = formatTime(hoursSplit[0]);
+            daySchedule[index * 2 + 1] = formatTime(hoursSplit[1]);
         });
+
+        if (daySchedule[2] === "" &&
+            daySchedule[3] === "" &&
+            isAfternoon(daySchedule[0]) &&
+            isAfternoon(daySchedule[1])
+        ) {
+            daySchedule[2] = daySchedule[0];
+            daySchedule[3] = daySchedule[1];
+            daySchedule[0] = "";
+            daySchedule[1] = "";
+        }
 
         return daySchedule.map(element =>
             element === undefined ? "" : element);
     };
 
-    const joinDayTimetable = (dayTimetable: VerifyHoursDayProps[]): string[] => {
+    const joinDayTimetable = (dayTimetable: VerifyHoursDayProps[]): (string | null)[] => {
         return dayTimetable
             .map(element => (!element.isChecked) ? { ...element, timetable: new Array(4).fill("") } : element)
             .map(element => {
                 const validTimes = element.timetable.filter(elT => elT !== "");
 
                 if (validTimes.length === 0)
-                    return "";
+                    return null;
 
-                const firstPart = validTimes.slice(0, 2).join('-');
-                const secondPart = validTimes.slice(2, 4).join('-');
+                const firstPart = validTimes.slice(0, 2).map(t => t.replace(':', 'h')).join(' à ');
+                const secondPart = validTimes.slice(2, 4).map(t => t.replace(':', 'h')).join(' à ');
 
                 return (validTimes.length > 2)
                     ? `${firstPart},${secondPart}`
@@ -93,13 +129,15 @@ const VerifyHours: React.FC = () => {
         return (
             <li key={day.name} style={{ margin: '0.5em' }}>
                 <table>
-                    <tr>
-                        <th style={{ width: '15em', fontSize: 18 }}>{day.name}</th>
-                        <td style={{ width: '10em' }}>Je suis ouvert ce jour</td>
-                        <td style={{ width: '5em' }}>
-                            <input type="checkbox" checked={day.isChecked} onChange={() => setDayTimetable({...day, isChecked: !day.isChecked})} />
-                        </td>
-                    </tr>
+                    <tbody>
+                        <tr>
+                            <th style={{ width: '15em', fontSize: 18 }}>{day.name}</th>
+                            <td style={{ width: '10em' }}>Je suis ouvert ce jour</td>
+                            <td style={{ width: '5em' }}>
+                                <input type="checkbox" checked={day.isChecked} onChange={() => setDayTimetable({...day, isChecked: !day.isChecked})} />
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
                 <table hidden={!day.isChecked}>
                     <thead>
@@ -147,7 +185,7 @@ const VerifyHours: React.FC = () => {
 
         Safeplace.getTimetable(gotSafeplaceId)
             .then(result => {
-                const gotSafeplaceTimetable = result.data
+                const gotSafeplaceTimetable = result.data.dayTimetable
                     .map(element => splitDayTimetable(element))
                     .map((dayTimetable, index) => ({
                         name: days[index],
@@ -158,17 +196,8 @@ const VerifyHours: React.FC = () => {
                 setTimetable(gotSafeplaceTimetable);
                 setSafeplaceId(gotSafeplaceId);
             }).catch(err => {
+                notifyError((err as Error).message);
                 log.error(err);
-                // TODO: remove temporary timetable when back-end is accessible
-                setTimetable([
-                    { name: "Lundi", timetable: [ "10:00", "13:00", "14:00", "18:00" ], isChecked: true },
-                    { name: "Mardi", timetable: [ "10:00", "13:00", "14:00", "18:00" ], isChecked: true },
-                    { name: "Mercredi", timetable: [ "10:00", "13:00", "14:00", "18:00" ], isChecked: true },
-                    { name: "Jeudi", timetable: [ "10:00", "13:00", "14:00", "18:00" ], isChecked: true },
-                    { name: "Vendredi", timetable: [ "10:00", "13:00", "14:00", "18:00" ], isChecked: true },
-                    { name: "Samedi", timetable: [], isChecked: false },
-                    { name: "Dimanche", timetable: [], isChecked: false }
-                ]);
             });
     }, []);
 
