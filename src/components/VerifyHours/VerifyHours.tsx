@@ -185,7 +185,6 @@ const VerifyHours: React.FC = () => {
 
         Safeplace.getTimetable(gotSafeplaceId)
             .then(result => {
-                log.log(result);
                 const gotSafeplaceTimetable = result.data.dayTimetable
                     .map(element => splitDayTimetable(element))
                     .map((dayTimetable, index) => ({
