@@ -76,22 +76,6 @@ test('ensure thata update occurs without technical occurs', async () => {
     scope.done();
 });
 
-test('ensure that delete occurs without technical errors', async () => {
-    const scopeOptions = nock(testURL)
-        .options('/stripe/stripe/billing/1')
-        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
-    const scope = nock(testURL)
-        .delete('/stripe/stripe/billing/1')
-        .reply(200, {}, {
-            'Access-Control-Allow-Origin': '*'
-        });
-
-    const response = await Billing.delete("1", "");
-    expect(response.status).toBe(200);
-    scopeOptions.done();
-    scope.done();
-});
-
 test('ensure that get billing by user id occurs without technical errors', async () => {
     const scope = nock(testURL)
         .get('/stripe/stripe/billingUser/1')

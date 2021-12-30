@@ -39,10 +39,6 @@ class Billing {
             receipt_email: data.receiptEmail
         });
     }
-
-    delete(id: string, token: string) {
-        return createHttpConfig(this.baseURL, token).delete(`/stripe/stripe/billing/${id}`);
-    }
 }
 
 export default new Billing();
