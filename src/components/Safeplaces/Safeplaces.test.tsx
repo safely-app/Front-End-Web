@@ -13,7 +13,18 @@ const testDelay = (ms: number): Promise<void> =>
 test('renders Safeplaces', async () => {
     const scope = nock(testURL)
         .get('/safeplace/safeplace')
-        .reply(200, [], {
+        .reply(200, [
+            {
+                id: "1",
+                name: "test",
+                description: "test",
+                city: "test",
+                address: "test",
+                type: "test",
+                dayTimetable: [ null, null, null, null, null, null, null ],
+                coordinate: [ "48", "-56" ],
+            }
+        ], {
             'Access-Control-Allow-Origin': '*'
         });
 

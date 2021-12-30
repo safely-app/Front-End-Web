@@ -13,6 +13,20 @@ class Safeplace {
         return createHttpConfig(this.baseURL, token).get(`/safeplace/safeplace/${id}`);
     }
 
+    getByOwnerId(ownerId: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/safeplace/safeplace/ownerSafeplace/${ownerId}`);
+    }
+
+    getTimetable(id: string) {
+        return createHttpConfig(this.baseURL).get(`/safeplace/getHours/${id}`);
+    }
+
+    updateTimetable(id: string, timetable: string[]) {
+        return createHttpConfig(this.baseURL).put(`/safeplace/modifyHours/${id}`, {
+            dayTimetable: timetable
+        });
+    }
+
     update(id: string, data: ISafeplace, token: string) {
         const validateSafeplace = isSafeplaceValid(data);
 

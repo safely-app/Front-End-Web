@@ -7,17 +7,23 @@ import {
     List,
     Button,
     Modal,
-    TextInput
+    TextInput,
+    Dropdown,
+    SearchBar
 } from '../../common';
 import log from 'loglevel';
-import './SafeplaceMonitor.css';
 import { ToastContainer } from 'react-toastify';
-import { notifyError } from '../../utils';
+import { SAFEPLACE_TYPES } from './SafeplaceMonitorVariables';
+import {
+    notifyError,
+    convertStringToRegex
+} from '../../utils';
 import {
     displayTimetable,
     splitTimetable,
     displayCoordinates
 } from './utils';
+import './SafeplaceMonitor.css';
 
 interface ISafeplaceInfoProps {
     safeplace: ISafeplace;
@@ -68,9 +74,15 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
         setSafeplace({ ...safeplace, coordinate: [ safeplace.coordinate[0], longitude ] });
     };
 
+    const setOwnerId = (ownerId: string) => {
+        setSafeplace({ ...safeplace, ownerId: ownerId });
+    };
+
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
             <div className="Safeplace-Info">
+                <TextInput key={`${safeplace.id}-id`} type="text" role="id"
+                    label="Identifiant de la safeplace" value={safeplace.id} setValue={() => {}} readonly={true} />
                 <TextInput key={`${safeplace.id}-name`} type="text" role="name"
                     label="Nom de la safeplace" value={safeplace.name} setValue={setName} />
                 <TextInput key={`${safeplace.id}-city`} type="text" role="city"
@@ -87,6 +99,8 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
                     <TextInput key={`${safeplace.id}-coordinate2`} type="text" role="longitude" width="98%"
                         label="Longitude" value={safeplace.coordinate[1]} setValue={setLongitude} />
                 </div>
+                <TextInput key={`${safeplace.id}-ownerId`} type="text" role="ownerId"
+                    label="ID du propriétaire" value={safeplace.ownerId as string} setValue={setOwnerId} />
                 {buttons}
             </div>
         }/>
@@ -107,7 +121,7 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
     };
 
     return (
-        <li key={safeplace.id} className="Safeplace-list-element">
+        <div key={safeplace.id} className="Safeplace-list-element">
             <button className="Safeplace-list-element-btn" onClick={handleClick}>
                 <ul className="Safeplace-list">
                     <li key={`${safeplace.id}-id`}><b>ID : </b>{safeplace.id}</li>
@@ -117,16 +131,42 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
                     <li key={`${safeplace.id}-timetable`}><b>Horaires : </b>{displayTimetable(safeplace.dayTimetable)}</li>
                     <li key={`${safeplace.id}-type`}><b>Type : </b>{safeplace.type}</li>
                     <li key={`${safeplace.id}-coordinate`}><b>Coordonnées : </b>{displayCoordinates(safeplace.coordinate)}</li>
+                    <li key={`${safeplace.id}-ownerId`} hidden={safeplace.ownerId === undefined}><b>ID du propriétaire : </b>{safeplace.ownerId}</li>
                 </ul>
             </button>
-        </li>
+        </div>
     );
 }
+
+interface ISafeplaceMonitorFilterProps {
+    searchBarValue: string;
+    setDropdownValue: (value: string) => void;
+    setSearchBarValue: (value: string) => void;
+}
+
+const SafeplaceMonitorFilter: React.FC<ISafeplaceMonitorFilterProps> = ({
+    searchBarValue,
+    setDropdownValue,
+    setSearchBarValue
+}) => {
+    return (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(100, 1fr)', paddingLeft: '1%', paddingRight: '1%' }}>
+            <div style={{ gridColumn: '2 / 10', gridRow: '1' }}>
+                <Dropdown width='100%' defaultValue='all' values={SAFEPLACE_TYPES} setValue={setDropdownValue} />
+            </div>
+            <div style={{ gridColumn: '11 / 100', gridRow: '1' }}>
+                <SearchBar label="Rechercher une safeplace" value={searchBarValue} setValue={setSearchBarValue} />
+            </div>
+        </div>
+    );
+};
 
 const SafeplaceMonitor: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [focusSafeplace, setFocusSafeplace] = useState<ISafeplace | undefined>(undefined);
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
+    const [safeplaceType, setSafeplaceType] = useState('all');
+    const [searchText, setSearchText] = useState('');
 
     const setSafeplace = (safeplace: ISafeplace) => {
         setSafeplaces(safeplaces.map(safeplaceElement => safeplaceElement.id === safeplace.id ? safeplace : safeplaceElement));
@@ -156,6 +196,22 @@ const SafeplaceMonitor: React.FC = () => {
         }
     };
 
+    const filterSafeplaces = (): ISafeplace[] => {
+        const lowerSearchText = convertStringToRegex(searchText.toLocaleLowerCase());
+
+        if (safeplaceType === 'all' && searchText === '')
+            return safeplaces;
+
+        return safeplaces
+            .filter(safeplace => safeplaceType !== 'all' ? safeplaceType === safeplace.type.toLowerCase() : true)
+            .filter(safeplace => searchText !== ''
+                ? safeplace.id.toLowerCase().match(lowerSearchText) !== null
+                || safeplace.name.toLowerCase().match(lowerSearchText) !== null
+                || safeplace.city.toLowerCase().match(lowerSearchText) !== null
+                || safeplace.address.toLowerCase().match(lowerSearchText) !== null
+                || (safeplace.description !== undefined && safeplace.description?.toLowerCase().match(lowerSearchText) !== null) : true);
+    };
+
     useEffect(() => {
         Safeplace.getAll(userCredientials.token).then(response => {
             const gotSafeplaces = response.data.map(safeplace => ({
@@ -166,8 +222,9 @@ const SafeplaceMonitor: React.FC = () => {
                 address: safeplace.address,
                 type: safeplace.type,
                 dayTimetable: safeplace.dayTimetable,
-                coordinate: safeplace.coordinate
-            }));
+                coordinate: safeplace.coordinate,
+                ownerId: safeplace.ownerId
+            }) as ISafeplace);
 
             setSafeplaces(gotSafeplaces);
             log.log(gotSafeplaces);
@@ -178,8 +235,9 @@ const SafeplaceMonitor: React.FC = () => {
 
     return (
         <div style={{textAlign: "center"}}>
+            <SafeplaceMonitorFilter searchBarValue={searchText} setDropdownValue={setSafeplaceType} setSearchBarValue={setSearchText} />
             <List
-                items={safeplaces}
+                items={filterSafeplaces()}
                 focusItem={focusSafeplace}
                 itemDisplayer={(item) => <SafeplaceInfoListElement safeplace={item} onClick={(safeplace: ISafeplace) => setFocusSafeplace(safeplace)} />}
                 itemUpdater={(item) =>

@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { getUserInfo, RootState } from '../../redux';
+import React, {
+    useState,
+    useEffect
+} from 'react';
+import {
+    setInfo,
+    useAppSelector,
+    useAppDispatch
+} from '../../redux';
 import ISafeplace from '../interfaces/ISafeplace';
 import { AppHeader } from '../Header/Header';
-import { Safeplace } from '../../services';
+import { Safeplace, User } from '../../services';
+import { notifyError } from '../utils';
 import log from 'loglevel';
 import {
     MapContainer,
@@ -48,27 +55,37 @@ export const Map: React.FC<IMapProps> = ({
 };
 
 const App: React.FC = () => {
-    const dispatch = useDispatch();
-    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const dispatch = useAppDispatch();
+    const userCredientials = useAppSelector(state => state.user.credentials);
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
 
     useEffect(() => {
-        dispatch(getUserInfo(userCredientials._id, userCredientials.token));
-        Safeplace.getAll(userCredientials.token).then(response => {
-            const gotSafeplaces = response.data.map(safeplace => ({
-                id: safeplace.id,
-                name: safeplace.name,
-                city: safeplace.city,
-                address: safeplace.address,
-                type: safeplace.type,
-                dayTimetable: safeplace.dayTimetable,
-                coordinate: safeplace.coordinate
-            }));
+        const getUserInfo = () => {
+            User.get(userCredientials._id, userCredientials.token)
+                .then(response => dispatch(setInfo(response.data)))
+                .catch(error => notifyError(error.message));
+        };
 
-            setSafeplaces(gotSafeplaces);
-        }).catch(error => {
-            log.error(error);
-        });
+        const getSafeplaces = () => {
+            Safeplace.getAll(userCredientials.token).then(response => {
+                const gotSafeplaces = response.data.map(safeplace => ({
+                    id: safeplace.id,
+                    name: safeplace.name,
+                    city: safeplace.city,
+                    address: safeplace.address,
+                    type: safeplace.type,
+                    dayTimetable: safeplace.dayTimetable,
+                    coordinate: safeplace.coordinate
+                }));
+
+                setSafeplaces(gotSafeplaces);
+            }).catch(error => {
+                log.error(error);
+            });
+        };
+
+        getUserInfo();
+        getSafeplaces();
     }, [userCredientials, dispatch]);
 
     return (

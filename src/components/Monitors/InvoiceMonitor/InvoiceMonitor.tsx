@@ -6,11 +6,15 @@ import {
     Button,
     List,
     Modal,
-    TextInput
+    TextInput,
+    SearchBar
 } from '../../common';
 import IInvoice from '../../interfaces/IInvoice';
 import { ToastContainer } from 'react-toastify';
-import { notifyError } from '../../utils';
+import {
+    notifyError,
+    convertStringToRegex
+} from '../../utils';
 import log from 'loglevel';
 import './InvoiceMonitor.css';
 
@@ -78,7 +82,7 @@ const InvoiceInfoListElement: React.FC<IInvoiceInfoListElementProps> = ({
     };
 
     return (
-        <li key={invoice.id} className="Monitor-list-element">
+        <div key={invoice.id} className="Monitor-list-element">
             <button className="Monitor-list-element-btn" onClick={handleClick}>
                 <ul className="Monitor-list">
                     <li key={`${invoice.id}-id`}><b>Identifiant : </b>{invoice.id}</li>
@@ -87,9 +91,25 @@ const InvoiceInfoListElement: React.FC<IInvoiceInfoListElementProps> = ({
                     <li key={`${invoice.id}-date`}><b>Date d'effet : </b>{invoice.date}</li>
                 </ul>
             </button>
-        </li>
+        </div>
     );
 }
+
+interface IInvoiceMonitorFilterProps {
+    searchBarValue: string;
+    setSearchBarValue: (value: string) => void;
+}
+
+const InvoiceMonitorFilter: React.FC<IInvoiceMonitorFilterProps> = ({
+    searchBarValue,
+    setSearchBarValue
+}) => {
+    return (
+        <div style={{ marginLeft: '2%', marginRight: '2%' }}>
+            <SearchBar label="Rechercher une facture" value={searchBarValue} setValue={setSearchBarValue} />
+        </div>
+    );
+};
 
 const InvoiceMonitor: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
@@ -97,6 +117,7 @@ const InvoiceMonitor: React.FC = () => {
     const [newInvoice, setNewInvoice] = useState<IInvoice | undefined>(undefined);
     const [invoices, setInvoices] = useState<IInvoice[]>([]);
     const [showModal, setShowModal] = useState(false);
+    const [searchText, setSearchText] = useState('');
 
     const addInvoice = (invoice: IInvoice) => {
         setInvoices([
@@ -193,6 +214,16 @@ const InvoiceMonitor: React.FC = () => {
         }
     };
 
+    const filterInvoices = (): IInvoice[] => {
+        const lowerSearchText = convertStringToRegex(searchText.toLocaleLowerCase());
+
+        return invoices
+            .filter(invoice => searchText !== ''
+                ? invoice.id.toLowerCase().match(lowerSearchText) !== null
+                || invoice.date.toLowerCase().match(lowerSearchText) !== null
+                || invoice.userId.toLowerCase().match(lowerSearchText) !== null : true);
+    };
+
     useEffect(() => {
         Invoice.getAll(userCredientials.token).then(response => {
             const gotInvoices = response.data.map(invoice => ({
@@ -213,6 +244,7 @@ const InvoiceMonitor: React.FC = () => {
         <div style={{textAlign: "center"}}>
             <Button text="Créer une nouvelle facture"
                 width="98%" onClick={onCreateButtonClick} />
+            <InvoiceMonitorFilter searchBarValue={searchText} setSearchBarValue={setSearchText} />
             <InvoiceInfoForm
                 shown={newInvoice !== undefined}
                 invoice={newInvoice}
@@ -223,7 +255,7 @@ const InvoiceMonitor: React.FC = () => {
                 ]}
             />
             <List
-                items={invoices}
+                items={filterInvoices()}
                 focusItem={focusInvoice}
                 itemDisplayer={(item) => <InvoiceInfoListElement invoice={item} onClick={onListElementClick} />}
                 itemUpdater={(item) =>
