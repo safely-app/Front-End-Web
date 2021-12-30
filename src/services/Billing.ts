@@ -23,7 +23,9 @@ class Billing {
 
         if (validateBilling.isValid === false)
             throw new Error(validateBilling.error);
-        return createHttpConfig(this.baseURL, token).post("/stripe/stripe/billing", data);
+        return createHttpConfig(this.baseURL, token).post("/stripe/stripe/billing", {
+            amount: data.amount
+        });
     }
 
     update(id: string, stripeId: string, data: IBilling, token: string) {

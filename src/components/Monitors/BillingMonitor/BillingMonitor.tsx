@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../redux';
+import { useAppSelector } from '../../../redux';
 import Billing from '../../../services/Billing';
 import {
     Button,
@@ -14,14 +13,14 @@ import { notifyError } from '../../utils';
 import log from 'loglevel';
 import './BillingMonitor.css';
 
-interface IBillingCreateProps {
+interface IBillingProps {
     billing: IBilling | undefined;
     setBilling: (billing: IBilling) => void;
     buttons: JSX.Element[];
     shown?: boolean;
 }
 
-const BillingCreateForm: React.FC<IBillingCreateProps> = ({
+const BillingCreateForm: React.FC<IBillingProps> = ({
     billing,
     setBilling,
     buttons,
@@ -40,6 +39,40 @@ const BillingCreateForm: React.FC<IBillingCreateProps> = ({
             <div className="Billing-Info">
                 <TextInput key={`${billing?.id}-amount`} type="number" role="amount"
                     label="Montant" value={`${billing?.amount}`} setValue={setAmount} />
+                {buttons.map(button => button)}
+            </div>
+        }/>
+    );
+};
+
+const BillingUpdateForm: React.FC<IBillingProps> = ({
+    billing,
+    setBilling,
+    buttons,
+    shown
+}) => {
+
+    const setDescription = (description: string) => {
+        setBilling({
+            ...billing as IBilling,
+            description: description
+        });
+    };
+
+    const setReceiptEmail = (receiptEmail: string) => {
+        setBilling({
+            ...billing as IBilling,
+            receiptEmail: receiptEmail
+        });
+    };
+
+    return (
+        <Modal shown={(shown !== undefined) ? shown : true} content={
+            <div className="Billing-Info">
+                <TextInput key={`${billing?.id}-description`} type="text" role="description"
+                    label="Description" value={`${billing?.description}`} setValue={setDescription} />
+                <TextInput key={`${billing?.id}-receiptEmail`} type="text" role="receiptEmail"
+                    label="Email de réception du reçu" value={`${billing?.receiptEmail !== null ? billing?.receiptEmail : ""}`} setValue={setReceiptEmail} />
                 {buttons.map(button => button)}
             </div>
         }/>
@@ -76,7 +109,8 @@ const BillingInfoListElement: React.FC<IBillingInfoListElementProps> = ({
 }
 
 const BillingMonitor: React.FC = () => {
-    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const userInfo = useAppSelector(state => state.user.userInfo);
+    const userCredientials = useAppSelector(state => state.user.credentials);
     const [focusBilling, setFocusBilling] = useState<IBilling | undefined>(undefined);
     const [newBilling, setNewBilling] = useState<IBilling | undefined>(undefined);
     const [billings, setBillings] = useState<IBilling[]>([]);
@@ -87,6 +121,10 @@ const BillingMonitor: React.FC = () => {
             ...billings,
             billing
         ]);
+    };
+
+    const setBilling = (billing: IBilling) => {
+        setBillings(billings.map(b => b.id === billing.id ? billing : b));
     };
 
     const createNewBilling = async (billing: IBilling) => {
@@ -104,6 +142,20 @@ const BillingMonitor: React.FC = () => {
         } catch (e) {
             log.error(e);
             notifyError((e as Error).message);
+        }
+    };
+
+    const updateBilling = async (billing: IBilling) => {
+        try {
+            const response = await Billing.update(billing.id, userInfo.stripeId as string, billing, userCredientials.token);
+
+            log.log(response);
+            setBilling(billing);
+            setFocusBilling(undefined);
+            setShowModal(false);
+        } catch (err) {
+            notifyError((err as Error).message);
+            log.error(err);
         }
     };
 
@@ -171,7 +223,16 @@ const BillingMonitor: React.FC = () => {
                 items={billings}
                 focusItem={focusBilling}
                 itemDisplayer={(item) => <BillingInfoListElement billing={item} onClick={onListElementClick} />}
-                itemUpdater={() => <div />}
+                itemUpdater={(item) =>
+                    <BillingUpdateForm
+                        billing={focusBilling}
+                        setBilling={setFocusBilling}
+                        buttons={[
+                            <Button key="update-id" text="Modifier" onClick={() => updateBilling(item)} />,
+                            <Button key="stop-id" text="Annuler" onClick={onStopButtonClick} />
+                        ]}
+                    />
+                }
             />
             <ToastContainer />
         </div>
