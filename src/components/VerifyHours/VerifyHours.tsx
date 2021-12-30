@@ -47,33 +47,6 @@ const VerifyHours: React.FC = () => {
         return (Number(strTime.split(':')[0]) > 12);
     };
 
-    const splitDayTimetable = (dayTimetable: string | null): string[] => {
-        let daySchedule = new Array(4).fill("");
-
-        if (dayTimetable === null)
-            return daySchedule;
-
-        dayTimetable.split(',').forEach((element, index) => {
-            const hoursSplit = element.split(' à ');
-            daySchedule[index * 2] = formatTime(hoursSplit[0]);
-            daySchedule[index * 2 + 1] = formatTime(hoursSplit[1]);
-        });
-
-        if (daySchedule[2] === "" &&
-            daySchedule[3] === "" &&
-            isAfternoon(daySchedule[0]) &&
-            isAfternoon(daySchedule[1])
-        ) {
-            daySchedule[2] = daySchedule[0];
-            daySchedule[3] = daySchedule[1];
-            daySchedule[0] = "";
-            daySchedule[1] = "";
-        }
-
-        return daySchedule.map(element =>
-            element === undefined ? "" : element);
-    };
-
     const joinDayTimetable = (dayTimetable: VerifyHoursDayProps[]): (string | null)[] => {
         return dayTimetable
             .map(element => (!element.isChecked) ? { ...element, timetable: new Array(4).fill("") } : element)
@@ -171,6 +144,33 @@ const VerifyHours: React.FC = () => {
     };
 
     useEffect(() => {
+        const splitDayTimetable = (dayTimetable: string | null): string[] => {
+            let daySchedule = new Array(4).fill("");
+
+            if (dayTimetable === null)
+                return daySchedule;
+
+            dayTimetable.split(',').forEach((element, index) => {
+                const hoursSplit = element.split(' à ');
+                daySchedule[index * 2] = formatTime(hoursSplit[0]);
+                daySchedule[index * 2 + 1] = formatTime(hoursSplit[1]);
+            });
+
+            if (daySchedule[2] === "" &&
+                daySchedule[3] === "" &&
+                isAfternoon(daySchedule[0]) &&
+                isAfternoon(daySchedule[1])
+            ) {
+                daySchedule[2] = daySchedule[0];
+                daySchedule[3] = daySchedule[1];
+                daySchedule[0] = "";
+                daySchedule[1] = "";
+            }
+
+            return daySchedule.map(element =>
+                element === undefined ? "" : element);
+        };
+
         const days = [
             "Lundi",
             "Mardi",
