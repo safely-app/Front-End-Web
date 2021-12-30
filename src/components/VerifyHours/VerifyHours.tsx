@@ -143,25 +143,21 @@ const VerifyHours: React.FC = () => {
             "Dimanche"
         ];
 
-        const gotSafeplaceTimetable = [
-            "10:00-13:00,14:00-18:00",
-            "10:00-13:00,14:00-18:00",
-            "10:00-13:00,14:00-18:00",
-            "10:00-13:00,14:00-18:00",
-            "10:00-13:00,14:00-18:00",
-            "",
-            ""
-        ];
+        const gotSafeplaceId = parseUrl(window.location.href);
 
-        setSafeplaceId(parseUrl(window.location.href));
-        setTimetable(gotSafeplaceTimetable
-            .map(element => splitDayTimetable(element))
-            .map((dayTimetable, index) => ({
-                name: days[index],
-                timetable: dayTimetable,
-                isChecked: dayTimetable.filter(element => element !== "").length > 0
-            }))
-        );
+        Safeplace.getTimetable(gotSafeplaceId)
+            .then(result => {
+                const gotSafeplaceTimetable = result.data
+                    .map(element => splitDayTimetable(element))
+                    .map((dayTimetable, index) => ({
+                        name: days[index],
+                        timetable: dayTimetable,
+                        isChecked: dayTimetable.filter(element => element !== "").length > 0
+                    }));
+
+                setTimetable(gotSafeplaceTimetable);
+                setSafeplaceId(gotSafeplaceId);
+            }).catch(err => log.error(err));
     }, []);
 
     return (
