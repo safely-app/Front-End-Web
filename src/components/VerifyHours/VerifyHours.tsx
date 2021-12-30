@@ -157,7 +157,19 @@ const VerifyHours: React.FC = () => {
 
                 setTimetable(gotSafeplaceTimetable);
                 setSafeplaceId(gotSafeplaceId);
-            }).catch(err => log.error(err));
+            }).catch(err => {
+                log.error(err);
+                // TODO: remove temporary timetable when back-end is accessible
+                setTimetable([
+                    { name: "Lundi", timetable: [ "10:00", "13:00", "14:00", "18:00" ], isChecked: true },
+                    { name: "Mardi", timetable: [ "10:00", "13:00", "14:00", "18:00" ], isChecked: true },
+                    { name: "Mercredi", timetable: [ "10:00", "13:00", "14:00", "18:00" ], isChecked: true },
+                    { name: "Jeudi", timetable: [ "10:00", "13:00", "14:00", "18:00" ], isChecked: true },
+                    { name: "Vendredi", timetable: [ "10:00", "13:00", "14:00", "18:00" ], isChecked: true },
+                    { name: "Samedi", timetable: [], isChecked: false },
+                    { name: "Dimanche", timetable: [], isChecked: false }
+                ]);
+            });
     }, []);
 
     return (
