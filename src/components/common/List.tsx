@@ -6,18 +6,20 @@ interface IListProps {
     itemDisplayer: (item: any) => JSX.Element;
     itemUpdater?: (item: any) => JSX.Element;
     focusItem?: any | undefined;
+    style?: any;
 }
 
 const List: React.FC<IListProps> = ({
     items,
     itemDisplayer,
     itemUpdater,
-    focusItem
+    focusItem,
+    style
 }) => {
     return (
         <div>
             {(focusItem !== undefined) && itemUpdater !== undefined && itemUpdater(focusItem)}
-            <ul className="list">
+            <ul className="list" style={style}>
                 {items.map((item, index) => {
                     return <li key={index}>{itemDisplayer(item)}</li>;
                 })}

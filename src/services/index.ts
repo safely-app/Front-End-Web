@@ -4,6 +4,7 @@ import Invoice from './Invoice';
 import RequestClaimSafeplace from './RequestClaimSafeplace';
 import ProfessionalInfo from './ProfessionalInfo';
 import Stripe from './Stripe';
+import Commercial from './Commercial';
 
 export {
     User,
@@ -11,5 +12,6 @@ export {
     Invoice,
     RequestClaimSafeplace,
     ProfessionalInfo,
-    Stripe
+    Stripe,
+    Commercial
 };

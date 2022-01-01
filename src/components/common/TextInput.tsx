@@ -7,6 +7,7 @@ interface ITextInputProps {
     label: string;
     value: string;
     setValue: (value: string) => void;
+    onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     readonly?: boolean;
     width?: string;
 }
@@ -17,6 +18,7 @@ const TextInput: React.FC<ITextInputProps> = ({
     label,
     value,
     setValue,
+    onKeyPress,
     readonly,
     width
 }) => {
@@ -33,6 +35,7 @@ const TextInput: React.FC<ITextInputProps> = ({
                 value={value}
                 placeholder={label}
                 onChange={handleInput}
+                onKeyPress={onKeyPress}
                 readOnly={readonly !== undefined ? readonly : false}
                 style={{ width: width !== undefined ? width : "60%" }}
                 className="input"
