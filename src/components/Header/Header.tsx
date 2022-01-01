@@ -48,6 +48,7 @@ export const AppHeader: React.FC = () => {
         { link: "/profile", name: "Profile", onAuth: true },
         { link: "/shops", name: "Commerces", onAuth: true },
         { link: "/trader-profile", name: "Commerçant", onAuth: true },
+        { link: "/commercial", name: "Commercial", onAuth: true },
         { link: "/admin", name: "Administration", onAuth: true, onAdmin: true },
         { link: "/logout", name: "Déconnexion", onAuth: true }
     ];
