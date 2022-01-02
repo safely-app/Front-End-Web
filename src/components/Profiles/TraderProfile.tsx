@@ -454,16 +454,17 @@ const TraderProfile: React.FC = () => {
                     setIsOptionalHidden={setIsOptionalHidden}
                     additionalElements={[
                         <Button
+                            key="1"
                             text="Enregistrer une solution de payement"
                             onClick={() => setIsStripeOpen(true)} />,
                         isUpdateView
-                            ? <Button text="Sauvegarder" onClick={saveModification} />
-                            : <Button text="Modifier" onClick={() => setIsUpdateView(true)} />,
-                        isUpdateView ? <Button text="Annuler" onClick={resetModification} /> : <div />,
-                        professional.id !== "" ? <TraderProfileShopList /> : <div />,
-                        <Button text="Supprimer mon compte" onClick={deleteProfessional} type="warning" />,
-                        isDeleted ? <Redirect to="/" /> : <div />,
-                        <PaymentSolutionList />
+                            ? <Button key="2" text="Sauvegarder" onClick={saveModification} />
+                            : <Button key="2" text="Modifier" onClick={() => setIsUpdateView(true)} />,
+                        isUpdateView ? <Button key="3" text="Annuler" onClick={resetModification} /> : <div key="3" />,
+                        professional.id !== "" ? <TraderProfileShopList key="4" /> : <div key="4" />,
+                        <Button key="5" text="Supprimer mon compte" onClick={deleteProfessional} type="warning" />,
+                        isDeleted ? <Redirect key="6" to="/" /> : <div key="6" />,
+                        <PaymentSolutionList key="7" />
                     ]}
                 />;
         }

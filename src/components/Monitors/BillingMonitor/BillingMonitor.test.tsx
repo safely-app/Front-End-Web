@@ -5,8 +5,6 @@ import { store } from '../../../redux';
 import BillingMonitor from './BillingMonitor';
 import nock from 'nock';
 
-const baseURL = process.env.REACT_APP_SERVER_URL as string;
-
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
