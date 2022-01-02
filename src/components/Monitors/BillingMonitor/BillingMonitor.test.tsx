@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { store } from '../../../redux';
-import InvoiceMonitor from './InvoiceMonitor';
+import BillingMonitor from './BillingMonitor';
 import nock from 'nock';
 
 const baseURL = process.env.REACT_APP_SERVER_URL as string;
@@ -10,23 +10,23 @@ const baseURL = process.env.REACT_APP_SERVER_URL as string;
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-test('renders InvoiceMonitor', () => {
+test('renders BillingMonitor', () => {
     render(
         <Provider store={store}>
-            <InvoiceMonitor />
+            <BillingMonitor />
         </Provider>
     );
 });
 
-test('renders InvoiceMonitor create button', async () => {
+test('renders BillingMonitor create button', async () => {
     const scopeGet = nock(process.env.REACT_APP_SERVER_URL as string)
-        .get('/mock/invoice').reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+        .get('/stripe/stripe/billing').reply(200, [], { 'Access-Control-Allow-Origin': '*' });
     const scopeCreate = nock(process.env.REACT_APP_SERVER_URL as string)
-        .post('/mock/invoice').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+        .post('/stripe/stripe/billing').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
 
     render(
         <Provider store={store}>
-            <InvoiceMonitor />
+            <BillingMonitor />
         </Provider>
     );
 
@@ -35,25 +35,13 @@ test('renders InvoiceMonitor create button', async () => {
     expect(createButton).toBeInTheDocument();
     fireEvent.click(createButton);
 
-    const userIdField = screen.getByRole('userId');
     const amountField = screen.getByRole('amount');
-    const dateField = screen.getByRole('date');
     const validateButton = screen.getByText('Créer une facture');
 
-    expect(userIdField).toBeInTheDocument();
     expect(amountField).toBeInTheDocument();
-    expect(dateField).toBeInTheDocument();
-
-    fireEvent.change(userIdField, {
-        target: { value: '123' }
-    });
 
     fireEvent.change(amountField, {
         target: { value: '100' }
-    });
-
-    fireEvent.change(dateField, {
-        target: { value: '13-09-2021' }
     });
 
     fireEvent.click(validateButton);
