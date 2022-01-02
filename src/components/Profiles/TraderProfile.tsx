@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { PaymentMethod } from '@stripe/stripe-js';
-import { Profile, TextInput, Button, CommonLoader, Modal, List } from '../common';
+import {
+    Profile,
+    TextInput,
+    Button,
+    CommonLoader,
+    Modal,
+    List
+} from '../common';
+import IStripe, { IStripeCard } from '../interfaces/IStripe';
 import IProfessional from '../interfaces/IProfessional';
+import ISafeplace from '../interfaces/ISafeplace';
 import IUser from '../interfaces/IUser';
 import {
     ProfessionalInfo,
@@ -16,9 +25,6 @@ import { RootState } from '../../redux';
 import { notifyError, notifySuccess } from '../utils';
 import StripeCard from './StripeCard';
 import log from 'loglevel';
-import './Profiles.css';
-import IStripe from '../interfaces/IStripe';
-import ISafeplace from '../interfaces/ISafeplace';
 import './Profiles.css';
 
 const TraderProfileShopList: React.FC = () => {
@@ -79,6 +85,63 @@ enum InfoSearcher {
     SEARCHING,
     NOTFOUND,
     FOUND
+};
+
+const months = [
+    "Janvier",
+    "Février",
+    "Mars",
+    "Avril",
+    "Mai",
+    "Juin",
+    "Juillet",
+    "Août",
+    "Septembre",
+    "Octobre",
+    "Novembre",
+    "Décembre"
+];
+
+const PaymentSolutionList: React.FC = () => {
+    const user = useSelector((state: RootState) => state.user);
+    const [paymentSolutions, setPaymentSolutions] = useState<IStripeCard[]>([]);
+
+    useEffect(() => {
+        Stripe.getCards(user.userInfo.stripeId as string, user.credentials.token)
+            .then(result => {
+                console.log(result.data.data.map(p => new Date(p.created * 1000)));
+                const gotPaymentSolutions = result.data.data.map(paymentSolution => ({
+                    id: paymentSolution.id,
+                    customerId: paymentSolution.customer,
+                    brand: paymentSolution.card.brand,
+                    country: paymentSolution.card.country,
+                    expMonth: paymentSolution.card.exp_month,
+                    expYear: paymentSolution.card.exp_year,
+                    last4: paymentSolution.card.last4,
+                    created: paymentSolution.created * 1000
+                }));
+
+                setPaymentSolutions(gotPaymentSolutions);
+            }).catch(err => log.error(err));
+    }, [user])
+
+    return (
+        <div style={{ marginTop: '1em', paddingTop: '1em', marginLeft: '20%', marginRight: '20%' }}>
+            <h2>Solutions de paiement enregistrées</h2>
+            <List
+                items={paymentSolutions}
+                itemDisplayer={(item) =>
+                    <div key={item.id} style={{ marginLeft: '2%', marginRight: '2%' }}>
+                        <div className="Profile-list-element" style={{ textAlign: 'left', paddingLeft: '5%', border: '1px solid #a19b96', borderRadius: '8px' }}>
+                            <b style={{ fontSize: '20px' }}>{`${item.brand.charAt(0).toUpperCase() + item.brand.slice(1)} ···· ${item.last4}`}</b>
+                            <p style={{ fontSize: '14px' }}>{`Expire en ${months[item.expMonth]} ${item.expYear}`}</p>
+                            <p style={{ fontSize: '12px' }}>{`Date d'enregistrement : ${new Date(item.created).toUTCString()}`}</p>
+                        </div>
+                    </div>
+                }
+            />
+        </div>
+    );
 };
 
 interface ITraderProfileFieldsProps {
@@ -391,15 +454,17 @@ const TraderProfile: React.FC = () => {
                     setIsOptionalHidden={setIsOptionalHidden}
                     additionalElements={[
                         <Button
+                            key="1"
                             text="Enregistrer une solution de payement"
                             onClick={() => setIsStripeOpen(true)} />,
                         isUpdateView
-                            ? <Button text="Sauvegarder" onClick={saveModification} />
-                            : <Button text="Modifier" onClick={() => setIsUpdateView(true)} />,
-                        isUpdateView ? <Button text="Annuler" onClick={resetModification} /> : <div />,
-                        professional.id !== "" ? <TraderProfileShopList /> : <div />,
-                        <Button text="Supprimer mon compte" onClick={deleteProfessional} type="warning" />,
-                        isDeleted ? <Redirect to="/" /> : <div />
+                            ? <Button key="2" text="Sauvegarder" onClick={saveModification} />
+                            : <Button key="2" text="Modifier" onClick={() => setIsUpdateView(true)} />,
+                        isUpdateView ? <Button key="3" text="Annuler" onClick={resetModification} /> : <div key="3" />,
+                        professional.id !== "" ? <TraderProfileShopList key="4" /> : <div key="4" />,
+                        <Button key="5" text="Supprimer mon compte" onClick={deleteProfessional} type="warning" />,
+                        isDeleted ? <Redirect key="6" to="/" /> : <div key="6" />,
+                        <PaymentSolutionList key="7" />
                     ]}
                 />;
         }

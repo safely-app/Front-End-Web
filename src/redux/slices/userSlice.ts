@@ -1,20 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
+import IUser from '../../components/interfaces/IUser';
 
 interface IUserCredentials {
     _id: string;
     token: string;
 }
 
-interface IUserInfo {
-    id: string;
-    username: string;
-    email: string;
-    role: string;
-}
-
 interface UserState {
     credentials: IUserCredentials;
-    userInfo: IUserInfo;
+    userInfo: IUser;
 }
 
 const initialState: UserState = {
@@ -45,7 +39,8 @@ export const userSlice = createSlice({
                 id: action.payload.id,
                 username: action.payload.username,
                 email: action.payload.email,
-                role: action.payload.role
+                role: action.payload.role,
+                stripeId: action.payload.stripeId
             };
         },
         disconnect: (state) => {

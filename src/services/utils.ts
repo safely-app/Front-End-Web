@@ -1,6 +1,6 @@
 import ISafeplace from "../components/interfaces/ISafeplace";
-import IInvoice from "../components/interfaces/IInvoice";
 import IProfessional from "../components/interfaces/IProfessional";
+import IBilling from "../components/interfaces/IBilling";
 import IUser from "../components/interfaces/IUser";
 
 export const isEmailValid = (email: string): boolean => {
@@ -29,10 +29,6 @@ export const isTimetableValid = (timetable: (string | null)[]): boolean => {
     return true;
 };
 
-export const isDateValid = (date: string): boolean => {
-    return date !== "" && date.match(/^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[13-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$/g) !== null;
-};
-
 export const isClientNumberTVA = (clientNumberTVA: string): boolean => {
     return !!clientNumberTVA && clientNumberTVA.length === 13;
 };
@@ -47,6 +43,10 @@ export const isSirenValid = (siren: string | undefined): boolean => {
 
 export const isSiretValid = (siret: string | undefined): boolean => {
     return siret === undefined || siret === '' || (!!siret && siret.match(/^\d{14}$/g) !== null);
+};
+
+export const isAmountValid = (amount: number): boolean => {
+    return amount > 0;
 };
 
 interface IError {
@@ -70,9 +70,9 @@ export const isSafeplaceValid = (safeplace: ISafeplace): IError => {
     return { isValid: true };
 };
 
-export const isInvoiceValid = (invoice: IInvoice): IError => {
-    if (!isDateValid(invoice.date))
-        return { isValid: false, error: "Date invalide" };
+export const isBillingValid = (invoice: IBilling): IError => {
+    if (!isAmountValid(invoice.amount))
+        return { isValid: false, error: "Montant invalide" };
     return { isValid: true };
 };
 

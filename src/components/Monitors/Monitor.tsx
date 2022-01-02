@@ -4,7 +4,7 @@ import { AppHeader } from '../Header/Header';
 import './Monitor.css';
 import UserMonitor from './UserMonitor/UserMonitor';
 import SafeplaceMonitor from './SafeplaceMonitor/SafeplaceMonitor';
-import InvoiceMonitor from './InvoiceMonitor/InvoiceMonitor';
+import BillingMonitor from './BillingMonitor/BillingMonitor';
 import RequestClaimSafeplace from './RequestClaimSafeplaceMonitor/RequestClaimSafeplaceMonitor';
 
 enum MonitorView {
@@ -26,7 +26,7 @@ const Monitor: React.FC = () => {
     const getView = (): JSX.Element => {
         switch (view) {
             case MonitorView.INVOICE:
-                return <InvoiceMonitor />;
+                return <BillingMonitor />;
             case MonitorView.REQUESTCLAIMSAFEPLACE:
                 return <RequestClaimSafeplace />;
             case MonitorView.SAFEPLACE:
