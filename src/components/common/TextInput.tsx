@@ -23,11 +23,11 @@ const TextInput: React.FC<ITextInputProps> = ({
     label,
     value,
     setValue,
-    className,
     onKeyPress,
     readonly,
-    autoComplete,
-    required
+    required,
+    className,
+    autoComplete
 }) => {
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -45,7 +45,7 @@ const TextInput: React.FC<ITextInputProps> = ({
                 onChange={handleInput}
                 onKeyPress={onKeyPress}
                 readOnly={readonly !== undefined ? readonly : false}
-                className={className}
+                className={"mt-1 pt-1 pb-1 border-solid rounded font-l indent-2 w-3/5 " + className}
                 autoComplete={autoComplete}
                 required={required}
             />

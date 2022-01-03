@@ -17,7 +17,7 @@ const List: React.FC<IListProps> = ({
     style
 }) => {
     return (
-        <div className="    ">
+        <div>
             {(focusItem !== undefined) && itemUpdater !== undefined && itemUpdater(focusItem)}
             <div className="grid gap-4 grid-cols-3 grid-rows-3" style={style}>
                 {items.map((item, index) => {

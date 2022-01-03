@@ -192,28 +192,31 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                     <Button key={2} text="Annuler" onClick={cancelNewTarget} />
                 ]}
             />
-            <List
-                items={targets}
-                focusItem={focusTarget}
-                style={{ maxHeight: '42em', overflow: 'auto' }}
-                itemUpdater={(item) =>
+            <div>
+                {(focusTarget !== undefined) ?
                     <TargetModal
-                        target={item}
+                        target={focusTarget}
                         setTarget={setFocusTarget}
                         buttons={[
-                            <Button key={1} text="Modifier" onClick={() => updateTarget(item)} />,
+                            <Button key={1} text="Modifier" onClick={() => updateTarget(focusTarget)} />,
                             <Button key={2} text="Annuler" onClick={() => setFocusTarget(undefined)} />,
-                            <Button key={3} text="Supprimer" type="warning" onClick={() => deleteTarget(item)} />
+                            <Button key={3} text="Supprimer" type="warning" onClick={() => deleteTarget(focusTarget)} />
                         ]}
-                    />
+                    /> : <div />
                 }
-                itemDisplayer={(item) =>
-                    <TargetInfoDisplayer
-                        target={item}
-                        onClick={setFocusTarget}
-                    />
-                }
-            />
+                <div className="" style={{ maxHeight: '42em', overflow: 'auto' }}>
+                    {targets.map((item, index) => {
+                        return (
+                            <div key={index}>
+                                <TargetInfoDisplayer
+                                    target={item}
+                                    onClick={setFocusTarget}
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
         </div>
     );
 };

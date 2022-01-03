@@ -285,32 +285,35 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                     <Button key={3} text="Annuler" onClick={cancelNewCampaign} />
                 ]}
             />
-            <List
-                items={campaigns}
-                focusItem={focusCampaign}
-                style={{ maxHeight: '42em', overflow: 'auto' }}
-                itemUpdater={(item) =>
+            <div>
+                {(focusCampaign !== undefined) ?
                     <CampaignModal
-                        campaign={item}
+                        campaign={focusCampaign}
                         setCampaign={setFocusCampaign}
                         targets={targets}
                         buttons={[
-                            <Button key={1} text="Modifier" onClick={() => updateCampaign(item)} />,
+                            <Button key={1} text="Modifier" onClick={() => updateCampaign(focusCampaign)} />,
                             <Button key={2} text="Annuler" onClick={() => setFocusCampaign(undefined)} />,
-                            <Button key={3} text="Supprimer" type="warning" onClick={() => deleteCampaign(item)} />
+                            <Button key={3} text="Supprimer" type="warning" onClick={() => deleteCampaign(focusCampaign)} />
                         ]}
-                    />
+                    /> : <div />
                 }
-                itemDisplayer={(item) =>
-                    <CampaignInfoDisplayer
-                        campaign={item}
-                        setCampaign={setCampaign}
-                        onClick={setFocusCampaign}
-                        createCampaignFromTemplate={(campaign) => createCampaign(campaign)}
-                        targets={targets}
-                    />
-                }
-            />
+                <div className="" style={{ maxHeight: '42em', overflow: 'auto' }}>
+                    {campaigns.map((item, index) => {
+                        return (
+                            <div key={index}>
+                                <CampaignInfoDisplayer
+                                    campaign={item}
+                                    setCampaign={setCampaign}
+                                    onClick={setFocusCampaign}
+                                    createCampaignFromTemplate={(campaign) => createCampaign(campaign)}
+                                    targets={targets}
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
         </div>
     );
 };

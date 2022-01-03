@@ -240,9 +240,8 @@ const BillingMonitor: React.FC = () => {
     }, [userCredientials]);
 
     return (
-        <div style={{textAlign: "center"}}>
-            <Button text="Créer une nouvelle facture"
-                width="98%" onClick={onCreateButtonClick} />
+        <div className="space-y-4 space-x-4" style={{textAlign: "center"}}>
+            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onClick={onCreateButtonClick}>Créer une nouvelle facture</button>
             <BillingMonitorFilter searchBarValue={searchText} setSearchBarValue={setSearchText} />
             <BillingCreateForm
                 shown={newBilling !== undefined}
