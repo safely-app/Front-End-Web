@@ -2,25 +2,32 @@ import React from 'react';
 import './index.css';
 
 interface ITextInputProps {
+    name?: string
     type: string;
-    role: string;
-    label: string;
+    role?: string;
+    label?: string;
     value: string;
     setValue: (value: string) => void;
     onKeyPress?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
     readonly?: boolean;
+    required?: boolean;
+    className?: string;
     width?: string;
+    autoComplete?: string;
 }
 
 const TextInput: React.FC<ITextInputProps> = ({
+    name,
     type,
     role,
     label,
     value,
     setValue,
+    className,
     onKeyPress,
     readonly,
-    width
+    autoComplete,
+    required
 }) => {
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -30,6 +37,7 @@ const TextInput: React.FC<ITextInputProps> = ({
     return (
         <div>
             <input
+                name={name}
                 type={type}
                 role={role}
                 value={value}
@@ -37,8 +45,9 @@ const TextInput: React.FC<ITextInputProps> = ({
                 onChange={handleInput}
                 onKeyPress={onKeyPress}
                 readOnly={readonly !== undefined ? readonly : false}
-                style={{ width: width !== undefined ? width : "60%" }}
-                className="input"
+                className={className}
+                autoComplete={autoComplete}
+                required={required}
             />
         </div>
     );

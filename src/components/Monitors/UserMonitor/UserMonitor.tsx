@@ -18,6 +18,7 @@ import {
 } from '../../utils';
 import { ToastContainer } from 'react-toastify';
 import './UserMonitor.css';
+import profile from '../../../assets/image/profileano.png'
 
 interface IUserInfoProps {
     user: IUser;
@@ -60,7 +61,7 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
         <Modal shown={(shown !== undefined) ? shown : true} content={
             <div className="User-Info">
                 <TextInput key={`${user.id}-id`} type="text" role="id"
-                    label="Identifiant" value={user.id} setValue={() => {}} readonly={true} />
+                    label="Identifiant" value={user.id} setValue={() => { }} readonly={true} />
                 <TextInput key={`${user.id}-username`} type="text" role="username"
                     label="Nom d'utilisateur" value={user.username} setValue={setUsername} />
                 <TextInput key={`${user.id}-email`} type="email" role="email"
@@ -77,7 +78,7 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
                 }
                 {buttons.map(button => button)}
             </div>
-        }/>
+        } />
     );
 };
 
@@ -95,14 +96,15 @@ const UserInfoListElement: React.FC<IUserInfoListElementProps> = ({
     };
 
     return (
-        <div key={user.id} className="Monitor-list-element">
+        <div key={user.id} className="Monitor-list-elementflex flex-col items-center bg-white rounded-lg border shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <button className="Monitor-list-element-btn" onClick={handleClick}>
-                <ul className="Monitor-list">
-                    <li key={`${user.id}-id`}><b>Identifiant : </b>{user.id}</li>
-                    <li key={`${user.id}-username`}><b>Nom d'utilisateur : </b>{user.username}</li>
-                    <li key={`${user.id}-email`}><b>Adresse email : </b>{user.email}</li>
-                    <li key={`${user.id}-role`}><b>Role : </b>{user.role}</li>
-                </ul>
+            <img className="object-center w-full h-60 md:h-auto md:w-48" src={profile} alt=""></img>
+            <div className="flex flex-col justify-between p-4 leading-normal space-y-2">
+                <li key={`${user.id}-id`}><b>Identifiant : </b>{user.id}</li>
+                <li key={`${user.id}-username`}><b>Nom d'utilisateur : </b>{user.username}</li>
+                <li key={`${user.id}-email`}><b>Adresse email : </b>{user.email}</li>
+                <li key={`${user.id}-role`}><b>Role : </b>{user.role}</li>
+            </div>
             </button>
         </div>
     );
@@ -251,8 +253,8 @@ const UserMonitor: React.FC = () => {
     }, [userCredientials]);
 
     return (
-        <div style={{textAlign: "center"}}>
-            <Button text="Créer un nouvel utilisateur" width="98%" onClick={() => setShowModal(true)} />
+        <div className="space-y-4 space-x-4" style={{ textAlign: "center" }}>
+            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onClick={() => setShowModal(true)} >Créer un nouvel utilisateur</button>
             <UserMonitorFilter searchBarValue={searchText} setDropdownValue={setUserRole} setSearchBarValue={setSearchText} />
             <UserInfoForm
                 shown={showModal}
