@@ -21,7 +21,7 @@ import {
 import { AppHeader } from '../Header/Header';
 import { Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux';
+import { RootState, useAppSelector } from '../../redux';
 import { notifyError, notifySuccess } from '../utils';
 import StripeCard from './StripeCard';
 import log from 'loglevel';
@@ -102,29 +102,13 @@ const months = [
     "Décembre"
 ];
 
-const PaymentSolutionList: React.FC = () => {
-    const user = useSelector((state: RootState) => state.user);
-    const [paymentSolutions, setPaymentSolutions] = useState<IStripeCard[]>([]);
+interface IPaymentSolutionListProps {
+    paymentSolutions: IStripeCard[];
+}
 
-    useEffect(() => {
-        Stripe.getCards(user.userInfo.stripeId as string, user.credentials.token)
-            .then(result => {
-                console.log(result.data.data.map(p => new Date(p.created * 1000)));
-                const gotPaymentSolutions = result.data.data.map(paymentSolution => ({
-                    id: paymentSolution.id,
-                    customerId: paymentSolution.customer,
-                    brand: paymentSolution.card.brand,
-                    country: paymentSolution.card.country,
-                    expMonth: paymentSolution.card.exp_month,
-                    expYear: paymentSolution.card.exp_year,
-                    last4: paymentSolution.card.last4,
-                    created: paymentSolution.created * 1000
-                }));
-
-                setPaymentSolutions(gotPaymentSolutions);
-            }).catch(err => log.error(err));
-    }, [user])
-
+const PaymentSolutionList: React.FC<IPaymentSolutionListProps> = ({
+    paymentSolutions
+}) => {
     return (
         <div style={{ marginTop: '1em', paddingTop: '1em', marginLeft: '20%', marginRight: '20%' }}>
             <h2>Solutions de paiement enregistrées</h2>
@@ -134,7 +118,7 @@ const PaymentSolutionList: React.FC = () => {
                     <div key={item.id} style={{ marginLeft: '2%', marginRight: '2%' }}>
                         <div className="Profile-list-element" style={{ textAlign: 'left', paddingLeft: '5%', border: '1px solid #a19b96', borderRadius: '8px' }}>
                             <b style={{ fontSize: '20px' }}>{`${item.brand.charAt(0).toUpperCase() + item.brand.slice(1)} ···· ${item.last4}`}</b>
-                            <p style={{ fontSize: '14px' }}>{`Expire en ${months[item.expMonth]} ${item.expYear}`}</p>
+                            <p style={{ fontSize: '14px' }}>{`Expire en ${months[item.expMonth - 1]} ${item.expYear}`}</p>
                             <p style={{ fontSize: '12px' }}>{`Date d'enregistrement : ${new Date(item.created).toUTCString()}`}</p>
                         </div>
                     </div>
@@ -282,15 +266,16 @@ const TraderProfileFields: React.FC<ITraderProfileFieldsProps> = ({
 };
 
 const TraderProfile: React.FC = () => {
+    const user = useAppSelector(state => state.user);
     const [isDeleted, setIsDeleted] = useState(false);
     const [isUpdateView, setIsUpdateView] = useState(false);
     const [isStripeOpen, setIsStripeOpen] = useState(false);
     const [isOptionalHidden, setIsOptionalHidden] = useState(true);
     const [searcherState, setSearcherState] = useState(InfoSearcher.SEARCHING);
-    const userCredientials = useSelector((state: RootState) => state.user.credentials);
+    const [paymentSolutions, setPaymentSolutions] = useState<IStripeCard[]>([]);
     const [professional, setProfessional] = useState<IProfessional>({
         id: "",
-        userId: userCredientials._id,
+        userId: user.credentials._id,
         companyName: "",
         companyAddress: "",
         companyAddress2: "",
@@ -323,7 +308,7 @@ const TraderProfile: React.FC = () => {
             const response = await ProfessionalInfo.update(
                 professional.id as string,
                 professional,
-                userCredientials.token
+                user.credentials.token
             );
 
             log.log(response);
@@ -336,8 +321,8 @@ const TraderProfile: React.FC = () => {
 
     const resetModification = async () => {
         try {
-            const response = await ProfessionalInfo.getAll(userCredientials.token);
-            const gotProfessional = (response.data as IProfessional[]).find(pro => pro.userId === userCredientials._id);
+            const response = await ProfessionalInfo.getAll(user.credentials.token);
+            const gotProfessional = (response.data as IProfessional[]).find(pro => pro.userId === user.credentials._id);
 
             if (gotProfessional === undefined) {
                 throw Error("Commerçant inconnu");
@@ -356,8 +341,8 @@ const TraderProfile: React.FC = () => {
     const deleteProfessional = async () => {
         try {
             const response = await ProfessionalInfo.delete(
-                userCredientials._id,
-                userCredientials.token
+                user.credentials._id,
+                user.credentials.token
             );
 
             setIsDeleted(true);
@@ -375,23 +360,23 @@ const TraderProfile: React.FC = () => {
             address: professional.billingAddress,
             phone: professional.personalPhone,
             description: ''
-        }, userCredientials.token);
+        }, user.credentials.token);
         const stripeObj = stripeInfo.data as IStripe;
 
-        await User.update(userCredientials._id, {
+        await User.update(user.credentials._id, {
             stripeId: stripeObj.id,
             id: userObj.id,
             username: userObj.username,
             email: userObj.email,
             role: userObj.role
-        }, userCredientials.token);
+        }, user.credentials.token);
 
         return stripeObj.id;
     };
 
     const linkCardToUser = async (value: PaymentMethod) => {
         try {
-            const userInfo = await User.get(userCredientials._id, userCredientials.token);
+            const userInfo = await User.get(user.credentials._id, user.credentials.token);
             const userObj = (userInfo.data as IUser);
 
             if (userObj !== undefined) {
@@ -399,8 +384,9 @@ const TraderProfile: React.FC = () => {
                     await createStripeUser(userObj);
                 }
 
-                await Stripe.linkCard(value.id, userCredientials.token);
+                await Stripe.linkCard(value.id, user.credentials.token);
                 notifySuccess("Votre carte a été enregistré !");
+                setIsStripeOpen(false);
             }
         } catch (error) {
             log.error(error);
@@ -410,12 +396,12 @@ const TraderProfile: React.FC = () => {
 
     useEffect(() => {
         ProfessionalInfo.getAll(
-            userCredientials.token
+            user.credentials.token
         ).then(response => {
             const professional = response.data.map(pro => ({
                 id: pro._id,
                 ...pro
-            }) as IProfessional).find(pro => pro.userId === userCredientials._id);
+            }) as IProfessional).find(pro => pro.userId === user.credentials._id);
 
             if (professional !== undefined) {
                 setSearcherState(InfoSearcher.FOUND);
@@ -428,7 +414,23 @@ const TraderProfile: React.FC = () => {
             setSearcherState(InfoSearcher.NOTFOUND);
             log.error(err);
         });
-    }, [userCredientials]);
+
+        Stripe.getCards(user.userInfo.stripeId as string, user.credentials.token)
+            .then(result => {
+                const gotPaymentSolutions = result.data.data.map(paymentSolution => ({
+                    id: paymentSolution.id,
+                    customerId: paymentSolution.customer,
+                    brand: paymentSolution.card.brand,
+                    country: paymentSolution.card.country,
+                    expMonth: paymentSolution.card.exp_month,
+                    expYear: paymentSolution.card.exp_year,
+                    last4: paymentSolution.card.last4,
+                    created: paymentSolution.created * 1000
+                }));
+
+                setPaymentSolutions(gotPaymentSolutions);
+            }).catch(err => log.error(err));
+    }, [user])
 
     const getView = (searcherState: InfoSearcher): JSX.Element => {
         switch (searcherState) {
@@ -464,7 +466,7 @@ const TraderProfile: React.FC = () => {
                         professional.id !== "" ? <TraderProfileShopList key="4" /> : <div key="4" />,
                         <Button key="5" text="Supprimer mon compte" onClick={deleteProfessional} type="warning" />,
                         isDeleted ? <Redirect key="6" to="/" /> : <div key="6" />,
-                        <PaymentSolutionList key="7" />
+                        <PaymentSolutionList key="7" paymentSolutions={paymentSolutions} />
                     ]}
                 />;
         }
