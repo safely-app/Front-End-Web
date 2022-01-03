@@ -52,7 +52,7 @@ test('renders Safeplaces search bar', async () => {
         </Provider>
     );
 
-    const searchBar = screen.getByRole('search-bar');
+    const searchBar = screen.getByRole('searchbox');
     expect(searchBar).toBeInTheDocument();
 
     await act(async () => await testDelay(2000));

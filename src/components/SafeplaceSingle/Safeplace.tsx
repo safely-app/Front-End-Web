@@ -45,10 +45,10 @@ const SafeplaceSingle: React.FC = () => {
                         label="Horaires" value={displayTimetable(safeplace.dayTimetable)} setValue={() => {}} readonly={true} />,
                     <TextInput key={`${safeplace.id}-type`} type="text" role="type"
                         label="Type" value={safeplace.type} setValue={() => {}} readonly={true} />,
-                    <div className="grid-container">
-                        <TextInput key={`${safeplace.id}-coordinate1`} type="text" role="latitude" width="98%"
+                    <div className="grid grid-cols-2 gap-2" style={{ paddingLeft: '20%', paddingRight: '20%' }}>
+                        <TextInput key={`${safeplace.id}-coordinate1`} type="text" role="latitude" className="w-full"
                             label="Latitude" value={safeplace.coordinate[0]} setValue={() => {}} readonly={true} />
-                        <TextInput key={`${safeplace.id}-coordinate2`} type="text" role="longitude" width="98%"
+                        <TextInput key={`${safeplace.id}-coordinate2`} type="text" role="longitude" className="w-full"
                             label="Longitude" value={safeplace.coordinate[1]} setValue={() => {}} readonly={true} />
                     </div>
                 ]} />

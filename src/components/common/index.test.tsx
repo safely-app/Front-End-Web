@@ -48,7 +48,7 @@ test('test search bar', () => {
         <SearchBar label="Recherche" value="" setValue={setValue} />
     );
 
-    fireEvent.change(screen.getByRole("search-bar"), {
+    fireEvent.change(screen.getByRole("searchbox"), {
         target: { value: "test" }
     });
 

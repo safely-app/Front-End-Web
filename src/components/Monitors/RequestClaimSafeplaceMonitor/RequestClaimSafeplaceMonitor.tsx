@@ -195,7 +195,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
     };
 
     return (
-        <div key={requestClaimSafeplace.id} className="Monitor-list-element">
+        <div key={requestClaimSafeplace.id} className="Monitor-list-element rounded">
             <button className="Monitor-list-element-btn" onClick={handleClick}>
                 <ul className="Monitor-list">
                     <li key={`${requestClaimSafeplace.id}-id`}><b>Identifiant : </b>{requestClaimSafeplace.id}</li>
@@ -414,9 +414,8 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     }, [userCredientials]);
 
     return (
-        <div style={{textAlign: "center"}}>
-            <Button text="Créer une nouvelle requête de safeplace"
-                width="98%" onClick={onCreateButtonClick} />
+        <div className="space-y-4 space-x-4" style={{textAlign: "center"}}>
+            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onClick={onCreateButtonClick}>Créer une nouvelle requête de safeplace</button>
             <RequestClaimSafeplaceMonitorFilter searchBarValue={searchText} setDropdownValue={setRequestClaimSafeplaceStatus} setSearchBarValue={setSearchText} />
             <RequestClaimSafeplaceInfoForm
                 shown={newRequestClaimSafeplace !== undefined}

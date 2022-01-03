@@ -19,11 +19,11 @@ const List: React.FC<IListProps> = ({
     return (
         <div>
             {(focusItem !== undefined) && itemUpdater !== undefined && itemUpdater(focusItem)}
-            <ul className="list" style={style}>
+            <div className="grid gap-4 grid-cols-3 grid-rows-3" style={style}>
                 {items.map((item, index) => {
-                    return <li key={index}>{itemDisplayer(item)}</li>;
+                    return <div key={index}>{itemDisplayer(item)}</div>;
                 })}
-            </ul>
+            </div>
         </div>
     );
 };

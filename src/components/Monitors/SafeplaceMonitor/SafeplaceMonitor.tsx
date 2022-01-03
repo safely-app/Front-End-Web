@@ -121,7 +121,7 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
     };
 
     return (
-        <div key={safeplace.id} className="Safeplace-list-element">
+        <div key={safeplace.id} className="Safeplace-list-element rounded">
             <button className="Safeplace-list-element-btn" onClick={handleClick}>
                 <ul className="Safeplace-list">
                     <li key={`${safeplace.id}-id`}><b>ID : </b>{safeplace.id}</li>

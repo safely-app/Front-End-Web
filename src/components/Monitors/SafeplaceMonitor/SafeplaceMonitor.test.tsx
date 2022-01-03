@@ -94,7 +94,7 @@ test('ensure that safeplace filtering is working', async () => {
     );
 
     const safeplaceTypeDropdown = screen.getByTestId('all-dropdown-id');
-    const safeplaceTypeInfoSearchBar = screen.getByRole('search-bar');
+    const safeplaceTypeInfoSearchBar = screen.getByRole('searchbox');
 
     await act(async () => await testDelay(1000));
     expect(safeplaceTypeDropdown).toBeInTheDocument();
@@ -132,7 +132,7 @@ test('ensure that invalid input does not crash the safeplace filtering', async (
     );
 
     const userTypeDropdown = screen.getByTestId('all-dropdown-id');
-    const userInfoSearchBar = screen.getByRole('search-bar');
+    const userInfoSearchBar = screen.getByRole('searchbox');
 
     await act(async () => await testDelay(1000));
     expect(userInfoSearchBar).toBeInTheDocument();

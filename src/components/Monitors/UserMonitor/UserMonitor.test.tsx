@@ -108,7 +108,7 @@ it('ensure that user filtering is working', async () => {
     );
 
     const userTypeDropdown = screen.getByTestId('all-dropdown-id');
-    const userInfoSearchBar = screen.getByRole('search-bar');
+    const userInfoSearchBar = screen.getByRole('searchbox');
 
     await act(async () => await testDelay(2000));
     expect(userInfoSearchBar).toBeInTheDocument();
@@ -154,7 +154,7 @@ test('ensure that invalid input does not crash the user filtering', async () => 
     );
 
     const userTypeDropdown = screen.getByTestId('all-dropdown-id');
-    const userInfoSearchBar = screen.getByRole('search-bar');
+    const userInfoSearchBar = screen.getByRole('searchbox');
 
     await act(async () => await testDelay(2000));
     expect(userInfoSearchBar).toBeInTheDocument();

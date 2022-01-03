@@ -6,6 +6,7 @@ interface IButtonProps {
     onClick: () => void;
     width?: string;
     type?: string;
+    className?: string
     onMouseOver?: () => void;
     onMouseOut?: () => void;
     disabled?: boolean;
