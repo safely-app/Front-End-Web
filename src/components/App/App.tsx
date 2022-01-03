@@ -19,6 +19,7 @@ import {
     Popup
 } from 'react-leaflet'
 import './App.css';
+import back from '../../assets/image/back.png'
 
 
 interface IMapProps {
@@ -89,7 +90,7 @@ const App: React.FC = () => {
     }, [userCredientials, dispatch]);
 
     return (
-        <div className="App">
+        <div className="App min-h-screen bg-background bg-transparent  bg-cover bg-center">
             <AppHeader />
             <Map safeplaces={safeplaces} />
         </div>
