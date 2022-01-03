@@ -22,9 +22,9 @@ const SearchBar: React.FC<ISearchBarProps> = ({
             <div className="flex border-2 rounded">
                 <div>
                     <input
-                        name="search-bar"
+                        name="searchbox"
                         type="text"
-                        role="search-bar"
+                        role="searchbox"
                         value={value}
                         placeholder={label}
                         onChange={handleInput}
