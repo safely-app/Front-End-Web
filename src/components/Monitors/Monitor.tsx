@@ -38,7 +38,7 @@ const Monitor: React.FC = () => {
     };
 
     return (
-        <div className="Monitor">
+        <div className="Monitor min-h-screen bg-background bg-transparent space-y-4 bg-cover bg-center">
             <AppHeader />
             <NavBar elements={navBarElements} />
             {getView()}
