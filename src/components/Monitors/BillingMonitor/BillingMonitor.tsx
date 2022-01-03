@@ -97,7 +97,7 @@ const BillingInfoListElement: React.FC<IBillingInfoListElementProps> = ({
     };
 
     return (
-        <div key={billing.id} className="Monitor-list-element">
+        <div key={billing.id} className="Monitor-list-element rounded">
             <button className="Monitor-list-element-btn" onClick={handleClick}>
                 <ul className="Monitor-list">
                     <li key={`${billing.id}-id`}><b>Identifiant : </b>{billing.id}</li>

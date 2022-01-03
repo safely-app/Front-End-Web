@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import ITarget from '../interfaces/ITarget';
 import {
     Button,
-    List,
     Modal,
     TextInput
 } from '../common';

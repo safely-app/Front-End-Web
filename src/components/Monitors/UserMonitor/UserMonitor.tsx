@@ -100,10 +100,10 @@ const UserInfoListElement: React.FC<IUserInfoListElementProps> = ({
             <button className="Monitor-list-element-btn" onClick={handleClick}>
             <img className="object-center w-full h-60 md:h-auto md:w-48" src={profile} alt=""></img>
             <div className="flex flex-col justify-between p-4 leading-normal space-y-2">
-                <li key={`${user.id}-id`}><b>Identifiant : </b>{user.id}</li>
-                <li key={`${user.id}-username`}><b>Nom d'utilisateur : </b>{user.username}</li>
-                <li key={`${user.id}-email`}><b>Adresse email : </b>{user.email}</li>
-                <li key={`${user.id}-role`}><b>Role : </b>{user.role}</li>
+                <p key={`${user.id}-id`}><b>Identifiant : </b>{user.id}</p>
+                <p key={`${user.id}-username`}><b>Nom d'utilisateur : </b>{user.username}</p>
+                <p key={`${user.id}-email`}><b>Adresse email : </b>{user.email}</p>
+                <p key={`${user.id}-role`}><b>Role : </b>{user.role}</p>
             </div>
             </button>
         </div>

@@ -3,7 +3,6 @@ import ICampaign from '../interfaces/ICampaign';
 import ITarget from '../interfaces/ITarget';
 import {
     Button,
-    List,
     Modal,
     TextInput
 } from '../common';

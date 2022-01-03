@@ -195,7 +195,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
     };
 
     return (
-        <div key={requestClaimSafeplace.id} className="Monitor-list-element">
+        <div key={requestClaimSafeplace.id} className="Monitor-list-element rounded">
             <button className="Monitor-list-element-btn" onClick={handleClick}>
                 <ul className="Monitor-list">
                     <li key={`${requestClaimSafeplace.id}-id`}><b>Identifiant : </b>{requestClaimSafeplace.id}</li>
