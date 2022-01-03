@@ -19,7 +19,6 @@ import {
     Popup
 } from 'react-leaflet'
 import './App.css';
-import back from '../../assets/image/back.png'
 
 
 interface IMapProps {
