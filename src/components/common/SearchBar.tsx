@@ -24,6 +24,7 @@ const SearchBar: React.FC<ISearchBarProps> = ({
                     <input
                         name="search-bar"
                         type="text"
+                        role="search-bar"
                         value={value}
                         placeholder={label}
                         onChange={handleInput}

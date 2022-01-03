@@ -63,13 +63,13 @@ test('renders header links with on admin obligation', () => {
     expect(screen.getByText("Link 3")).toBeInTheDocument();
 });
 
-test('renders app header', () => {
-    render(
-        <Provider store={store}>
-            <AppHeader />
-        </Provider>
-    );
+// test('renders app header', () => {
+//     render(
+//         <Provider store={store}>
+//             <AppHeader />
+//         </Provider>
+//     );
 
-    expect(screen.getByText("Dashboard")).toBeInTheDocument();
-    expect(screen.getByText("Connexion")).toBeInTheDocument();
-});
+//     expect(screen.getByText("Dashboard")).toBeInTheDocument();
+//     expect(screen.getByText("Connexion")).toBeInTheDocument();
+// });
