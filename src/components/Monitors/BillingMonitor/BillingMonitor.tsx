@@ -3,7 +3,6 @@ import { useAppSelector } from '../../../redux';
 import Billing from '../../../services/Billing';
 import {
     Button,
-    List,
     Modal,
     TextInput,
     SearchBar
@@ -77,7 +76,7 @@ const BillingUpdateForm: React.FC<IBillingProps> = ({
                     label="Description" value={`${billing?.description}`} setValue={setDescription} />
                 <TextInput key={`${billing?.id}-receiptEmail`} type="text" role="receiptEmail"
                     label="Email de réception du reçu" value={`${billing?.receiptEmail !== null ? billing?.receiptEmail : ""}`} setValue={setReceiptEmail} />
-                {buttons.map(button => button)}
+                {buttons}
             </div>
         }/>
     );
@@ -252,21 +251,27 @@ const BillingMonitor: React.FC = () => {
                     <Button key="stop-id" text="Annuler" onClick={onStopButtonClick} />
                 ]}
             />
-            <List
-                items={filterBillings()}
-                focusItem={focusBilling}
-                itemDisplayer={(item) => <BillingInfoListElement billing={item} onClick={onListElementClick} />}
-                itemUpdater={(item) =>
+            <div>
+                {(focusBilling !== undefined) &&
                     <BillingUpdateForm
                         billing={focusBilling}
                         setBilling={setFocusBilling}
                         buttons={[
-                            <Button key="update-id" text="Modifier" onClick={() => updateBilling(item)} />,
+                            <Button key="update-id" text="Modifier" onClick={() => updateBilling(focusBilling)} />,
                             <Button key="stop-id" text="Annuler" onClick={onStopButtonClick} />
                         ]}
                     />
                 }
-            />
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+                    {filterBillings().map((billing, index) =>
+                        <BillingInfoListElement
+                            key={index}
+                            billing={billing}
+                            onClick={onListElementClick}
+                        />
+                    )}
+                </div>
+            </div>
             <ToastContainer />
         </div>
     );

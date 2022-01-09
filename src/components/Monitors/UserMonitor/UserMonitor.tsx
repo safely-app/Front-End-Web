@@ -6,7 +6,6 @@ import IUser from '../../interfaces/IUser';
 import {
     Button,
     Dropdown,
-    List,
     TextInput,
     Modal,
     SearchBar
@@ -274,23 +273,29 @@ const UserMonitor: React.FC = () => {
                     <Button key="stop-id" text="Annuler" onClick={() => setShowModal(false)} />
                 ]}
             />
-            <List
-                items={filterUsers()}
-                focusItem={focusUser}
-                itemDisplayer={(item) => <UserInfoListElement user={item} onClick={(user: IUser) => setFocusUser(user)} />}
-                itemUpdater={(item) =>
+            <div>
+                {(focusUser !== undefined) &&
                     <UserInfoForm
                         shown={!showModal}
-                        user={item}
+                        user={focusUser}
                         setUser={setFocusUser}
                         buttons={[
-                            <Button key="save-id" text="Sauvegarder" onClick={() => saveUserModification(item)} />,
+                            <Button key="save-id" text="Sauvegarder" onClick={() => saveUserModification(focusUser)} />,
                             <Button key="stop-id" text="Annuler" onClick={() => setFocusUser(undefined)} />,
-                            <Button key="delete-id" text="Supprimer" onClick={() => deleteUser(item)} type="warning" />
+                            <Button key="delete-id" text="Supprimer" onClick={() => deleteUser(focusUser)} type="warning" />
                         ]}
                     />
                 }
-            />
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+                    {filterUsers().map((user, index) =>
+                        <UserInfoListElement
+                            key={index}
+                            user={user}
+                            onClick={user => setFocusUser(user)}
+                        />
+                    )}
+                </div>
+            </div>
             <ToastContainer />
         </div>
     );

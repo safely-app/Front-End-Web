@@ -31,7 +31,7 @@ const SafeplaceSingle: React.FC = () => {
     return (
         <div className="Profile-container">
             <AppHeader />
-            {(safeplace !== undefined) ?
+            {(safeplace !== undefined) &&
                 <Profile elements={[
                     <TextInput key={`${safeplace.id}-name`} type="text" role="name"
                         label="Nom" value={safeplace.name} setValue={() => {}} readonly={true} />,
@@ -52,7 +52,7 @@ const SafeplaceSingle: React.FC = () => {
                             label="Longitude" value={safeplace.coordinate[1]} setValue={() => {}} readonly={true} />
                     </div>
                 ]} />
-            : <div />}
+            }
         </div>
     );
 };

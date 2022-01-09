@@ -6,7 +6,6 @@ import IRequestClaimSafeplace from '../../interfaces/IRequestClaimSafeplace';
 import {
     Button,
     Dropdown,
-    List,
     TextInput,
     Modal,
     SearchBar
@@ -205,9 +204,8 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                     <li key={`${requestClaimSafeplace.id}-userComment`}><b>Commentaire utilisateur : </b>{requestClaimSafeplace.userComment}</li>
                     <li key={`${requestClaimSafeplace.id}-adminComment`}><b>Commentaire administrateur : </b>{requestClaimSafeplace.adminComment}</li>
                     <li key={`${requestClaimSafeplace.id}-buttons`}>
-                        {requestClaimSafeplace.status !== PENDING_REQUEST
-                            ? <div />
-                            : <div className="RequestClaimSafeplace-grid-container">
+                        {requestClaimSafeplace.status === PENDING_REQUEST &&
+                            <div className="RequestClaimSafeplace-grid-container">
                                 <Button text="Accepter" onClick={acceptRequest} width="100%"
                                     onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
                                 <Button text="Refuser" onClick={openRefuseModal} width="100%" type="warning"
@@ -433,31 +431,32 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
                     }} />
                 ]}
             />
-            <List
-                items={filterRequestClaimSafeplaces()}
-                focusItem={focusRequestClaimSafeplace}
-                itemDisplayer={(item) =>
-                    <RequestClaimSafeplaceInfoListElement
-                        requestClaimSafeplace={item}
-                        showModal={showModal}
-                        setShownModal={setShowModal}
-                        onClick={onListElementClick}
-                        setRequestClaimSafeplace={setRequestClaimSafeplace}
-                    />
-                }
-                itemUpdater={(item) =>
+            <div>
+                {(focusRequestClaimSafeplace !== undefined) &&
                     <RequestClaimSafeplaceInfoForm
                         shown={focusRequestClaimSafeplace !== undefined}
-                        requestClaimSafeplace={item}
+                        requestClaimSafeplace={focusRequestClaimSafeplace}
                         setRequestClaimSafeplace={setFocusRequestClaimSafeplace}
                         buttons={[
-                            <Button key="save-id" text="Sauvegarder" onClick={() => saveRequestClaimSafeplaceModification(item)} />,
+                            <Button key="save-id" text="Sauvegarder" onClick={() => saveRequestClaimSafeplaceModification(focusRequestClaimSafeplace)} />,
                             <Button key="stop-id" text="Annuler" onClick={onListElementStopButtonClick} />,
-                            <Button key="delete-id" text="Supprimer" onClick={() => deleteRequestClaimSafeplace(item)} type="warning" />
+                            <Button key="delete-id" text="Supprimer" onClick={() => deleteRequestClaimSafeplace(focusRequestClaimSafeplace)} type="warning" />
                         ]}
                     />
                 }
-            />
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+                    {filterRequestClaimSafeplaces().map((requestClaimSafeplace, index) =>
+                        <RequestClaimSafeplaceInfoListElement
+                            key={index}
+                            requestClaimSafeplace={requestClaimSafeplace}
+                            showModal={showModal}
+                            setShownModal={setShowModal}
+                            onClick={onListElementClick}
+                            setRequestClaimSafeplace={setRequestClaimSafeplace}
+                        />
+                    )}
+                </div>
+            </div>
             <ToastContainer />
         </div>
     );

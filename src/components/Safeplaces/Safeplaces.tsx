@@ -4,7 +4,6 @@ import { ToastContainer } from 'react-toastify';
 import { AppHeader } from '../Header/Header';
 import {
     Button,
-    List,
     SearchBar,
     Modal,
     TextInput
@@ -15,7 +14,6 @@ import {
     notifySuccess
 } from '../utils';
 import log from 'loglevel';
-import './Safeplaces.css';
 import { Safeplace, RequestClaimSafeplace } from '../../services';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux';
@@ -23,15 +21,19 @@ import shop from '../../assets/image/shop.jpg'
 
 interface ISafeplaceInfoProps {
     safeplace: ISafeplace;
-    setSafeplace: (safeplace: ISafeplace) => void;
-    buttons: JSX.Element[];
+    setSafeplace: (safeplace: ISafeplace | undefined) => void;
+    saveSafeplaceModification: (safeplace: ISafeplace) => void;
+    archiveSafeplace: (safeplace: ISafeplace) => void;
+    deleteSafeplace: (safeplace: ISafeplace) => void;
     shown?: boolean;
 };
 
 const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
     safeplace,
     setSafeplace,
-    buttons,
+    saveSafeplaceModification,
+    archiveSafeplace,
+    deleteSafeplace,
     shown
 }) => {
 
@@ -56,7 +58,10 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
                     label="Ville" value={safeplace.city} setValue={setCity} />
                 <TextInput key={`${safeplace.id}-address`} type="text" role="address"
                     label="Adresse" value={safeplace.address} setValue={setAddress} />
-                {buttons}
+                <Button key="save-id" text="Publier les modififications" onClick={() => saveSafeplaceModification(safeplace)} />,
+                <Button key="stop-id" text="Annuler" onClick={() => setSafeplace(undefined)} />,
+                <Button key="delete-id" text="Dépublier le commerce" onClick={() => deleteSafeplace(safeplace)} type="warning" />,
+                <Button key="archive-id" text="Archiver le commerce" onClick={() => archiveSafeplace(safeplace)} />
             </div>
         } />
     );
@@ -82,7 +87,7 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
     };
 
     return (
-        <div key={safeplace.id} className="Safeplaces-list-element flex flex-col items-center bg-white rounded-lg border shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+        <div key={safeplace.id} className="p-4 flex flex-col items-center bg-white rounded-lg border shadow-md md:flex-row w-full hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
             <img className="object-cover w-full h-96 rounded-t-lg md:h-auto md:w-48 md:rounded-none md:rounded-l-lg" src={shop} alt=""></img>
             <div className="flex flex-col justify-between p-4 leading-normal space-y-2">
                 <div className="text-left">
@@ -90,11 +95,11 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
                     <p key={`${safeplace.id}-city`}><b>Ville : </b>{safeplace.city}</p>
                     <p key={`${safeplace.id}-address`}><b>Adresse : </b>{safeplace.address}</p>
                 </div>
-                <button onClick={handleClickClaim} className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <button onClick={handleClickClaim} className="inline-flex w-56 items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Réclamer ce commerce
                     <svg className="ml-2 -mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                 </button>
-                <button onClick={handleClick} className="inline-flex items-center py-2 px-3 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <button onClick={handleClick} className="inline-flex w-56 items-center py-2 px-3 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                     Modifier
                     <svg className="ml-2 -mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
                 </button>
@@ -204,33 +209,29 @@ const Safeplaces: React.FC = () => {
         <div className="min-h-screen bg-background bg-transparent space-y-2 bg-cover bg-center">
             <AppHeader />
             <div style={{ textAlign: "center" }}>
-                <SearchBar
-                    label="Rechercher un commerce"
-                    value={searchBarValue}
-                    setValue={setSearchBarValue}
-                />
-                <List
-                    items={filterSafeplaces()}
-                    focusItem={focusSafeplace}
-                    itemDisplayer={(item) =>
-                        <SafeplaceInfoListElement
-                            safeplace={item}
-                            onClick={safeplace => setFocusSafeplace(safeplace)}
-                            onClickClaim={claimSafeplace} />}
-                    itemUpdater={(item) =>
+                <SearchBar label="Rechercher un commerce" value={searchBarValue} setValue={setSearchBarValue} />
+                <div>
+                    {(focusSafeplace !== undefined) &&
                         <SafeplaceInfoForm
-                            safeplace={item}
+                            safeplace={focusSafeplace}
                             shown={focusSafeplace !== undefined}
                             setSafeplace={setFocusSafeplace}
-                            buttons={[
-                                <Button key="save-id" text="Publier les modififications" onClick={() => saveSafeplaceModification(item)} />,
-                                <Button key="stop-id" text="Annuler" onClick={() => setFocusSafeplace(undefined)} />,
-                                <Button key="delete-id" text="Dépublier le commerce" onClick={() => deleteSafeplace(item)} type="warning" />,
-                                <Button key="archive-id" text="Archiver le commerce" onClick={() => archiveSafeplace(item)} />
-                            ]}
+                            saveSafeplaceModification={saveSafeplaceModification}
+                            archiveSafeplace={archiveSafeplace}
+                            deleteSafeplace={deleteSafeplace}
                         />
                     }
-                />
+                    <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 m-4">
+                        {filterSafeplaces().map((safeplace, index) =>
+                            <SafeplaceInfoListElement
+                                key={index}
+                                safeplace={safeplace}
+                                onClick={safeplace => setFocusSafeplace(safeplace)}
+                                onClickClaim={claimSafeplace}
+                            />
+                        )}
+                    </div>
+                </div>
                 <ToastContainer />
             </div>
         </div>

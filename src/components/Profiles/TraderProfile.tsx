@@ -5,8 +5,7 @@ import {
     TextInput,
     Button,
     CommonLoader,
-    Modal,
-    List
+    Modal
 } from '../common';
 import IStripe, { IStripeCard } from '../interfaces/IStripe';
 import IProfessional from '../interfaces/IProfessional';
@@ -74,8 +73,7 @@ const TraderProfileShopList: React.FC = () => {
                     );
                 })}
             </div>
-            {selectedShopId !== undefined
-                ? <Redirect to={`/safeplace-page/${selectedShopId}`} /> : <div />}
+            {selectedShopId !== undefined && <Redirect to={`/safeplace-page/${selectedShopId}`} />}
         </div>
     );
 };
@@ -111,18 +109,15 @@ const PaymentSolutionList: React.FC<IPaymentSolutionListProps> = ({
     return (
         <div style={{ marginTop: '1em', paddingTop: '1em', marginLeft: '20%', marginRight: '20%' }}>
             <h2>Solutions de paiement enregistrées</h2>
-            <List
-                items={paymentSolutions}
-                itemDisplayer={(item) =>
-                    <div key={item.id} style={{ marginLeft: '2%', marginRight: '2%' }}>
-                        <div className="Profile-list-element" style={{ textAlign: 'left', paddingLeft: '5%', border: '1px solid #a19b96', borderRadius: '8px' }}>
-                            <b style={{ fontSize: '20px' }}>{`${item.brand.charAt(0).toUpperCase() + item.brand.slice(1)} ···· ${item.last4}`}</b>
-                            <p style={{ fontSize: '14px' }}>{`Expire en ${months[item.expMonth - 1]} ${item.expYear}`}</p>
-                            <p style={{ fontSize: '12px' }}>{`Date d'enregistrement : ${new Date(item.created).toUTCString()}`}</p>
-                        </div>
+            {paymentSolutions.map(paymentSolution =>
+                <div key={paymentSolution.id} style={{ marginLeft: '2%', marginRight: '2%' }}>
+                    <div className="Profile-list-element" style={{ textAlign: 'left', paddingLeft: '5%', border: '1px solid #a19b96', borderRadius: '8px' }}>
+                        <b style={{ fontSize: '20px' }}>{`${paymentSolution.brand.charAt(0).toUpperCase() + paymentSolution.brand.slice(1)} ···· ${paymentSolution.last4}`}</b>
+                        <p style={{ fontSize: '14px' }}>{`Expire en ${months[paymentSolution.expMonth - 1]} ${paymentSolution.expYear}`}</p>
+                        <p style={{ fontSize: '12px' }}>{`Date d'enregistrement : ${new Date(paymentSolution.created).toUTCString()}`}</p>
                     </div>
-                }
-            />
+                </div>
+            )}
         </div>
     );
 };

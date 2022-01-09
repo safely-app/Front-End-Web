@@ -1,5 +1,4 @@
 import React, {
-    useState,
     useEffect
 } from 'react';
 import {
@@ -9,17 +8,14 @@ import {
 } from '../../redux';
 import ISafeplace from '../interfaces/ISafeplace';
 import { AppHeader } from '../Header/Header';
-import { Safeplace, User } from '../../services';
+import { User } from '../../services';
 import { notifyError } from '../utils';
-import log from 'loglevel';
 import {
     MapContainer,
     TileLayer,
     Marker,
     Popup
 } from 'react-leaflet'
-import './App.css';
-
 
 interface IMapProps {
     safeplaces: ISafeplace[];
@@ -57,41 +53,26 @@ export const Map: React.FC<IMapProps> = ({
 const App: React.FC = () => {
     const dispatch = useAppDispatch();
     const userCredientials = useAppSelector(state => state.user.credentials);
-    const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
 
     useEffect(() => {
-        const getUserInfo = () => {
-            User.get(userCredientials._id, userCredientials.token)
-                .then(response => dispatch(setInfo(response.data)))
-                .catch(error => notifyError(error.message));
-        };
-
-        const getSafeplaces = () => {
-            Safeplace.getAll(userCredientials.token).then(response => {
-                const gotSafeplaces = response.data.map(safeplace => ({
-                    id: safeplace.id,
-                    name: safeplace.name,
-                    city: safeplace.city,
-                    address: safeplace.address,
-                    type: safeplace.type,
-                    dayTimetable: safeplace.dayTimetable,
-                    coordinate: safeplace.coordinate
-                }));
-
-                setSafeplaces(gotSafeplaces);
-            }).catch(error => {
-                log.error(error);
-            });
-        };
-
-        getUserInfo();
-        getSafeplaces();
+        User.get(userCredientials._id, userCredientials.token)
+            .then(response => dispatch(setInfo(response.data)))
+            .catch(error => notifyError(error.message));
     }, [userCredientials, dispatch]);
 
     return (
-        <div className="App min-h-screen bg-background bg-transparent  bg-cover bg-center">
+        <div className="text-center min-h-screen bg-background bg-transparent bg-cover bg-center">
             <AppHeader />
-            <Map safeplaces={safeplaces} />
+            {/* <Map safeplaces={safeplaces} /> */}
+            <div className="fixed top-2/4 left-2/4 text-2xl text-white">
+                <p className="-m-2/4" style={{
+                    marginRight: '-50%',
+                    transform: 'translate(-50%, -50%)'
+                }}>
+                    Bienvenue sur
+                    <b className="block text-5xl">Safely</b>
+                </p>
+            </div>
         </div>
     );
 }
