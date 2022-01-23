@@ -16,7 +16,6 @@ import {
     convertStringToRegex
 } from '../../utils';
 import { ToastContainer } from 'react-toastify';
-import './UserMonitor.css';
 import profile from '../../../assets/image/profileano.png'
 
 interface IUserInfoProps {
@@ -58,7 +57,7 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="User-Info">
+            <div className="Monitor-Info">
                 <TextInput key={`${user.id}-id`} type="text" role="id"
                     label="Identifiant" value={user.id} setValue={() => { }} readonly={true} />
                 <TextInput key={`${user.id}-username`} type="text" role="username"
@@ -95,8 +94,8 @@ const UserInfoListElement: React.FC<IUserInfoListElementProps> = ({
     };
 
     return (
-        <div key={user.id} className="Monitor-list-elementflex flex-col items-center bg-white rounded-lg border shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-            <button className="Monitor-list-element-btn" onClick={handleClick}>
+        <div key={user.id} className="bg-white p-4 flex flex-col items-center bg-white rounded-lg border shadow-md md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+            <button className="w-full h-full text-left" onClick={handleClick}>
             <img className="object-center w-full h-60 md:h-auto md:w-48" src={profile} alt=""></img>
             <div className="flex flex-col justify-between p-4 leading-normal space-y-2">
                 <p key={`${user.id}-id`}><b>Identifiant : </b>{user.id}</p>
@@ -127,13 +126,9 @@ const UserMonitorFilter: React.FC<IUserMonitorFilterProps> = ({
     ];
 
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(100, 1fr)', paddingLeft: '1%', paddingRight: '1%' }}>
-            <div style={{ gridColumn: '2 / 10', gridRow: '1' }}>
-                <Dropdown width='100%' defaultValue='all' values={USER_ROLES} setValue={setDropdownValue} />
-            </div>
-            <div style={{ gridColumn: '11 / 100', gridRow: '1' }}>
-                <SearchBar label="Rechercher un utilisateur" value={searchBarValue} setValue={setSearchBarValue} />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 md:grid-rows-1 px-4">
+            <Dropdown width='10em' defaultValue='all' values={USER_ROLES} setValue={setDropdownValue} />
+            <SearchBar label="Rechercher un utilisateur" value={searchBarValue} setValue={setSearchBarValue} />
         </div>
     );
 };
@@ -252,8 +247,8 @@ const UserMonitor: React.FC = () => {
     }, [userCredientials]);
 
     return (
-        <div className="space-y-4 space-x-4" style={{ textAlign: "center" }}>
-            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onClick={() => setShowModal(true)} >Créer un nouvel utilisateur</button>
+        <div style={{ textAlign: "center" }}>
+            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mb-4" onClick={() => setShowModal(true)} >Créer un nouvel utilisateur</button>
             <UserMonitorFilter searchBarValue={searchText} setDropdownValue={setUserRole} setSearchBarValue={setSearchText} />
             <UserInfoForm
                 shown={showModal}
