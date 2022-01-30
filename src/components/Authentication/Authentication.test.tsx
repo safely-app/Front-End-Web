@@ -13,45 +13,42 @@ import { BrowserRouter } from 'react-router-dom';
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-// test('renders authentication sign up component', () => {
-//     render(
-//         <Provider store={store}>
-//             <Authentication />
-//         </Provider>
-//     );
+test('renders authentication sign up component', () => {
+    render(
+        <Provider store={store}>
+            <Authentication />
+        </Provider>
+    );
 
-//     expect(screen.getByText(/Pas encore inscrit/i)).toBeInTheDocument();
-//     expect(screen.getByRole("email")).toBeInTheDocument();
-//     expect(screen.getByRole("password")).toBeInTheDocument();
-//     expect(screen.getAllByRole("button").length).toEqual(3);
-// });
+    expect(screen.getAllByText(/S'inscrire/i).length > 1).toBe(true);
+    expect(screen.getByRole("email")).toBeInTheDocument();
+    expect(screen.getByRole("password")).toBeInTheDocument();
+});
 
-// test('renders authentication sign in component', () => {
-//     render(
-//         <Provider store={store}>
-//             <Authentication />
-//         </Provider>
-//     );
+test('renders authentication sign in component', () => {
+    render(
+        <Provider store={store}>
+            <Authentication />
+        </Provider>
+    );
 
-//     const switchViewButton = screen.getByText(/Pas encore inscrit/i);
-//     expect(switchViewButton).toBeInTheDocument();
+    const switchViewButton = screen.getAllByText(/S'inscrire/i)[0];
+    expect(switchViewButton).toBeInTheDocument();
 
-//     fireEvent.click(switchViewButton);
+    fireEvent.click(switchViewButton);
 
-//     const alreadySubscribedButton = screen.getByText(/Déjà inscrit/i);
-//     expect(alreadySubscribedButton).toBeInTheDocument();
+    const alreadySubscribedButton = screen.getAllByText(/Se connecter/i)[0];
+    expect(alreadySubscribedButton).toBeInTheDocument();
 
-//     expect(screen.getByRole("email")).toBeInTheDocument();
-//     expect(screen.getByRole("username")).toBeInTheDocument();
-//     expect(screen.getAllByRole("password").length).toEqual(2);
-//     expect(screen.getAllByRole("button").length).toEqual(2);
+    expect(screen.getByRole("email")).toBeInTheDocument();
+    expect(screen.getByRole("username")).toBeInTheDocument();
+    expect(screen.getAllByRole("password").length).toEqual(2);
 
-//     fireEvent.click(alreadySubscribedButton);
+    fireEvent.click(alreadySubscribedButton);
 
-//     expect(screen.getByRole("email")).toBeInTheDocument();
-//     expect(screen.getByRole("password")).toBeInTheDocument();
-//     expect(screen.getAllByRole("button").length).toEqual(3);
-// });
+    expect(screen.getByRole("email")).toBeInTheDocument();
+    expect(screen.getByRole("password")).toBeInTheDocument();
+});
 
 test('renders authentication forgotten password component', async () => {
     const scope = nock('https://api.safely-app.fr')
@@ -86,34 +83,30 @@ test('renders authentication forgotten password component', async () => {
 
 });
 
-// test('renders authentication with filled information', () => {
-//     render(
-//         <Provider store={store}>
-//             <Authentication />
-//         </Provider>
-//     );
+test('renders authentication with filled information', () => {
+    render(
+        <Provider store={store}>
+            <Authentication />
+        </Provider>
+    );
 
-//     const email = screen.getByRole("email");
-//     const password = screen.getByRole("password");
-//     const buttons = screen.getAllByRole("button");
-//     const loginButton = buttons[0];
+    const email = screen.getByRole("email");
+    const password = screen.getByRole("password");
 
-//     expect(buttons.length).toEqual(3);
-//     expect(email).toBeInTheDocument();
-//     expect(password).toBeInTheDocument();
-//     expect(loginButton).toBeInTheDocument();
+    expect(email).toBeInTheDocument();
+    expect(password).toBeInTheDocument();
 
-//     fireEvent.change(email, {
-//         target: { value: "email@test.com" }
-//     });
+    fireEvent.change(email, {
+        target: { value: "email@test.com" }
+    });
 
-//     fireEvent.change(password, {
-//         target: { value: "passwordtest" }
-//     });
+    fireEvent.change(password, {
+        target: { value: "passwordtest" }
+    });
 
-//     expect(screen.getByDisplayValue("email@test.com")).toBeInTheDocument();
-//     expect(screen.getByDisplayValue("passwordtest")).toBeInTheDocument();
-// });
+    expect(screen.getByDisplayValue("email@test.com")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("passwordtest")).toBeInTheDocument();
+});
 
 test('renders reset password component', async () => {
     const scope = nock('https://api.safely-app.fr')

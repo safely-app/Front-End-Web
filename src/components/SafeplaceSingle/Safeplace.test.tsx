@@ -1,30 +1,22 @@
-import { render } from "@testing-library/react";
-import UserProfile from "./UserProfile";
+import { act, render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { store } from '../../redux';
+import SafeplaceSingle from './Safeplace';
 import nock from 'nock';
-import { act } from "react-dom/test-utils";
 
 const testURL = process.env.REACT_APP_SERVER_URL as string;
 
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-test('renders user profile', async () => {
+test('render safeplacesingle', async () => {
     const scope = nock(testURL)
-        .get('/user/')
-        .reply(200, {
-            id: "123",
-            username: "john",
-            email: "doe",
-            role: "user"
-        }, {
-            'Access-Control-Allow-Origin': '*'
-        });
+        .get('/safeplace/safeplace/undefined')
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
 
     render(
         <Provider store={store}>
-            <UserProfile />
+            <SafeplaceSingle />
         </Provider>
     );
 

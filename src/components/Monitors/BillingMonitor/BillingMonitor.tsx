@@ -230,7 +230,7 @@ const BillingMonitor: React.FC = () => {
 
             setBillings(gotBillings);
         }).catch(error => {
-            log.error();
+            log.error(error);
             notifyError(error);
         })
     }, [userCredientials]);

@@ -15,6 +15,29 @@ const SafeplaceSingle: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
     const [safeplace, setSafeplace] = useState<ISafeplace | undefined>(undefined);
 
+    const isSafeplaceValid = () => {
+        const interfaceFields = [
+            "id",
+            "name",
+            "description",
+            "city",
+            "address",
+            "type",
+            "dayTimetable",
+            "coordinate",
+            "ownerId"
+        ] as const;
+
+        if (safeplace === undefined)
+            return false;
+
+        for (const field in interfaceFields)
+            if (safeplace[field] === undefined)
+                return false;
+
+        return true;
+    };
+
     const parseUrl = (url: string): string => {
         const regex = new RegExp("/safeplace-page/(.*)");
         const found = url.match(regex) || [""];
@@ -31,7 +54,7 @@ const SafeplaceSingle: React.FC = () => {
     return (
         <div className="Profile-container">
             <AppHeader />
-            {(safeplace !== undefined) &&
+            {(safeplace !== undefined && isSafeplaceValid()) &&
                 <Profile elements={[
                     <TextInput key={`${safeplace.id}-name`} type="text" role="name"
                         label="Nom" value={safeplace.name} setValue={() => {}} readonly={true} />,

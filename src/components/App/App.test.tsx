@@ -15,11 +15,6 @@ test('renders app', async () => {
     const scopeUser = nock(baseURL)
         .get('/user/')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
-    const scopeSafeplace = nock(baseURL)
-        .get('/safeplace/safeplace')
-        .reply(200, [], {
-            'Access-Control-Allow-Origin': '*'
-        });
 
     render(
         <Provider store={store}>
@@ -29,7 +24,6 @@ test('renders app', async () => {
 
     await act(async () => testDelay(1000));
 
-    scopeSafeplace.done();
     scopeUser.done();
 });
 

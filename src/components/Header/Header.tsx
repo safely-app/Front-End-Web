@@ -1,38 +1,39 @@
 import React, { useState } from 'react';
 import { useAppSelector } from '../../redux';
 import logo from '../../assets/image/logo.png'
-import profileimage from '../../assets/image/profile.png'
 
-const HeaderProfile: React.FC = () => {
-  return (
-    <div className="flex items-center object-right lg:order-2">
-      <button type="button" className="flex mr-3 text-sm bg-gray-800 rounded-full lg:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
-        <span className="sr-only">Open user menu</span>
-        <img className="w-20 h-20 rounded-full" src={profileimage} alt="userimg"></img>
-      </button>
-      <div className="hidden z-50 my-4 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown">
-        <div className="py-3 px-4">
-          <span className="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
-          <span className="block text-sm font-medium text-gray-500 truncate dark:text-gray-400">name@flowbite.com</span>
-        </div>
-        <ul className="py-1" aria-labelledby="dropdown">
-          <li>
-            <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</div>
-          </li>
-          <li>
-            <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</div>
-          </li>
-          <li>
-            <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Earnings</div>
-          </li>
-          <li>
-            <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  );
-};
+// import profileimage from '../../assets/image/profile.png'
+
+// const HeaderProfile: React.FC = () => {
+//   return (
+//     <div className="flex items-center object-right lg:order-2">
+//       <button type="button" className="flex mr-3 text-sm bg-gray-800 rounded-full lg:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
+//         <span className="sr-only">Open user menu</span>
+//         <img className="w-20 h-20 rounded-full" src={profileimage} alt="userimg"></img>
+//       </button>
+//       <div className="hidden z-50 my-4 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown">
+//         <div className="py-3 px-4">
+//           <span className="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
+//           <span className="block text-sm font-medium text-gray-500 truncate dark:text-gray-400">name@email.com</span>
+//         </div>
+//         <ul className="py-1" aria-labelledby="dropdown">
+//           <li>
+//             <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</div>
+//           </li>
+//           <li>
+//             <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</div>
+//           </li>
+//           <li>
+//             <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Earnings</div>
+//           </li>
+//           <li>
+//             <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</div>
+//           </li>
+//         </ul>
+//       </div>
+//     </div>
+//   );
+// };
 
 interface HeaderLink {
   link: string;
@@ -63,7 +64,7 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
         <div className="xl:flex xl:flex-wrap xl:space-x-10 items-center">
           <div className="flex flex-wrap">
             <a href="/" className="flex space-x-4">
-              <img object-left className="h-20 w-20 ml-auto mr-auto" src={logo} alt="Logo Safely" />
+              <img object-left="true" className="h-20 w-20 ml-auto mr-auto" src={logo} alt="Logo Safely" />
               <span className="self-center text-2xl text-lg font-semibold whitespace-nowrap text-yellowS">Safely</span>
             </a>
             <div className="xl:hidden flex-grow p-4">
@@ -94,8 +95,8 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
       <div className={`${isMenuHidden ? "hidden" : "block"} xl:hidden fixed bg-white top-0 right-0 min-w-max w-1/4 h-full`}>
         <button className="py-8" onClick={() => setIsMenuHidden(!isMenuHidden)}>
           <svg viewBox="0 0 20 20" width="30" height="30">
-            <line x1="5" y1="5" x2="15" y2="15" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10"></line>
-            <line x1="15" y1="5" x2="5" y2="15" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-miterlimit="10"></line>
+            <line x1="5" y1="5" x2="15" y2="15" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeMiterlimit="10"></line>
+            <line x1="15" y1="5" x2="5" y2="15" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeMiterlimit="10"></line>
           </svg>
         </button>
         <ul className="pt-4">
