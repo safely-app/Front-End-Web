@@ -229,7 +229,7 @@ const SignUpView: React.FC<IAuthProps> = ({
               <button onClick={() => setView(View.SIGNIN)} className="font-medium uppercase text-2xl ring-3 ring-gray border border-gray rounded-3xl pt-2 pb-2 pl-12 pr-12 text-white hover:text-yellow-200 hover:border-yellow-200 mt-10 focus:outline-none">Se connecter</button>
             </div>
           </div>
-          <div className="bg-white bg-opacity-0 lg:bg-opacity-90 flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+          <div className="bg-white bg-opacity-20 lg:bg-opacity-90 flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
             <div className="mx-auto w-full max-w-sm lg:w-96">
               <div>
                 <img
