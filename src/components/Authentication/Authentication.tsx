@@ -103,7 +103,7 @@ const SignInView: React.FC<IAuthProps> = ({
                             name="email"
                             type="email"
                             role="email"
-                            label="email"
+                            label="Email"
                             required-500
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
@@ -119,8 +119,8 @@ const SignInView: React.FC<IAuthProps> = ({
                             setValue={setPassword}
                             name="password"
                             type="password"
-                            label="password"
                             role="password"
+                            label="Mot de passe"
                             required-500
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
@@ -259,6 +259,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                             name="username"
                             type="username"
                             role="username"
+                            label="Nom d'utilisateur"
                             required-500
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
@@ -275,6 +276,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                             name="email"
                             type="email"
                             role="email"
+                            label="Email"
                             autoComplete="email"
                             required
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
@@ -292,6 +294,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                             name="password"
                             type="password"
                             role="password"
+                            label="Mot de passe"
                             autoComplete="current-password"
                             required
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
@@ -310,6 +313,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                             name="confirmedPassword"
                             type="confirmedPassword"
                             role="password"
+                            label="Répeter le mot de passe"
                             autoComplete="current-password"
                             required
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
