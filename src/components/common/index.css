@@ -15,7 +15,6 @@
 }
 
 .dropdown-container {
-    margin-top: 1em;
     position: relative;
     display: inline-block;
     vertical-align: middle;
@@ -25,6 +24,7 @@
 
 .dropdown-container select {
     width: 100%;
+    min-width: 6em;
     background-color: #a19b96;
     color: #fff;
     font-size: inherit;
@@ -80,12 +80,6 @@
 
 .dropdown-container::after {
     color: rgba(0,0,0,.6);
-}
-
-.list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
 }
 
 .btn {

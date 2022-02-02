@@ -9,6 +9,7 @@ export const displayTimetable = (timetable: (string | null)[]): string => {
         "Dimanche"
     ];
 
+    if (timetable === undefined) return "";
     return timetable.map((time, index) => ({ time: time, index: index }))
         .filter(item => item.time !== null)
         .map(item => days[item.index] + " : " + item.time)

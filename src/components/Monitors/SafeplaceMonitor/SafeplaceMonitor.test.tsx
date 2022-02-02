@@ -10,17 +10,24 @@ import {
 } from './utils';
 import nock from 'nock';
 
-const testUrl = 'https://api.safely-app.fr';
+const testUrl = process.env.REACT_APP_SERVER_URL as string;
 
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-test('renders monitor', () => {
+test('renders monitor', async () => {
+    const scope = nock(testUrl)
+        .get('/safeplace/safeplace')
+        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+
     render(
         <Provider store={store}>
             <SafeplaceMonitor />
         </Provider>
     );
+
+    await act(async () => await testDelay(1000));
+    scope.done();
 });
 
 test('ensure that displayTimetable returns valid information', () => {

@@ -62,11 +62,11 @@ const SignInView: React.FC<IAuthProps> = ({
             notifyError((e as Error).message);
         }
     };
-    
+
     return (
         <div className="min-h-screen bg-transparent flex bg-background-auth bg-cover bg-center">
           <div className="hidden lg:block relative w-0 flex-1">
-            <div className="absolute inset-20 w-full object-cover"> 
+            <div className="absolute inset-20 w-full object-cover">
               <p className="font-extrabold uppercase text-yellow-200 text-5xl mb-2">Bienvenue sur Safely</p>
               <p className="font-normal uppercase text-yellow-200 text-xl">L'application qui sécurise vos déplacements</p>
               <button onClick={() => setView(View.SIGNUP)} className="font-medium text-white uppercase text-2xl ring-3 ring-gray border border-gray rounded-3xl pt-2 pb-2 pl-12 pr-12 hover:text-yellow-200 hover:border-yellow-200 mt-10 focus:outline-none">S'inscrire</button>
@@ -88,9 +88,7 @@ const SignInView: React.FC<IAuthProps> = ({
                   </button>
                 </p>
               </div>
-    
               <div className="mt-8">
-    
                 <div className="mt-6">
                   <div className="space-y-6">
                     <div>
@@ -105,13 +103,12 @@ const SignInView: React.FC<IAuthProps> = ({
                             name="email"
                             type="email"
                             role="email"
-                            label="email"
+                            label="Email"
                             required-500
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
-    
                     <div className="space-y-1">
                       <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                         Mot de passe
@@ -122,14 +119,13 @@ const SignInView: React.FC<IAuthProps> = ({
                             setValue={setPassword}
                             name="password"
                             type="password"
-                            label="password"
                             role="password"
+                            label="Mot de passe"
                             required-500
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
-    
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <TextInput
@@ -143,17 +139,14 @@ const SignInView: React.FC<IAuthProps> = ({
                           Rester connecté
                         </label>
                       </div>
-    
                       <div className="text-sm">
                         <button onClick={() => setView(View.FORGOT)} className="font-medium text-red-500 hover:text-red-500 cursor-pointer">
                         Mot de passe oublié ?
                         </button>
                       </div>
                     </div>
-    
                     <div>
                       <button
-                        
                         onClick={handleClick}
                         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                       >
@@ -162,7 +155,6 @@ const SignInView: React.FC<IAuthProps> = ({
                     </div>
                   </div>
                 </div>
-                
                 <div className="mt-5">
                   <div className="mt-6 mb-6 relative">
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -173,14 +165,12 @@ const SignInView: React.FC<IAuthProps> = ({
                     </div>
                   </div>
                 <div>
-    
                     <div className="mt-1 grid grid-cols-2 gap-6 text-center ">
                       <div className="text-right focus:outline-none">
                       <div
                           className="cursor-pointer w-24 inline-flex justify-center py-2 px-4 border-2 border-white rounded-3xl shadow-sm bg-white text-sm font-medium hover:border-red-500 "
                         >
                           <span className="sr-only">Sign in with Google</span>
-                          
                           <GoogleLogin
                             clientId="409852833093-r8n4tmddotipm85c153kn45hq9i42d78.apps.googleusercontent.com"
                             render={renderProps => (
@@ -192,13 +182,10 @@ const SignInView: React.FC<IAuthProps> = ({
                             cookiePolicy={'single_host_origin'}
                           />
                         </div>
-                        
                       </div>
-    
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
@@ -236,13 +223,13 @@ const SignUpView: React.FC<IAuthProps> = ({
     return (
         <div className="min-h-screen bg-transparent flex bg-background-auth bg-cover bg-center">
           <div className="hidden lg:block relative w-0 flex-1">
-            <div className="absolute inset-20 w-full object-cover"> 
+            <div className="absolute inset-20 w-full object-cover">
               <p className="font-extrabold uppercase text-yellow-200 text-5xl mb-2">Bienvenue sur Safely</p>
               <p className="font-normal uppercase text-yellow-200 text-xl">L'application qui sécurise vos déplacements</p>
               <button onClick={() => setView(View.SIGNIN)} className="font-medium uppercase text-2xl ring-3 ring-gray border border-gray rounded-3xl pt-2 pb-2 pl-12 pr-12 text-white hover:text-yellow-200 hover:border-yellow-200 mt-10 focus:outline-none">Se connecter</button>
             </div>
           </div>
-          <div className="bg-white bg-opacity-0 lg:bg-opacity-90 flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+          <div className="bg-white bg-opacity-20 lg:bg-opacity-90 flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
             <div className="mx-auto w-full max-w-sm lg:w-96">
               <div>
                 <img
@@ -258,9 +245,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                   </button>
                 </p>
               </div>
-    
               <div className="mt-8">
-    
                 <div className="mt-6">
                   <div onSubmit={handleClick} className="space-y-6">
                     <div>
@@ -273,12 +258,13 @@ const SignUpView: React.FC<IAuthProps> = ({
                             setValue={setUsername}
                             name="username"
                             type="username"
+                            role="username"
+                            label="Nom d'utilisateur"
                             required-500
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
-
                     <div>
                       <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                         Email
@@ -289,13 +275,14 @@ const SignUpView: React.FC<IAuthProps> = ({
                             setValue={setEmail}
                             name="email"
                             type="email"
+                            role="email"
+                            label="Email"
                             autoComplete="email"
                             required
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
-
                     <div className="space-y-0.5">
                       <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                         Mot de passe
@@ -306,6 +293,8 @@ const SignUpView: React.FC<IAuthProps> = ({
                             setValue={setPassword}
                             name="password"
                             type="password"
+                            role="password"
+                            label="Mot de passe"
                             autoComplete="current-password"
                             required
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
@@ -323,13 +312,14 @@ const SignUpView: React.FC<IAuthProps> = ({
                             setValue={setConfirmedPassword}
                             name="confirmedPassword"
                             type="confirmedPassword"
+                            role="password"
+                            label="Répeter le mot de passe"
                             autoComplete="current-password"
                             required
                             className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
-    
                     <div>
                       <button
                         type="submit"
@@ -340,7 +330,6 @@ const SignUpView: React.FC<IAuthProps> = ({
                     </div>
                   </div>
                 </div>
-                
                 <div className="mt-5">
                   <div className="mt-6 mb-6 relative">
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
@@ -351,14 +340,12 @@ const SignUpView: React.FC<IAuthProps> = ({
                     </div>
                   </div>
                   <div>
-    
                     <div className="mt-1 grid grid-cols-2 gap-6 text-center ">
                       <div className="text-right focus:outline-none">
                       <div
                           className="cursor-pointer w-24 inline-flex justify-center py-2 px-4 border-2 border-white rounded-3xl shadow-sm bg-white text-sm font-medium hover:border-red-500 "
                         >
                           <span className="sr-only">Sign in with Google</span>
-                          
                           <GoogleLogin
                             clientId="409852833093-r8n4tmddotipm85c153kn45hq9i42d78.apps.googleusercontent.com"
                             render={renderProps => (
@@ -370,14 +357,10 @@ const SignUpView: React.FC<IAuthProps> = ({
                             cookiePolicy={'single_host_origin'}
                           />
                         </div>
-                        
                       </div>
-    
-    
                     </div>
                   </div>
                 </div>
-
               </div>
             </div>
           </div>
@@ -438,8 +421,6 @@ export const SignOut: React.FC = () => {
 
     useEffect(() => {
         dispatch(disconnect());
-        console.log("JE SUIS LA");
-        console.log(userCredientialsId);
     });
 
     return <div>{!userCredientialsId && <Redirect to="/login" />}</div>;

@@ -3,7 +3,6 @@ import { useAppSelector } from '../../../redux';
 import Billing from '../../../services/Billing';
 import {
     Button,
-    List,
     Modal,
     TextInput,
     SearchBar
@@ -15,7 +14,6 @@ import {
     convertStringToRegex
 } from '../../utils';
 import log from 'loglevel';
-import './BillingMonitor.css';
 
 interface IBillingProps {
     billing: IBilling | undefined;
@@ -40,7 +38,7 @@ const BillingCreateForm: React.FC<IBillingProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Billing-Info">
+            <div className="Monitor-Info">
                 <TextInput key={`${billing?.id}-amount`} type="number" role="amount"
                     label="Montant" value={`${billing?.amount}`} setValue={setAmount} />
                 {buttons.map(button => button)}
@@ -72,12 +70,12 @@ const BillingUpdateForm: React.FC<IBillingProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Billing-Info">
+            <div className="Monitor-Info">
                 <TextInput key={`${billing?.id}-description`} type="text" role="description"
                     label="Description" value={`${billing?.description}`} setValue={setDescription} />
                 <TextInput key={`${billing?.id}-receiptEmail`} type="text" role="receiptEmail"
                     label="Email de réception du reçu" value={`${billing?.receiptEmail !== null ? billing?.receiptEmail : ""}`} setValue={setReceiptEmail} />
-                {buttons.map(button => button)}
+                {buttons}
             </div>
         }/>
     );
@@ -97,9 +95,9 @@ const BillingInfoListElement: React.FC<IBillingInfoListElementProps> = ({
     };
 
     return (
-        <div key={billing.id} className="Monitor-list-element rounded">
-            <button className="Monitor-list-element-btn" onClick={handleClick}>
-                <ul className="Monitor-list">
+        <div key={billing.id} className="bg-white p-4 rounded">
+            <button className="w-full h-full text-left" onClick={handleClick}>
+                <ul>
                     <li key={`${billing.id}-id`}><b>Identifiant : </b>{billing.id}</li>
                     <li key={`${billing.id}-paymentMethod`}><b>Identifiant de solution de payement : </b>{billing.paymentMethod}</li>
                     <li key={`${billing.id}-receiptEmail`}><b>Email de réception du reçu : </b>{billing.receiptEmail}</li>
@@ -122,9 +120,7 @@ const BillingMonitorFilter: React.FC<IBillingMonitorFilterProps> = ({
     setSearchBarValue
 }) => {
     return (
-        <div style={{ marginLeft: '2%', marginRight: '2%' }}>
-            <SearchBar label="Rechercher une facture" value={searchBarValue} setValue={setSearchBarValue} />
-        </div>
+        <SearchBar label="Rechercher une facture" value={searchBarValue} setValue={setSearchBarValue} />
     );
 };
 
@@ -234,14 +230,14 @@ const BillingMonitor: React.FC = () => {
 
             setBillings(gotBillings);
         }).catch(error => {
-            log.error();
+            log.error(error);
             notifyError(error);
         })
     }, [userCredientials]);
 
     return (
-        <div className="space-y-4 space-x-4" style={{textAlign: "center"}}>
-            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onClick={onCreateButtonClick}>Créer une nouvelle facture</button>
+        <div style={{textAlign: "center"}}>
+            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mb-4" onClick={onCreateButtonClick}>Créer une nouvelle facture</button>
             <BillingMonitorFilter searchBarValue={searchText} setSearchBarValue={setSearchText} />
             <BillingCreateForm
                 shown={newBilling !== undefined}
@@ -252,21 +248,27 @@ const BillingMonitor: React.FC = () => {
                     <Button key="stop-id" text="Annuler" onClick={onStopButtonClick} />
                 ]}
             />
-            <List
-                items={filterBillings()}
-                focusItem={focusBilling}
-                itemDisplayer={(item) => <BillingInfoListElement billing={item} onClick={onListElementClick} />}
-                itemUpdater={(item) =>
+            <div>
+                {(focusBilling !== undefined) &&
                     <BillingUpdateForm
                         billing={focusBilling}
                         setBilling={setFocusBilling}
                         buttons={[
-                            <Button key="update-id" text="Modifier" onClick={() => updateBilling(item)} />,
+                            <Button key="update-id" text="Modifier" onClick={() => updateBilling(focusBilling)} />,
                             <Button key="stop-id" text="Annuler" onClick={onStopButtonClick} />
                         ]}
                     />
                 }
-            />
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+                    {filterBillings().map((billing, index) =>
+                        <BillingInfoListElement
+                            key={index}
+                            billing={billing}
+                            onClick={onListElementClick}
+                        />
+                    )}
+                </div>
+            </div>
             <ToastContainer />
         </div>
     );

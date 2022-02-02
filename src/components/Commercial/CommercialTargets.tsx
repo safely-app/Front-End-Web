@@ -192,7 +192,7 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                 ]}
             />
             <div>
-                {(focusTarget !== undefined) ?
+                {(focusTarget !== undefined) &&
                     <TargetModal
                         target={focusTarget}
                         setTarget={setFocusTarget}
@@ -201,19 +201,16 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                             <Button key={2} text="Annuler" onClick={() => setFocusTarget(undefined)} />,
                             <Button key={3} text="Supprimer" type="warning" onClick={() => deleteTarget(focusTarget)} />
                         ]}
-                    /> : <div />
+                    />
                 }
                 <div className="" style={{ maxHeight: '42em', overflow: 'auto' }}>
-                    {targets.map((item, index) => {
-                        return (
-                            <div key={index}>
-                                <TargetInfoDisplayer
-                                    target={item}
-                                    onClick={setFocusTarget}
-                                />
-                            </div>
-                        );
-                    })}
+                    {targets.map((item, index) =>
+                        <TargetInfoDisplayer
+                            key={index}
+                            target={item}
+                            onClick={setFocusTarget}
+                        />
+                    )}
                 </div>
             </div>
         </div>

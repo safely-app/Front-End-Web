@@ -8,17 +8,23 @@ import nock from 'nock';
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-test('renders BillingMonitor', () => {
+test('renders BillingMonitor', async () => {
+    const scope = nock(process.env.REACT_APP_SERVER_URL as string)
+        .get('/stripe/stripe/billing').reply(200, { data: [] }, { 'Access-Control-Allow-Origin': '*' });
+
     render(
         <Provider store={store}>
             <BillingMonitor />
         </Provider>
     );
+
+    await act(async () => testDelay(1000));
+    scope.done();
 });
 
 test('renders BillingMonitor create button', async () => {
     const scopeGet = nock(process.env.REACT_APP_SERVER_URL as string)
-        .get('/stripe/stripe/billing').reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+        .get('/stripe/stripe/billing').reply(200, { data: [] }, { 'Access-Control-Allow-Origin': '*' });
     const scopeCreate = nock(process.env.REACT_APP_SERVER_URL as string)
         .post('/stripe/stripe/billing').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
 

@@ -8,15 +8,24 @@ import nock from 'nock';
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-it('renders user monitor', () => {
+test('renders user monitor', async () => {
+    const scope = nock(process.env.REACT_APP_SERVER_URL as string)
+        .get('/user').reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+
     render(
         <Provider store={store}>
             <UserMonitor />
         </Provider>
     );
+
+    await act(async () => await testDelay(1000));
+    scope.done();
 });
 
-it('ensure that all expected elements are present', () => {
+test('ensure that all expected elements are present', async () => {
+    const scope = nock(process.env.REACT_APP_SERVER_URL as string)
+        .get('/user').reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+
     render(
         <Provider store={store}>
             <UserMonitor />
@@ -24,9 +33,15 @@ it('ensure that all expected elements are present', () => {
     );
 
     expect(screen.getByText(/Créer un nouvel utilisateur/i)).toBeInTheDocument();
+
+    await act(async () => await testDelay(1000));
+    scope.done();
 });
 
-it('ensure that create new user is working', () => {
+test('ensure that create new user is working', async () => {
+    const scope = nock(process.env.REACT_APP_SERVER_URL as string)
+        .get('/user').reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+
     render(
         <Provider store={store}>
             <UserMonitor />
@@ -77,9 +92,12 @@ it('ensure that create new user is working', () => {
     expect(screen.queryByDisplayValue('test')).toBeNull();
     expect(screen.queryByDisplayValue('test@test.com')).toBeNull();
     expect(screen.queryByDisplayValue('user')).toBeNull();
+
+    await act(async () => await testDelay(1000));
+    scope.done();
 });
 
-it('ensure that user filtering is working', async () => {
+test('ensure that user filtering is working', async () => {
     const scope = nock('https://api.safely-app.fr')
         .get('/user')
         .reply(200, [

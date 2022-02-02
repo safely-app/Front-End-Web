@@ -285,7 +285,7 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                 ]}
             />
             <div>
-                {(focusCampaign !== undefined) ?
+                {(focusCampaign !== undefined) &&
                     <CampaignModal
                         campaign={focusCampaign}
                         setCampaign={setFocusCampaign}
@@ -295,22 +295,19 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                             <Button key={2} text="Annuler" onClick={() => setFocusCampaign(undefined)} />,
                             <Button key={3} text="Supprimer" type="warning" onClick={() => deleteCampaign(focusCampaign)} />
                         ]}
-                    /> : <div />
+                    />
                 }
                 <div className="" style={{ maxHeight: '42em', overflow: 'auto' }}>
-                    {campaigns.map((item, index) => {
-                        return (
-                            <div key={index}>
-                                <CampaignInfoDisplayer
-                                    campaign={item}
-                                    setCampaign={setCampaign}
-                                    onClick={setFocusCampaign}
-                                    createCampaignFromTemplate={(campaign) => createCampaign(campaign)}
-                                    targets={targets}
-                                />
-                            </div>
-                        );
-                    })}
+                    {campaigns.map((item, index) =>
+                        <CampaignInfoDisplayer
+                            key={index}
+                            campaign={item}
+                            setCampaign={setCampaign}
+                            onClick={setFocusCampaign}
+                            createCampaignFromTemplate={(campaign) => createCampaign(campaign)}
+                            targets={targets}
+                        />
+                    )}
                 </div>
             </div>
         </div>

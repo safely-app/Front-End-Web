@@ -4,7 +4,6 @@ import { RootState } from '../../../redux';
 import { Safeplace } from '../../../services';
 import ISafeplace from '../../interfaces/ISafeplace';
 import {
-    List,
     Button,
     Modal,
     TextInput,
@@ -23,19 +22,20 @@ import {
     splitTimetable,
     displayCoordinates
 } from './utils';
-import './SafeplaceMonitor.css';
 
 interface ISafeplaceInfoProps {
     safeplace: ISafeplace;
-    setSafeplace: (safeplace: ISafeplace) => void;
-    buttons: JSX.Element[];
+    setSafeplace: (safeplace: ISafeplace | undefined) => void;
+    saveSafeplaceModification: (safeplace: ISafeplace) => void;
+    deleteSafeplace: (safeplace: ISafeplace) => void;
     shown?: boolean;
 }
 
 const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
     safeplace,
     setSafeplace,
-    buttons,
+    saveSafeplaceModification,
+    deleteSafeplace,
     shown
 }) => {
     const [displayedTimetable, setDisplayedTimetable] = useState(displayTimetable(safeplace.dayTimetable));
@@ -80,7 +80,7 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Safeplace-Info">
+            <div className="Monitor-Info">
                 <TextInput key={`${safeplace.id}-id`} type="text" role="id"
                     label="Identifiant de la safeplace" value={safeplace.id} setValue={() => {}} readonly={true} />
                 <TextInput key={`${safeplace.id}-name`} type="text" role="name"
@@ -101,7 +101,9 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
                 </div>
                 <TextInput key={`${safeplace.id}-ownerId`} type="text" role="ownerId"
                     label="ID du propriétaire" value={safeplace.ownerId as string} setValue={setOwnerId} />
-                {buttons}
+                <Button key="save-id" text="Sauvegarder" onClick={() => saveSafeplaceModification(safeplace)} />
+                <Button key="stop-id" text="Annuler" onClick={() => setSafeplace(undefined)} />
+                <Button key="delete-id" text="Supprimer" onClick={() => deleteSafeplace(safeplace)} type="warning" />
             </div>
         }/>
     );
@@ -121,9 +123,9 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
     };
 
     return (
-        <div key={safeplace.id} className="Safeplace-list-element rounded">
-            <button className="Safeplace-list-element-btn" onClick={handleClick}>
-                <ul className="Safeplace-list">
+        <div key={safeplace.id} className="bg-white p-4 rounded">
+            <button className="w-full h-full text-left" onClick={handleClick}>
+                <ul>
                     <li key={`${safeplace.id}-id`}><b>ID : </b>{safeplace.id}</li>
                     <li key={`${safeplace.id}-name`}><b>Nom : </b>{safeplace.name}</li>
                     <li key={`${safeplace.id}-city`}><b>Ville : </b>{safeplace.city}</li>
@@ -150,13 +152,9 @@ const SafeplaceMonitorFilter: React.FC<ISafeplaceMonitorFilterProps> = ({
     setSearchBarValue
 }) => {
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(100, 1fr)', paddingLeft: '1%', paddingRight: '1%' }}>
-            <div style={{ gridColumn: '2 / 10', gridRow: '1' }}>
-                <Dropdown width='100%' defaultValue='all' values={SAFEPLACE_TYPES} setValue={setDropdownValue} />
-            </div>
-            <div style={{ gridColumn: '11 / 100', gridRow: '1' }}>
-                <SearchBar label="Rechercher une safeplace" value={searchBarValue} setValue={setSearchBarValue} />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 md:grid-rows-1 px-4">
+            <Dropdown width='10em' defaultValue='all' values={SAFEPLACE_TYPES} setValue={setDropdownValue} />
+            <SearchBar label="Rechercher une safeplace" value={searchBarValue} setValue={setSearchBarValue} />
         </div>
     );
 };
@@ -234,25 +232,28 @@ const SafeplaceMonitor: React.FC = () => {
     }, [userCredientials]);
 
     return (
-        <div style={{textAlign: "center"}}>
+        <div style={{ textAlign: "center" }}>
             <SafeplaceMonitorFilter searchBarValue={searchText} setDropdownValue={setSafeplaceType} setSearchBarValue={setSearchText} />
-            <List
-                items={filterSafeplaces()}
-                focusItem={focusSafeplace}
-                itemDisplayer={(item) => <SafeplaceInfoListElement safeplace={item} onClick={(safeplace: ISafeplace) => setFocusSafeplace(safeplace)} />}
-                itemUpdater={(item) =>
+            <div>
+                {(focusSafeplace !== undefined) &&
                     <SafeplaceInfoForm
+                        safeplace={focusSafeplace}
                         shown={focusSafeplace !== undefined}
-                        safeplace={item}
                         setSafeplace={setFocusSafeplace}
-                        buttons={[
-                            <Button key="save-id" text="Sauvegarder" onClick={() => saveSafeplaceModification(item)} />,
-                            <Button key="stop-id" text="Annuler" onClick={() => setFocusSafeplace(undefined)} />,
-                            <Button key="delete-id" text="Supprimer" onClick={() => deleteSafeplace(item)} type="warning" />
-                        ]}
+                        saveSafeplaceModification={saveSafeplaceModification}
+                        deleteSafeplace={deleteSafeplace}
                     />
                 }
-            />
+                <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 m-4">
+                    {filterSafeplaces().map((safeplace, index) =>
+                        <SafeplaceInfoListElement
+                            key={index}
+                            safeplace={safeplace}
+                            onClick={safeplace => setFocusSafeplace(safeplace)}
+                        />
+                    )}
+                </div>
+            </div>
             <ToastContainer />
         </div>
     );

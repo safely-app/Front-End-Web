@@ -6,7 +6,6 @@ import IRequestClaimSafeplace from '../../interfaces/IRequestClaimSafeplace';
 import {
     Button,
     Dropdown,
-    List,
     TextInput,
     Modal,
     SearchBar
@@ -17,7 +16,6 @@ import {
     convertStringToRegex
 } from '../../utils';
 import { ToastContainer } from 'react-toastify';
-import './RequestClaimSafeplaceMonitor.css';
 
 const ACCEPTED_REQUEST = "Accepted";
 const REFUSED_REQUEST = "Refused";
@@ -93,7 +91,7 @@ const RequestClaimSafeplaceInfoForm: React.FC<IRequestClaimSafeplaceInfoProps> =
 
     return (
         <Modal shown={shown} content={
-            <div className="RequestClaimSafeplace-Info">
+            <div className="Monitor-Info">
                 <TextInput key={`${requestClaimSafeplace?.id}-userId`} type="text" role="userId"
                     label="Identifiant d'utilisateur" value={requestClaimSafeplace?.userId as string} setValue={setUserId} />
                 <TextInput key={`${requestClaimSafeplace?.id}-safeplaceId`} type="text" role="safeplaceId"
@@ -195,9 +193,9 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
     };
 
     return (
-        <div key={requestClaimSafeplace.id} className="Monitor-list-element rounded">
-            <button className="Monitor-list-element-btn" onClick={handleClick}>
-                <ul className="Monitor-list">
+        <div key={requestClaimSafeplace.id} className="bg-white p-4 rounded">
+            <button className="w-full h-full text-left" onClick={handleClick}>
+                <ul>
                     <li key={`${requestClaimSafeplace.id}-id`}><b>Identifiant : </b>{requestClaimSafeplace.id}</li>
                     <li key={`${requestClaimSafeplace.id}-userId`}><b>Identifiant d'utilisateur : </b>{requestClaimSafeplace.userId}</li>
                     <li key={`${requestClaimSafeplace.id}-safeplaceId`}><b>Identifiant de safeplace : </b>{requestClaimSafeplace.safeplaceId}</li>
@@ -205,9 +203,8 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                     <li key={`${requestClaimSafeplace.id}-userComment`}><b>Commentaire utilisateur : </b>{requestClaimSafeplace.userComment}</li>
                     <li key={`${requestClaimSafeplace.id}-adminComment`}><b>Commentaire administrateur : </b>{requestClaimSafeplace.adminComment}</li>
                     <li key={`${requestClaimSafeplace.id}-buttons`}>
-                        {requestClaimSafeplace.status !== PENDING_REQUEST
-                            ? <div />
-                            : <div className="RequestClaimSafeplace-grid-container">
+                        {requestClaimSafeplace.status === PENDING_REQUEST &&
+                            <div className="grid grid-cols-4">
                                 <Button text="Accepter" onClick={acceptRequest} width="100%"
                                     onMouseOver={onMouseOver} onMouseOut={onMouseOut} />
                                 <Button text="Refuser" onClick={openRefuseModal} width="100%" type="warning"
@@ -218,7 +215,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                 </ul>
             </button>
             <Modal shown={refusedMessage !== undefined} content={
-                <div className="RequestClaimSafeplace-Info">
+                <div className="Monitor-Info">
                     <TextInput type="text" role="comment" label="Commentaire"
                         value={refusedMessage as string} setValue={setRefusedMessage} />
                     <Button text="Valider" onClick={refuseRequest} type="warning" />
@@ -248,13 +245,9 @@ const RequestClaimSafeplaceMonitorFilter: React.FC<IRequestClaimSafeplaceMonitor
     ];
 
     return (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(100, 1fr)', paddingLeft: '1%', paddingRight: '1%' }}>
-            <div style={{ gridColumn: '2 / 10', gridRow: '1' }}>
-                <Dropdown width='100%' defaultValue='all' values={REQUEST_TYPES} setValue={setDropdownValue} />
-            </div>
-            <div style={{ gridColumn: '11 / 100', gridRow: '1' }}>
-                <SearchBar label="Rechercher une requête de safeplace" value={searchBarValue} setValue={setSearchBarValue} />
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 md:grid-rows-1 px-4">
+            <Dropdown width='10em' defaultValue='all' values={REQUEST_TYPES} setValue={setDropdownValue} />
+            <SearchBar label="Rechercher une requête de safeplace" value={searchBarValue} setValue={setSearchBarValue} />
         </div>
     );
 };
@@ -414,8 +407,8 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     }, [userCredientials]);
 
     return (
-        <div className="space-y-4 space-x-4" style={{textAlign: "center"}}>
-            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" onClick={onCreateButtonClick}>Créer une nouvelle requête de safeplace</button>
+        <div style={{textAlign: "center"}}>
+            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mb-4" onClick={onCreateButtonClick}>Créer une nouvelle requête de safeplace</button>
             <RequestClaimSafeplaceMonitorFilter searchBarValue={searchText} setDropdownValue={setRequestClaimSafeplaceStatus} setSearchBarValue={setSearchText} />
             <RequestClaimSafeplaceInfoForm
                 shown={newRequestClaimSafeplace !== undefined}
@@ -433,31 +426,32 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
                     }} />
                 ]}
             />
-            <List
-                items={filterRequestClaimSafeplaces()}
-                focusItem={focusRequestClaimSafeplace}
-                itemDisplayer={(item) =>
-                    <RequestClaimSafeplaceInfoListElement
-                        requestClaimSafeplace={item}
-                        showModal={showModal}
-                        setShownModal={setShowModal}
-                        onClick={onListElementClick}
-                        setRequestClaimSafeplace={setRequestClaimSafeplace}
-                    />
-                }
-                itemUpdater={(item) =>
+            <div>
+                {(focusRequestClaimSafeplace !== undefined) &&
                     <RequestClaimSafeplaceInfoForm
                         shown={focusRequestClaimSafeplace !== undefined}
-                        requestClaimSafeplace={item}
+                        requestClaimSafeplace={focusRequestClaimSafeplace}
                         setRequestClaimSafeplace={setFocusRequestClaimSafeplace}
                         buttons={[
-                            <Button key="save-id" text="Sauvegarder" onClick={() => saveRequestClaimSafeplaceModification(item)} />,
+                            <Button key="save-id" text="Sauvegarder" onClick={() => saveRequestClaimSafeplaceModification(focusRequestClaimSafeplace)} />,
                             <Button key="stop-id" text="Annuler" onClick={onListElementStopButtonClick} />,
-                            <Button key="delete-id" text="Supprimer" onClick={() => deleteRequestClaimSafeplace(item)} type="warning" />
+                            <Button key="delete-id" text="Supprimer" onClick={() => deleteRequestClaimSafeplace(focusRequestClaimSafeplace)} type="warning" />
                         ]}
                     />
                 }
-            />
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+                    {filterRequestClaimSafeplaces().map((requestClaimSafeplace, index) =>
+                        <RequestClaimSafeplaceInfoListElement
+                            key={index}
+                            requestClaimSafeplace={requestClaimSafeplace}
+                            showModal={showModal}
+                            setShownModal={setShowModal}
+                            onClick={onListElementClick}
+                            setRequestClaimSafeplace={setRequestClaimSafeplace}
+                        />
+                    )}
+                </div>
+            </div>
             <ToastContainer />
         </div>
     );

@@ -9,20 +9,11 @@ const testURL = process.env.REACT_APP_SERVER_URL as string;
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-test('renders trader profile', () => {
-    render(
-        <Provider store={store}>
-            <TraderProfile />
-        </Provider>
-    );
-});
-
-test('renders trader profile not found', async () => {
-    const scope = nock(testURL)
-        .get('/professionalinfo')
-        .reply(200, [], {
-            'Access-Control-Allow-Origin': '*'
-        });
+test('renders trader profile', async () => {
+    const scopeInfo = nock(testURL).get('/professionalinfo')
+        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+    const scopeCard = nock(testURL).get('/stripe/stripe/user/card/undefined')
+        .reply(200, { data: [] }, { 'Access-Control-Allow-Origin': '*' });
 
     render(
         <Provider store={store}>
@@ -31,5 +22,6 @@ test('renders trader profile not found', async () => {
     );
 
     await act(async () => await testDelay(1000));
-    scope.done();
+    scopeInfo.done();
+    scopeCard.done();
 });

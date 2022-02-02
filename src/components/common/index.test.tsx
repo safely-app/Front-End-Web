@@ -5,7 +5,6 @@ import {
     TextInput,
     Dropdown,
     SearchBar,
-    List,
     NavBar,
     Profile
 } from './index';
@@ -55,30 +54,6 @@ test('test search bar', () => {
     expect(setValue).toHaveBeenCalled();
 });
 
-test('test list', () => {
-    const items = [
-        <p key='1'>1</p>,
-        <p key='2'>2</p>,
-        <p key='3'>3</p>
-    ];
-
-    render(
-        <List
-            items={items}
-            focusItem={undefined}
-            itemDisplayer={(item) => item}
-            itemUpdater={() => <div />}
-        />
-    );
-
-    const firstParagraph = screen.getByText('1');
-    const secondParagraph = screen.getByText('2');
-    const thirdParagraph = screen.getByText('3');
-    expect(firstParagraph).toBeInTheDocument();
-    expect(secondParagraph).toBeInTheDocument();
-    expect(thirdParagraph).toBeInTheDocument();
-});
-
 test('test navbar', () => {
     const firstFn = jest.fn();
     const secondFn = jest.fn();
@@ -100,38 +75,6 @@ test('test navbar', () => {
 
     expect(firstFn).toHaveBeenCalled();
     expect(secondFn).toHaveBeenCalled();
-});
-
-test('test list click', () => {
-    const handleClick = jest.fn();
-    const listOfStrings = [
-        "ceci",
-        "est",
-        "un",
-        "exemple"
-    ];
-
-    const itemDisplayerFunction = (item: string): JSX.Element => {
-        return <p onClick={handleClick}>{item}</p>;
-    };
-
-    const itemUpdaterFunction = (item: string): JSX.Element => {
-        return <p>J'ai clické sur : {item}</p>
-    };
-
-    render(
-        <List
-            items={listOfStrings}
-            itemDisplayer={itemDisplayerFunction}
-            itemUpdater={itemUpdaterFunction}
-            focusItem={undefined}
-        />
-    );
-
-    expect(screen.getByText("ceci")).toBeInTheDocument();
-    expect(screen.getByText("est")).toBeInTheDocument();
-    expect(screen.getByText("un")).toBeInTheDocument();
-    expect(screen.getByText("exemple")).toBeInTheDocument();
 });
 
 test('test profile component', () => {

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { NavBar } from '../common';
 import { AppHeader } from '../Header/Header';
-import './Monitor.css';
 import UserMonitor from './UserMonitor/UserMonitor';
 import SafeplaceMonitor from './SafeplaceMonitor/SafeplaceMonitor';
 import BillingMonitor from './BillingMonitor/BillingMonitor';
 import RequestClaimSafeplace from './RequestClaimSafeplaceMonitor/RequestClaimSafeplaceMonitor';
+import './Monitor.css';
 
 enum MonitorView {
     USER,
