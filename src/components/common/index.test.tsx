@@ -5,8 +5,7 @@ import {
     TextInput,
     Dropdown,
     SearchBar,
-    NavBar,
-    Profile
+    NavBar
 } from './index';
 
 test('simulate click', () => {
@@ -75,14 +74,4 @@ test('test navbar', () => {
 
     expect(firstFn).toHaveBeenCalled();
     expect(secondFn).toHaveBeenCalled();
-});
-
-test('test profile component', () => {
-    render(
-        <Profile elements={[
-            <p>Test text</p>
-        ]} />
-    );
-
-    expect(screen.getByText('Test text')).toBeInTheDocument();
 });

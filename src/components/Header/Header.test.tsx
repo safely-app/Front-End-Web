@@ -70,6 +70,5 @@ test('renders app header', () => {
         </Provider>
     );
 
-    expect(screen.getAllByText("Dashboard").length).toEqual(2);
     expect(screen.getAllByText("Connexion").length).toEqual(2);
 });
