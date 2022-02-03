@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PaymentMethod } from '@stripe/stripe-js';
 import {
-    Profile,
     TextInput,
     Button,
     CommonLoader,
@@ -56,22 +55,18 @@ const TraderProfileShopList: React.FC = () => {
         <div className="w-3/5 pt-8" style={{ marginLeft: '20%', marginRight: '20%' }}>
             <h2>Mes commerces</h2>
             <div>
-                {shops.map((shop, index) => {
-                    return (
-                        <div key={index}>
-                            <div key={shop.id} className="Shops-list-element">
-                            <button className="Safeplace-list-element-btn" onClick={() => handleClick(shop)}>
-                                <ul className="Shops-list">
-                                    <li key={`${shop.id}-name`}><b>Nom : </b>{shop.name}</li>
-                                    <li key={`${shop.id}-city`}><b>Ville : </b>{shop.city}</li>
-                                    <li key={`${shop.id}-address`}><b>Adresse : </b>{shop.address}</li>
-                                    <li key={`${shop.id}-description`}><b>Description : </b>{shop.description}</li>
-                                </ul>
-                            </button>
-                        </div>
+                {shops.map((shop, index) =>
+                    <div key={index} className="bg-white p-4 m-4">
+                        <button className="w-full h-full" onClick={() => handleClick(shop)}>
+                            <ul className="text-left w-full h-full">
+                                <li key={`${shop.id}-name`}><b>Nom : </b>{shop.name}</li>
+                                <li key={`${shop.id}-city`}><b>Ville : </b>{shop.city}</li>
+                                <li key={`${shop.id}-address`}><b>Adresse : </b>{shop.address}</li>
+                                <li key={`${shop.id}-description`}><b>Description : </b>{shop.description}</li>
+                            </ul>
+                        </button>
                     </div>
-                    );
-                })}
+                )}
             </div>
             {selectedShopId !== undefined && <Redirect to={`/safeplace-page/${selectedShopId}`} />}
         </div>
@@ -111,7 +106,7 @@ const PaymentSolutionList: React.FC<IPaymentSolutionListProps> = ({
             <h2>Solutions de paiement enregistrées</h2>
             {paymentSolutions.map(paymentSolution =>
                 <div key={paymentSolution.id} style={{ marginLeft: '2%', marginRight: '2%' }}>
-                    <div className="Profile-list-element" style={{ textAlign: 'left', paddingLeft: '5%', border: '1px solid #a19b96', borderRadius: '8px' }}>
+                    <div className="bg-white p-4 m-4" style={{ textAlign: 'left', paddingLeft: '5%', border: '1px solid #a19b96', borderRadius: '8px' }}>
                         <b style={{ fontSize: '20px' }}>{`${paymentSolution.brand.charAt(0).toUpperCase() + paymentSolution.brand.slice(1)} ···· ${paymentSolution.last4}`}</b>
                         <p style={{ fontSize: '14px' }}>{`Expire en ${months[paymentSolution.expMonth - 1]} ${paymentSolution.expYear}`}</p>
                         <p style={{ fontSize: '12px' }}>{`Date d'enregistrement : ${new Date(paymentSolution.created).toUTCString()}`}</p>
@@ -231,20 +226,20 @@ const TraderProfileFields: React.FC<ITraderProfileFieldsProps> = ({
     };
 
     return (
-        <Profile elements={[
-            <TextInput type="text" role="companyName" label="Nom de l'entreprise" value={professional.companyName} setValue={setCompanyName} readonly={!isUpdateView} />,
+        <div className="text-center p-4">
+            <TextInput type="text" role="companyName" label="Nom de l'entreprise" value={professional.companyName} setValue={setCompanyName} readonly={!isUpdateView} />
             <div className="grid grid-cols-2 gap-2" style={{ paddingLeft: '20%', paddingRight: '20%' }}>
                 <TextInput className="w-full" type="text" role="companyAddress" label="Adresse de l'entreprise" value={professional.companyAddress} setValue={setCompanyAddress} width="99%" readonly={!isUpdateView} />
                 <TextInput className="w-full" type="text" role="companyAddress2" label="Adresse de l'entreprise 2" value={professional.companyAddress2} setValue={setCompanyAddress2} width="99%" readonly={!isUpdateView} />
-            </div>,
-            <TextInput type="text" role="billingAddress" label="Adresse de facturation" value={professional.billingAddress} setValue={setBillingAddress} readonly={!isUpdateView} />,
-            <TextInput type="text" role="clientNumberTVA" label="Numéro de client TVA" value={professional.clientNumberTVA} setValue={setClientNumberTVA} readonly={!isUpdateView} />,
+            </div>
+            <TextInput type="text" role="billingAddress" label="Adresse de facturation" value={professional.billingAddress} setValue={setBillingAddress} readonly={!isUpdateView} />
+            <TextInput type="text" role="clientNumberTVA" label="Numéro de client TVA" value={professional.clientNumberTVA} setValue={setClientNumberTVA} readonly={!isUpdateView} />
             <div className="grid grid-cols-2 gap-2" style={{ paddingLeft: '20%', paddingRight: '20%' }}>
                 <TextInput className="w-full" type="text" role="personalPhone" label="Numéro de téléphone personnel" value={professional.personalPhone} setValue={setPersonalPhone} width="99%" readonly={!isUpdateView} />
                 <TextInput className="w-full" type="text" role="companyPhone" label="Numéro de téléphone d'entreprise" value={professional.companyPhone} setValue={setCompanyPhone} width="99%" readonly={!isUpdateView} />
-            </div>,
-            <TextInput type="text" role="type" label="Type d'entreprise" value={professional.type} setValue={setType} readonly={!isUpdateView} />,
-            <Button text="Afficher les informations optionelles" onClick={() => setIsOptionalHidden(!isOptionalHidden)} />,
+            </div>
+            <TextInput type="text" role="type" label="Type d'entreprise" value={professional.type} setValue={setType} readonly={!isUpdateView} />
+            <Button text="Afficher les informations optionelles" onClick={() => setIsOptionalHidden(!isOptionalHidden)} />
             <div hidden={isOptionalHidden}>
                 <TextInput type="text" role="RCS" label="Immatriculation RCS" value={professional.RCS as string} setValue={setRCS} readonly={!isUpdateView} />
                 <TextInput type="text" role="registrationCity" label="Ville d'enregistrement" value={professional.registrationCity as string} setValue={setRegistrationCity} readonly={!isUpdateView} />
@@ -253,9 +248,9 @@ const TraderProfileFields: React.FC<ITraderProfileFieldsProps> = ({
                     <TextInput className="w-full" type="text" role="SIRET" label="Numéro de SIRET" value={professional.SIRET as string} setValue={setSIRET} width="99%" readonly={!isUpdateView} />
                 </div>
                 <TextInput type="text" role="artisanNumber" label="Numéro d'artisan" value={professional.artisanNumber as string} setValue={setArtisanNumber} readonly={!isUpdateView} />
-            </div>,
-            ...additionalElements
-        ]} />
+            </div>
+            {additionalElements}
+        </div>
     );
 };
 

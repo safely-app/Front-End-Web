@@ -88,9 +88,9 @@ const TargetInfoDisplayer: React.FC<ITargetInfoDisplayerProps> = ({
     };
 
     return (
-        <div key={target.id} className="Monitor-list-element">
-            <button className="Monitor-list-element-btn" onClick={handleClick}>
-                <ul className="Monitor-list">
+        <div key={target.id} className="bg-white p-4 m-4">
+            <button className="w-full h-full" onClick={handleClick}>
+                <ul className="text-left w-full h-full">
                     <li key={`${target.id}-name`}><b>Nom : </b>{target.name}</li>
                     <li key={`${target.id}-csp`}><b>CSP : </b>{target.csp}</li>
                     <li key={`${target.id}-ageRange`}><b>Fourchette d'âge : </b>{target.ageRange}</li>

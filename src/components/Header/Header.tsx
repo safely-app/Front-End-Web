@@ -117,7 +117,6 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
 
 export const AppHeader: React.FC = () => {
   const links = [
-    { link: "/", name: "Dashboard", class: "Header-main" },
     { link: "/login", name: "Connexion", onAuth: false },
     { link: "/profile", name: "Profile", onAuth: true },
     { link: "/shops", name: "Commerces", onAuth: true },

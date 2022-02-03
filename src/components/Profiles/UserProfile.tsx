@@ -6,7 +6,7 @@ import {
     useAppDispatch
 } from '../../redux';
 import IUser from '../interfaces/IUser';
-import { TextInput, Button, Profile } from '../common';
+import { TextInput, Button } from '../common';
 import { AppHeader } from "../Header/Header";
 import { Redirect } from 'react-router-dom';
 import {
@@ -84,14 +84,14 @@ const UserProfile: React.FC = () => {
     return (
         <div className="Profile-container">
             <AppHeader />
-            <Profile elements={[
-                <TextInput type="text" role="username" label="Nom d'utilisateur" value={user.username} setValue={setUsername} readonly={!isUpdateView} />,
-                <TextInput type="text" role="email" label="Adresse email" value={user.email} setValue={setEmail} readonly={!isUpdateView} />,
-                isUpdateView ? <Button text="Sauvegarder" onClick={saveUserModification} /> : <Button text="Modifier" onClick={updateIsUpdateView} />,
-                isUpdateView ? <Button text="Annuler" onClick={updateIsUpdateView} /> : <div />,
-                <Button text="Supprimer" onClick={deleteUser} type="warning" />,
-                isUserDeleted ? <Redirect to="/" /> : <div />
-            ]} />
+            <div className="text-center p-4">
+                <TextInput type="text" role="username" label="Nom d'utilisateur" value={user.username} setValue={setUsername} readonly={!isUpdateView} />
+                <TextInput type="text" role="email" label="Adresse email" value={user.email} setValue={setEmail} readonly={!isUpdateView} />
+                {isUpdateView ? <Button text="Sauvegarder" onClick={saveUserModification} /> : <Button text="Modifier" onClick={updateIsUpdateView} />}
+                {isUpdateView && <Button text="Annuler" onClick={updateIsUpdateView} />}
+                <Button text="Supprimer" onClick={deleteUser} type="warning" />
+                {isUserDeleted && <Redirect to="/" />}
+            </div>
         </div>
     );
 }
