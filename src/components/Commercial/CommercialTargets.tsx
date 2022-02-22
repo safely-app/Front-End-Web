@@ -62,7 +62,7 @@ const TargetModal: React.FC<ITargetModalProps> = ({
                 <TextInput key={`${target.id}-ageRange`} type="text" role="ageRange"
                     label="Fourchette d'âge" value={target.ageRange} setValue={setAgeRange} />
                 <TextInput key={`${target.id}-interestField`} type="text" role="interestField"
-                    label="Ajouter un centre d'intêret" value={interestField} setValue={setInterestField} onKeyPress={onEnterKeyPressed} />
+                    label="Ajouter un centre d'intérêt" value={interestField} setValue={setInterestField} onKeyPress={onEnterKeyPressed} />
                 <ul className="target-campaign-list">
                     {target.interests.map((interest, index) => {
                         return <li key={index}><button className="target-delete-btn" onClick={() => removeInterest(interest)}>x</button> {interest}</li>

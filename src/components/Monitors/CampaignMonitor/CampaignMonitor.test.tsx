@@ -37,6 +37,7 @@ test('get CampaignMonitor search bar', async () => {
         </Provider>
     );
 
+    expect(screen.getByTestId('all-dropdown-id')).toBeInTheDocument();
     expect(screen.getByRole('searchbox')).toBeInTheDocument();
 
     await act(async () => testDelay(1000));

@@ -5,7 +5,7 @@ import { Commercial } from "../../../services";
 import ICampaign from "../../interfaces/ICampaign";
 import ITarget from "../../interfaces/ITarget";
 import { convertStringToRegex, notifyError } from "../../utils";
-import { Button, Modal, SearchBar, TextInput } from "../../common";
+import { Button, Dropdown, Modal, SearchBar, TextInput } from "../../common";
 import log from "loglevel";
 
 const getTargetName = (targetId: string, targets: ITarget[]): string => {
@@ -149,12 +149,39 @@ const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
     );
 };
 
+interface ICampaignMonitorFilterProps {
+    searchBarValue: string;
+    setDropdownValue: (value: string) => void;
+    setSearchBarValue: (value: string) => void;
+}
+
+const CampaignMonitorFilter: React.FC<ICampaignMonitorFilterProps> = ({
+    searchBarValue,
+    setDropdownValue,
+    setSearchBarValue
+}) => {
+    const CAMPAIGN_STATUS = [
+        'all',
+        'active',
+        'pause',
+        'template'
+    ];
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 md:grid-rows-1 px-4">
+            <Dropdown width='10em' defaultValue='all' values={CAMPAIGN_STATUS} setValue={setDropdownValue} />
+            <SearchBar label="Rechercher une campagne" value={searchBarValue} setValue={setSearchBarValue} />
+        </div>
+    );
+};
+
 const CampaignMonitor: React.FC = () => {
     const userCredentials = useAppSelector(state => state.user.credentials);
     const [focusCampaign, setFocusCampaign] = useState<ICampaign | undefined>(undefined);
     const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
     const [targets, setTargets] = useState<ITarget[]>([]);
     const [searchBarValue, setSearchBarValue] = useState("");
+    const [campaignStatus, setCampaignStatus] = useState("all");
 
     const setCampaign = (campaign: ICampaign) => {
         setCampaigns(campaigns.map(campaignElement => campaignElement.id === campaign.id ? campaign : campaignElement));
@@ -182,6 +209,20 @@ const CampaignMonitor: React.FC = () => {
         } catch (e) {
             notifyError((e as Error).message);
         }
+    };
+
+    const filterCampaigns = () => {
+        const lowerSearchText = convertStringToRegex(searchBarValue.toLocaleLowerCase());
+
+        return campaigns
+            .filter(campaign => campaignStatus !== 'all' ? campaignStatus === campaign.status : true)
+            .filter(campaign => searchBarValue !== ''
+                ? campaign.id.toLowerCase().match(lowerSearchText) !== null
+                || campaign.name.toLowerCase().match(lowerSearchText) !== null
+                || campaign.ownerId.toLowerCase().match(lowerSearchText) !== null
+                || campaign.startingDate.toLowerCase().match(lowerSearchText) !== null
+                || campaign.targets.map(target => getTargetName(target, targets)).join(" ").toLowerCase().match(lowerSearchText) !== null
+                : true);
     };
 
     useEffect(() => {
@@ -217,7 +258,10 @@ const CampaignMonitor: React.FC = () => {
 
     return (
         <div className="text-center">
-            <SearchBar label="Rechercher une campagne" value={searchBarValue} setValue={setSearchBarValue} />
+            <CampaignMonitorFilter
+                searchBarValue={searchBarValue}
+                setDropdownValue={setCampaignStatus}
+                setSearchBarValue={setSearchBarValue} />
             <div>
                 {(focusCampaign !== undefined) &&
                     <CampaignInfoForm
@@ -230,7 +274,7 @@ const CampaignMonitor: React.FC = () => {
                     />
                 }
                 <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
-                    {campaigns.map((campaign, index) =>
+                    {filterCampaigns().map((campaign, index) =>
                         <CampaignInfoDisplayer
                             key={index}
                             campaign={campaign}
