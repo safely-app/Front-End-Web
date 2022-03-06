@@ -311,7 +311,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                             value={confirmedPassword}
                             setValue={setConfirmedPassword}
                             name="confirmedPassword"
-                            type="confirmedPassword"
+                            type="password"
                             role="password"
                             label="Répeter le mot de passe"
                             autoComplete="current-password"
@@ -322,7 +322,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                     </div>
                     <div>
                       <button
-                        type="submit"
+                        onClick={handleClick}
                         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red"
                       >
                         S'inscrire
