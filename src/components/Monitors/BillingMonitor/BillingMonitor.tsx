@@ -99,7 +99,7 @@ const BillingInfoListElement: React.FC<IBillingInfoListElementProps> = ({
             <button className="w-full h-full text-left" onClick={handleClick}>
                 <ul>
                     <li key={`${billing.id}-id`}><b>Identifiant : </b>{billing.id}</li>
-                    <li key={`${billing.id}-paymentMethod`}><b>Identifiant de solution de payement : </b>{billing.paymentMethod}</li>
+                    <li key={`${billing.id}-paymentMethod`}><b>Identifiant de solution de paiement : </b>{billing.paymentMethod}</li>
                     <li key={`${billing.id}-receiptEmail`}><b>Email de réception du reçu : </b>{billing.receiptEmail}</li>
                     <li key={`${billing.id}-description`}><b>Description : </b>{billing.description}</li>
                     <li key={`${billing.id}-amount`}><b>Montant : </b>{billing.amount} {billing.currency}</li>

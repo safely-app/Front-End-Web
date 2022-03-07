@@ -446,7 +446,7 @@ const TraderProfile: React.FC = () => {
                     additionalElements={[
                         <Button
                             key="1"
-                            text="Enregistrer une solution de payement"
+                            text="Enregistrer une solution de paiement"
                             onClick={() => setIsStripeOpen(true)} />,
                         isUpdateView
                             ? <Button key="2" text="Sauvegarder" onClick={saveModification} />
