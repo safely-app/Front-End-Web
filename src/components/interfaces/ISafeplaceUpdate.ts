@@ -8,4 +8,5 @@ export default interface ISafeplaceUpdate {
     type: string;
     dayTimetable: (string | null)[];
     coordinate: string[];
+    ownerId?: string;
 }

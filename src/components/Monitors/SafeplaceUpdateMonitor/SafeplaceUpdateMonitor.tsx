@@ -19,6 +19,7 @@ interface ISafeplaceUpdateInfoProps {
     safeplaceUpdate: ISafeplaceUpdate;
     setSafeplaceUpdate: (safeplaceUpdate: ISafeplaceUpdate | undefined) => void;
     saveSafeplaceUpdateModification: (safeplaceUpdate: ISafeplaceUpdate) => void;
+    validateSafeplaceUpdate: (safeplaceUpdate: ISafeplaceUpdate) => void;
     deleteSafeplaceUpdate: (safeplaceUpdate: ISafeplaceUpdate) => void;
     safeplace?: ISafeplace;
     shown?: boolean;
@@ -28,6 +29,7 @@ const SafeplaceUpdateInfoForm: React.FC<ISafeplaceUpdateInfoProps> = ({
     safeplaceUpdate,
     setSafeplaceUpdate,
     saveSafeplaceUpdateModification,
+    validateSafeplaceUpdate,
     deleteSafeplaceUpdate,
     safeplace,
     shown
@@ -86,8 +88,9 @@ const SafeplaceUpdateInfoForm: React.FC<ISafeplaceUpdateInfoProps> = ({
                     <TextInput key={`${safeplaceUpdate.id}-type`} type="text" role="type" className="w-full"
                         label="Modification du type de la safeplace" value={safeplaceUpdate.type} setValue={setType} />
                 </div>
-                <TextInput key={`${safeplaceUpdate.id}-id`} type="text" role="id"
+                <TextInput key={`${safeplaceUpdate.id}-safeplaceId`} type="text" role="id"
                     label="Identifiant de la safeplace" value={safeplaceUpdate.safeplaceId} setValue={() => {}} readonly={true} />
+                <Button key="validate-id" text="Valider" onClick={() => validateSafeplaceUpdate(safeplaceUpdate)} />
                 <Button key="save-id" text="Sauvegarder" onClick={() => saveSafeplaceUpdateModification(safeplaceUpdate)} />
                 <Button key="stop-id" text="Annuler" onClick={() => setSafeplaceUpdate(undefined)} />
                 <Button key="delete-id" text="Supprimer" onClick={() => deleteSafeplaceUpdate(safeplaceUpdate)} type="warning" />
@@ -170,6 +173,29 @@ const SafeplaceUpdateMonitor: React.FC = () => {
         }
     };
 
+    const validateSafeplaceUpdate = async (safeplaceUpdate: ISafeplaceUpdate) => {
+        const safeplace: ISafeplace = {
+            id: safeplaceUpdate.safeplaceId,
+            name: safeplaceUpdate.name,
+            description: safeplaceUpdate.description,
+            city: safeplaceUpdate.city,
+            address: safeplaceUpdate.address,
+            type: safeplaceUpdate.type,
+            dayTimetable: safeplaceUpdate.dayTimetable,
+            coordinate: safeplaceUpdate.coordinate,
+            ownerId: safeplaceUpdate.ownerId
+        };
+
+        try {
+            await Safeplace.update(safeplace.id, safeplace, userCredientials.token);
+            await SafeplaceUpdate.delete(safeplaceUpdate.id, userCredientials.token);
+            deleteSafeplaceUpdate(safeplaceUpdate);
+            setFocusSafeplaceUpdate(undefined);
+        } catch (e) {
+            notifyError((e as Error).message);
+        }
+    };
+
     const deleteSafeplaceUpdate = async (safeplaceUpdate: ISafeplaceUpdate) => {
         try {
             await SafeplaceUpdate.delete(safeplaceUpdate.id, userCredientials.token);
@@ -244,6 +270,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
                         setSafeplaceUpdate={setFocusSafeplaceUpdate}
                         safeplace={getSafeplaceById(focusSafeplaceUpdate.safeplaceId)}
                         saveSafeplaceUpdateModification={saveSafeplaceUpdateModification}
+                        validateSafeplaceUpdate={validateSafeplaceUpdate}
                         deleteSafeplaceUpdate={deleteSafeplaceUpdate}
                     />
                 }
