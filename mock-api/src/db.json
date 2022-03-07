@@ -1,88 +1,15 @@
 {
-  "user": [
+  "safeplaceUpdate": [
     {
-      "id": 1,
-      "_id": "1",
-      "username": "Billy",
-      "email": "billy@lesinge.com",
-      "password": "billylesinge",
-      "role": "admin"
-    },
-    {
-      "id": 2,
-      "_id": "2",
-      "username": "Benjamin",
-      "email": "benjamin@legorille.com",
-      "password": "benjaminlegorille",
-      "role": "user"
-    }
-  ],
-  "safeplace": [
-    {
-      "id": "1",
-      "name": "Marché aux grands livres",
-      "city": "Strasbourg",
-      "address": "Place Kléber",
-      "coordinate": [
-        "48.5831908",
-        "7.7481727"
-      ],
-      "dayTimetable": [ null, null, null, null, null, null, null ],
-      "type": "market"
-    },
-    {
-      "id": "2",
-      "name": "Marché aux petits livres",
-      "city": "Strasbourg",
-      "address": "Place Kléber",
-      "coordinate": [
-        "48.5831908",
-        "7.7481727"
-      ],
-      "dayTimetable": [ null, null, null, null, null, null, null ],
-      "type": "market"
-    }
-  ],
-  "invoice": [
-    {
-      "id": "1",
-      "userId": "1",
-      "amount": 10,
-      "date": "13-07-2022"
-    },
-    {
-      "id": "2",
-      "userId": "2",
-      "amount": 20,
-      "date": "28-11-2034"
-    }
-  ],
-  "requestClaimSafeplace": [
-    {
-      "id": "1",
-      "userId": "1",
-      "safeplaceId": "1",
-      "status": "Pending",
-      "comment": "C'est en attente"
-    }
-  ],
-  "professionalinfo": [
-    {
-      "userId": "60e98e5394d77061eef206d1",
-      "companyName": "Tony Hawk Pro Skater 3",
-      "companyAddress": "18 Rue de la Merguez Azzoulay",
-      "companyAddress2": "67000 Strasbourg",
-      "billingAddress": "18 Rue de la Merguez Azzoulay 67000 Strasbourg",
-      "clientNumberTVA": "1234567898765",
-      "personalPhone": "0643444546",
-      "companyPhone": "0312131415",
-      "RCS": "",
-      "registrationCity": "",
-      "SIREN": "",
-      "SIRET": "",
-      "artisanNumber": "",
-      "type": "Distributeur de lunettes à verres fumées",
-      "id": "60e98e5394d77061eef206d1"
+      "_id": "6146d428663e0a00a24b8oui",
+      "safeplaceId": "6146d428663e0a00a24b85c4",
+      "name": "Name",
+      "description": "Description",
+      "city": "City",
+      "address": "Address",
+      "type": "Type",
+      "dayTimetable": [],
+      "coordinate": []
     }
   ]
 }
