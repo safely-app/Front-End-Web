@@ -114,7 +114,7 @@ const SafeplaceUpdateInfoListElement: React.FC<ISafeplaceUpdateInfoListElementPr
 
     return (
         <div key={safeplaceUpdate.id} className="bg-white p-4 rounded">
-            <button className="w-full h-full text-left" onClick={handleClick}>
+            <button className="w-full h-full text-left" onClick={handleClick} data-testid={`safeplaceUpdate-button-${safeplaceUpdate.id}`}>
                 <ul>
                     <li key={`${safeplaceUpdate.id}-id`}><b>ID : </b>{safeplaceUpdate.id}</li>
                     <li key={`${safeplaceUpdate.id}-name`}><b>Nom : </b>{safeplaceUpdate.name}</li>

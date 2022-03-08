@@ -3,8 +3,8 @@ import { createHttpConfig } from '../http-common';
 import { isSafeplaceUpdateValid } from './utils';
 
 class SafeplaceUpdate {
-    // private readonly baseURL: string = process.env.REACT_APP_SERVER_URL as string;
-    private readonly baseURL: string = 'http://localhost:3001';
+    private readonly baseURL: string = process.env.REACT_APP_SERVER_URL as string;
+    // private readonly baseURL: string = 'http://localhost:3001';
 
     getAll(token: string) {
         return createHttpConfig(this.baseURL, token).get("/safeplace/safeplaceUpdate");
