@@ -188,9 +188,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
 
         try {
             await Safeplace.update(safeplace.id, safeplace, userCredientials.token);
-            await SafeplaceUpdate.delete(safeplaceUpdate.id, userCredientials.token);
             deleteSafeplaceUpdate(safeplaceUpdate);
-            setFocusSafeplaceUpdate(undefined);
         } catch (e) {
             notifyError((e as Error).message);
         }

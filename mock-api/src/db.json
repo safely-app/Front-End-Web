@@ -1,17 +1,28 @@
 {
   "safeplaceUpdate": [
     {
-      "id": "6146d428663e0a00a24b8oui",
       "_id": "6146d428663e0a00a24b8oui",
       "safeplaceId": "6146d428663e0a00a24b85c4",
-      "name": "Name",
+      "name": "Marché de Hoenheim",
       "description": "Description",
-      "city": "City",
-      "address": "Address",
-      "type": "Type",
-      "dayTimetable": [ null, null, null, null, null, null, null ],
-      "coordinate": [ "48.6212448082", "7.75567703707" ],
-      "ownerId": "6152cef3487da44a7de8ceb3"
+      "city": "Strasbourg",
+      "address": "1 Rue du Grenier à Grain",
+      "type": "Market",
+      "dayTimetable": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "coordinate": [
+        "48.6212448082",
+        "7.75567703707"
+      ],
+      "ownerId": "6152cef3487da44a7de8ceb3",
+      "id": "6146d428663e0a00a24b8oui"
     }
   ]
 }
