@@ -2,10 +2,11 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import {
     Button,
+    CreateButton,
     TextInput,
     Dropdown,
     SearchBar,
-    NavBar
+    NavBar,
 } from './index';
 
 test('simulate click', () => {
@@ -13,6 +14,17 @@ test('simulate click', () => {
 
     render(
         <Button text="click" onClick={onClick} />
+    );
+
+    fireEvent.click(screen.getByText("click"));
+    expect(onClick).toHaveBeenCalled();
+});
+
+test('simulate CreateButton click', () => {
+    const onClick = jest.fn();
+
+    render(
+        <CreateButton text="click" onClick={onClick} />
     );
 
     fireEvent.click(screen.getByText("click"));

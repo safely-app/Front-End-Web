@@ -5,7 +5,7 @@ import { Commercial } from "../../../services";
 import ICampaign from "../../interfaces/ICampaign";
 import ITarget from "../../interfaces/ITarget";
 import { convertStringToRegex, notifyError } from "../../utils";
-import { Button, Dropdown, Modal, SearchBar, TextInput } from "../../common";
+import { Button, CreateButton, Dropdown, Modal, SearchBar, TextInput } from "../../common";
 import log from "loglevel";
 
 const getTargetName = (targetId: string, targets: ITarget[]): string => {
@@ -18,20 +18,20 @@ const getCampaignTargets = (campaign: ICampaign, targets: ITarget[]) => {
 
 interface ICampaignInfoFormProps {
     campaign: ICampaign;
-    setCampaign: (campaign: ICampaign | undefined) => void;
-    saveCampaignModification: (campaign: ICampaign) => void;
-    deleteCampaign: (campaign: ICampaign) => void;
+    setCampaign: (campaign: ICampaign) => void;
+    buttons: JSX.Element[];
     targets: ITarget[];
     shown?: boolean;
+    isCreateForm?: boolean;
 }
 
 const CampaignInfoForm: React.FC<ICampaignInfoFormProps> = ({
     campaign,
     setCampaign,
-    saveCampaignModification,
-    deleteCampaign,
+    buttons,
     targets,
-    shown
+    shown,
+    isCreateForm
 }) => {
     const [targetField, setTargetField] = useState("");
 
@@ -79,7 +79,7 @@ const CampaignInfoForm: React.FC<ICampaignInfoFormProps> = ({
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
             <div className="Monitor-Info">
-                <TextInput key={`${campaign.id}-id`} type="text" role="id"
+                <TextInput key={`${campaign.id}-id`} type="text" role="id" hidden={isCreateForm}
                     label="Identifiant de la campagne" value={campaign.id} setValue={() => {}} readonly={true} />
                 <TextInput key={`${campaign.id}-name`} type="text" role="name"
                     label="Nom de la campagne" value={campaign.name} setValue={setName} />
@@ -107,9 +107,7 @@ const CampaignInfoForm: React.FC<ICampaignInfoFormProps> = ({
                         return <li key={index}><button className="target-delete-btn" onClick={() => removeTarget(target)}>x</button> {getTargetName(target, targets)}</li>
                     })}
                 </ul>
-                <Button key="save-id" text="Sauvegarder" onClick={() => saveCampaignModification(campaign)} />
-                <Button key="stop-id" text="Annuler" onClick={() => setCampaign(undefined)} />
-                <Button key="delete-id" text="Supprimer" onClick={() => deleteCampaign(campaign)} type="warning" />
+                {buttons}
             </div>
         } />
     );
@@ -126,16 +124,8 @@ const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
     onClick,
     targets
 }) => {
-    const campaignStatusIsValid = (): boolean => {
-        return (
-            campaign.status === "pause" ||
-            campaign.status === "active" ||
-            campaign.status === "template"
-        );
-    };
-
     return (
-        <div key={campaign.id} className={`bg-white p-4 m-4 ${campaignStatusIsValid() ? "Campaign-grid-container" : ""}`}>
+        <div key={campaign.id} className="bg-white p-4 rounded">
             <button className="w-full h-full" onClick={() => onClick(campaign)}>
                 <ul className="text-left w-full h-full">
                     <li key={`${campaign.id}-name`}><b>Nom : </b>{campaign.name}</li>
@@ -182,6 +172,20 @@ const CampaignMonitor: React.FC = () => {
     const [targets, setTargets] = useState<ITarget[]>([]);
     const [searchBarValue, setSearchBarValue] = useState("");
     const [campaignStatus, setCampaignStatus] = useState("all");
+    const [showModal, setShowModal] = useState(false);
+    const [newCampaign, setNewCampaign] = useState<ICampaign>({
+        id: "",
+        ownerId: "",
+        name: "",
+        budget: "",
+        status: "",
+        startingDate: "",
+        targets: []
+    });
+
+    const addCampaign = (campaign: ICampaign) => {
+        setCampaigns([ ...campaigns, campaign ]);
+    };
 
     const setCampaign = (campaign: ICampaign) => {
         setCampaigns(campaigns.map(campaignElement => campaignElement.id === campaign.id ? campaign : campaignElement));
@@ -189,6 +193,26 @@ const CampaignMonitor: React.FC = () => {
 
     const removeCampaign = (campaign: ICampaign) => {
         setCampaigns(campaigns.filter(campaignElement => campaignElement.id !== campaign.id));
+    };
+
+    const createNewCampaign = async (campaign: ICampaign) => {
+        try {
+            const response = await Commercial.createCampaign({
+                ...campaign,
+                ownerId: userCredentials._id
+            }, userCredentials.token);
+            const createdCampaign: ICampaign = {
+                ...campaign,
+                id: response.data._id,
+                ownerId: response.data.ownerId,
+                status: response.data.status
+            };
+
+            log.log(response);
+            addCampaign(createdCampaign);
+        } catch (e) {
+            notifyError((e as Error).message);
+        }
     };
 
     const saveCampaignModification = async (campaign: ICampaign) => {
@@ -209,6 +233,24 @@ const CampaignMonitor: React.FC = () => {
         } catch (e) {
             notifyError((e as Error).message);
         }
+    };
+
+    const onStopNewCampaignClick = () => {
+        setShowModal(false);
+        setNewCampaign({
+            id: "",
+            ownerId: "",
+            name: "",
+            budget: "",
+            status: "",
+            startingDate: "",
+            targets: []
+        });
+    };
+
+    const onCreateNewCampaignClick = async () => {
+        await createNewCampaign(newCampaign);
+        onStopNewCampaignClick();
     };
 
     const filterCampaigns = () => {
@@ -258,19 +300,31 @@ const CampaignMonitor: React.FC = () => {
 
     return (
         <div className="text-center">
-            <CampaignMonitorFilter
-                searchBarValue={searchBarValue}
-                setDropdownValue={setCampaignStatus}
-                setSearchBarValue={setSearchBarValue} />
+            <CreateButton text="Créer une nouvelle campagne" onClick={() => setShowModal(true)} />
+            <CampaignMonitorFilter searchBarValue={searchBarValue} setDropdownValue={setCampaignStatus} setSearchBarValue={setSearchBarValue} />
+            <CampaignInfoForm
+                shown={showModal}
+                isCreateForm={true}
+                campaign={newCampaign}
+                setCampaign={setNewCampaign}
+                targets={targets}
+                buttons={[
+                    <Button key="create-id" text="Créer une campagne" onClick={onCreateNewCampaignClick} />,
+                    <Button key="stop-id" text="Annuler" onClick={onStopNewCampaignClick} />,
+                ]}
+            />
             <div>
                 {(focusCampaign !== undefined) &&
                     <CampaignInfoForm
+                        shown={!showModal}
                         campaign={focusCampaign}
-                        shown={focusCampaign !== undefined}
                         setCampaign={setFocusCampaign}
-                        saveCampaignModification={saveCampaignModification}
-                        deleteCampaign={deleteCampaign}
                         targets={targets}
+                        buttons={[
+                            <Button key="save-id" text="Sauvegarder" onClick={() => saveCampaignModification(focusCampaign)} />,
+                            <Button key="stop-id" text="Annuler" onClick={() => setFocusCampaign(undefined)} />,
+                            <Button key="delete-id" text="Supprimer" onClick={() => deleteCampaign(focusCampaign)} type="warning" />
+                        ]}
                     />
                 }
                 <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
@@ -278,8 +332,12 @@ const CampaignMonitor: React.FC = () => {
                         <CampaignInfoDisplayer
                             key={index}
                             campaign={campaign}
-                            onClick={setFocusCampaign}
                             targets={targets}
+                            onClick={(campaign) => {
+                                if (!showModal) {
+                                    setFocusCampaign(campaign);
+                                }
+                            }}
                         />
                     )}
                 </div>

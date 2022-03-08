@@ -4,23 +4,23 @@ import { useAppSelector } from "../../../redux";
 import { Commercial } from "../../../services";
 import ITarget from "../../interfaces/ITarget";
 import { convertStringToRegex, notifyError } from "../../utils";
-import { Button, Modal, SearchBar, TextInput } from "../../common";
+import { Button, CreateButton, Modal, SearchBar, TextInput } from "../../common";
 import log from "loglevel";
 
 interface ITargetInfoFormProps {
     target: ITarget;
-    setTarget: (target: ITarget | undefined) => void;
-    saveTargetModification: (target: ITarget) => void;
-    deleteTarget: (target: ITarget) => void;
+    setTarget: (target: ITarget) => void;
+    buttons: JSX.Element[];
     shown?: boolean;
+    isCreateForm?: boolean;
 }
 
 const TargetInfoForm: React.FC<ITargetInfoFormProps> = ({
     target,
     setTarget,
-    saveTargetModification,
-    deleteTarget,
-    shown
+    buttons,
+    shown,
+    isCreateForm
 }) => {
     const [interestField, setInterestField] = useState("");
 
@@ -51,11 +51,11 @@ const TargetInfoForm: React.FC<ITargetInfoFormProps> = ({
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
             <div className="Monitor-Info">
-                <TextInput key={`${target.id}-id`} type="text" role="id"
+                <TextInput key={`${target.id}-id`} type="text" role="id" hidden={isCreateForm}
                     label="Identifiant de la cible" value={target.id} setValue={() => {}} readonly={true} />
                 <TextInput key={`${target.id}-name`} type="text" role="name"
                     label="Nom de la cible" value={target.name} setValue={setName} />
-                <TextInput key={`${target.id}-ownerId`} type="text" role="ownerId"
+                <TextInput key={`${target.id}-ownerId`} type="text" role="ownerId" hidden={isCreateForm}
                     label="Identifiant du propriétaire de la cible" value={target.ownerId} setValue={() => {}} readonly={true} />
                 <TextInput key={`${target.id}-csp`} type="text" role="csp"
                     label="Catégorie socioprofessionnelle de la cible" value={target.csp} setValue={setCSP} />
@@ -68,9 +68,7 @@ const TargetInfoForm: React.FC<ITargetInfoFormProps> = ({
                         return <li key={index}><button className="target-delete-btn" onClick={() => removeInterest(interest)}>x</button> {interest}</li>
                     })}
                 </ul>
-                <Button key="save-id" text="Sauvegarder" onClick={() => saveTargetModification(target)} />
-                <Button key="stop-id" text="Annuler" onClick={() => setTarget(undefined)} />
-                <Button key="delete-id" text="Supprimer" onClick={() => deleteTarget(target)} type="warning" />
+                {buttons}
             </div>
         } />
     );
@@ -86,7 +84,7 @@ const TargetInfoDisplayer: React.FC<ITargetInfoDisplayerProps> = ({
     onClick
 }) => {
     return (
-        <div key={target.id} className="bg-white p-4 m-4">
+        <div key={target.id} className="bg-white p-4 rounded">
             <button className="w-full h-full" onClick={() => onClick(target)}>
                 <ul className="text-left w-full h-full">
                     <li key={`${target.id}-name`}><b>Nom : </b>{target.name}</li>
@@ -105,6 +103,19 @@ const TargetMonitor: React.FC = () => {
     const [focusTarget, setFocusTarget] = useState<ITarget | undefined>(undefined);
     const [targets, setTargets] = useState<ITarget[]>([]);
     const [searchBarValue, setSearchBarValue] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [newTarget, setNewTarget] = useState<ITarget>({
+        id: "",
+        ownerId: "",
+        name: "",
+        csp: "",
+        interests: [],
+        ageRange: ""
+    });
+
+    const addTarget = (target: ITarget) => {
+        setTargets([ ...targets, target ]);
+    };
 
     const setTarget = (target: ITarget) => {
         setTargets(targets.map(targetElement => targetElement.id === target.id ? target : targetElement));
@@ -112,6 +123,25 @@ const TargetMonitor: React.FC = () => {
 
     const removeTarget = (target: ITarget) => {
         setTargets(targets.filter(targetElement => targetElement.id !== target.id));
+    };
+
+    const createNewTarget = async (target: ITarget) => {
+        try {
+            const response = await Commercial.createTarget({
+                ...target,
+                ownerId: userCredentials._id
+            }, userCredentials.token);
+            const createdTarget: ITarget = {
+                ...target,
+                id: response.data._id,
+                ownerId: response.data.ownerId
+            };
+
+            log.log(response);
+            addTarget(createdTarget);
+        } catch (e) {
+            notifyError((e as Error).message);
+        }
     };
 
     const saveTargetModification = async (target: ITarget) => {
@@ -132,6 +162,23 @@ const TargetMonitor: React.FC = () => {
         } catch (e) {
             notifyError((e as Error).message);
         }
+    };
+
+    const onStopNewTargetClick = () => {
+        setShowModal(false);
+        setNewTarget({
+            id: "",
+            ownerId: "",
+            name: "",
+            csp: "",
+            interests: [],
+            ageRange: ""
+        });
+    };
+
+    const onCreateNewTargetClick = async () => {
+        await createNewTarget(newTarget);
+        onStopNewTargetClick();
     };
 
     const filterTargets = () => {
@@ -166,15 +213,29 @@ const TargetMonitor: React.FC = () => {
 
     return (
         <div className="text-center">
+            <CreateButton text="Créer une nouvelle cible" onClick={() => setShowModal(true)} />
             <SearchBar label="Rechercher une campagne" value={searchBarValue} setValue={setSearchBarValue} />
+            <TargetInfoForm
+                target={newTarget}
+                shown={showModal}
+                isCreateForm={true}
+                setTarget={setNewTarget}
+                buttons={[
+                    <Button key="create-id" text="Créer une cible" onClick={onCreateNewTargetClick} />,
+                    <Button key="stop-id" text="Annuler" onClick={onStopNewTargetClick} />
+                ]}
+            />
             <div>
                 {(focusTarget !== undefined) &&
                     <TargetInfoForm
                         target={focusTarget}
-                        shown={focusTarget !== undefined}
+                        shown={!showModal}
                         setTarget={setFocusTarget}
-                        saveTargetModification={saveTargetModification}
-                        deleteTarget={deleteTarget}
+                        buttons={[
+                            <Button key="save-id" text="Sauvegarder" onClick={() => saveTargetModification(focusTarget)} />,
+                            <Button key="stop-id" text="Annuler" onClick={() => setFocusTarget(undefined)} />,
+                            <Button key="delete-id" text="Supprimer" onClick={() => deleteTarget(focusTarget)} type="warning" />
+                        ]}
                     />
                 }
                 <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
@@ -182,7 +243,11 @@ const TargetMonitor: React.FC = () => {
                         <TargetInfoDisplayer
                             key={index}
                             target={target}
-                            onClick={setFocusTarget}
+                            onClick={(target) => {
+                                if (!showModal) {
+                                    setFocusTarget(target);
+                                }
+                            }}
                         />
                     )}
                 </div>

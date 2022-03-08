@@ -58,4 +58,23 @@ const Button: React.FC<IButtonProps> = ({
 
 }
 
+interface ICreateButtonProps {
+    text: string;
+    onClick: () => void;
+}
+
+export const CreateButton: React.FC<ICreateButtonProps> = ({
+    text,
+    onClick
+}) => {
+    return (
+        <button
+            className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mb-4"
+            onClick={onClick}
+        >
+            {text}
+        </button>
+    );
+}
+
 export default Button;
