@@ -118,6 +118,7 @@ const SafeplaceUpdateInfoListElement: React.FC<ISafeplaceUpdateInfoListElementPr
                 <ul>
                     <li key={`${safeplaceUpdate.id}-id`}><b>ID : </b>{safeplaceUpdate.id}</li>
                     <li key={`${safeplaceUpdate.id}-name`}><b>Nom : </b>{safeplaceUpdate.name}</li>
+                    <li key={`${safeplaceUpdate.id}-description`}><b>Description : </b>{safeplaceUpdate?.description}</li>
                     <li key={`${safeplaceUpdate.id}-city`}><b>Ville : </b>{safeplaceUpdate.city}</li>
                     <li key={`${safeplaceUpdate.id}-address`}><b>Adresse : </b>{safeplaceUpdate.address}</li>
                     <li key={`${safeplaceUpdate.id}-timetable`}><b>Horaires : </b>{displayTimetable(safeplaceUpdate.dayTimetable)}</li>
