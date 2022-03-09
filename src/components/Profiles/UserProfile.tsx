@@ -55,7 +55,7 @@ const UserProfile: React.FC = () => {
                     log.error(error);
                 });
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 

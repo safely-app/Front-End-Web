@@ -15,7 +15,6 @@ import {
     notifyError,
     convertStringToRegex
 } from '../../utils';
-import { ToastContainer } from 'react-toastify';
 import profile from '../../../assets/image/profileano.png'
 
 interface IUserInfoProps {
@@ -180,7 +179,7 @@ const UserMonitor: React.FC = () => {
             saveUserModification(createdUser);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -201,7 +200,7 @@ const UserMonitor: React.FC = () => {
             });
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -214,7 +213,7 @@ const UserMonitor: React.FC = () => {
             setFocusUser(undefined);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -292,7 +291,6 @@ const UserMonitor: React.FC = () => {
                     )}
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 };

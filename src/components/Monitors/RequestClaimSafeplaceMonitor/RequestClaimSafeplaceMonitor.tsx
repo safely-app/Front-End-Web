@@ -15,7 +15,6 @@ import {
     notifyError,
     convertStringToRegex
 } from '../../utils';
-import { ToastContainer } from 'react-toastify';
 
 const ACCEPTED_REQUEST = "Accepted";
 const REFUSED_REQUEST = "Refused";
@@ -107,7 +106,6 @@ const RequestClaimSafeplaceInfoForm: React.FC<IRequestClaimSafeplaceInfoProps> =
                 <TextInput key={`${requestClaimSafeplace?.id}-adminComment`} type="text" role="adminComment"
                     label="Commentaire administrateur" value={requestClaimSafeplace?.adminComment !== undefined ? requestClaimSafeplace.adminComment : ""} setValue={setAdminComment} />
                 {buttons.map(button => button)}
-                <ToastContainer />
             </div>
         }/>
     );
@@ -169,7 +167,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
             setRequestClaimSafeplace(acceptedRequest);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -188,7 +186,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
             setShownModal(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -300,7 +298,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
             setShowModal(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -319,7 +317,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
             setShowModal(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -333,7 +331,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
             setShowModal(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -452,7 +450,6 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
                     )}
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 };

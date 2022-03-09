@@ -9,7 +9,6 @@ import {
 } from '../../redux';
 import { notifyError } from '../utils';
 import { User } from '../../services';
-import { ToastContainer } from 'react-toastify';
 import { GoogleLogin } from 'react-google-login';
 import 'react-toastify/dist/ReactToastify.css';
 import './Authentication.css';
@@ -59,7 +58,7 @@ const SignInView: React.FC<IAuthProps> = ({
 
             dispatch(setCredentials(response.data));
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -189,7 +188,6 @@ const SignInView: React.FC<IAuthProps> = ({
               </div>
             </div>
           </div>
-          <ToastContainer />
         </div>
     );
 }
@@ -216,7 +214,7 @@ const SignUpView: React.FC<IAuthProps> = ({
 
             dispatch(setCredentials(response.data));
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -377,7 +375,7 @@ const ForgottenPassword: React.FC = () => {
 
             log.log(response);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -464,7 +462,7 @@ export const ResetPassword: React.FC = () => {
                 log.error(error);
             });
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -478,7 +476,6 @@ export const ResetPassword: React.FC = () => {
             <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <TextInput type="password" role="password" label="Confirmer mot de passe" value={confirmedPassword} setValue={setConfirmedPassword} />
             <Button text="Réinitialiser" onClick={handleClick} />
-            <ToastContainer />
             {redirect && <Redirect to="/login" />}
         </div>
     );

@@ -88,7 +88,6 @@ const CommercialPage: React.FC = () => {
                     removeTarget={removeTarget}
                 />
             </div>
-            <ToastContainer />
         </div>
     );
 };

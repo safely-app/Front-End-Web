@@ -11,7 +11,6 @@ import {
     SearchBar
 } from '../../common';
 import log from 'loglevel';
-import { ToastContainer } from 'react-toastify';
 import { SAFEPLACE_TYPES } from './SafeplaceMonitorVariables';
 import {
     notifyError,
@@ -180,7 +179,7 @@ const SafeplaceMonitor: React.FC = () => {
             setSafeplace(focusSafeplace as ISafeplace);
             setFocusSafeplace(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -190,7 +189,7 @@ const SafeplaceMonitor: React.FC = () => {
             removeSafeplace(safeplace);
             setFocusSafeplace(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -254,7 +253,6 @@ const SafeplaceMonitor: React.FC = () => {
                     )}
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 }
