@@ -25,6 +25,8 @@ import { notifyError, notifySuccess } from '../utils';
 import StripeCard from './StripeCard';
 import log from 'loglevel';
 import './Profiles.css';
+import profile from '../../assets/image/profileano.png'
+import UserProfile from '../Profiles/UserProfile';
 
 const TraderProfileShopList: React.FC = () => {
     const userCredientials = useSelector((state: RootState) => state.user.credentials);
@@ -232,27 +234,29 @@ const TraderProfileFields: React.FC<ITraderProfileFieldsProps> = ({
 
     return (
         <Profile elements={[
-            <TextInput type="text" role="companyName" label="Nom de l'entreprise" value={professional.companyName} setValue={setCompanyName} readonly={!isUpdateView} />,
+            <img className="object-center w-full h-60 md:h-auto md:w-48" src={profile} alt=""></img>,
+            <UserProfile />,
+            <TextInput className="border-4 border-black-500/75" type="text" role="companyName" label="Nom de l'entreprise" value={professional.companyName} setValue={setCompanyName} readonly={!isUpdateView} />,
             <div className="grid grid-cols-2 gap-2" style={{ paddingLeft: '20%', paddingRight: '20%' }}>
-                <TextInput className="w-full" type="text" role="companyAddress" label="Adresse de l'entreprise" value={professional.companyAddress} setValue={setCompanyAddress} width="99%" readonly={!isUpdateView} />
-                <TextInput className="w-full" type="text" role="companyAddress2" label="Adresse de l'entreprise 2" value={professional.companyAddress2} setValue={setCompanyAddress2} width="99%" readonly={!isUpdateView} />
+                <TextInput className="border-4 border-black-500/75 w-full" type="text" role="companyAddress" label="Adresse de l'entreprise" value={professional.companyAddress} setValue={setCompanyAddress} width="99%" readonly={!isUpdateView} />
+                <TextInput className="border-4 border-black-500/75 w-full" type="text" role="companyAddress2" label="Adresse de l'entreprise 2" value={professional.companyAddress2} setValue={setCompanyAddress2} width="99%" readonly={!isUpdateView} />
             </div>,
-            <TextInput type="text" role="billingAddress" label="Adresse de facturation" value={professional.billingAddress} setValue={setBillingAddress} readonly={!isUpdateView} />,
-            <TextInput type="text" role="clientNumberTVA" label="Numéro de client TVA" value={professional.clientNumberTVA} setValue={setClientNumberTVA} readonly={!isUpdateView} />,
+            <TextInput className="border-4 border-black-500/75" type="text" role="billingAddress" label="Adresse de facturation" value={professional.billingAddress} setValue={setBillingAddress} readonly={!isUpdateView} />,
+            <TextInput className="border-4 border-black-500/75" type="text" role="clientNumberTVA" label="Numéro de client TVA" value={professional.clientNumberTVA} setValue={setClientNumberTVA} readonly={!isUpdateView} />,
             <div className="grid grid-cols-2 gap-2" style={{ paddingLeft: '20%', paddingRight: '20%' }}>
-                <TextInput className="w-full" type="text" role="personalPhone" label="Numéro de téléphone personnel" value={professional.personalPhone} setValue={setPersonalPhone} width="99%" readonly={!isUpdateView} />
-                <TextInput className="w-full" type="text" role="companyPhone" label="Numéro de téléphone d'entreprise" value={professional.companyPhone} setValue={setCompanyPhone} width="99%" readonly={!isUpdateView} />
+                <TextInput className="border-4 border-black-500/75 w-full" type="text" role="personalPhone" label="Numéro de téléphone personnel" value={professional.personalPhone} setValue={setPersonalPhone} width="99%" readonly={!isUpdateView} />
+                <TextInput className="border-4 border-black-500/75 w-full" type="text" role="companyPhone" label="Numéro de téléphone d'entreprise" value={professional.companyPhone} setValue={setCompanyPhone} width="99%" readonly={!isUpdateView} />
             </div>,
-            <TextInput type="text" role="type" label="Type d'entreprise" value={professional.type} setValue={setType} readonly={!isUpdateView} />,
+            <TextInput className="border-4 border-black-500/75" type="text" role="type" label="Type d'entreprise" value={professional.type} setValue={setType} readonly={!isUpdateView} />,
             <Button text="Afficher les informations optionelles" onClick={() => setIsOptionalHidden(!isOptionalHidden)} />,
             <div hidden={isOptionalHidden}>
-                <TextInput type="text" role="RCS" label="Immatriculation RCS" value={professional.RCS as string} setValue={setRCS} readonly={!isUpdateView} />
-                <TextInput type="text" role="registrationCity" label="Ville d'enregistrement" value={professional.registrationCity as string} setValue={setRegistrationCity} readonly={!isUpdateView} />
+                <TextInput className="border-4 border-black-500/75" type="text" role="RCS" label="Immatriculation RCS" value={professional.RCS as string} setValue={setRCS} readonly={!isUpdateView} />
+                <TextInput className="border-4 border-black-500/75" type="text" role="registrationCity" label="Ville d'enregistrement" value={professional.registrationCity as string} setValue={setRegistrationCity} readonly={!isUpdateView} />
                 <div className="grid grid-cols-2 gap-2" style={{ paddingLeft: '20%', paddingRight: '20%' }}>
-                    <TextInput className="w-full" type="text" role="SIREN" label="Numéro de SIREN" value={professional.SIREN as string} setValue={setSIREN} width="99%" readonly={!isUpdateView} />
-                    <TextInput className="w-full" type="text" role="SIRET" label="Numéro de SIRET" value={professional.SIRET as string} setValue={setSIRET} width="99%" readonly={!isUpdateView} />
+                    <TextInput className="border-4 border-black-500/75 w-full" type="text" role="SIREN" label="Numéro de SIREN" value={professional.SIREN as string} setValue={setSIREN} width="99%" readonly={!isUpdateView} />
+                    <TextInput className="border-4 border-black-500/75 w-full" type="text" role="SIRET" label="Numéro de SIRET" value={professional.SIRET as string} setValue={setSIRET} width="99%" readonly={!isUpdateView} />
                 </div>
-                <TextInput type="text" role="artisanNumber" label="Numéro d'artisan" value={professional.artisanNumber as string} setValue={setArtisanNumber} readonly={!isUpdateView} />
+                <TextInput className="border-4 border-black-500/75" type="text" role="artisanNumber" label="Numéro d'artisan" value={professional.artisanNumber as string} setValue={setArtisanNumber} readonly={!isUpdateView} />
             </div>,
             ...additionalElements
         ]} />
@@ -468,7 +472,10 @@ const TraderProfile: React.FC = () => {
 
     return (
         <div className="Profile-container">
+            <div className="min-h-screen bg-background bg-transparent space-y-4 bg-cover bg-center">
             <AppHeader />
+            <div className="container p-4 flex flex-col items-center bg-white rounded-lg border mx-auto px-4">
+            <p className="text-center text-4xl">Mon Profil</p>
             {getView(searcherState)}
             <Modal
                 shown={isStripeOpen}
@@ -481,7 +488,9 @@ const TraderProfile: React.FC = () => {
                         />
                     </div>
                 }
-            />
+                />
+                </div>
+            </div>
         </div>
     );
 }

@@ -119,9 +119,8 @@ export const AppHeader: React.FC = () => {
   const links = [
     { link: "/", name: "Dashboard", class: "Header-main" },
     { link: "/login", name: "Connexion", onAuth: false },
-    { link: "/profile", name: "Profile", onAuth: true },
+    { link: "/profile", name: "Profil", onAuth: true },
     { link: "/shops", name: "Commerces", onAuth: true },
-    { link: "/trader-profile", name: "Commerçant", onAuth: true },
     { link: "/commercial", name: "Commercial", onAuth: true },
     { link: "/admin", name: "Administration", onAuth: true, onAdmin: true },
     { link: "/logout", name: "Déconnexion", onAuth: true }
