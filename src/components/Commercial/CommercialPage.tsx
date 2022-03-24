@@ -4,7 +4,6 @@ import CommercialPageTargets from './CommercialTargets';
 import { useAppSelector } from '../../redux';
 import { Commercial } from '../../services';
 import { AppHeader } from '../Header/Header';
-import { ToastContainer } from 'react-toastify';
 import ICampaign from '../interfaces/ICampaign';
 import ITarget from '../interfaces/ITarget';
 import log from 'loglevel';

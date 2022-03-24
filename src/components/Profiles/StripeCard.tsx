@@ -46,7 +46,7 @@ const CardRegister: React.FC<ICardRegister> = ({
 
         if (error) {
             log.error(error);
-            notifyError(error.message as string);
+            notifyError(error);
         } else if (paymentMethod) {
             log.log("Success!", paymentMethod);
             onSubmit(paymentMethod);
