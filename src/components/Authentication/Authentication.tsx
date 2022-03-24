@@ -96,15 +96,15 @@ const SignInView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={email}
-                            setValue={setEmail}
-                            //onChange={this.handleChange}
-                            name="email"
-                            type="email"
-                            role="email"
-                            label="Email"
-                            required-500
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={email}
+                          setValue={setEmail}
+                          name="email"
+                          type="email"
+                          role="email"
+                          label="Email"
+                          required-500
+                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
@@ -114,25 +114,26 @@ const SignInView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={password}
-                            setValue={setPassword}
-                            name="password"
-                            type="password"
-                            role="password"
-                            label="Mot de passe"
-                            required-500
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={password}
+                          setValue={setPassword}
+                          name="password"
+                          type="password"
+                          role="password"
+                          label="Mot de passe"
+                          required-500
+                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <TextInput
-                            value={remember}
-                            setValue={setRemember}
-                            name="remember_me"
-                            type="checkbox"
-                            className="h-4 w-4 text-red-500 focus:ring-red-500 border-gray-300 rounded"
+                          value={remember}
+                          setValue={setRemember}
+                          name="remember_me"
+                          type="checkbox"
+                          className="h-4 w-4 text-red-500 focus:ring-red-500 border-gray-300 rounded"
                         />
                         <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
                           Rester connecté
@@ -140,7 +141,7 @@ const SignInView: React.FC<IAuthProps> = ({
                       </div>
                       <div className="text-sm">
                         <button onClick={() => setView(View.FORGOT)} className="font-medium text-red-500 hover:text-red-500 cursor-pointer">
-                        Mot de passe oublié ?
+                          Mot de passe oublié ?
                         </button>
                       </div>
                     </div>
@@ -252,14 +253,15 @@ const SignUpView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={username}
-                            setValue={setUsername}
-                            name="username"
-                            type="username"
-                            role="username"
-                            label="Nom d'utilisateur"
-                            required-500
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={username}
+                          setValue={setUsername}
+                          name="username"
+                          type="username"
+                          role="username"
+                          label="Nom d'utilisateur"
+                          required-500
+                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
@@ -269,15 +271,16 @@ const SignUpView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={email}
-                            setValue={setEmail}
-                            name="email"
-                            type="email"
-                            role="email"
-                            label="Email"
-                            autoComplete="email"
-                            required
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={email}
+                          setValue={setEmail}
+                          name="email"
+                          type="email"
+                          role="email"
+                          label="Email"
+                          autoComplete="email"
+                          required
+                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
@@ -287,15 +290,16 @@ const SignUpView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={password}
-                            setValue={setPassword}
-                            name="password"
-                            type="password"
-                            role="password"
-                            label="Mot de passe"
-                            autoComplete="current-password"
-                            required
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={password}
+                          setValue={setPassword}
+                          name="password"
+                          type="password"
+                          role="password"
+                          label="Mot de passe"
+                          autoComplete="current-password"
+                          required
+                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
@@ -306,15 +310,16 @@ const SignUpView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={confirmedPassword}
-                            setValue={setConfirmedPassword}
-                            name="confirmedPassword"
-                            type="password"
-                            role="password"
-                            label="Répeter le mot de passe"
-                            autoComplete="current-password"
-                            required
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={confirmedPassword}
+                          setValue={setConfirmedPassword}
+                          name="confirmedPassword"
+                          type="password"
+                          role="password"
+                          label="Répeter le mot de passe"
+                          autoComplete="current-password"
+                          required
+                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
                         />
                       </div>
                     </div>
