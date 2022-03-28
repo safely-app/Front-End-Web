@@ -15,6 +15,12 @@ import './Authentication.css';
 import log from 'loglevel';
 import logo from '../../assets/image/logo.png'
 import google from '../../assets/image/google_logo.jpg'
+import {
+  isEmailValid,
+  isPasswordValid,
+  isUsernameValid,
+  isUserValid
+} from '../../services/utils';
 
 enum View {
     SIGNIN,
@@ -51,15 +57,29 @@ const SignInView: React.FC<IAuthProps> = ({
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState("");
+    const [tries, setTries] = useState(0);
 
     const handleClick = async () => {
-        try {
-            const response = await User.login(email, password);
+      try {
+        const response = await User.login(email, password);
 
-            dispatch(setCredentials(response.data));
-        } catch (e) {
-            notifyError(e);
-        }
+        dispatch(setCredentials(response.data));
+      } catch (e: any) {
+        if (e.response && e.response.status === 401) {
+          notifyError("Email et/ou mot de passe invalide");
+        } else notifyError(e);
+      }
+
+      setEmail("");
+      setPassword("");
+      setRemember("");
+      setTries(tries + 1);
+    };
+
+    const getInvalidInputClassName = (cond: boolean) => {
+      if (cond || tries < 1)
+        return "";
+      return "outline-none border-red-500 ring-transparent";
     };
 
     return (
@@ -104,7 +124,7 @@ const SignInView: React.FC<IAuthProps> = ({
                           role="email"
                           label="Email"
                           required-500
-                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isEmailValid(email))}`}
                         />
                       </div>
                     </div>
@@ -122,7 +142,7 @@ const SignInView: React.FC<IAuthProps> = ({
                           role="password"
                           label="Mot de passe"
                           required-500
-                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(password))}`}
                         />
                       </div>
                     </div>
@@ -201,22 +221,39 @@ const SignUpView: React.FC<IAuthProps> = ({
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmedPassword, setConfirmedPassword] = useState("");
+    const [tries, setTries] = useState(0);
 
     const handleClick = async () => {
-        try {
-            const response = await User.register({
-                id: "",
-                role: "",
-                email: email,
-                username: username,
-                password: password,
-                confirmedPassword: confirmedPassword
-            });
+      const tmpUser = {
+        id: "",
+        role: "",
+        email: email,
+        username: username,
+        password: password,
+        confirmedPassword: confirmedPassword
+      };
 
-            dispatch(setCredentials(response.data));
-        } catch (e) {
-            notifyError(e);
-        }
+      try {
+        const response = await User.register(tmpUser);
+
+        dispatch(setCredentials(response.data));
+      } catch (e: any) {
+        if (e.response && e.response.status === 401)
+          notifyError(isUserValid(tmpUser).error);
+        else notifyError(e);
+      }
+
+      setEmail("");
+      setUsername("");
+      setPassword("");
+      setConfirmedPassword("");
+      setTries(tries + 1);
+    };
+
+    const getInvalidInputClassName = (cond: boolean) => {
+      if (cond || tries < 1)
+        return "";
+      return "outline-none border-red-500 ring-transparent";
     };
 
     return (
@@ -261,7 +298,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                           role="username"
                           label="Nom d'utilisateur"
                           required-500
-                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isUsernameValid(username))}`}
                         />
                       </div>
                     </div>
@@ -280,7 +317,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                           label="Email"
                           autoComplete="email"
                           required
-                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isEmailValid(email))}`}
                         />
                       </div>
                     </div>
@@ -299,7 +336,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                           label="Mot de passe"
                           autoComplete="current-password"
                           required
-                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(password))}`}
                         />
                       </div>
                     </div>
@@ -319,7 +356,7 @@ const SignUpView: React.FC<IAuthProps> = ({
                           label="Répeter le mot de passe"
                           autoComplete="current-password"
                           required
-                          className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(confirmedPassword))}`}
                         />
                       </div>
                     </div>
