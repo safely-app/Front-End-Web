@@ -60,7 +60,7 @@ test('change password throw invalid password', () => {
     }).toThrowError("Mot de passe invalide");
 });
 
-it('register new user with no informations', async () => {
+test('register new user with no informations', async () => {
     const user: IUser = {
         id: "",
         email: "",
@@ -75,7 +75,7 @@ it('register new user with no informations', async () => {
     }).toThrowError("Email invalide");
 });
 
-it('login user', async () => {
+test('login user', async () => {
     const scopeRegister = nock(baseURL)
         .post('/login')
         .reply(200, {
@@ -92,7 +92,7 @@ it('login user', async () => {
     scopeRegister.done();
 });
 
-it('login user with no informations', async () => {
+test('login user with no informations', async () => {
     const email = '';
     const password = '';
 
@@ -147,4 +147,41 @@ test('isUserValid invalid email', async () => {
     expect(() => {
         User.update("", user, "");
     }).toThrowError("Email invalide");
+});
+
+test('update user', async () => {
+    const scopeOptions = nock(baseURL)
+        .options('/user/1')
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+    const scopeUpdate = nock(baseURL)
+        .put('/user/1')
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+
+    const user: IUser = {
+        id: "1",
+        email: "test@test.com",
+        username: "Test",
+        role: "user"
+    };
+
+    const response = await User.update("1", user, "");
+    expect(response.status).toEqual(200);
+
+    scopeOptions.done();
+    scopeUpdate.done();
+});
+
+test('dekete user', async () => {
+    const scopeOptions = nock(baseURL)
+        .options('/user/1')
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+    const scopeDelete = nock(baseURL)
+        .delete('/user/1')
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+
+    const response = await User.delete("1", "");
+    expect(response.status).toEqual(200);
+
+    scopeOptions.done();
+    scopeDelete.done();
 });

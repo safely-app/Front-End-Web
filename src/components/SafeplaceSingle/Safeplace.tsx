@@ -12,6 +12,7 @@ import {
 } from '../common';
 import { Redirect } from 'react-router';
 import log from 'loglevel';
+import { notifySuccess } from '../utils';
 
 interface ISafeplaceSingleInfoProps {
     safeplace: ISafeplace;
@@ -20,26 +21,53 @@ interface ISafeplaceSingleInfoProps {
 const SafeplaceSingleInfo: React.FC<ISafeplaceSingleInfoProps> = ({
     safeplace
 }) => {
+    const [onUpdate, setOnUpdate] = useState(false);
+    const [updateSafeplace, setUpdateSafeplace] = useState(safeplace);
+
+    const updateField = (field: string, value: string) => {
+        if (updateSafeplace.hasOwnProperty(field))
+            setUpdateSafeplace({ ...updateSafeplace, [field]: value });
+    };
+
+    const cancelUpdate = () => {
+        setUpdateSafeplace(safeplace);
+        setOnUpdate(false);
+    };
+
+    const validateUpdate = () => {
+        // TODO - replace when backend is ready with call to create update request
+        setOnUpdate(false);
+
+        notifySuccess("Votre demande a été reçu et sera vérifié par un administrateur avant validation.")
+    };
+
     return (
         <div className="text-center p-4">
-            <TextInput key={`${safeplace.id}-name`} type="text" role="name"
-                label="Nom" value={safeplace.name} setValue={() => {}} readonly={true} />
-            <TextInput key={`${safeplace.id}-description`} type="text" role="description"
-                label="Description" value={safeplace.description as string} setValue={() => {}} readonly={true} />
-            <TextInput key={`${safeplace.id}-city`} type="text" role="city"
-                label="Ville" value={safeplace.city} setValue={() => {}} readonly={true} />
-            <TextInput key={`${safeplace.id}-address`} type="text" role="address"
-                label="Adresse" value={safeplace.address} setValue={() => {}} readonly={true} />
-            <TextInput key={`${safeplace.id}-timetable`} type="text" role="timetable"
-                label="Horaires" value={displayTimetable(safeplace.dayTimetable)} setValue={() => {}} readonly={true} />
-            <TextInput key={`${safeplace.id}-type`} type="text" role="type"
-                label="Type" value={safeplace.type} setValue={() => {}} readonly={true} />
+            <TextInput key={`${updateSafeplace.id}-name`} type="text" role="name"
+                label="Nom" value={updateSafeplace.name} setValue={(value) => updateField("name", value)} readonly={!onUpdate} />
+            <TextInput key={`${updateSafeplace.id}-description`} type="text" role="description"
+                label="Description" value={updateSafeplace.description as string} setValue={(value) => updateField("description", value)} readonly={!onUpdate} />
+            <TextInput key={`${updateSafeplace.id}-city`} type="text" role="city"
+                label="Ville" value={updateSafeplace.city} setValue={(value) => updateField("city", value)} readonly={!onUpdate} />
+            <TextInput key={`${updateSafeplace.id}-address`} type="text" role="address"
+                label="Adresse" value={updateSafeplace.address} setValue={(value) => updateField("address", value)} readonly={!onUpdate} />
+            <TextInput key={`${updateSafeplace.id}-timetable`} type="text" role="timetable"
+                label="Horaires" value={displayTimetable(updateSafeplace.dayTimetable)} setValue={() => {}} readonly={!onUpdate} />
+            <TextInput key={`${updateSafeplace.id}-type`} type="text" role="type"
+                label="Type" value={updateSafeplace.type} setValue={(value) => updateField("type", value)} readonly={!onUpdate} />
             <div className="grid grid-cols-2 gap-2" style={{ paddingLeft: '20%', paddingRight: '20%' }}>
-                <TextInput key={`${safeplace.id}-coordinate1`} type="text" role="latitude" className="w-full"
-                    label="Latitude" value={safeplace.coordinate[0]} setValue={() => {}} readonly={true} />
-                <TextInput key={`${safeplace.id}-coordinate2`} type="text" role="longitude" className="w-full"
-                    label="Longitude" value={safeplace.coordinate[1]} setValue={() => {}} readonly={true} />
+                <TextInput key={`${updateSafeplace.id}-coordinate1`} type="text" role="latitude" className="w-full"
+                    label="Latitude" value={updateSafeplace.coordinate[0]} setValue={() => {}} readonly={!onUpdate} />
+                <TextInput key={`${updateSafeplace.id}-coordinate2`} type="text" role="longitude" className="w-full"
+                    label="Longitude" value={updateSafeplace.coordinate[1]} setValue={() => {}} readonly={!onUpdate} />
             </div>
+            {(!onUpdate)
+                ? <Button text="Modifier" onClick={() => setOnUpdate(true)} />
+                : <div>
+                    <Button text="Annuler" onClick={cancelUpdate} />
+                    <Button text="Valider" onClick={validateUpdate} />
+                </div>
+            }
         </div>
     );
 };

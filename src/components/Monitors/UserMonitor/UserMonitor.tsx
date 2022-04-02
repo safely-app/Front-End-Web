@@ -32,7 +32,7 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
     shown
 }) => {
     const USER_ROLES = [
-        "user", "admin"
+        "user", "trader", "admin"
     ];
 
     const setUsername = (value: string) => {
@@ -122,6 +122,7 @@ const UserMonitorFilter: React.FC<IUserMonitorFilterProps> = ({
     const USER_ROLES = [
         'all',
         'user',
+        'trader',
         'admin'
     ];
 

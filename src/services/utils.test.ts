@@ -1,5 +1,6 @@
+import IProfessional from '../components/interfaces/IProfessional';
 import IUser from '../components/interfaces/IUser';
-import { isUserValid } from './utils';
+import { isProfessionalValid, isTimetableValid, isUserValid } from './utils';
 import {
     isEmailValid,
     isUsernameValid,
@@ -131,4 +132,36 @@ test('ensure that normal siret number is valid', () => {
 
 test('ensure that trash siret number is invalid', () => {
     expect(isSiretValid('random trash')).toBeFalsy();
+});
+
+test('ensure that isTimetableValid occurs as expected', () => {
+    expect(isTimetableValid([ null, null, null, null, null, null, null ])).toBeTruthy();
+    expect(isTimetableValid([ "", "", "", "", "", "", "" ])).toBeTruthy();
+    expect(isTimetableValid([ "1h à 2h", "1h à 2h", "1h à 2h", "1h à 2h", "1h à 2h", "1h à 2h", "1h à 2h" ])).toBeTruthy();
+
+    expect(isTimetableValid([])).toBeFalsy();
+    expect(isTimetableValid([ "12", "12", "12", "12", "12", "12", "12" ])).toBeFalsy();
+});
+
+test('ensure that isProfessionalValid occurs as expected', () => {
+    const data: IProfessional = {
+        userId: "",
+        companyName: "",
+        companyAddress: "",
+        companyAddress2: "",
+        billingAddress: "",
+        clientNumberTVA: "1234567890123",
+        personalPhone: "0666666666",
+        companyPhone: "0366666666",
+        type: "",
+        SIREN: "123456789",
+        SIRET: "12345678901234"
+    };
+
+    expect(isProfessionalValid(data)).toEqual({ isValid: true });
+    expect(isProfessionalValid({ ...data, clientNumberTVA: "" }).isValid).toBeFalsy();
+    expect(isProfessionalValid({ ...data, personalPhone: "" }).isValid).toBeFalsy();
+    expect(isProfessionalValid({ ...data, companyPhone: "" }).isValid).toBeFalsy();
+    expect(isProfessionalValid({ ...data, SIREN: "aeaoeoa" }).isValid).toBeFalsy();
+    expect(isProfessionalValid({ ...data, SIRET: "auieaiu" }).isValid).toBeFalsy();
 });

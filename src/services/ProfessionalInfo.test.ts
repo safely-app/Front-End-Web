@@ -4,7 +4,7 @@ import nock from 'nock';
 
 const baseURL = 'https://api.safely-app.fr';
 
-it('get all professional', async () => {
+test('get all professional', async () => {
     const scope = nock(baseURL)
         .get('/professionalinfo')
         .reply(200, [
@@ -19,7 +19,7 @@ it('get all professional', async () => {
     scope.done();
 });
 
-it('get professional', async () => {
+test('get professional', async () => {
     const scope = nock(baseURL)
         .get('/professionalinfo/1')
         .reply(200, {
@@ -33,7 +33,7 @@ it('get professional', async () => {
     scope.done();
 });
 
-it('create new professional', async () => {
+test('create new professional', async () => {
     const scope = nock(baseURL)
         .post('/professionalinfo')
         .reply(200, {
@@ -54,12 +54,29 @@ it('create new professional', async () => {
         type: ""
     };
 
-    const response = await ProfessionalInfo.create(professional, '');
+    const response = await ProfessionalInfo.create(professional);
     expect(response.status).toEqual(200);
     scope.done();
 });
 
-it('update professional', async () => {
+test('try to create new professional with invalid data', async () => {
+    const professional: IProfessional = {
+        userId: "",
+        companyName: "Entreprise test",
+        companyAddress: "13 Allée des Cèdres",
+        companyAddress2: "78350 Jouy-en-Josas",
+        personalPhone: "06 12 12 12 12",
+        companyPhone: "03 12 12 12 12",
+        billingAddress: "13 Allée des Cèdres 78350 Jouy-en-Josas",
+        clientNumberTVA: "",
+        type: ""
+    };
+
+    expect(() => ProfessionalInfo.create(professional))
+        .toThrow(new Error("Numéro d'identification à la TVA invalide"));
+});
+
+test('update professional', async () => {
     const optionsScope = nock(baseURL)
         .options('/professionalinfo/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
@@ -85,10 +102,28 @@ it('update professional', async () => {
 
     const response = await ProfessionalInfo.update('1', professional, '');
     expect(response.status).toEqual(200);
+    optionsScope.done();
     scope.done();
 });
 
-it('delete professional', async () => {
+test('try to update professional with invalid data', async () => {
+    const professional: IProfessional = {
+        userId: "",
+        companyName: "Entreprise test",
+        companyAddress: "13 Allée des Cèdres",
+        companyAddress2: "78350 Jouy-en-Josas",
+        personalPhone: "06 12 12 12 12",
+        companyPhone: "03 12 12 12 12",
+        billingAddress: "13 Allée des Cèdres 78350 Jouy-en-Josas",
+        clientNumberTVA: "",
+        type: ""
+    };
+
+    expect(() => ProfessionalInfo.update('1', professional, ''))
+    .toThrow(new Error("Numéro d'identification à la TVA invalide"));
+});
+
+test('delete professional', async () => {
     const optionsScope = nock(baseURL)
         .options('/professionalinfo/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
