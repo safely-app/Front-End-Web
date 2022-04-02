@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 import { RootState } from './redux';
 
 interface IRoute {
@@ -42,6 +43,7 @@ const Router: React.FC<IRouterProps> = ({ routes }) => {
 
                 <Route component={() => <h1>404 Not Found!</h1>} />
             </Switch>
+            <ToastContainer />
         </BrowserRouter>
     );
 }
