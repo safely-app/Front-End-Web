@@ -46,21 +46,21 @@ const TimeInput: React.FC<ITimeInputProps> = ({
         const regex = new RegExp(/^(\d|([01]\d)|(2[0123]))$/g);
         const found = value.match(regex);
 
-        if (value === "" || found !== null)
+        if (value === "" || found !== null) {
+            setValue(`${value}:${minutes}`);
             setHours(value);
+        }
     };
 
     const setCustomMinutes = (value: string) => {
         const regex = new RegExp(/^([012345]\d{0,1})$/g);
         const found = value.match(regex);
 
-        if (value === "" || found !== null)
+        if (value === "" || found !== null) {
+            setValue(`${hours}:${value}`);
             setMinutes(value);
+        }
     };
-
-    useEffect(() => {
-        setValue(`${hours}:${minutes}`);
-    }, [hours, minutes])
 
     return (
         <span>
@@ -95,7 +95,8 @@ const SafeplaceTimetableDay: React.FC<ISafeplaceTimetableDayProps> = ({
     isReadOnly
 }) => {
     const setDayIsChecked = () => {
-        setDay({ ...day, isChecked: !day.isChecked });
+        if (!isReadOnly)
+            setDay({ ...day, isChecked: !day.isChecked });
     };
 
     const setDayTimetableValue = (
@@ -115,7 +116,7 @@ const SafeplaceTimetableDay: React.FC<ISafeplaceTimetableDayProps> = ({
             <div className="grid grid-cols-2 pb-2">
                 <p className="font-bold text-base">{day.name}</p>
                 <div>
-                    <span className="pr-2">Je suis ouvert ce jour</span>
+                    <span className="pr-2">Ouvert ce jour</span>
                     <input type="checkbox" checked={day.isChecked} onChange={setDayIsChecked} readOnly={isReadOnly} />
                 </div>
             </div>
