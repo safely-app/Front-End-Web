@@ -154,8 +154,11 @@ const SafeplaceTimetable: React.FC<ISafeplaceTimetableProps> = ({
     );
 
     const setTimetableDay = (day: TimetableDay) => {
-        setTimetable(timetable.map(element => element.name === day.name ? day : element));
-        setSafeplace(updateSafeplaceWithTimetable(safeplace, timetable));
+        const newTimetable = timetable.map(element =>
+            element.name === day.name ? day : element);
+
+        setTimetable(newTimetable);
+        setSafeplace(updateSafeplaceWithTimetable(safeplace, newTimetable));
     };
 
     return (
