@@ -13,7 +13,11 @@ import {
 import log from 'loglevel';
 import { ToastContainer } from 'react-toastify';
 import { convertStringToRegex, notifyError } from '../../utils';
-import { displayCoordinates, displayTimetable } from '../SafeplaceMonitor/utils';
+import {
+    displayCoordinates,
+    displayTimetable,
+    splitTimetable
+} from '../SafeplaceMonitor/utils';
 
 interface ISafeplaceUpdateInfoProps {
     safeplaceUpdate: ISafeplaceUpdate;
@@ -34,6 +38,9 @@ const SafeplaceUpdateInfoForm: React.FC<ISafeplaceUpdateInfoProps> = ({
     safeplace,
     shown
 }) => {
+    const displayedTimetable = (safeplace !== undefined) ? displayTimetable(safeplace?.dayTimetable) : "";
+    const [dayTimetable, setDayTimetable] = useState(displayTimetable(safeplaceUpdate.dayTimetable));
+
     const checkValue = (value: string | undefined) => {
         return value !== undefined ? value : "";
     };
@@ -58,42 +65,83 @@ const SafeplaceUpdateInfoForm: React.FC<ISafeplaceUpdateInfoProps> = ({
         setSafeplaceUpdate({ ...safeplaceUpdate, type: type });
     };
 
+    const setTimetable = (timetable: string) => {
+        setDayTimetable(timetable);
+        setSafeplaceUpdate({
+            ...safeplaceUpdate,
+            dayTimetable: splitTimetable(timetable)
+        });
+    };
+
+    const setCoordinate = (index: number, value: string) => {
+        let newCoordinate = safeplaceUpdate.coordinate;
+
+        newCoordinate[index] = value;
+        setSafeplaceUpdate({
+            ...safeplaceUpdate,
+            coordinate: newCoordinate
+        });
+    };
+
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Monitor-Info">
-                <TextInput key={`${safeplaceUpdate.id}-id`} type="text" role="id"
-                    label="Identifiant de la modification de safeplace" value={safeplaceUpdate.id} setValue={() => {}} readonly={true} />
-                <div className='grid grid-cols-2' style={{ marginLeft: "20%", marginRight: "20%" }}>
-                    <p className="text-left text-gray-400">{safeplace?.name}</p>
+            <div className="Monitor-Info text-left" style={{ paddingLeft: "20%", paddingRight: "20%" }}>
+                <div className='grid grid-cols-2 items-center'>
+                    <p className="font-bold">ID de la modification de safeplace</p>
+                    <TextInput key={`${safeplaceUpdate.id}-id`} type="text" role="id" className="w-full"
+                        label="Identifiant de la modification de safeplace" value={safeplaceUpdate.id} setValue={() => {}} readonly={true} />
+                </div>
+                <div className='grid grid-cols-2 items-center'>
+                    <p className="font-bold">ID de la safeplace</p>
+                    <TextInput key={`${safeplaceUpdate.id}-safeplaceId`} type="text" role="id" className="w-full"
+                        label="Identifiant de la safeplace" value={safeplaceUpdate.safeplaceId} setValue={() => {}} readonly={true} />
+                </div>
+                <hr className="my-2" />
+                <div className='grid grid-cols-2 items-center'>
+                    <p className="text-gray-400">{safeplace?.name}</p>
                     <TextInput key={`${safeplaceUpdate.id}-name`} type="text" role="name" className="w-full"
                         label="Modification du nom de la safeplace" value={safeplaceUpdate.name} setValue={setName} />
                 </div>
-                <div className='grid grid-cols-2' style={{ marginLeft: "20%", marginRight: "20%" }}>
-                    <p className="text-left text-gray-400">{safeplace?.description}</p>
+                <div className='grid grid-cols-2 items-center'>
+                    <p className="text-gray-400">{safeplace?.description}</p>
                     <TextInput key={`${safeplaceUpdate.id}-description`} type="text" role="description" className="w-full"
                         label="Modification de la description de la safeplace" value={checkValue(safeplaceUpdate.description)} setValue={setDescription} />
                 </div>
-                <div className='grid grid-cols-2' style={{ marginLeft: "20%", marginRight: "20%" }}>
-                    <p className="text-left text-gray-400">{safeplace?.city}</p>
+                <div className='grid grid-cols-2 items-center'>
+                    <p className="text-gray-400">{safeplace?.city}</p>
                     <TextInput key={`${safeplaceUpdate.id}-city`} type="text" role="city" className="w-full"
                         label="Modification de la ville de la safeplace" value={safeplaceUpdate.city} setValue={setCity} />
                 </div>
-                <div className='grid grid-cols-2' style={{ marginLeft: "20%", marginRight: "20%" }}>
-                    <p className="text-left text-gray-400">{safeplace?.address}</p>
+                <div className='grid grid-cols-2 items-center'>
+                    <p className="text-gray-400">{safeplace?.address}</p>
                     <TextInput key={`${safeplaceUpdate.id}-address`} type="text" role="address" className="w-full"
                         label="Modification de l'adresse de la safeplace" value={safeplaceUpdate.address} setValue={setAddress} />
                 </div>
-                <div className='grid grid-cols-2' style={{ marginLeft: "20%", marginRight: "20%" }}>
-                    <p className="text-left text-gray-400">{safeplace?.type}</p>
+                <div className='grid grid-cols-2 items-center'>
+                    <p className="text-gray-400">{displayedTimetable !== "" ? displayedTimetable : "Horaires de la safeplace"}</p>
+                    <TextInput key={`${safeplaceUpdate.id}-type`} type="text" role="type" className="w-full"
+                        label="Modification des horaires de la safeplace" value={dayTimetable} setValue={setTimetable} />
+                </div>
+                <div className='grid grid-cols-2 items-center'>
+                    <p className="text-gray-400">{safeplace?.type}</p>
                     <TextInput key={`${safeplaceUpdate.id}-type`} type="text" role="type" className="w-full"
                         label="Modification du type de la safeplace" value={safeplaceUpdate.type} setValue={setType} />
                 </div>
-                <TextInput key={`${safeplaceUpdate.id}-safeplaceId`} type="text" role="id"
-                    label="Identifiant de la safeplace" value={safeplaceUpdate.safeplaceId} setValue={() => {}} readonly={true} />
-                <Button key="validate-id" text="Valider" onClick={() => validateSafeplaceUpdate(safeplaceUpdate)} />
-                <Button key="save-id" text="Sauvegarder" onClick={() => saveSafeplaceUpdateModification(safeplaceUpdate)} />
-                <Button key="stop-id" text="Annuler" onClick={() => setSafeplaceUpdate(undefined)} />
-                <Button key="delete-id" text="Supprimer" onClick={() => deleteSafeplaceUpdate(safeplaceUpdate)} type="warning" />
+                <hr className="my-2" />
+                <div className='grid grid-cols-2 items-center'>
+                    <p className="text-gray-400">{safeplace?.coordinate[0]}</p>
+                    <p className="text-gray-400">{safeplace?.coordinate[1]}</p>
+                </div>
+                <div className='grid grid-cols-2 items-center'>
+                    <TextInput key={`${safeplaceUpdate.id}-coordinate1`} type="text" role="latitude" width="100%"
+                        label="Latitude" value={safeplaceUpdate.coordinate[0]} setValue={(value) => setCoordinate(0, value)} />
+                    <TextInput key={`${safeplaceUpdate.id}-coordinate2`} type="text" role="longitude" width="100%"
+                        label="Longitude" value={safeplaceUpdate.coordinate[1]} setValue={(value) => setCoordinate(1, value)} />
+                </div>
+                <Button key="validate-id" text="Valider" onClick={() => validateSafeplaceUpdate(safeplaceUpdate)} width="100%" />
+                <Button key="save-id" text="Sauvegarder" onClick={() => saveSafeplaceUpdateModification(safeplaceUpdate)} width="100%" />
+                <Button key="stop-id" text="Annuler" onClick={() => setSafeplaceUpdate(undefined)} width="100%" />
+                <Button key="delete-id" text="Supprimer" onClick={() => deleteSafeplaceUpdate(safeplaceUpdate)} type="warning" width="100%" />
             </div>
         }/>
     );

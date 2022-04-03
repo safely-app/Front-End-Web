@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../redux';
+import { RootState, useAppSelector } from '../../redux';
 import { AppHeader } from '../Header/Header';
 import ISafeplace from '../interfaces/ISafeplace';
-import { Safeplace } from '../../services';
+import { Safeplace, SafeplaceUpdate } from '../../services';
 import {
     Button,
     TextInput,
@@ -11,7 +11,7 @@ import {
 } from '../common';
 import { Redirect } from 'react-router';
 import log from 'loglevel';
-import { notifySuccess } from '../utils';
+import { notifyError, notifySuccess } from '../utils';
 import {
     TimetableDay,
     getTimetableFromSafeplace,
@@ -185,6 +185,7 @@ const SafeplaceSingleInfo: React.FC<ISafeplaceSingleInfoProps> = ({
 }) => {
     const [onUpdate, setOnUpdate] = useState(false);
     const [updateSafeplace, setUpdateSafeplace] = useState(safeplace);
+    const userCredientials = useAppSelector(state => state.user.credentials);
 
     const updateField = (field: string, value: string) => {
         if (updateSafeplace.hasOwnProperty(field))
@@ -196,12 +197,21 @@ const SafeplaceSingleInfo: React.FC<ISafeplaceSingleInfoProps> = ({
         setOnUpdate(false);
     };
 
-    const validateUpdate = () => {
-        // TODO - replace when backend is ready with call to create update request
-        setOnUpdate(false);
-        console.log(updateSafeplace);
+    const validateUpdate = async () => {
+        try {
+            const response = await SafeplaceUpdate.create({
+                ...updateSafeplace,
+                safeplaceId: safeplace.id
+            }, userCredientials.token);
 
-        notifySuccess("Votre demande a été reçu et sera vérifié par un administrateur avant validation.")
+            log.log(response);
+            setOnUpdate(false);
+            notifySuccess("Votre demande a été reçu et sera vérifié par un administrateur avant validation.");
+        } catch (error) {
+            log.error(error);
+            setOnUpdate(false);
+            notifyError((error as Error).message);
+        }
     };
 
     return (
@@ -244,7 +254,7 @@ const SafeplaceSingle: React.FC = () => {
 
     const isSafeplaceValid = () => {
         const interfaceFields = [
-            "_id",
+            "id",
             "name",
             "city",
             "address",
@@ -270,31 +280,37 @@ const SafeplaceSingle: React.FC = () => {
         return found[1];
     };
 
-    const getView = () => {
-        if (!requestFinished)
-            return <CommonLoader height={80} width={80} color='#a19b96' />;
-        if (safeplace !== undefined && isSafeplaceValid())
-            return <SafeplaceSingleInfo safeplace={safeplace} />;
-        return (
-            <div className="text-center p-4 pt-20">
-                <p className="text-2xl text-lg font-semibold">Cette safeplace n'existe pas</p>
-                <Button text="Retourner à l'accueil" onClick={() => setRedirectClicked(true)} width="20em" />
-                {redirectClicked && <Redirect to="/" />}
-            </div>
-        );
-    };
-
     useEffect(() => {
         Safeplace.get(parseUrl(window.location.href), userCredientials.token)
-            .then(response => setSafeplace(response.data as ISafeplace))
-            .catch(err => log.error(err))
+            .then(response =>
+                setSafeplace({
+                    id: response.data._id,
+                    name: response.data.name,
+                    description: response.data.description,
+                    city: response.data.city,
+                    address: response.data.address,
+                    type: response.data.type,
+                    dayTimetable: response.data.dayTimetable,
+                    coordinate: response.data.coordinate,
+                    ownerId: response.data.ownerId,
+                })
+            ).catch(err => log.error(err))
             .finally(() => setRequestFinished(true));
     }, [userCredientials]);
 
     return (
         <div>
             <AppHeader />
-            {getView()}
+            {!requestFinished && <CommonLoader height={80} width={80} color='#a19b96' />}
+            {requestFinished && (
+                (safeplace !== undefined && isSafeplaceValid())
+                ? <SafeplaceSingleInfo safeplace={safeplace} />
+                : <div className="text-center p-4 pt-20">
+                    <p className="text-2xl text-lg font-semibold">Cette safeplace n'existe pas</p>
+                    <Button text="Retourner à l'accueil" onClick={() => setRedirectClicked(true)} width="20em" />
+                    {redirectClicked && <Redirect to="/" />}
+                </div>
+            )}
         </div>
     );
 };

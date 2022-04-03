@@ -80,7 +80,7 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Monitor-Info">
+            <div className="Monitor-Info text-center">
                 <TextInput key={`${safeplace.id}-id`} type="text" role="id"
                     label="Identifiant de la safeplace" value={safeplace.id} setValue={() => {}} readonly={true} />
                 <TextInput key={`${safeplace.id}-name`} type="text" role="name"
