@@ -39,7 +39,7 @@ const BillingCreateForm: React.FC<IBillingProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Monitor-Info">
+            <div className="Monitor-Info text-center">
                 <TextInput key={`${billing?.id}-amount`} type="number" role="amount"
                     label="Montant" value={`${billing?.amount}`} setValue={setAmount} />
                 {buttons.map(button => button)}
@@ -71,7 +71,7 @@ const BillingUpdateForm: React.FC<IBillingProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Monitor-Info">
+            <div className="Monitor-Info text-center">
                 <TextInput key={`${billing?.id}-description`} type="text" role="description"
                     label="Description" value={`${billing?.description}`} setValue={setDescription} />
                 <TextInput key={`${billing?.id}-receiptEmail`} type="text" role="receiptEmail"

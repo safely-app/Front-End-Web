@@ -153,38 +153,3 @@
     border-radius: 8px;
     text-align: center;
 }
-
-.navbar {
-    padding-left: 1%;
-    padding-right: 1%;
-}
-
-.navbar ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #fff;
-    margin-top: 1em;
-    border: #a19b96;
-    border-style: solid;
-    border-radius: 8px;
-}
-
-.navbar ul li {
-    float: left;
-}
-
-.navbar-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #bbb;
-    padding: 1em;
-    font-weight: bold;
-    font-size: 1.2em;
-}
-
-.navbar-button:hover {
-    color: #a19b96;
-}

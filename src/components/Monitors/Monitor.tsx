@@ -5,15 +5,17 @@ import UserMonitor from './UserMonitor/UserMonitor';
 import SafeplaceMonitor from './SafeplaceMonitor/SafeplaceMonitor';
 import BillingMonitor from './BillingMonitor/BillingMonitor';
 import RequestClaimSafeplace from './RequestClaimSafeplaceMonitor/RequestClaimSafeplaceMonitor';
+import SafeplaceUpdateMonitor from './SafeplaceUpdateMonitor/SafeplaceUpdateMonitor';
 import CampaignMonitor from './CampaignMonitor/CampaignMonitor';
-import './Monitor.css';
 import TargetMonitor from './TargetMonitor/TargetMonitor';
+import './Monitor.css';
 
 enum MonitorView {
     USER,
     SAFEPLACE,
     INVOICE,
     REQUESTCLAIMSAFEPLACE,
+    SAFEPLACEUPDATE,
     CAMPAIGN,
     TARGET
 }
@@ -25,12 +27,15 @@ const Monitor: React.FC = () => {
         { text: "Safeplaces", onClick: () => setView(MonitorView.SAFEPLACE) },
         { text: "Factures", onClick: () => setView(MonitorView.INVOICE) },
         { text: "Requêtes de safeplace", onClick: () => setView(MonitorView.REQUESTCLAIMSAFEPLACE) },
+        { text: "Modifications de safeplace", onClick: () => setView(MonitorView.SAFEPLACEUPDATE) },
         { text: "Campagnes", onClick: () => setView(MonitorView.CAMPAIGN) },
         { text: "Cibles", onClick: () => setView(MonitorView.TARGET) }
     ];
 
     const getView = (): JSX.Element => {
         switch (view) {
+            case MonitorView.SAFEPLACEUPDATE:
+                return <SafeplaceUpdateMonitor />;
             case MonitorView.TARGET:
                 return <TargetMonitor />;
             case MonitorView.CAMPAIGN:

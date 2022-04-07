@@ -92,7 +92,7 @@ const RequestClaimSafeplaceInfoForm: React.FC<IRequestClaimSafeplaceInfoProps> =
 
     return (
         <Modal shown={shown} content={
-            <div className="Monitor-Info">
+            <div className="Monitor-Info text-center">
                 <TextInput key={`${requestClaimSafeplace?.id}-userId`} type="text" role="userId"
                     label="Identifiant d'utilisateur" value={requestClaimSafeplace?.userId as string} setValue={setUserId} />
                 <TextInput key={`${requestClaimSafeplace?.id}-safeplaceId`} type="text" role="safeplaceId"
@@ -216,7 +216,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                 </ul>
             </button>
             <Modal shown={refusedMessage !== undefined} content={
-                <div className="Monitor-Info">
+                <div className="Monitor-Info text-center">
                     <TextInput type="text" role="comment" label="Commentaire"
                         value={refusedMessage as string} setValue={setRefusedMessage} />
                     <Button text="Valider" onClick={refuseRequest} type="warning" />
