@@ -8,6 +8,7 @@ import RequestClaimSafeplace from './RequestClaimSafeplaceMonitor/RequestClaimSa
 import SafeplaceUpdateMonitor from './SafeplaceUpdateMonitor/SafeplaceUpdateMonitor';
 import CampaignMonitor from './CampaignMonitor/CampaignMonitor';
 import TargetMonitor from './TargetMonitor/TargetMonitor';
+import CommentMonitor from './CommentMonitor/CommentMonitor';
 import './Monitor.css';
 
 enum MonitorView {
@@ -17,7 +18,8 @@ enum MonitorView {
     REQUESTCLAIMSAFEPLACE,
     SAFEPLACEUPDATE,
     CAMPAIGN,
-    TARGET
+    TARGET,
+    COMMENT
 }
 
 const Monitor: React.FC = () => {
@@ -29,13 +31,16 @@ const Monitor: React.FC = () => {
         { text: "Requêtes de safeplace", onClick: () => setView(MonitorView.REQUESTCLAIMSAFEPLACE) },
         { text: "Modifications de safeplace", onClick: () => setView(MonitorView.SAFEPLACEUPDATE) },
         { text: "Campagnes", onClick: () => setView(MonitorView.CAMPAIGN) },
-        { text: "Cibles", onClick: () => setView(MonitorView.TARGET) }
+        { text: "Cibles", onClick: () => setView(MonitorView.TARGET) },
+        { text: "Commentaires", onClick: () => setView(MonitorView.COMMENT) }
     ];
 
     const getView = (): JSX.Element => {
         switch (view) {
             case MonitorView.SAFEPLACEUPDATE:
                 return <SafeplaceUpdateMonitor />;
+            case MonitorView.COMMENT:
+                return <CommentMonitor />;
             case MonitorView.TARGET:
                 return <TargetMonitor />;
             case MonitorView.CAMPAIGN:
@@ -53,7 +58,7 @@ const Monitor: React.FC = () => {
     };
 
     return (
-        <div className="Monitor min-h-screen bg-background bg-transparent space-y-4 bg-cover bg-center">
+        <div className="min-h-screen bg-blue-safely-dark bg-transparent space-y-4 bg-cover bg-center">
             <AppHeader />
             <NavBar elements={navBarElements} />
             {getView()}

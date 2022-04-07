@@ -12,7 +12,6 @@ interface ITextInputProps {
     readonly?: boolean;
     required?: boolean;
     className?: string;
-    width?: string;
     autoComplete?: string;
     hidden?: boolean;
 }

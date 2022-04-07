@@ -6,6 +6,7 @@ import ProfessionalInfo from './ProfessionalInfo';
 import Stripe from './Stripe';
 import Commercial from './Commercial';
 import SafeplaceUpdate from './SafeplaceUpdate';
+import Comment from './Comment';
 
 export {
     User,
@@ -15,5 +16,6 @@ export {
     ProfessionalInfo,
     Stripe,
     Commercial,
-    SafeplaceUpdate
+    SafeplaceUpdate,
+    Comment,
 };
