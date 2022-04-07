@@ -14,6 +14,7 @@ interface ITextInputProps {
     className?: string;
     width?: string;
     autoComplete?: string;
+    hidden?: boolean;
 }
 
 const TextInput: React.FC<ITextInputProps> = ({
@@ -27,7 +28,8 @@ const TextInput: React.FC<ITextInputProps> = ({
     readonly,
     required,
     className,
-    autoComplete
+    autoComplete,
+    hidden
 }) => {
 
     const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -44,6 +46,7 @@ const TextInput: React.FC<ITextInputProps> = ({
                 placeholder={label}
                 onChange={handleInput}
                 onKeyPress={onKeyPress}
+                hidden={hidden !== undefined ? hidden : false}
                 readOnly={readonly !== undefined ? readonly : false}
                 className={"mt-1 pt-1 pb-1 border-solid rounded font-l indent-2 w-3/5 " + className}
                 autoComplete={autoComplete}
