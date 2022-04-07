@@ -5,7 +5,8 @@ import {
     Button,
     Modal,
     TextInput,
-    SearchBar
+    SearchBar,
+    CreateButton
 } from '../../common';
 import IBilling from '../../interfaces/IBilling';
 import { ToastContainer } from 'react-toastify';
@@ -237,7 +238,7 @@ const BillingMonitor: React.FC = () => {
 
     return (
         <div style={{textAlign: "center"}}>
-            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mb-4" onClick={onCreateButtonClick}>Créer une nouvelle facture</button>
+            <CreateButton text="Créer une nouvelle facture" onClick={onCreateButtonClick} />
             <BillingMonitorFilter searchBarValue={searchText} setSearchBarValue={setSearchText} />
             <BillingCreateForm
                 shown={newBilling !== undefined}
