@@ -28,10 +28,10 @@ const Monitor: React.FC = () => {
         { text: "Utilisateurs", onClick: () => setView(MonitorView.USER) },
         { text: "Safeplaces", onClick: () => setView(MonitorView.SAFEPLACE) },
         { text: "Factures", onClick: () => setView(MonitorView.INVOICE) },
-        { text: "Requêtes de safeplace", onClick: () => setView(MonitorView.REQUESTCLAIMSAFEPLACE) },
-        { text: "Modifications de safeplace", onClick: () => setView(MonitorView.SAFEPLACEUPDATE) },
         { text: "Campagnes", onClick: () => setView(MonitorView.CAMPAIGN) },
         { text: "Cibles", onClick: () => setView(MonitorView.TARGET) },
+        { text: "Requêtes de safeplace", onClick: () => setView(MonitorView.REQUESTCLAIMSAFEPLACE) },
+        { text: "Modifications de safeplace", onClick: () => setView(MonitorView.SAFEPLACEUPDATE) },
         { text: "Commentaires", onClick: () => setView(MonitorView.COMMENT) }
     ];
 

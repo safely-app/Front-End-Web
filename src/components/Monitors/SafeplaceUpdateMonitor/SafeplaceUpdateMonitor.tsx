@@ -133,9 +133,9 @@ const SafeplaceUpdateInfoForm: React.FC<ISafeplaceUpdateInfoProps> = ({
                     <p className="text-gray-400">{safeplace?.coordinate[1]}</p>
                 </div>
                 <div className='grid grid-cols-2 items-center'>
-                    <TextInput key={`${safeplaceUpdate.id}-coordinate1`} type="text" role="latitude" width="100%"
+                    <TextInput key={`${safeplaceUpdate.id}-coordinate1`} type="text" role="latitude" className='w-full'
                         label="Latitude" value={safeplaceUpdate.coordinate[0]} setValue={(value) => setCoordinate(0, value)} />
-                    <TextInput key={`${safeplaceUpdate.id}-coordinate2`} type="text" role="longitude" width="100%"
+                    <TextInput key={`${safeplaceUpdate.id}-coordinate2`} type="text" role="longitude" className='w-full'
                         label="Longitude" value={safeplaceUpdate.coordinate[1]} setValue={(value) => setCoordinate(1, value)} />
                 </div>
                 <Button key="validate-id" text="Valider" onClick={() => validateSafeplaceUpdate(safeplaceUpdate)} width="100%" />
