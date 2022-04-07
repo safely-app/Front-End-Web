@@ -439,7 +439,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
                         ]}
                     />
                 }
-               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 p-4">
                     {filterRequestClaimSafeplaces().map((requestClaimSafeplace, index) =>
                         <RequestClaimSafeplaceInfoListElement
                             key={index}

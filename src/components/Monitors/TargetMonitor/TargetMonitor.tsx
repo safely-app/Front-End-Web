@@ -238,7 +238,7 @@ const TargetMonitor: React.FC = () => {
                         ]}
                     />
                 }
-                <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+                <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 p-4">
                     {filterTargets().map((target, index) =>
                         <TargetInfoDisplayer
                             key={index}

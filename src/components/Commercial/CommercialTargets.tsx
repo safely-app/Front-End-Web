@@ -88,7 +88,7 @@ const TargetInfoDisplayer: React.FC<ITargetInfoDisplayerProps> = ({
     };
 
     return (
-        <div key={target.id} className="bg-white p-4 m-4">
+        <div key={target.id} className="bg-white p-4 p-4">
             <button className="w-full h-full" onClick={handleClick}>
                 <ul className="text-left w-full h-full">
                     <li key={`${target.id}-name`}><b>Nom : </b>{target.name}</li>

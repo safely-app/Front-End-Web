@@ -282,7 +282,7 @@ const UserMonitor: React.FC = () => {
                         ]}
                     />
                 }
-               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 p-4">
                     {filterUsers().map((user, index) =>
                         <UserInfoListElement
                             key={index}

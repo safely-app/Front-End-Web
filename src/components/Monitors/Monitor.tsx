@@ -6,8 +6,9 @@ import SafeplaceMonitor from './SafeplaceMonitor/SafeplaceMonitor';
 import BillingMonitor from './BillingMonitor/BillingMonitor';
 import RequestClaimSafeplace from './RequestClaimSafeplaceMonitor/RequestClaimSafeplaceMonitor';
 import CampaignMonitor from './CampaignMonitor/CampaignMonitor';
-import './Monitor.css';
 import TargetMonitor from './TargetMonitor/TargetMonitor';
+import CommentMonitor from './CommentMonitor/CommentMonitor';
+import './Monitor.css';
 
 enum MonitorView {
     USER,
@@ -15,7 +16,8 @@ enum MonitorView {
     INVOICE,
     REQUESTCLAIMSAFEPLACE,
     CAMPAIGN,
-    TARGET
+    TARGET,
+    COMMENT
 }
 
 const Monitor: React.FC = () => {
@@ -26,11 +28,14 @@ const Monitor: React.FC = () => {
         { text: "Factures", onClick: () => setView(MonitorView.INVOICE) },
         { text: "Requêtes de safeplace", onClick: () => setView(MonitorView.REQUESTCLAIMSAFEPLACE) },
         { text: "Campagnes", onClick: () => setView(MonitorView.CAMPAIGN) },
-        { text: "Cibles", onClick: () => setView(MonitorView.TARGET) }
+        { text: "Cibles", onClick: () => setView(MonitorView.TARGET) },
+        { text: "Commentaires", onClick: () => setView(MonitorView.COMMENT) }
     ];
 
     const getView = (): JSX.Element => {
         switch (view) {
+            case MonitorView.COMMENT:
+                return <CommentMonitor />;
             case MonitorView.TARGET:
                 return <TargetMonitor />;
             case MonitorView.CAMPAIGN:
@@ -48,7 +53,7 @@ const Monitor: React.FC = () => {
     };
 
     return (
-        <div className="Monitor min-h-screen bg-background bg-transparent space-y-4 bg-cover bg-center">
+        <div className="min-h-screen bg-blue-safely-dark bg-transparent space-y-4 bg-cover bg-center">
             <AppHeader />
             <NavBar elements={navBarElements} />
             {getView()}

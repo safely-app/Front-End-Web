@@ -259,7 +259,7 @@ const BillingMonitor: React.FC = () => {
                         ]}
                     />
                 }
-               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 p-4">
                     {filterBillings().map((billing, index) =>
                         <BillingInfoListElement
                             key={index}
