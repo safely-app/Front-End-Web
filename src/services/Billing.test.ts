@@ -50,6 +50,21 @@ test('ensure that create occurs without technical errors', async () => {
     scope.done();
 });
 
+test('ensure that invalid billing creation occurs normally', async () => {
+    const data: IBilling = {
+        id: '1',
+        paymentMethod: 'card',
+        receiptEmail: 'test@test.com',
+        description: 'test',
+        currency: 'eur',
+        status: 'test',
+        amount: -100,
+    };
+
+    expect(() => Billing.create(data, ""))
+        .toThrow(new Error("Montant invalide"));
+});
+
 test('ensure thata update occurs without technical occurs', async () => {
     const scopeOptions = nock(testURL)
         .options('/stripe/stripe/billing/1')
@@ -74,6 +89,21 @@ test('ensure thata update occurs without technical occurs', async () => {
     expect(response.status).toBe(200);
     scopeOptions.done();
     scope.done();
+});
+
+test('ensure thata update occurs without technical occurs', async () => {
+    const data: IBilling = {
+        id: '1',
+        paymentMethod: 'card',
+        receiptEmail: 'test@test.com',
+        description: 'test',
+        currency: 'eur',
+        status: 'test',
+        amount: -100,
+    };
+
+    expect(() => Billing.update("1", "1", data, ""))
+        .toThrow(new Error("Montant invalide"));
 });
 
 test('ensure that get billing by user id occurs without technical errors', async () => {

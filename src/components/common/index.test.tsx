@@ -30,6 +30,28 @@ test('simulate CreateButton click', () => {
     fireEvent.click(screen.getByText("click"));
     expect(onClick).toHaveBeenCalled();
 });
+  
+test('simulate mouse over', () => {
+    const onMouseOver = jest.fn();
+
+    render(
+        <Button text="click" onClick={jest.fn()} onMouseOver={onMouseOver} />
+    );
+
+    fireEvent.mouseOver(screen.getByText("click"));
+    expect(onMouseOver).toHaveBeenCalled();
+});
+
+test('simulate mouse out', () => {
+    const onMouseOut = jest.fn();
+
+    render(
+        <Button text="click" onClick={jest.fn()} onMouseOut={onMouseOut} />
+    );
+
+    fireEvent.mouseOut(screen.getByText("click"));
+    expect(onMouseOut).toHaveBeenCalled();
+});
 
 test('simulate TextInput', () => {
     const setValue = jest.fn();
