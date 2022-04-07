@@ -9,6 +9,11 @@ module.exports = {
         'background-auth': "url('./assets/image/auth_background.png')",
         'background': "url('./assets/image/back.png')",
       }),
+      colors: {
+        blue: {
+          'safely-dark': '#1a3752'
+        },
+      }
     },
     /*colors: {
       yellow_light: {
