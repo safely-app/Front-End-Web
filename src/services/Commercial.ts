@@ -16,6 +16,9 @@ class Commercial {
 
     createCampaign(data: ICampaign, token: string) {
         const { id, ...validCampaign } = data;
+
+        if (validCampaign.status === '')
+            validCampaign.status = 'active';
         return createHttpConfig(this.baseURL, token).post(`/commercial/campaign`, validCampaign);
     }
 

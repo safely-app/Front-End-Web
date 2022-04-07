@@ -55,7 +55,7 @@ const CardRegister: React.FC<ICardRegister> = ({
 
     return (
         <div style={{ textAlign: 'center' }}>
-            <h2>Enregistrer une solution de payement</h2>
+            <h2>Enregistrer une solution de paiement</h2>
             <div className="stripe-container">
                 <div className="stripe-main">
                     <CardElement options={cardElementOptions} />
