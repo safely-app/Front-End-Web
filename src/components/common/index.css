@@ -9,14 +9,14 @@
 .dropdown-container select {
     width: 100%;
     min-width: 6em;
-    background-color: #a19b96;
+    background-color: #1a3752;
     color: #fff;
     font-size: inherit;
     padding: .5em;
     padding-right: 2.5em;
-    border: 0;
+    border: solid 2px white;
     margin: 0;
-    border-radius: 3px;
+    border-radius: 8px;
     text-indent: 0.01px;
     text-overflow: '';
     /*Hiding the select arrow for firefox*/
@@ -58,12 +58,14 @@
     right: 0;
     top: 0;
     bottom: 0;
-    border-radius: 0 3px 3px 0;
-    background-color: rgba(0,0,0,.2);
+    border: solid 2px white;
+    border-left: 0;
+    border-radius: 0 8px 8px 0;
+    background-color: #1a3752;
 }
 
 .dropdown-container::after {
-    color: rgba(0,0,0,.6);
+    color: white;
 }
 
 .btn {
