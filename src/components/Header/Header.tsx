@@ -124,6 +124,7 @@ export const AppHeader: React.FC = () => {
     { link: "/trader-profile", name: "Commerçant", onAuth: true },
     { link: "/commercial", name: "Commercial", onAuth: true },
     { link: "/admin", name: "Administration", onAuth: true, onAdmin: true },
+    { link: "/bugreport", name: "Beta", onAuth: true },
     { link: "/logout", name: "Déconnexion", onAuth: true }
   ];
 
