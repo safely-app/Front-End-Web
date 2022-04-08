@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { getErrorMsgByStatusCode } from './errorMessages';
+import { getErrorMsgByStatusCode, getErrorMsgByErrorName } from './errorMessages';
 
 export const notifyError = (error: any) => {
     let errorMessage: string = error;
@@ -7,7 +7,7 @@ export const notifyError = (error: any) => {
     if (error.response)
         errorMessage = getErrorMsgByStatusCode(error.response);
     else if (error.message)
-        errorMessage = error.message;
+        errorMessage = getErrorMsgByErrorName(error);
 
     return toast.error(errorMessage, {
         position: "top-right",

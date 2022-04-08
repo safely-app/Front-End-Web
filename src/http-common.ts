@@ -23,7 +23,7 @@ export const createHttpConfig = (baseURL: string, token?: string, doNotReload?: 
     axios_instance.interceptors.response.use((response) => {
         return response;
     }, (error) => {
-        const errorStatus = error.response.status;
+        const errorStatus = (error.response) ? error.response.status : 0;
 
         if (errorStatus === 401 && !doNotReload)
             window.location.href = `${process.env.PUBLIC_URL}/logout`;
