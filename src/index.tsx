@@ -37,7 +37,7 @@ const routes = [
     { path: '/safeplace-page', exact: false, protected: false, render: <SafeplaceSingle /> },
     { path: '/reset', exact: false, protected: false, render: <ResetPassword /> },
     { path: '/verifyHours', exact: false, protected: false, render: <VerifyHours /> },
-    { path: '/bugreport', exact: false, protected: false, render: <BugReport /> }
+    { path: '/bugreport', exact: false, protected: true, render: <BugReport /> }
 ];
 
 log.setLevel((process.env.REACT_APP_STAGE === "prod")
