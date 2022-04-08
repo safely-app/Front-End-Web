@@ -16,7 +16,7 @@ const BugReport: React.FC = () => {
                     <div className="options md:flex md:space-x-6 text-sm items-center text-gray-700 mt-4">
                         <p className="w-1/2 mb-2 md:mb-0">J'aimerais</p>
                         <select className="w-full border border-gray-200 p-2 focus:outline-none focus:border-gray-500">
-                            <option value="select">Sélectionner une option</option>
+                            <option value="select" disabled selected hidden>Sélectionner une option</option>
                             <option value="bug">Rapporter un bug</option>
                             <option value="feature">Requête d'une fonctionnalité</option>
                             <option value="feedback">Commentaire</option>
