@@ -150,7 +150,7 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                 cancelNewTarget();
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };
@@ -162,7 +162,7 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                 setFocusTarget(undefined);
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };
@@ -174,7 +174,7 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                 setFocusTarget(undefined);
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };

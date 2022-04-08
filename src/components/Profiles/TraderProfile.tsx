@@ -288,7 +288,7 @@ const TraderProfile: React.FC = () => {
             setSearcherState(InfoSearcher.FOUND);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -304,7 +304,7 @@ const TraderProfile: React.FC = () => {
             setIsUpdateView(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -322,7 +322,7 @@ const TraderProfile: React.FC = () => {
             setIsUpdateView(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
             setIsUpdateView(false);
         }
     };
@@ -338,7 +338,7 @@ const TraderProfile: React.FC = () => {
             log.log(response);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -379,7 +379,7 @@ const TraderProfile: React.FC = () => {
             }
         } catch (error) {
             log.error(error);
-            notifyError((error as Error).message);
+            notifyError(error);
         }
     };
 

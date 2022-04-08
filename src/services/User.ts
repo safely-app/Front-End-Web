@@ -37,7 +37,7 @@ class User {
             throw new Error(validateUser.error);
         if (data.password !== data.confirmedPassword)
             throw new Error("Mot de passe invalide");
-        return createHttpConfig(this.baseURL).post("/register", {
+        return createHttpConfig(this.baseURL, undefined, true).post("/register", {
             username: data.username,
             email: data.email,
             password: data.password,
@@ -49,7 +49,7 @@ class User {
             throw new Error("Email invalide");
         if (password === undefined || !isPasswordValid(password))
             throw new Error("Mot de passe invalide");
-        return createHttpConfig(this.baseURL).post("/login", {
+        return createHttpConfig(this.baseURL, undefined, true).post("/login", {
             email: email,
             password: password
         });
@@ -58,7 +58,7 @@ class User {
     forgotPassword(email: string) {
         if (!isEmailValid(email))
             throw new Error("Email invalide");
-        return createHttpConfig(this.baseURL).post("/user/forgotPassword", {
+        return createHttpConfig(this.baseURL).post("/user/forgotPasswo", {
             email: email
         });
     }

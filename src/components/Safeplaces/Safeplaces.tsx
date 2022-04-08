@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import ISafeplace from '../interfaces/ISafeplace';
-import { ToastContainer } from 'react-toastify';
 import { AppHeader } from '../Header/Header';
 import {
     Button,
@@ -192,7 +191,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({
             notifySuccess("Votre requête a été créée");
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -202,7 +201,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({
             setSafeplace(focusSafeplace as ISafeplace);
             setFocusSafeplace(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -212,7 +211,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({
             removeSafeplace(safeplace);
             setFocusSafeplace(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -302,7 +301,6 @@ const Safeplaces: React.FC = () => {
                         searchBarValue={searchBarValue}
                         setSearchBarValue={setSearchBarValue} />
                     : <SafeplacesMap safeplaces={safeplaces} />}
-                <ToastContainer />
             </div>
         </div>
     );

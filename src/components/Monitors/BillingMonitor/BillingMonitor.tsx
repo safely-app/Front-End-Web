@@ -9,7 +9,6 @@ import {
     CreateButton
 } from '../../common';
 import IBilling from '../../interfaces/IBilling';
-import { ToastContainer } from 'react-toastify';
 import {
     notifyError,
     convertStringToRegex
@@ -159,7 +158,7 @@ const BillingMonitor: React.FC = () => {
             setShowModal(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -172,7 +171,7 @@ const BillingMonitor: React.FC = () => {
             setFocusBilling(undefined);
             setShowModal(false);
         } catch (err) {
-            notifyError((err as Error).message);
+            notifyError(err);
             log.error(err);
         }
     };
@@ -270,7 +269,6 @@ const BillingMonitor: React.FC = () => {
                     )}
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 };

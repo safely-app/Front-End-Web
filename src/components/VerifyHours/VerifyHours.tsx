@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Safeplace } from "../../services";
 import { Button } from "../common";
 import { notifyError, notifySuccess } from '../utils';
-import { ToastContainer } from 'react-toastify';
 import log from "loglevel";
 
 interface VerifyHoursDayProps {
@@ -93,7 +92,7 @@ const VerifyHours: React.FC = () => {
             notifySuccess("Horaires mises à jour.");
             log.log(response);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
             log.error(e);
         }
     };
@@ -196,7 +195,7 @@ const VerifyHours: React.FC = () => {
                 setTimetable(gotSafeplaceTimetable);
                 setSafeplaceId(gotSafeplaceId);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     }, []);
@@ -221,7 +220,6 @@ const VerifyHours: React.FC = () => {
                 text="Confirmer mes horaires"
                 onClick={updateTimetable}
             />
-            <ToastContainer />
         </div>
     );
 };

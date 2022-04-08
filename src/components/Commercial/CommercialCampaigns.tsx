@@ -241,7 +241,7 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                 cancelNewCampaign();
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };
@@ -253,7 +253,7 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                 setFocusCampaign(undefined);
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };
@@ -265,7 +265,7 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                 setFocusCampaign(undefined);
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };
