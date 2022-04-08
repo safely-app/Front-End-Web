@@ -283,6 +283,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
             log.log(gotSafeplaces);
         }).catch(error => {
             log.error(error);
+            notifyError(error);
         });
 
         SafeplaceUpdate.getAll(userCredientials.token).then(response => {
@@ -303,6 +304,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
             log.log(gotSafeplaceUpdates);
         }).catch(error => {
             log.error(error);
+            notifyError(error);
         });
     }, [userCredientials]);
 

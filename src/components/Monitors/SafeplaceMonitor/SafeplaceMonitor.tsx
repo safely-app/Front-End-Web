@@ -227,6 +227,7 @@ const SafeplaceMonitor: React.FC = () => {
             log.log(gotSafeplaces);
         }).catch(error => {
             log.error(error);
+            notifyError(error);
         })
     }, [userCredientials]);
 

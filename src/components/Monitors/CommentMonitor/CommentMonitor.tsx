@@ -216,7 +216,10 @@ const CommentMonitor: React.FC = () => {
 
                 fetchSafeplaces(uniqueSafeplaceIds);
 
-            }).catch(err => log.error(err))
+            }).catch(error => {
+                log.error(error);
+                notifyError(error);
+            });
     }, [userCredentials]);
 
     return (
