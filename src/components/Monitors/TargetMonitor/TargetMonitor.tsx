@@ -140,7 +140,7 @@ const TargetMonitor: React.FC = () => {
             log.log(response);
             addTarget(createdTarget);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -150,7 +150,7 @@ const TargetMonitor: React.FC = () => {
             setTarget(focusTarget as ITarget);
             setFocusTarget(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -160,7 +160,7 @@ const TargetMonitor: React.FC = () => {
             removeTarget(target);
             setFocusTarget(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 

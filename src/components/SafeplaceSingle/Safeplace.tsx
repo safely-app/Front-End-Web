@@ -207,10 +207,10 @@ const SafeplaceSingleInfo: React.FC<ISafeplaceSingleInfoProps> = ({
             log.log(response);
             setOnUpdate(false);
             notifySuccess("Votre demande a été reçu et sera vérifiée par un administrateur avant validation.");
-        } catch (error) {
-            log.error(error);
+        } catch (e) {
+            log.error(e);
             setOnUpdate(false);
-            notifyError((error as Error).message);
+            notifyError(e);
         }
     };
 

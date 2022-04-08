@@ -149,7 +149,7 @@ const CommentMonitor: React.FC = () => {
             setComment(focusComment as IComment);
             setFocusComment(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -159,7 +159,7 @@ const CommentMonitor: React.FC = () => {
             removeComment(comment);
             setFocusComment(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 

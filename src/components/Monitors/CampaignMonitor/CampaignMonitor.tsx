@@ -211,7 +211,7 @@ const CampaignMonitor: React.FC = () => {
             log.log(response);
             addCampaign(createdCampaign);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -221,7 +221,7 @@ const CampaignMonitor: React.FC = () => {
             setCampaign(focusCampaign as ICampaign);
             setFocusCampaign(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -231,7 +231,7 @@ const CampaignMonitor: React.FC = () => {
             removeCampaign(campaign);
             setFocusCampaign(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 

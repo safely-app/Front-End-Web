@@ -218,7 +218,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
             setSafeplaceUpdate(focusSafeplaceUpdate as ISafeplaceUpdate);
             setFocusSafeplaceUpdate(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -239,7 +239,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
             await Safeplace.update(safeplace.id, safeplace, userCredientials.token);
             deleteSafeplaceUpdate(safeplaceUpdate);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -249,7 +249,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
             removeSafeplaceUpdate(safeplaceUpdate);
             setFocusSafeplaceUpdate(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
