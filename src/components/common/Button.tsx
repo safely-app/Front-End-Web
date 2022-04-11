@@ -43,7 +43,7 @@ const Button: React.FC<IButtonProps> = ({
     return (
         <div>
             <button
-                className={type !== undefined ? styles[type] : "btn"}
+                className={type !== undefined ? styles[type] : styles["default"]}
                 style={{ width: width !== undefined ? width : "60%" }}
                 data-testid={`${text}-button-id`}
                 onClick={handleClick}
@@ -55,7 +55,6 @@ const Button: React.FC<IButtonProps> = ({
             </button>
         </div>
     );
-
 }
 
 interface ICreateButtonProps {

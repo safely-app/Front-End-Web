@@ -72,7 +72,7 @@
     margin-top: 1em;
     padding: 0.6em;
     font-size: large;
-    background-color: #a19b96;
+    background-color: #1a3752;
     color: #fff;
     border: #fff;
     border-style: solid;
@@ -86,7 +86,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #a19b96;
+    color: #1a3752;
 }
 
 .btn-warning {
@@ -104,15 +104,15 @@
 
 .btn:hover {
     background-color: #fff;
-    color: #a19b96;
-    border: #a19b96;
+    color: #1a3752;
+    border: #1a3752;
     border-style: solid;
     border-radius: 8px;
     font-weight: bold;
 }
 
 .btn-link:hover {
-    color: #a19b96;
+    color: #1a3752;
     font-weight: bold;
 }
 
