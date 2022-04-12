@@ -3,8 +3,7 @@ import { createHttpConfig } from '../http-common';
 import { isSafeplaceUpdateValid } from './utils';
 
 class SafeplaceUpdate {
-    // private readonly baseURL: string = process.env.REACT_APP_SERVER_URL as string;
-    private readonly baseURL: string = 'http://localhost:3001';
+    private readonly baseURL: string = process.env.REACT_APP_SERVER_URL as string;
 
     getAll(token: string) {
         return createHttpConfig(this.baseURL, token).get("/safeplace/safeplaceUpdate");
@@ -20,12 +19,7 @@ class SafeplaceUpdate {
 
         if (validateSafeplaceUpdate.isValid === false)
             throw new Error(validateSafeplaceUpdate.error);
-        // TODO - remove id & _id when backend is implemented
-        return createHttpConfig(this.baseURL, token).post('/safeplace/safeplaceUpdate', {
-            ...fData,
-            _id: `${id}-safeplaceupdate`,
-            id: `${id}-safeplaceupdate`
-        });
+        return createHttpConfig(this.baseURL, token).post('/safeplace/safeplaceUpdate', fData);
     }
 
     update(_id: string, data: ISafeplaceUpdate, token: string) {
@@ -34,12 +28,7 @@ class SafeplaceUpdate {
 
         if (validateSafeplaceUpdate.isValid === false)
             throw new Error(validateSafeplaceUpdate.error);
-        // TODO - remove id & _id when backend is implemented
-        return createHttpConfig(this.baseURL, token).put(`/safeplace/safeplaceUpdate/${_id}`, {
-            ...fData,
-            _id: `${id}-safeplaceupdate`,
-            id: `${id}-safeplaceupdate`
-        });
+        return createHttpConfig(this.baseURL, token).put(`/safeplace/safeplaceUpdate/${_id}`, fData);
     }
 
     delete(id: string, token: string) {
