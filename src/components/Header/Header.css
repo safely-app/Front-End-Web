@@ -1,0 +1,17 @@
+.glow {
+    animation: glowanim 1s infinite;
+}
+
+@keyframes glowanim {
+    from {
+        color: #fff4ae;
+    }
+
+    50% {
+        color: #4a4630;
+    }
+
+    to {
+        color: #fff4ae;
+    }
+}

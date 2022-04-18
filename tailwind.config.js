@@ -13,6 +13,9 @@ module.exports = {
         blue: {
           'safely-dark': '#1a3752'
         },
+      },
+      borderWidth: {
+        '3': '3px'
       }
     },
     /*colors: {
