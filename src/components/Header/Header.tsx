@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../redux';
 import logo from '../../assets/image/logo.png'
 import { canAccess, Role } from './utils';
@@ -8,27 +8,56 @@ import { Notification } from '../../services';
 import log from 'loglevel';
 import './Header.css';
 
+const useOutsideAlerter = (ref, func: () => void) => {
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        func();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, func]);
+};
+
 const HeaderNotif: React.FC = () => {
+  const notifListRef = useRef(null);
+  const [hidden, setHidden] = useState(true);
   const [notifs, setNotifs] = useState<INotification[]>([]);
   const userCredentials = useAppSelector(state => state.user.credentials);
 
-  useEffect(() => {
-    Notification.getAll(userCredentials.token)
-      .then(result => {
-        const gotNotifs = result.data.map(notif => ({
-          id: notif._id,
-          ownerId: notif.ownerId,
-          title: notif.title,
-          description: notif.description
-        }));
+  useOutsideAlerter(notifListRef, () => {
+    setHidden(true);
+  });
 
-        setNotifs(gotNotifs);
-      }).catch(err => log.error(err));
+  useEffect(() => {
+    const interval = setInterval(() => {
+      Notification.getAll(userCredentials.token)
+        .then(result => {
+          const gotNotifs = result.data.map(notif => ({
+            id: notif._id,
+            ownerId: notif.ownerId,
+            title: notif.title,
+            description: notif.description
+          }));
+
+          setNotifs(gotNotifs);
+        }).catch(err => log.error(err));
+    }, 300000);
+
+    return () => clearInterval(interval);
   }, [userCredentials]);
 
+  const removeNotif = (notif: INotification) => {
+    setNotifs(notifs.filter(n => n.id !== notif.id));
+  };
+
   return (
-    <div className="p-1 px-8 text-2xl">
-      <button className="mt-2" onClick={() => alert("Salut")}>
+    <div ref={notifListRef} className="p-1 px-8 text-2xl relative">
+      <button className="mt-2" onClick={() => setHidden(!hidden)}>
         <FaBell />
         <div style={{
           marginTop: "-2.25em",
@@ -38,6 +67,24 @@ const HeaderNotif: React.FC = () => {
           <FaCircle />
         </div>
       </button>
+
+      <div className="notif-list z-50 bg-white rounded shadow-md text-base text-left" hidden={hidden}>
+        <p className="p-2 text-center bg-gray-100 rounded font-bold">Notifications</p>
+        <ul className="p-4" hidden={notifs.length === 0}>
+          {notifs.slice(0, 5).map((notif, index) => {
+            return (
+              <li key={notif.id} className="pt-2 cursor-pointer" onClick={() => removeNotif(notif)}>
+                <span>{notif.title}</span>
+                <p className="text-sm">{notif.description}</p>
+                <hr className="mt-4" hidden={index + 1 === notifs.slice(0, 5).length} />
+              </li>
+            );
+          })}
+        </ul>
+        <p className="p-4" hidden={notifs.length > 0}>
+          Pas de notifications
+        </p>
+      </div>
     </div>
   );
 };
@@ -101,6 +148,9 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
               )
             }
           </ul>
+          <div className="hidden xl:block absolute right-0">
+            <HeaderNotif />
+          </div>
         </div>
       </nav>
       <div className={`${isMenuHidden ? "hidden" : "block"} xl:hidden fixed bg-white top-0 right-0 min-w-max w-1/4 h-full z-10`}>
