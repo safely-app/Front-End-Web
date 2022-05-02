@@ -15,7 +15,6 @@ import {
     notifyError,
     convertStringToRegex
 } from '../../utils';
-import { ToastContainer } from 'react-toastify';
 import profile from '../../../assets/image/profileano.png'
 
 interface IUserInfoProps {
@@ -32,7 +31,7 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
     shown
 }) => {
     const USER_ROLES = [
-        "user", "admin"
+        "user", "trader", "admin"
     ];
 
     const setUsername = (value: string) => {
@@ -57,7 +56,7 @@ const UserInfoForm: React.FC<IUserInfoProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Monitor-Info">
+            <div className="Monitor-Info text-center">
                 <TextInput key={`${user.id}-id`} type="text" role="id"
                     label="Identifiant" value={user.id} setValue={() => { }} readonly={true} />
                 <TextInput key={`${user.id}-username`} type="text" role="username"
@@ -122,6 +121,7 @@ const UserMonitorFilter: React.FC<IUserMonitorFilterProps> = ({
     const USER_ROLES = [
         'all',
         'user',
+        'trader',
         'admin'
     ];
 
@@ -179,7 +179,7 @@ const UserMonitor: React.FC = () => {
             saveUserModification(createdUser);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -200,7 +200,7 @@ const UserMonitor: React.FC = () => {
             });
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -213,7 +213,7 @@ const UserMonitor: React.FC = () => {
             setFocusUser(undefined);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -281,7 +281,7 @@ const UserMonitor: React.FC = () => {
                         ]}
                     />
                 }
-               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 p-4">
                     {filterUsers().map((user, index) =>
                         <UserInfoListElement
                             key={index}
@@ -291,7 +291,6 @@ const UserMonitor: React.FC = () => {
                     )}
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 };

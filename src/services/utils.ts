@@ -2,6 +2,7 @@ import ISafeplace from "../components/interfaces/ISafeplace";
 import IProfessional from "../components/interfaces/IProfessional";
 import IBilling from "../components/interfaces/IBilling";
 import IUser from "../components/interfaces/IUser";
+import ISafeplaceUpdate from "../components/interfaces/ISafeplaceUpdate";
 
 export const isEmailValid = (email: string): boolean => {
     return email !== "" && email.match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g) !== null;
@@ -88,4 +89,8 @@ export const isProfessionalValid = (professional: IProfessional): IError => {
     if (!isSiretValid(professional.SIRET))
         return { isValid: false, error: "Numéro SIRET invalide" };
     return { isValid: true };
+};
+
+export const isSafeplaceUpdateValid = (safeplaceUpdate: ISafeplaceUpdate): IError => {
+    return isSafeplaceValid(safeplaceUpdate);
 };

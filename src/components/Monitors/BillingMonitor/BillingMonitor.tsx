@@ -5,10 +5,10 @@ import {
     Button,
     Modal,
     TextInput,
-    SearchBar
+    SearchBar,
+    CreateButton
 } from '../../common';
 import IBilling from '../../interfaces/IBilling';
-import { ToastContainer } from 'react-toastify';
 import {
     notifyError,
     convertStringToRegex
@@ -38,7 +38,7 @@ const BillingCreateForm: React.FC<IBillingProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Monitor-Info">
+            <div className="Monitor-Info text-center">
                 <TextInput key={`${billing?.id}-amount`} type="number" role="amount"
                     label="Montant" value={`${billing?.amount}`} setValue={setAmount} />
                 {buttons.map(button => button)}
@@ -70,7 +70,7 @@ const BillingUpdateForm: React.FC<IBillingProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Monitor-Info">
+            <div className="Monitor-Info text-center">
                 <TextInput key={`${billing?.id}-description`} type="text" role="description"
                     label="Description" value={`${billing?.description}`} setValue={setDescription} />
                 <TextInput key={`${billing?.id}-receiptEmail`} type="text" role="receiptEmail"
@@ -99,7 +99,7 @@ const BillingInfoListElement: React.FC<IBillingInfoListElementProps> = ({
             <button className="w-full h-full text-left" onClick={handleClick}>
                 <ul>
                     <li key={`${billing.id}-id`}><b>Identifiant : </b>{billing.id}</li>
-                    <li key={`${billing.id}-paymentMethod`}><b>Identifiant de solution de payement : </b>{billing.paymentMethod}</li>
+                    <li key={`${billing.id}-paymentMethod`}><b>Identifiant de solution de paiement : </b>{billing.paymentMethod}</li>
                     <li key={`${billing.id}-receiptEmail`}><b>Email de réception du reçu : </b>{billing.receiptEmail}</li>
                     <li key={`${billing.id}-description`}><b>Description : </b>{billing.description}</li>
                     <li key={`${billing.id}-amount`}><b>Montant : </b>{billing.amount} {billing.currency}</li>
@@ -158,7 +158,7 @@ const BillingMonitor: React.FC = () => {
             setShowModal(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -171,7 +171,7 @@ const BillingMonitor: React.FC = () => {
             setFocusBilling(undefined);
             setShowModal(false);
         } catch (err) {
-            notifyError((err as Error).message);
+            notifyError(err);
             log.error(err);
         }
     };
@@ -237,7 +237,7 @@ const BillingMonitor: React.FC = () => {
 
     return (
         <div style={{textAlign: "center"}}>
-            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mb-4" onClick={onCreateButtonClick}>Créer une nouvelle facture</button>
+            <CreateButton text="Créer une nouvelle facture" onClick={onCreateButtonClick} />
             <BillingMonitorFilter searchBarValue={searchText} setSearchBarValue={setSearchText} />
             <BillingCreateForm
                 shown={newBilling !== undefined}
@@ -259,7 +259,7 @@ const BillingMonitor: React.FC = () => {
                         ]}
                     />
                 }
-               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 p-4">
                     {filterBillings().map((billing, index) =>
                         <BillingInfoListElement
                             key={index}
@@ -269,7 +269,6 @@ const BillingMonitor: React.FC = () => {
                     )}
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 };

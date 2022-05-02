@@ -9,13 +9,18 @@ import {
 } from '../../redux';
 import { notifyError } from '../utils';
 import { User } from '../../services';
-import { ToastContainer } from 'react-toastify';
 import { GoogleLogin } from 'react-google-login';
 import 'react-toastify/dist/ReactToastify.css';
 import './Authentication.css';
 import log from 'loglevel';
 import logo from '../../assets/image/logo.png'
 import google from '../../assets/image/google_logo.jpg'
+import {
+  isEmailValid,
+  isPasswordValid,
+  isUsernameValid,
+  isUserValid
+} from '../../services/utils';
 
 enum View {
     SIGNIN,
@@ -52,15 +57,29 @@ const SignInView: React.FC<IAuthProps> = ({
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [remember, setRemember] = useState("");
+    const [tries, setTries] = useState(0);
 
     const handleClick = async () => {
-        try {
-            const response = await User.login(email, password);
+      try {
+        const response = await User.login(email, password);
 
-            dispatch(setCredentials(response.data));
-        } catch (e) {
-            notifyError((e as Error).message);
-        }
+        dispatch(setCredentials(response.data));
+      } catch (e: any) {
+        if (e.response && e.response.status === 401) {
+          notifyError("Email et/ou mot de passe invalide");
+        } else notifyError(e);
+      }
+
+      setEmail("");
+      setPassword("");
+      setRemember("");
+      setTries(tries + 1);
+    };
+
+    const getInvalidInputClassName = (cond: boolean) => {
+      if (cond || tries < 1)
+        return "";
+      return "outline-none border-red-500 ring-transparent";
     };
 
     return (
@@ -97,15 +116,15 @@ const SignInView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={email}
-                            setValue={setEmail}
-                            //onChange={this.handleChange}
-                            name="email"
-                            type="email"
-                            role="email"
-                            label="Email"
-                            required-500
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={email}
+                          setValue={setEmail}
+                          name="email"
+                          type="email"
+                          role="email"
+                          label="Email"
+                          required-500
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isEmailValid(email))}`}
                         />
                       </div>
                     </div>
@@ -115,25 +134,26 @@ const SignInView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={password}
-                            setValue={setPassword}
-                            name="password"
-                            type="password"
-                            role="password"
-                            label="Mot de passe"
-                            required-500
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={password}
+                          setValue={setPassword}
+                          name="password"
+                          type="password"
+                          role="password"
+                          label="Mot de passe"
+                          required-500
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(password))}`}
                         />
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <TextInput
-                            value={remember}
-                            setValue={setRemember}
-                            name="remember_me"
-                            type="checkbox"
-                            className="h-4 w-4 text-red-500 focus:ring-red-500 border-gray-300 rounded"
+                          value={remember}
+                          setValue={setRemember}
+                          name="remember_me"
+                          type="checkbox"
+                          className="h-4 w-4 text-red-500 focus:ring-red-500 border-gray-300 rounded"
                         />
                         <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
                           Rester connecté
@@ -141,7 +161,7 @@ const SignInView: React.FC<IAuthProps> = ({
                       </div>
                       <div className="text-sm">
                         <button onClick={() => setView(View.FORGOT)} className="font-medium text-red-500 hover:text-red-500 cursor-pointer">
-                        Mot de passe oublié ?
+                          Mot de passe oublié ?
                         </button>
                       </div>
                     </div>
@@ -189,7 +209,6 @@ const SignInView: React.FC<IAuthProps> = ({
               </div>
             </div>
           </div>
-          <ToastContainer />
         </div>
     );
 }
@@ -202,22 +221,39 @@ const SignUpView: React.FC<IAuthProps> = ({
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [confirmedPassword, setConfirmedPassword] = useState("");
+    const [tries, setTries] = useState(0);
 
     const handleClick = async () => {
-        try {
-            const response = await User.register({
-                id: "",
-                role: "",
-                email: email,
-                username: username,
-                password: password,
-                confirmedPassword: confirmedPassword
-            });
+      const tmpUser = {
+        id: "",
+        role: "",
+        email: email,
+        username: username,
+        password: password,
+        confirmedPassword: confirmedPassword
+      };
 
-            dispatch(setCredentials(response.data));
-        } catch (e) {
-            notifyError((e as Error).message);
-        }
+      try {
+        const response = await User.register(tmpUser);
+
+        dispatch(setCredentials(response.data));
+      } catch (e: any) {
+        if (e.response && e.response.status === 401)
+          notifyError(isUserValid(tmpUser).error);
+        else notifyError(e);
+      }
+
+      setEmail("");
+      setUsername("");
+      setPassword("");
+      setConfirmedPassword("");
+      setTries(tries + 1);
+    };
+
+    const getInvalidInputClassName = (cond: boolean) => {
+      if (cond || tries < 1)
+        return "";
+      return "outline-none border-red-500 ring-transparent";
     };
 
     return (
@@ -254,14 +290,15 @@ const SignUpView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={username}
-                            setValue={setUsername}
-                            name="username"
-                            type="username"
-                            role="username"
-                            label="Nom d'utilisateur"
-                            required-500
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={username}
+                          setValue={setUsername}
+                          name="username"
+                          type="username"
+                          role="username"
+                          label="Nom d'utilisateur"
+                          required-500
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isUsernameValid(username))}`}
                         />
                       </div>
                     </div>
@@ -271,15 +308,16 @@ const SignUpView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={email}
-                            setValue={setEmail}
-                            name="email"
-                            type="email"
-                            role="email"
-                            label="Email"
-                            autoComplete="email"
-                            required
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={email}
+                          setValue={setEmail}
+                          name="email"
+                          type="email"
+                          role="email"
+                          label="Email"
+                          autoComplete="email"
+                          required
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isEmailValid(email))}`}
                         />
                       </div>
                     </div>
@@ -289,15 +327,16 @@ const SignUpView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={password}
-                            setValue={setPassword}
-                            name="password"
-                            type="password"
-                            role="password"
-                            label="Mot de passe"
-                            autoComplete="current-password"
-                            required
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={password}
+                          setValue={setPassword}
+                          name="password"
+                          type="password"
+                          role="password"
+                          label="Mot de passe"
+                          autoComplete="current-password"
+                          required
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(password))}`}
                         />
                       </div>
                     </div>
@@ -308,21 +347,22 @@ const SignUpView: React.FC<IAuthProps> = ({
                       </label>
                       <div className="mt-1">
                         <TextInput
-                            value={confirmedPassword}
-                            setValue={setConfirmedPassword}
-                            name="confirmedPassword"
-                            type="confirmedPassword"
-                            role="password"
-                            label="Répeter le mot de passe"
-                            autoComplete="current-password"
-                            required
-                            className="appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 focus:outline-none focus:border-red-500 focus:ring-transparent sm:text-sm"
+                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                          value={confirmedPassword}
+                          setValue={setConfirmedPassword}
+                          name="confirmedPassword"
+                          type="password"
+                          role="password"
+                          label="Répeter le mot de passe"
+                          autoComplete="current-password"
+                          required
+                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(confirmedPassword))}`}
                         />
                       </div>
                     </div>
                     <div>
                       <button
-                        type="submit"
+                        onClick={handleClick}
                         className="w-full flex justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red"
                       >
                         S'inscrire
@@ -377,7 +417,7 @@ const ForgottenPassword: React.FC = () => {
 
             log.log(response);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -464,7 +504,7 @@ export const ResetPassword: React.FC = () => {
                 log.error(error);
             });
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -478,7 +518,6 @@ export const ResetPassword: React.FC = () => {
             <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
             <TextInput type="password" role="password" label="Confirmer mot de passe" value={confirmedPassword} setValue={setConfirmedPassword} />
             <Button text="Réinitialiser" onClick={handleClick} />
-            <ToastContainer />
             {redirect && <Redirect to="/login" />}
         </div>
     );

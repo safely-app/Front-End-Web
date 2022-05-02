@@ -173,9 +173,9 @@ const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
     };
 
     return (
-        <div key={campaign.id} className={`Monitor-list-element ${campaignStatusIsValid() ? "Campaign-grid-container" : ""}`}>
-            <button className="Monitor-list-element-btn" onClick={() => onClick(campaign)}>
-                <ul className="Monitor-list">
+        <div key={campaign.id} className={`bg-white p-4 m-4 ${campaignStatusIsValid() ? "Campaign-grid-container" : ""}`}>
+            <button className="w-full h-full" onClick={() => onClick(campaign)}>
+                <ul className="text-left w-full h-full">
                     <li key={`${campaign.id}-name`}><b>Nom : </b>{campaign.name}</li>
                     <li key={`${campaign.id}-budget`}><b>Budget : </b>{campaign.budget}</li>
                     <li key={`${campaign.id}-status`}><b>Status : </b>{campaign.status}</li>
@@ -241,7 +241,7 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                 cancelNewCampaign();
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };
@@ -253,7 +253,7 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                 setFocusCampaign(undefined);
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };
@@ -265,7 +265,7 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
                 setFocusCampaign(undefined);
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };

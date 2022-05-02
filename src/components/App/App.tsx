@@ -57,7 +57,7 @@ const App: React.FC = () => {
     useEffect(() => {
         User.get(userCredientials._id, userCredientials.token)
             .then(response => dispatch(setInfo(response.data)))
-            .catch(error => notifyError(error.message));
+            .catch(error => notifyError(error));
     }, [userCredientials, dispatch]);
 
     return (

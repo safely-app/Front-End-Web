@@ -8,14 +8,14 @@ import {
     Dropdown,
     TextInput,
     Modal,
-    SearchBar
+    SearchBar,
+    CreateButton
 } from '../../common';
 import log from 'loglevel';
 import {
     notifyError,
     convertStringToRegex
 } from '../../utils';
-import { ToastContainer } from 'react-toastify';
 
 const ACCEPTED_REQUEST = "Accepted";
 const REFUSED_REQUEST = "Refused";
@@ -91,7 +91,7 @@ const RequestClaimSafeplaceInfoForm: React.FC<IRequestClaimSafeplaceInfoProps> =
 
     return (
         <Modal shown={shown} content={
-            <div className="Monitor-Info">
+            <div className="Monitor-Info text-center">
                 <TextInput key={`${requestClaimSafeplace?.id}-userId`} type="text" role="userId"
                     label="Identifiant d'utilisateur" value={requestClaimSafeplace?.userId as string} setValue={setUserId} />
                 <TextInput key={`${requestClaimSafeplace?.id}-safeplaceId`} type="text" role="safeplaceId"
@@ -107,7 +107,6 @@ const RequestClaimSafeplaceInfoForm: React.FC<IRequestClaimSafeplaceInfoProps> =
                 <TextInput key={`${requestClaimSafeplace?.id}-adminComment`} type="text" role="adminComment"
                     label="Commentaire administrateur" value={requestClaimSafeplace?.adminComment !== undefined ? requestClaimSafeplace.adminComment : ""} setValue={setAdminComment} />
                 {buttons.map(button => button)}
-                <ToastContainer />
             </div>
         }/>
     );
@@ -169,7 +168,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
             setRequestClaimSafeplace(acceptedRequest);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -188,7 +187,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
             setShownModal(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -215,7 +214,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                 </ul>
             </button>
             <Modal shown={refusedMessage !== undefined} content={
-                <div className="Monitor-Info">
+                <div className="Monitor-Info text-center">
                     <TextInput type="text" role="comment" label="Commentaire"
                         value={refusedMessage as string} setValue={setRefusedMessage} />
                     <Button text="Valider" onClick={refuseRequest} type="warning" />
@@ -300,7 +299,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
             setShowModal(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -319,7 +318,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
             setShowModal(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -333,7 +332,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
             setShowModal(false);
         } catch (e) {
             log.error(e);
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -408,7 +407,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
 
     return (
         <div style={{textAlign: "center"}}>
-            <button className="w-50 h-full justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 mb-4" onClick={onCreateButtonClick}>Créer une nouvelle requête de safeplace</button>
+            <CreateButton text="Créer une nouvelle requête de safeplace" onClick={onCreateButtonClick} />
             <RequestClaimSafeplaceMonitorFilter searchBarValue={searchText} setDropdownValue={setRequestClaimSafeplaceStatus} setSearchBarValue={setSearchText} />
             <RequestClaimSafeplaceInfoForm
                 shown={newRequestClaimSafeplace !== undefined}
@@ -439,7 +438,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
                         ]}
                     />
                 }
-               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 m-4">
+               <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 p-4">
                     {filterRequestClaimSafeplaces().map((requestClaimSafeplace, index) =>
                         <RequestClaimSafeplaceInfoListElement
                             key={index}
@@ -452,7 +451,6 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
                     )}
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 };

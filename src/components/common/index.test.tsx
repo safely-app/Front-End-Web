@@ -2,11 +2,11 @@ import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import {
     Button,
+    CreateButton,
     TextInput,
     Dropdown,
     SearchBar,
     NavBar,
-    Profile
 } from './index';
 
 test('simulate click', () => {
@@ -18,6 +18,39 @@ test('simulate click', () => {
 
     fireEvent.click(screen.getByText("click"));
     expect(onClick).toHaveBeenCalled();
+});
+
+test('simulate CreateButton click', () => {
+    const onClick = jest.fn();
+
+    render(
+        <CreateButton text="click" onClick={onClick} />
+    );
+
+    fireEvent.click(screen.getByText("click"));
+    expect(onClick).toHaveBeenCalled();
+});
+  
+test('simulate mouse over', () => {
+    const onMouseOver = jest.fn();
+
+    render(
+        <Button text="click" onClick={jest.fn()} onMouseOver={onMouseOver} />
+    );
+
+    fireEvent.mouseOver(screen.getByText("click"));
+    expect(onMouseOver).toHaveBeenCalled();
+});
+
+test('simulate mouse out', () => {
+    const onMouseOut = jest.fn();
+
+    render(
+        <Button text="click" onClick={jest.fn()} onMouseOut={onMouseOut} />
+    );
+
+    fireEvent.mouseOut(screen.getByText("click"));
+    expect(onMouseOut).toHaveBeenCalled();
 });
 
 test('simulate TextInput', () => {
@@ -75,14 +108,4 @@ test('test navbar', () => {
 
     expect(firstFn).toHaveBeenCalled();
     expect(secondFn).toHaveBeenCalled();
-});
-
-test('test profile component', () => {
-    render(
-        <Profile elements={[
-            <p>Test text</p>
-        ]} />
-    );
-
-    expect(screen.getByText('Test text')).toBeInTheDocument();
 });

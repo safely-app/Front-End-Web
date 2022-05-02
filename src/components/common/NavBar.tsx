@@ -14,13 +14,13 @@ const NavBar: React.FC<INavBarProps> = ({
     elements
 }) => {
     return (
-        <div className='navbar'>
-            <ul>
+        <div className='px-4'>
+            <ul className='overflow-hidden bg-blue-safely-dark border-solid border-2 border-white rounded-lg mt-2 p-2'>
                 {elements.map((element, index) =>
-                    <li key={index}>
+                    <li key={index} className='float-left'>
                         <button
                             data-testid={`${element.text}-navbar-button-id`}
-                            className='navbar-button'
+                            className='p-2 font-bold text-xl cursor-pointer text-white hover:opacity-70 mx-2'
                             onClick={element.onClick}
                         >
                             {element.text}

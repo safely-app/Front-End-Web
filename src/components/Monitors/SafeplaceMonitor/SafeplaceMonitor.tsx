@@ -11,7 +11,6 @@ import {
     SearchBar
 } from '../../common';
 import log from 'loglevel';
-import { ToastContainer } from 'react-toastify';
 import { SAFEPLACE_TYPES } from './SafeplaceMonitorVariables';
 import {
     notifyError,
@@ -80,7 +79,7 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
 
     return (
         <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="Monitor-Info">
+            <div className="Monitor-Info text-center">
                 <TextInput key={`${safeplace.id}-id`} type="text" role="id"
                     label="Identifiant de la safeplace" value={safeplace.id} setValue={() => {}} readonly={true} />
                 <TextInput key={`${safeplace.id}-name`} type="text" role="name"
@@ -94,9 +93,9 @@ const SafeplaceInfoForm: React.FC<ISafeplaceInfoProps> = ({
                 <TextInput key={`${safeplace.id}-type`} type="text" role="type"
                     label="Type" value={safeplace.type} setValue={setType} />
                 <div className="grid-container">
-                    <TextInput key={`${safeplace.id}-coordinate1`} type="text" role="latitude" width="98%"
+                    <TextInput key={`${safeplace.id}-coordinate1`} type="text" role="latitude" className="w-full"
                         label="Latitude" value={safeplace.coordinate[0]} setValue={setLatitude} />
-                    <TextInput key={`${safeplace.id}-coordinate2`} type="text" role="longitude" width="98%"
+                    <TextInput key={`${safeplace.id}-coordinate2`} type="text" role="longitude" className="w-full"
                         label="Longitude" value={safeplace.coordinate[1]} setValue={setLongitude} />
                 </div>
                 <TextInput key={`${safeplace.id}-ownerId`} type="text" role="ownerId"
@@ -180,7 +179,7 @@ const SafeplaceMonitor: React.FC = () => {
             setSafeplace(focusSafeplace as ISafeplace);
             setFocusSafeplace(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -190,7 +189,7 @@ const SafeplaceMonitor: React.FC = () => {
             removeSafeplace(safeplace);
             setFocusSafeplace(undefined);
         } catch (e) {
-            notifyError((e as Error).message);
+            notifyError(e);
         }
     };
 
@@ -228,6 +227,7 @@ const SafeplaceMonitor: React.FC = () => {
             log.log(gotSafeplaces);
         }).catch(error => {
             log.error(error);
+            notifyError(error);
         })
     }, [userCredientials]);
 
@@ -244,7 +244,7 @@ const SafeplaceMonitor: React.FC = () => {
                         deleteSafeplace={deleteSafeplace}
                     />
                 }
-                <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 m-4">
+                <div className="grid gap-4 grid-cols-1 lg:grid-cols-2 p-4">
                     {filterSafeplaces().map((safeplace, index) =>
                         <SafeplaceInfoListElement
                             key={index}
@@ -254,7 +254,6 @@ const SafeplaceMonitor: React.FC = () => {
                     )}
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 }

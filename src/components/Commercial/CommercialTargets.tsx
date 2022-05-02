@@ -62,7 +62,7 @@ const TargetModal: React.FC<ITargetModalProps> = ({
                 <TextInput key={`${target.id}-ageRange`} type="text" role="ageRange"
                     label="Fourchette d'âge" value={target.ageRange} setValue={setAgeRange} />
                 <TextInput key={`${target.id}-interestField`} type="text" role="interestField"
-                    label="Ajouter un centre d'intêret" value={interestField} setValue={setInterestField} onKeyPress={onEnterKeyPressed} />
+                    label="Ajouter un centre d'intérêt" value={interestField} setValue={setInterestField} onKeyPress={onEnterKeyPressed} />
                 <ul className="target-campaign-list">
                     {target.interests.map((interest, index) => {
                         return <li key={index}><button className="target-delete-btn" onClick={() => removeInterest(interest)}>x</button> {interest}</li>
@@ -88,9 +88,9 @@ const TargetInfoDisplayer: React.FC<ITargetInfoDisplayerProps> = ({
     };
 
     return (
-        <div key={target.id} className="Monitor-list-element">
-            <button className="Monitor-list-element-btn" onClick={handleClick}>
-                <ul className="Monitor-list">
+        <div key={target.id} className="bg-white p-4 p-4">
+            <button className="w-full h-full" onClick={handleClick}>
+                <ul className="text-left w-full h-full">
                     <li key={`${target.id}-name`}><b>Nom : </b>{target.name}</li>
                     <li key={`${target.id}-csp`}><b>CSP : </b>{target.csp}</li>
                     <li key={`${target.id}-ageRange`}><b>Fourchette d'âge : </b>{target.ageRange}</li>
@@ -150,7 +150,7 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                 cancelNewTarget();
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };
@@ -162,7 +162,7 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                 setFocusTarget(undefined);
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };
@@ -174,7 +174,7 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
                 setFocusTarget(undefined);
                 log.log(result);
             }).catch(err => {
-                notifyError((err as Error).message);
+                notifyError(err);
                 log.error(err);
             });
     };

@@ -6,6 +6,7 @@ import {
     Header,
     AppHeader
 } from './Header';
+import { canAccess, Role } from './utils';
 
 test('renders header', () => {
     render(
@@ -51,9 +52,9 @@ test('renders header links with on admin obligation', () => {
     render(
         <Provider store={store}>
             <Header links={[
-                { link: "/link1", name: "Link 1", onAdmin: true },
-                { link: "/link2", name: "Link 2", onAdmin: true },
-                { link: "/link3", name: "Link 3", onAdmin: false }
+                { link: "/link1", name: "Link 1", role: Role.ADMIN },
+                { link: "/link2", name: "Link 2", role: Role.ADMIN },
+                { link: "/link3", name: "Link 3", role: Role.NONE }
             ]} />
         </Provider>
     );
@@ -70,6 +71,23 @@ test('renders app header', () => {
         </Provider>
     );
 
-    expect(screen.getAllByText("Dashboard").length).toEqual(2);
     expect(screen.getAllByText("Connexion").length).toEqual(2);
+});
+
+test('ensure that canAccess returns true value', () => {
+    expect(canAccess("user", Role.USER)).toEqual(true);
+    expect(canAccess("user", Role.TRADER)).toEqual(false);
+    expect(canAccess("user", Role.ADMIN)).toEqual(false);
+
+    expect(canAccess("trader", Role.USER)).toEqual(true);
+    expect(canAccess("trader", Role.TRADER)).toEqual(true);
+    expect(canAccess("trader", Role.ADMIN)).toEqual(false);
+
+    expect(canAccess("admin", Role.USER)).toEqual(true);
+    expect(canAccess("admin", Role.TRADER)).toEqual(true);
+    expect(canAccess("admin", Role.ADMIN)).toEqual(true);
+
+    expect(canAccess("", Role.USER)).toEqual(false);
+    expect(canAccess("", Role.TRADER)).toEqual(false);
+    expect(canAccess("", Role.ADMIN)).toEqual(false);
 });
