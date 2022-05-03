@@ -25,6 +25,26 @@ test('ensure that getAllTarget occurs without technical errors', async () => {
     scope.done();
 });
 
+test('ensure that getAllCampaignByOwner occurs without technical errors', async () => {
+    const scope = nock(testURL)
+        .get('/commercial/campaign/owner/1')
+        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+
+    const response = await Commercial.getAllCampaignByOwner("1", "");
+    expect(response.status).toBe(200);
+    scope.done();
+});
+
+test('ensure that getAllTargetByOwner occurs without technical errors', async () => {
+    const scope = nock(testURL)
+        .get('/commercial/target/owner/1')
+        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+
+    const response = await Commercial.getAllTargetByOwner("1", "");
+    expect(response.status).toBe(200);
+    scope.done();
+});
+
 test('ensure that createCampaign occurs without technical errors', async () => {
     const scope = nock(testURL)
         .post('/commercial/campaign')
