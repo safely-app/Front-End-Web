@@ -19,6 +19,16 @@ it('get all professional', async () => {
     scope.done();
 });
 
+it('get professional from owner', async () => {
+    const scope = nock(baseURL)
+        .get("/professionalinfo/owner/1")
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+
+    const response = await ProfessionalInfo.getOwner("1", "");
+    expect(response.status).toEqual(200);
+    scope.done();
+});
+
 it('get professional', async () => {
     const scope = nock(baseURL)
         .get('/professionalinfo/1')
@@ -54,7 +64,7 @@ it('create new professional', async () => {
         type: ""
     };
 
-    const response = await ProfessionalInfo.create(professional, '');
+    const response = await ProfessionalInfo.create(professional);
     expect(response.status).toEqual(200);
     scope.done();
 });
