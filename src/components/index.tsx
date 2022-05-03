@@ -5,8 +5,7 @@ import {
     ResetPassword
 } from './Authentication/Authentication';
 import Version from './Version/Version';
-import UserProfile from './Profiles/UserProfile';
-import TraderProfile from './Profiles/TraderProfile';
+import Profile from './Profiles/Profile';
 import Safeplaces from './Safeplaces/Safeplaces';
 import Monitor from './Monitors/Monitor';
 import SafeplaceSingle from './SafeplaceSingle/Safeplace';
@@ -20,9 +19,8 @@ export {
     ResetPassword,
     Version,
     Safeplaces,
-    UserProfile,
     Monitor,
-    TraderProfile,
+    Profile,
     SafeplaceSingle,
     VerifyHours,
     CommercialPage

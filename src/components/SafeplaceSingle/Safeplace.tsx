@@ -52,7 +52,7 @@ const SafeplaceSingle: React.FC = () => {
     }, [userCredientials]);
 
     return (
-        <div className="Profile-container">
+        <div className="w-full h-full">
             <AppHeader />
             {(safeplace !== undefined && isSafeplaceValid()) &&
                 <Profile elements={[
