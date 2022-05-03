@@ -2,10 +2,7 @@ import { render, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { store } from '../../redux';
 import Profile from './Profile';
-import nock from 'nock';
 import Router from '../../Router';
-
-const testURL = process.env.REACT_APP_SERVER_URL as string;
 
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));

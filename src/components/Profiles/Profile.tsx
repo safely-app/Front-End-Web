@@ -73,7 +73,7 @@ enum InfoSearcher {
     SEARCHING,
     NOTFOUND,
     FOUND
-};
+}
 
 const months = [
     "Janvier",
@@ -140,7 +140,6 @@ interface ITraderProfileProps {
     isUpdateView: boolean;
     professional: IProfessional;
     searcherState: InfoSearcher;
-    setIsUpdateView: (isUpdateView: boolean) => void;
     setProfessional: (professional: IProfessional) => void;
     setSearcherState: (searcherState: InfoSearcher) => void;
 }
@@ -149,7 +148,6 @@ const TraderProfile: React.FC<ITraderProfileProps> = ({
     isUpdateView,
     professional,
     searcherState,
-    setIsUpdateView,
     setProfessional,
     setSearcherState
 }) => {
@@ -452,7 +450,6 @@ const Profile: React.FC = () => {
                             isUpdateView={isUpdateView}
                             professional={professional}
                             searcherState={searcherState}
-                            setIsUpdateView={setIsUpdateView}
                             setProfessional={setProfessional}
                             setSearcherState={setSearcherState}
                         />
