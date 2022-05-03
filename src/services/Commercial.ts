@@ -10,8 +10,16 @@ class Commercial {
         return createHttpConfig(this.baseURL, token).get("/commercial/campaign");
     }
 
+    getAllCampaignByOwner(id: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/commercial/campaign/owner/${id}`);
+    }
+
     getAllTarget(token: string) {
         return createHttpConfig(this.baseURL, token).get("/commercial/target");
+    }
+
+    getAllTargetByOwner(id: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/commercial/target/owner/${id}`);
     }
 
     createCampaign(data: ICampaign, token: string) {
