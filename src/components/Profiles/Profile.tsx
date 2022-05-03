@@ -191,14 +191,14 @@ const TraderProfile: React.FC<ITraderProfileProps> = ({
             <div>
                 <TextInput className="border-4 border-black-500/75" type="text" role="companyName" label="Nom de l'entreprise" value={professional.companyName} setValue={(value) => setProperty("companyName", value)} readonly={!isUpdateView} />
                 <div className="grid grid-cols-2 gap-2 w-3/5 mx-auto">
-                    <TextInput className="border-4 border-black-500/75 w-full" type="text" role="companyAddress" label="Adresse de l'entreprise" value={professional.companyAddress} setValue={(value) => setProperty("companyAddress", value)} width="99%" readonly={!isUpdateView} />
-                    <TextInput className="border-4 border-black-500/75 w-full" type="text" role="companyAddress2" label="Adresse de l'entreprise 2" value={professional.companyAddress2} setValue={(value) => setProperty("companyAddress2", value)} width="99%" readonly={!isUpdateView} />
+                    <TextInput className="border-4 border-black-500/75 w-full" type="text" role="companyAddress" label="Adresse de l'entreprise" value={professional.companyAddress} setValue={(value) => setProperty("companyAddress", value)} readonly={!isUpdateView} />
+                    <TextInput className="border-4 border-black-500/75 w-full" type="text" role="companyAddress2" label="Adresse de l'entreprise 2" value={professional.companyAddress2} setValue={(value) => setProperty("companyAddress2", value)} readonly={!isUpdateView} />
                 </div>
                 <TextInput className="border-4 border-black-500/75" type="text" role="billingAddress" label="Adresse de facturation" value={professional.billingAddress} setValue={(value) => setProperty("billingAddress", value)} readonly={!isUpdateView} />
                 <TextInput className="border-4 border-black-500/75" type="text" role="clientNumberTVA" label="Numéro de client TVA" value={professional.clientNumberTVA} setValue={(value) => setProperty("clientNumberTVA", value)} readonly={!isUpdateView} />
                 <div className="grid grid-cols-2 gap-2 w-3/5 mx-auto">
-                    <TextInput className="border-4 border-black-500/75 w-full" type="text" role="personalPhone" label="Numéro de téléphone personnel" value={professional.personalPhone} setValue={(value) => setProperty("personalPhone", value)} width="99%" readonly={!isUpdateView} />
-                    <TextInput className="border-4 border-black-500/75 w-full" type="text" role="companyPhone" label="Numéro de téléphone d'entreprise" value={professional.companyPhone} setValue={(value) => setProperty("companyPhone", value)} width="99%" readonly={!isUpdateView} />
+                    <TextInput className="border-4 border-black-500/75 w-full" type="text" role="personalPhone" label="Numéro de téléphone personnel" value={professional.personalPhone} setValue={(value) => setProperty("personalPhone", value)} readonly={!isUpdateView} />
+                    <TextInput className="border-4 border-black-500/75 w-full" type="text" role="companyPhone" label="Numéro de téléphone d'entreprise" value={professional.companyPhone} setValue={(value) => setProperty("companyPhone", value)} readonly={!isUpdateView} />
                 </div>
                 <TextInput className="border-4 border-black-500/75" type="text" role="type" label="Type d'entreprise" value={professional.type} setValue={(value) => setProperty("type", value)} readonly={!isUpdateView} />
                 <Button text="Afficher les informations optionelles" onClick={() => setIsOptionalHidden(!isOptionalHidden)} />
@@ -206,8 +206,8 @@ const TraderProfile: React.FC<ITraderProfileProps> = ({
                     <TextInput className="border-4 border-black-500/75" type="text" role="RCS" label="Immatriculation RCS" value={professional.RCS as string} setValue={(value) => setProperty("RCS", value)} readonly={!isUpdateView} />
                     <TextInput className="border-4 border-black-500/75" type="text" role="registrationCity" label="Ville d'enregistrement" value={professional.registrationCity as string} setValue={(value) => setProperty("registrationCity", value)} readonly={!isUpdateView} />
                     <div className="grid grid-cols-2 gap-2 w-3/5 mx-auto">
-                        <TextInput className="border-4 border-black-500/75 w-full" type="text" role="SIREN" label="Numéro de SIREN" value={professional.SIREN as string} setValue={(value) => setProperty("SIREN", value)} width="99%" readonly={!isUpdateView} />
-                        <TextInput className="border-4 border-black-500/75 w-full" type="text" role="SIRET" label="Numéro de SIRET" value={professional.SIRET as string} setValue={(value) => setProperty("SIRET", value)} width="99%" readonly={!isUpdateView} />
+                        <TextInput className="border-4 border-black-500/75 w-full" type="text" role="SIREN" label="Numéro de SIREN" value={professional.SIREN as string} setValue={(value) => setProperty("SIREN", value)} readonly={!isUpdateView} />
+                        <TextInput className="border-4 border-black-500/75 w-full" type="text" role="SIRET" label="Numéro de SIRET" value={professional.SIRET as string} setValue={(value) => setProperty("SIRET", value)} readonly={!isUpdateView} />
                     </div>
                     <TextInput className="border-4 border-black-500/75" type="text" role="artisanNumber" label="Numéro d'artisan" value={professional.artisanNumber as string} setValue={(value) => setProperty("artisanNumber", value)} readonly={!isUpdateView} />
                 </div>
@@ -302,7 +302,7 @@ const Profile: React.FC = () => {
                 setSearcherState(InfoSearcher.FOUND);
             }).catch(err => {
                 log.error(err);
-                notifyError((err as Error).message);
+                notifyError(err);
                 setSearcherState(InfoSearcher.NOTFOUND);
             });
 
@@ -352,7 +352,7 @@ const Profile: React.FC = () => {
 
             setIsUpdateView(false);
         } catch (err) {
-            notifyError((err as Error).message);
+            notifyError(err);
             log.error(err);
         }
     };
@@ -414,9 +414,9 @@ const Profile: React.FC = () => {
                 notifySuccess("Votre carte a été enregistré !");
                 setIsStripeOpen(false);
             }
-        } catch (error) {
-            log.error(error);
-            notifyError((error as Error).message);
+        } catch (err) {
+            log.error(err);
+            notifyError(err);
         }
     };
 
