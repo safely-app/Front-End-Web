@@ -70,7 +70,7 @@ const CommercialPage: React.FC = () => {
     }, [userCredentials]);
 
     return (
-        <div className="Profile-container">
+        <div className="w-full h-full">
             <AppHeader />
             <div className="Commercial-grid-container">
                 <CommercialPageCampaigns

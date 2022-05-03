@@ -11,10 +11,9 @@ const Modal: React.FC<IModalProps> = ({
     content
 }) => {
     return (
-        (shown === true) ?
-            <div className="modal">
-                {content}
-            </div> : <div />
+        <div hidden={!shown} className="modal">
+            {content}
+        </div>
     );
 };
 
