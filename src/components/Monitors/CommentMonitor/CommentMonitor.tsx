@@ -72,6 +72,8 @@ const CommentInfoDisplayer: React.FC<ICommentInfoDisplayerProps> = ({
         return `${text.slice(0, size)}${text.length > size ? '...' : ''}`;
     };
 
+    console.log(comment.hasBeenValidated);
+
     return (
         <div className="bg-white p-4 rounded">
             <button className="w-full h-full" onClick={() => onClick(comment)}>
@@ -80,15 +82,20 @@ const CommentInfoDisplayer: React.FC<ICommentInfoDisplayerProps> = ({
                     <li key={`${comment.id}-safeplaceId`}><b>Safeplace ID : </b>{comment.safeplaceId}</li>
                     <li key={`${comment.id}-safeplace-name`} hidden={!!!safeplace}><b>Nom de la safeplace : </b>{getShortText(`${safeplace?.name} - ${safeplace?.city}`)}</li>
                     <li key={`${comment.id}-comment`}><b>Commentaire : </b>{getShortText(comment.comment)}</li>
-                    <li key={`${comment.id}-grade`}>
-                        <ul className="inline-block">
-                            {[ 1, 2, 3, 4, 5 ].map(index =>
-                                <li key={`${comment.id}-grade-${index}`} className="float-left text-yellow-300">
-                                    {(comment.grade >= index) ? <FaStar /> : <FaRegStar />}
-                                </li>
-                            )}
-                        </ul>
-                    </li>
+                    <div className="flex">
+                        <li key={`${comment.id}-grade`}>
+                            <ul className="inline-block">
+                                {[ 1, 2, 3, 4, 5 ].map(index =>
+                                    <li key={`${comment.id}-grade-${index}`} className="float-left text-yellow-300">
+                                        {(comment.grade >= index) ? <FaStar /> : <FaRegStar />}
+                                    </li>
+                                )}
+                            </ul>
+                        </li>
+                        <li key={`${comment.id}-validate`} hidden={comment.hasBeenValidated} className="ml-auto text-red-500">
+                            En attente de validation
+                        </li>
+                    </div>
                 </ul>
             </button>
         </div>
@@ -97,14 +104,16 @@ const CommentInfoDisplayer: React.FC<ICommentInfoDisplayerProps> = ({
 
 interface ICommentMonitorFilterProps {
     searchBarValue: string;
-    setDropdownValue: (value: string) => void;
+    setCommentGrade: (value: string) => void;
     setSearchBarValue: (value: string) => void;
+    setCommentValidate: (value: string) => void;
 }
 
 const CommentMonitorFilter: React.FC<ICommentMonitorFilterProps> = ({
     searchBarValue,
-    setDropdownValue,
-    setSearchBarValue
+    setCommentGrade,
+    setSearchBarValue,
+    setCommentValidate
 }) => {
     const COMMENT_GRADES = [
         'all',
@@ -115,10 +124,19 @@ const CommentMonitorFilter: React.FC<ICommentMonitorFilterProps> = ({
         '5'
     ];
 
+    const COMMENT_VALIDATE = [
+        'all',
+        'validé',
+        'non validé'
+    ];
+
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 md:grid-rows-1 px-4">
-            <Dropdown width="10em" defaultValue="all" values={COMMENT_GRADES} setValue={setDropdownValue} />
+        <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-3 md:grid-rows-1 px-4">
+            <Dropdown width="10em" defaultValue="all" values={COMMENT_GRADES} setValue={setCommentGrade} />
             <SearchBar label="Rechercher un commentaire" value={searchBarValue} setValue={setSearchBarValue} />
+            <div className="ml-auto">
+                <Dropdown width="10em" defaultValue="all" values={COMMENT_VALIDATE} setValue={setCommentValidate} />
+            </div>
         </div>
     );
 };
@@ -128,8 +146,10 @@ const CommentMonitor: React.FC = () => {
     const [focusComment, setFocusComment] = useState<IComment | undefined>(undefined);
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
     const [comments, setComments] = useState<IComment[]>([]);
-    const [commentGrade, setCommentGrade] = useState("all");
+
     const [searchText, setSearchText] = useState("");
+    const [commentGrade, setCommentGrade] = useState("all");
+    const [commentValidate, setCommentValidate] = useState("all");
 
     const getSafeplace = (safeplaceId: string): ISafeplace | undefined => {
         return safeplaces.find(safeplace => safeplace.id === safeplaceId);
@@ -163,13 +183,27 @@ const CommentMonitor: React.FC = () => {
         }
     };
 
+    const validateComment = async (comment: IComment) => {
+        try {
+            await Comment.validate(comment.id, userCredentials.token);
+
+            setComment({ ...comment, hasBeenValidated: true});
+
+            if (focusComment !== undefined)
+                setFocusComment({ ...focusComment, hasBeenValidated: true });
+        } catch (err) {
+            notifyError((err as Error).message);
+        }
+    };
+
     const filterComments = (): IComment[] => {
         const lowerSearchText = convertStringToRegex(searchText.toLocaleLowerCase());
 
-        if (searchText === "" && commentGrade === "all")
+        if (searchText === "" && commentGrade === "all" && commentValidate === "all")
             return comments;
         return comments
             .filter(comment => commentGrade !== "all" ? String(comment.grade) === commentGrade : true)
+            .filter(comment => commentValidate !== "all" ? comment.hasBeenValidated === (commentValidate === "validé") : true)
             .filter(comment => comment.id.toLowerCase().match(lowerSearchText) !== null
                 || comment.userId.toLowerCase().match(lowerSearchText) !== null
                 || comment.safeplaceId.toLowerCase().match(lowerSearchText) !== null
@@ -205,7 +239,8 @@ const CommentMonitor: React.FC = () => {
                     userId: comment.userId,
                     safeplaceId: comment.safeplaceId,
                     comment: comment.comment,
-                    grade: comment.grade
+                    grade: comment.grade,
+                    hasBeenValidated: comment.hasBeenValidated
                 }) as IComment);
 
                 setComments(gotComments);
@@ -221,13 +256,22 @@ const CommentMonitor: React.FC = () => {
 
     return (
         <div className="text-center">
-            <CommentMonitorFilter searchBarValue={searchText} setDropdownValue={setCommentGrade} setSearchBarValue={setSearchText} />
+
+            <CommentMonitorFilter
+                searchBarValue={searchText}
+                setCommentGrade={setCommentGrade}
+                setSearchBarValue={setSearchText}
+                setCommentValidate={setCommentValidate}
+            />
+
             <div>
                 {(focusComment !== undefined) &&
                     <CommentInfoForm
                         comment={focusComment}
                         setComment={setFocusComment}
                         buttons={[
+                            <Button key="validate-id" text="Valider le commentaire" onClick={() => validateComment(focusComment)} hidden={focusComment.hasBeenValidated} width="100%" />,
+                            <hr className="w-2/3 mx-auto mt-4" hidden={focusComment.hasBeenValidated} />,
                             <Button key="save-id" text="Sauvegarder" onClick={() => saveCommentModification(focusComment)} width="100%" />,
                             <Button key="stop-id" text="Annuler" onClick={() => setFocusComment(undefined)} width="100%" />,
                             <Button key="delete-id" text="Supprimer" onClick={() => deleteComment(focusComment)} width="100%" type="warning" />

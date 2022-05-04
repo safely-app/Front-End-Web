@@ -4,4 +4,5 @@ export default interface IComment {
     safeplaceId: string;
     comment: string;
     grade: number;
+    hasBeenValidated: boolean;
 }

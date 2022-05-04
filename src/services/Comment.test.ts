@@ -88,7 +88,8 @@ test('ensure that create occurs without technical errors', async () => {
         userId: "",
         safeplaceId: "",
         comment: "",
-        grade: 0
+        grade: 0,
+        hasBeenValidated: true
     };
 
     const response = await Comment.create(comment, "");
@@ -111,10 +112,34 @@ test('ensure that update occurs without technical errors', async () => {
         userId: "",
         safeplaceId: "",
         comment: "",
-        grade: 0
+        grade: 0,
+        hasBeenValidated: true
     };
 
     const response = await Comment.update("1", comment, "");
+    expect(response.status).toBe(200);
+    scopeOptions.done();
+    scopeUpdate.done();
+});
+
+test('ensure that validate occurs without technical errors', async () => {
+    const scopeOptions = nock(testURL)
+        .options('/safeplace/comment/validate/1')
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+    const scopeUpdate = nock(testURL)
+        .put('/safeplace/comment/validate/1')
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+
+    const comment: IComment = {
+        id: "",
+        userId: "",
+        safeplaceId: "",
+        comment: "",
+        grade: 0,
+        hasBeenValidated: false
+    };
+
+    const response = await Comment.validate("1", "");
     expect(response.status).toBe(200);
     scopeOptions.done();
     scopeUpdate.done();
