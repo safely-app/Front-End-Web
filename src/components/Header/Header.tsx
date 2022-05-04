@@ -33,21 +33,21 @@ const HeaderNotif: React.FC = () => {
     setHidden(true);
   });
 
-  const getNotifications = () => {
-    Notification.getAll(userCredentials.token)
-      .then(result => {
-        const gotNotifs = result.data.map(notif => ({
-          id: notif._id,
-          ownerId: notif.ownerId,
-          title: notif.title,
-          description: notif.description
-        }));
-
-        setNotifs(gotNotifs);
-      }).catch(err => log.error(err));
-  };
-
   useEffect(() => {
+    const getNotifications = () => {
+      Notification.getAll(userCredentials.token)
+        .then(result => {
+          const gotNotifs = result.data.map(notif => ({
+            id: notif._id,
+            ownerId: notif.ownerId,
+            title: notif.title,
+            description: notif.description
+          }));
+
+          setNotifs(gotNotifs);
+        }).catch(err => log.error(err));
+    };
+
     getNotifications();
 
     const interval = setInterval(() => {
