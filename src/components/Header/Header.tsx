@@ -33,26 +33,33 @@ const HeaderNotif: React.FC = () => {
     setHidden(true);
   });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      Notification.getAll(userCredentials.token)
-        .then(result => {
-          const gotNotifs = result.data.map(notif => ({
-            id: notif._id,
-            ownerId: notif.ownerId,
-            title: notif.title,
-            description: notif.description
-          }));
+  const getNotifications = () => {
+    Notification.getAll(userCredentials.token)
+      .then(result => {
+        const gotNotifs = result.data.map(notif => ({
+          id: notif._id,
+          ownerId: notif.ownerId,
+          title: notif.title,
+          description: notif.description
+        }));
 
-          setNotifs(gotNotifs);
-        }).catch(err => log.error(err));
+        setNotifs(gotNotifs);
+      }).catch(err => log.error(err));
+  };
+
+  useEffect(() => {
+    getNotifications();
+
+    const interval = setInterval(() => {
+      getNotifications();
     }, 300000);
 
     return () => clearInterval(interval);
   }, [userCredentials]);
 
-  const removeNotif = (notif: INotification) => {
+  const removeNotif = async (notif: INotification) => {
     setNotifs(notifs.filter(n => n.id !== notif.id));
+    await Notification.delete(notif.id, userCredentials.token);
   };
 
   return (
