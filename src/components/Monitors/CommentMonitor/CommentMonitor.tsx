@@ -72,8 +72,6 @@ const CommentInfoDisplayer: React.FC<ICommentInfoDisplayerProps> = ({
         return `${text.slice(0, size)}${text.length > size ? '...' : ''}`;
     };
 
-    console.log(comment.hasBeenValidated);
-
     return (
         <div className="bg-white p-4 rounded">
             <button className="w-full h-full" onClick={() => onClick(comment)}>
@@ -271,7 +269,7 @@ const CommentMonitor: React.FC = () => {
                         setComment={setFocusComment}
                         buttons={[
                             <Button key="validate-id" text="Valider le commentaire" onClick={() => validateComment(focusComment)} hidden={focusComment.hasBeenValidated} width="100%" />,
-                            <hr className="w-2/3 mx-auto mt-4" hidden={focusComment.hasBeenValidated} />,
+                            <hr key="hr-id" className="w-2/3 mx-auto mt-4" hidden={focusComment.hasBeenValidated} />,
                             <Button key="save-id" text="Sauvegarder" onClick={() => saveCommentModification(focusComment)} width="100%" />,
                             <Button key="stop-id" text="Annuler" onClick={() => setFocusComment(undefined)} width="100%" />,
                             <Button key="delete-id" text="Supprimer" onClick={() => deleteComment(focusComment)} width="100%" type="warning" />

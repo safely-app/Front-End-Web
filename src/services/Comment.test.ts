@@ -130,15 +130,6 @@ test('ensure that validate occurs without technical errors', async () => {
         .put('/safeplace/comment/validate/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
 
-    const comment: IComment = {
-        id: "",
-        userId: "",
-        safeplaceId: "",
-        comment: "",
-        grade: 0,
-        hasBeenValidated: false
-    };
-
     const response = await Comment.validate("1", "");
     expect(response.status).toBe(200);
     scopeOptions.done();
