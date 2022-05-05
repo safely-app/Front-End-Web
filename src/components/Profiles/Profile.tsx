@@ -302,8 +302,9 @@ const Profile: React.FC = () => {
                 setSearcherState(InfoSearcher.FOUND);
             }).catch(err => {
                 log.error(err);
-                notifyError(err);
                 setSearcherState(InfoSearcher.NOTFOUND);
+                if (err.response === undefined || err.response.status !== 404)
+                    notifyError(err);
             });
 
         Safeplace.getByOwnerId(userCredentials._id, userCredentials.token)
@@ -319,7 +320,7 @@ const Profile: React.FC = () => {
                     coordinate: response.data.coordinate,
                     ownerId: response.data.ownerId
                 } as ISafeplace ]))
-            .catch(err => console.error(err));
+            .catch(err => log.error(err));
     }, [userCredentials]);
 
     useEffect(() => {
@@ -447,7 +448,7 @@ const Profile: React.FC = () => {
                         <hr className="w-1/2 mx-auto my-4" />
 
                         <TraderProfile
-                            isUpdateView={isUpdateView}
+                            isUpdateView={searcherState === InfoSearcher.NOTFOUND ? true : isUpdateView}
                             professional={professional}
                             searcherState={searcherState}
                             setProfessional={setProfessional}
@@ -463,14 +464,14 @@ const Profile: React.FC = () => {
 
                         <div className="my-8"></div>
 
-                        <TraderProfileShopList shops={shops} />
-
-                        <div className="my-8"></div>
-
-                        <div hidden={paymentSolutions.length === 0}>
-                            <PaymentSolutionList paymentSolutions={paymentSolutions} />
+                        <div hidden={professional.id === ""}>
+                            <TraderProfileShopList shops={shops} />
+                            <div className="my-8"></div>
+                            <div hidden={paymentSolutions.length === 0}>
+                                <PaymentSolutionList paymentSolutions={paymentSolutions} />
+                            </div>
+                            <Button text="Enregistrer une solution de payement" onClick={() => setIsStripeOpen(true)} />
                         </div>
-                        <Button text="Enregistrer une solution de payement" onClick={() => setIsStripeOpen(true)} />
 
                     </div>
                 </div>

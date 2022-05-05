@@ -24,7 +24,11 @@ class ProfessionalInfo {
 
         if (validateProfessional.isValid === false)
             throw new Error(validateProfessional.error);
-        return createHttpConfig(this.baseURL).post("/professionalinfo", tmpData);
+        return createHttpConfig(this.baseURL).post("/professionalinfo", {
+            ...tmpData,
+            companyAddress2: (tmpData.companyAddress2 === "")
+                ? " " : tmpData.companyAddress2
+        });
     }
 
     update(_id: string, data: IProfessional, token: string) {
