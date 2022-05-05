@@ -30,13 +30,17 @@ class Comment {
     }
 
     create(comment: IComment, token: string) {
-        const { id, ...data } = comment;
+        const { id, hasBeenValidated, ...data } = comment;
         return createHttpConfig(this.baseURL, token).post("/safeplace/comment", data);
     }
 
     update(_id: string, comment: IComment, token: string) {
-        const { id, userId, safeplaceId, ...data } = comment;
+        const { id, userId, safeplaceId, hasBeenValidated, ...data } = comment;
         return createHttpConfig(this.baseURL, token).put(`/safeplace/comment/${_id}`, data);
+    }
+
+    validate(id: string, token: string) {
+        return createHttpConfig(this.baseURL, token).put(`/safeplace/comment/validate/${id}`);
     }
 
     delete(id: string, token: string) {
