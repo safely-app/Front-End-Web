@@ -80,23 +80,11 @@ const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
 test('render CommercialPage', async () => {
-    const scopeCampaign = nock(testURL)
-        .get('/commercial/campaign')
-        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
-    const scopeTarget = nock(testURL)
-        .get('/commercial/target')
-        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
-
     render(
         <Provider store={store}>
             <CommercialPage />
         </Provider>
     );
-
-    await act(async () => await testDelay(1000));
-
-    scopeCampaign.done();
-    scopeTarget.done();
 });
 
 test('render CommercialPageCampaigns', () => {
