@@ -28,7 +28,7 @@ test('renders monitor', async () => {
         ], { 'Access-Control-Allow-Origin': '*' });
 
     const scopeSafeplaceUpdate = nock(testUrl)
-        .get('/safeplace/safeplaceUpdate')
+        .get('/commercial/modif')
         .reply(200, [
             {
                 _id: "1",

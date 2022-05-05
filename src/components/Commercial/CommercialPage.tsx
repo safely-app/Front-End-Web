@@ -39,7 +39,7 @@ const CommercialPage: React.FC = () => {
     };
 
     useEffect(() => {
-        Commercial.getAllCampaign(userCredentials.token)
+        Commercial.getAllCampaignByOwner(userCredentials._id, userCredentials.token)
             .then(result => {
                 const gotCampaigns = result.data.map(campaign => ({
                     id: campaign._id,
@@ -54,7 +54,7 @@ const CommercialPage: React.FC = () => {
                 setCampaigns(gotCampaigns);
             }).catch(err => log.error(err));
 
-        Commercial.getAllTarget(userCredentials.token)
+        Commercial.getAllTargetByOwner(userCredentials._id, userCredentials.token)
             .then(result => {
                 const gotTargets = result.data.map(target => ({
                     id: target._id,
@@ -70,7 +70,7 @@ const CommercialPage: React.FC = () => {
     }, [userCredentials]);
 
     return (
-        <div className="Profile-container">
+        <div className="w-full h-full">
             <AppHeader />
             <div className="Commercial-grid-container">
                 <CommercialPageCampaigns

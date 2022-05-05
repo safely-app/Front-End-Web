@@ -151,7 +151,7 @@ test('ensure that request claim safeplace filtering is working', async () => {
     });
 
     expect(screen.getByDisplayValue('is great')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('Pending')).toBeInTheDocument();
+    expect(screen.getAllByDisplayValue('Pending').length > 0).toBeTruthy();
 
     await act(async () => await testDelay(2000));
 

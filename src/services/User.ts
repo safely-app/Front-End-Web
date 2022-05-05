@@ -58,7 +58,7 @@ class User {
     forgotPassword(email: string) {
         if (!isEmailValid(email))
             throw new Error("Email invalide");
-        return createHttpConfig(this.baseURL).post("/user/forgotPasswo", {
+        return createHttpConfig(this.baseURL).post("/user/forgotPassword", {
             email: email
         });
     }
