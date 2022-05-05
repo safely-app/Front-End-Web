@@ -10,6 +10,10 @@ class ProfessionalInfo {
         return createHttpConfig(this.baseURL, token).get("/professionalinfo");
     }
 
+    getOwner(id: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/professionalinfo/owner/${id}`);
+    }
+
     get(id: string, token: string) {
         return createHttpConfig(this.baseURL, token).get(`/professionalinfo/${id}`);
     }

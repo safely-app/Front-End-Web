@@ -19,6 +19,16 @@ test('get all professional', async () => {
     scope.done();
 });
 
+test('get professional from owner', async () => {
+    const scope = nock(baseURL)
+        .get("/professionalinfo/owner/1")
+        .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+
+    const response = await ProfessionalInfo.getOwner("1", "");
+    expect(response.status).toEqual(200);
+    scope.done();
+});
+
 test('get professional', async () => {
     const scope = nock(baseURL)
         .get('/professionalinfo/1')
@@ -43,6 +53,7 @@ test('create new professional', async () => {
         });
 
     const professional: IProfessional = {
+        id: "",
         userId: "",
         companyName: "Entreprise test",
         companyAddress: "13 Allée des Cèdres",
@@ -61,6 +72,7 @@ test('create new professional', async () => {
 
 test('try to create new professional with invalid data', async () => {
     const professional: IProfessional = {
+        id: "",
         userId: "",
         companyName: "Entreprise test",
         companyAddress: "13 Allée des Cèdres",
@@ -89,6 +101,7 @@ test('update professional', async () => {
         });
 
     const professional: IProfessional = {
+        id: "",
         userId: "",
         companyName: "Entreprise test",
         companyAddress: "13 Allée des Cèdres",
@@ -108,6 +121,7 @@ test('update professional', async () => {
 
 test('try to update professional with invalid data', async () => {
     const professional: IProfessional = {
+        id: "",
         userId: "",
         companyName: "Entreprise test",
         companyAddress: "13 Allée des Cèdres",

@@ -299,7 +299,7 @@ const SafeplaceSingle: React.FC = () => {
     }, [userCredientials]);
 
     return (
-        <div>
+        <div className="w-full h-full">
             <AppHeader />
             {!requestFinished && <CommonLoader height={80} width={80} color='#a19b96' />}
             {requestFinished && (

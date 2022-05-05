@@ -10,6 +10,7 @@ interface IButtonProps {
     onMouseOver?: () => void;
     onMouseOut?: () => void;
     disabled?: boolean;
+    hidden?: boolean;
 }
 
 const Button: React.FC<IButtonProps> = ({
@@ -19,7 +20,8 @@ const Button: React.FC<IButtonProps> = ({
     type,
     onMouseOver,
     onMouseOut,
-    disabled
+    disabled,
+    hidden
 }) => {
 
     const styles = {
@@ -41,7 +43,7 @@ const Button: React.FC<IButtonProps> = ({
     };
 
     return (
-        <div>
+        <div hidden={hidden !== undefined ? hidden : false}>
             <button
                 className={type !== undefined ? styles[type] : styles["default"]}
                 style={{ width: width !== undefined ? width : "60%" }}
