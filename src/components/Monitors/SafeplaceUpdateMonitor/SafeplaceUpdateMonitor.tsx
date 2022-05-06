@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux';
-import { Safeplace, SafeplaceUpdate } from '../../../services';
+import { Notification, Safeplace, SafeplaceUpdate } from '../../../services';
 import ISafeplace from '../../interfaces/ISafeplace';
 import ISafeplaceUpdate from '../../interfaces/ISafeplaceUpdate';
 import {
@@ -237,7 +237,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
 
         try {
             await Safeplace.update(safeplace.id, safeplace, userCredientials.token);
-            deleteSafeplaceUpdate(safeplaceUpdate);
+            await deleteSafeplaceUpdate(safeplaceUpdate);
         } catch (e) {
             notifyError(e);
         }

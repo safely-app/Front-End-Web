@@ -185,7 +185,7 @@ export const SafeplaceSingleInfo: React.FC<ISafeplaceSingleInfoProps> = ({
 }) => {
     const [onUpdate, setOnUpdate] = useState(false);
     const [updateSafeplace, setUpdateSafeplace] = useState(safeplace);
-    const userCredientials = useAppSelector(state => state.user.credentials);
+    const userCredentials = useAppSelector(state => state.user.credentials);
 
     const updateField = (field: string, value: string) => {
         if (updateSafeplace.hasOwnProperty(field))
@@ -201,8 +201,9 @@ export const SafeplaceSingleInfo: React.FC<ISafeplaceSingleInfoProps> = ({
         try {
             const response = await SafeplaceUpdate.create({
                 ...updateSafeplace,
+                ownerId: userCredentials._id,
                 safeplaceId: safeplace.id
-            }, userCredientials.token);
+            }, userCredentials.token);
 
             log.log(response);
             setOnUpdate(false);

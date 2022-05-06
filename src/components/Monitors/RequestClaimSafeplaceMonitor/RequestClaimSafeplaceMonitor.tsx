@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux';
-import { RequestClaimSafeplace } from '../../../services';
+import { RequestClaimSafeplace, Notification, Safeplace } from '../../../services';
 import IRequestClaimSafeplace from '../../interfaces/IRequestClaimSafeplace';
 import {
     Button,
@@ -16,6 +16,7 @@ import {
     notifyError,
     convertStringToRegex
 } from '../../utils';
+import ISafeplace from '../../interfaces/ISafeplace';
 
 const ACCEPTED_REQUEST = "Accepted";
 const REFUSED_REQUEST = "Refused";
@@ -163,6 +164,18 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                 acceptedRequest,
                 userCredientials.token
             );
+
+            await Safeplace.update(requestClaimSafeplace.safeplaceId, {
+                ownerId: requestClaimSafeplace.userId,
+                dayTimetable: [ null, null, null, null, null, null, null ]
+            } as ISafeplace, userCredientials.token);
+
+            await Notification.create({
+                id: "",
+                ownerId: requestClaimSafeplace.userId,
+                title: "Requête de commerce",
+                description: "Votre commerce a été relié à votre compte. Retrouvez le dans votre Profil."
+            }, userCredientials.token);
 
             log.log(response);
             setRequestClaimSafeplace(acceptedRequest);

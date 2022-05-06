@@ -18,7 +18,7 @@ import {
 } from '../../services';
 import { AppHeader } from '../Header/Header';
 import { Link, Redirect } from 'react-router-dom';
-import { disconnect, useAppDispatch, useAppSelector } from '../../redux';
+import { disconnect, setInfo, useAppDispatch, useAppSelector } from '../../redux';
 import { notifyError, notifySuccess } from '../utils';
 import StripeCard from './StripeCard';
 import log from 'loglevel';
@@ -151,6 +151,8 @@ export const TraderProfile: React.FC<ITraderProfileProps> = ({
     setProfessional,
     setSearcherState
 }) => {
+    const dispatch = useAppDispatch();
+    const userInfo = useAppSelector(state => state.user.userInfo);
     const [isOptionalHidden, setIsOptionalHidden] = useState(true);
 
     const createTraderAccount = async () => {
@@ -173,6 +175,11 @@ export const TraderProfile: React.FC<ITraderProfileProps> = ({
                 artisanNumber: response.data.artisanNumber,
                 type: response.data.type
             };
+
+            dispatch(setInfo({
+                ...userInfo,
+                role: "trader"
+            }));
 
             setProfessional(gotProfessional);
             setSearcherState(InfoSearcher.FOUND);
@@ -225,7 +232,6 @@ const Profile: React.FC = () => {
     const userUserInfo = useAppSelector(state => state.user.userInfo);
     const userCredentials = useAppSelector(state => state.user.credentials);
 
-    const [isDeleted, setIsDeleted] = useState(false);
     const [wantDelete, setWantDelete] = useState(false);
     const [isStripeOpen, setIsStripeOpen] = useState(false);
     const [isUpdateView, setIsUpdateView] = useState(false);
@@ -376,7 +382,7 @@ const Profile: React.FC = () => {
             log.error(err);
         } finally {
             dispatch(disconnect());
-            setIsDeleted(true);
+            window.location.href = "/";
         }
     };
 
@@ -475,7 +481,6 @@ const Profile: React.FC = () => {
 
                     </div>
                 </div>
-                {isDeleted && <Redirect key="6" to="/" />}
                 <Modal shown={wantDelete} content={
                     <div className="text-center p-12">
                         <p>Êtes-vous sûr de vouloir supprimer votre compte ?</p>
