@@ -44,7 +44,7 @@ test('renders UserProfile', () => {
     );
 });
 
-test('renders UserProfile', () => {
+test('renders TraderProfile', () => {
     const professional = {
         id: "1",
         type: "test",
@@ -59,13 +59,15 @@ test('renders UserProfile', () => {
     };
 
     render(
-        <TraderProfile
-            isUpdateView={false}
-            professional={professional}
-            searcherState={InfoSearcher.FOUND}
-            setProfessional={() => {}}
-            setSearcherState={() => {}}
-        />
+        <Provider store={store}>
+            <TraderProfile
+                isUpdateView={false}
+                professional={professional}
+                searcherState={InfoSearcher.FOUND}
+                setProfessional={() => {}}
+                setSearcherState={() => {}}
+            />
+        </Provider>
     );
 });
 

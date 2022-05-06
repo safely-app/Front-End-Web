@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../redux';
-import { Notification, Safeplace, SafeplaceUpdate } from '../../../services';
+import { Safeplace, SafeplaceUpdate } from '../../../services';
 import ISafeplace from '../../interfaces/ISafeplace';
 import ISafeplaceUpdate from '../../interfaces/ISafeplaceUpdate';
 import {
