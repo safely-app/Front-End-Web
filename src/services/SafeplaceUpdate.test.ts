@@ -6,7 +6,7 @@ const baseURL = process.env.REACT_APP_SERVER_URL as string;
 
 test('get all safeplaces', async () => {
     const scope = nock(baseURL)
-        .get('/safeplace/safeplaceUpdate')
+        .get('/commercial/modif')
         .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
 
     const response = await SafeplaceUpdate.getAll("");
@@ -16,7 +16,7 @@ test('get all safeplaces', async () => {
 
 test('get safeplace', async () => {
     const scope = nock(baseURL)
-        .get('/safeplace/safeplaceUpdate/1')
+        .get('/commercial/modif/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
 
     const response = await SafeplaceUpdate.get("1", "");
@@ -26,7 +26,7 @@ test('get safeplace', async () => {
 
 test('create safeplace', async () => {
     const scope = nock(baseURL)
-        .post('/safeplace/safeplaceUpdate')
+        .post('/commercial/modif')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
 
     const data: ISafeplaceUpdate = {
@@ -47,10 +47,10 @@ test('create safeplace', async () => {
 
 test('update safeplace', async () => {
     const scopeOptions = nock(baseURL)
-        .options('/safeplace/safeplaceUpdate/1')
+        .options('/commercial/modif/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
     const scopeUpdate = nock(baseURL)
-        .put('/safeplace/safeplaceUpdate/1')
+        .put('/commercial/modif/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
 
     const data: ISafeplaceUpdate = {
@@ -72,10 +72,10 @@ test('update safeplace', async () => {
 
 test('delete safeplace', async () => {
     const scopeOptions = nock(baseURL)
-        .options('/safeplace/safeplaceUpdate/1')
+        .options('/commercial/modif/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
     const scopeUpdate = nock(baseURL)
-        .delete('/safeplace/safeplaceUpdate/1')
+        .delete('/commercial/modif/1')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
 
     const response = await SafeplaceUpdate.delete("1", "");

@@ -1,40 +1,100 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../redux';
 import logo from '../../assets/image/logo.png'
 import { canAccess, Role } from './utils';
+import { FaBell, FaCircle } from 'react-icons/fa';
+import INotification from '../interfaces/INotification';
+import { Notification } from '../../services';
+import log from 'loglevel';
+import './Header.css';
 
-// import profileimage from '../../assets/image/profile.png'
+const useOutsideAlerter = (ref, func: () => void) => {
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        func();
+      }
+    };
 
-// const HeaderProfile: React.FC = () => {
-//   return (
-//     <div className="flex items-center object-right lg:order-2">
-//       <button type="button" className="flex mr-3 text-sm bg-gray-800 rounded-full lg:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="dropdown">
-//         <span className="sr-only">Open user menu</span>
-//         <img className="w-20 h-20 rounded-full" src={profileimage} alt="userimg"></img>
-//       </button>
-//       <div className="hidden z-50 my-4 text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600" id="dropdown">
-//         <div className="py-3 px-4">
-//           <span className="block text-sm text-gray-900 dark:text-white">Bonnie Green</span>
-//           <span className="block text-sm font-medium text-gray-500 truncate dark:text-gray-400">name@email.com</span>
-//         </div>
-//         <ul className="py-1" aria-labelledby="dropdown">
-//           <li>
-//             <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard</div>
-//           </li>
-//           <li>
-//             <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</div>
-//           </li>
-//           <li>
-//             <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Earnings</div>
-//           </li>
-//           <li>
-//             <div className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign out</div>
-//           </li>
-//         </ul>
-//       </div>
-//     </div>
-//   );
-// };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref, func]);
+};
+
+const HeaderNotif: React.FC = () => {
+  const notifListRef = useRef(null);
+  const [hidden, setHidden] = useState(true);
+  const [notifs, setNotifs] = useState<INotification[]>([]);
+  const userCredentials = useAppSelector(state => state.user.credentials);
+
+  useOutsideAlerter(notifListRef, () => {
+    setHidden(true);
+  });
+
+  useEffect(() => {
+    const getNotifications = () => {
+      Notification.getAll(userCredentials.token)
+        .then(result => {
+          const gotNotifs = result.data.map(notif => ({
+            id: notif._id,
+            ownerId: notif.ownerId,
+            title: notif.title,
+            description: notif.description
+          }));
+
+          setNotifs(gotNotifs);
+        }).catch(err => log.error(err));
+    };
+
+    getNotifications();
+
+    const interval = setInterval(() => {
+      getNotifications();
+    }, 300000);
+
+    return () => clearInterval(interval);
+  }, [userCredentials]);
+
+  const removeNotif = async (notif: INotification) => {
+    setNotifs(notifs.filter(n => n.id !== notif.id));
+    await Notification.delete(notif.id, userCredentials.token);
+  };
+
+  return (
+    <div ref={notifListRef} className="p-1 px-8 text-2xl relative">
+      <button className="mt-2" onClick={() => setHidden(!hidden)}>
+        <FaBell />
+        <div style={{
+          marginTop: "-2.25em",
+          marginLeft: "1.5em",
+          fontSize: "10px"
+        }} className="absolute text-xs glow" hidden={notifs.length === 0}>
+          <FaCircle />
+        </div>
+      </button>
+
+      <div className="notif-list z-50 bg-white rounded shadow-md text-base text-left" hidden={hidden}>
+        <p className="p-2 text-center bg-gray-100 rounded font-bold">Notifications</p>
+        <ul className="p-4" hidden={notifs.length === 0}>
+          {notifs.slice(0, 5).map((notif, index) => {
+            return (
+              <li key={notif.id} className="pt-2 cursor-pointer" onClick={() => removeNotif(notif)}>
+                <span>{notif.title}</span>
+                <p className="text-sm">{notif.description}</p>
+                <hr className="mt-4" hidden={index + 1 === notifs.slice(0, 5).length} />
+              </li>
+            );
+          })}
+        </ul>
+        <p className="p-4" hidden={notifs.length > 0}>
+          Pas de notifications
+        </p>
+      </div>
+    </div>
+  );
+};
 
 interface HeaderLink {
   link: string;
@@ -64,14 +124,23 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
               <img object-left="true" className="h-20 w-20 ml-auto mr-auto" src={logo} alt="Logo Safely" />
               <span className="self-center text-2xl text-lg font-semibold whitespace-nowrap text-yellowS">Safely</span>
             </a>
-            <div className="xl:hidden flex-grow p-4">
-              <button className="border-solid border-2 rounded border-black float-right p-1" onClick={() => setIsMenuHidden(!isMenuHidden)}>
-                <svg viewBox="0 0 100 50" width="35" height="30">
-                  <rect y="0" width="100" height="8"></rect>
-                  <rect y="20" width="100" height="8"></rect>
-                  <rect y="40" width="100" height="8"></rect>
-                </svg>
-              </button>
+            <div className="flex-grow p-4">
+              <div className="float-right">
+                <div className="flex">
+                  <div className="xl:hidden my-auto">
+                    <HeaderNotif />
+                  </div>
+                  <div className="xl:hidden">
+                    <button className="border-solid border-3 rounded border-black p-1" onClick={() => setIsMenuHidden(!isMenuHidden)}>
+                      <svg viewBox="0 0 100 50" width="35" height="30">
+                        <rect y="0" width="100" height="8"></rect>
+                        <rect y="20" width="100" height="8"></rect>
+                        <rect y="40" width="100" height="8"></rect>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className="hidden w-full md:block md:w-auto" id="mobile-menu"></div>
@@ -86,7 +155,9 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
               )
             }
           </ul>
-          {/* <HeaderProfile /> */}
+          <div className="hidden xl:block absolute right-0">
+            <HeaderNotif />
+          </div>
         </div>
       </nav>
       <div className={`${isMenuHidden ? "hidden" : "block"} xl:hidden fixed bg-white top-0 right-0 min-w-max w-1/4 h-full z-10`}>
