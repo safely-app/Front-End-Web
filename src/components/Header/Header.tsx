@@ -190,6 +190,7 @@ export const AppHeader: React.FC = () => {
     { link: "/shops", name: "Commerces", onAuth: true, role: Role.USER },
     { link: "/commercial", name: "Commercial", onAuth: true, role: Role.TRADER },
     { link: "/admin", name: "Administration", onAuth: true, role: Role.ADMIN },
+    { link: "/bugreport", name: "Beta", onAuth: true },
     { link: "/logout", name: "Déconnexion", onAuth: true }
   ];
 

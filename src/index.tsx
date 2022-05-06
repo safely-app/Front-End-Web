@@ -12,7 +12,7 @@ import {
     ResetPassword,
     SafeplaceSingle,
     VerifyHours,
-    CommercialPage
+    CommercialPage,
 } from './components';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
@@ -20,6 +20,7 @@ import { Provider } from 'react-redux';
 import { store, persistor } from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import log from 'loglevel';
+import BugReport from './components/BugReport/BugReport';
 
 const routes = [
     { path: '/', exact: true, protected: false, render: <App /> },
@@ -33,7 +34,8 @@ const routes = [
     { path: '/commercial', exact: true, protected: true, render: <CommercialPage /> },
     { path: '/safeplace-page', exact: false, protected: false, render: <SafeplaceSingle /> },
     { path: '/reset', exact: false, protected: false, render: <ResetPassword /> },
-    { path: '/verifyHours', exact: false, protected: false, render: <VerifyHours /> }
+    { path: '/verifyHours', exact: false, protected: false, render: <VerifyHours /> },
+    { path: '/bugreport', exact: false, protected: true, render: <BugReport /> }
 ];
 
 log.setLevel((process.env.REACT_APP_STAGE === "prod")

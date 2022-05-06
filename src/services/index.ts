@@ -8,6 +8,7 @@ import Commercial from './Commercial';
 import SafeplaceUpdate from './SafeplaceUpdate';
 import Notification from './Notification';
 import Comment from './Comment';
+import BugReportManager from './BugReport';
 
 export {
     User,
@@ -20,4 +21,5 @@ export {
     SafeplaceUpdate,
     Notification,
     Comment,
+    BugReportManager
 };
