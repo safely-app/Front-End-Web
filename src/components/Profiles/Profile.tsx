@@ -30,7 +30,7 @@ interface ITraderProfileShopListProps {
     shops: ISafeplace[];
 }
 
-const TraderProfileShopList: React.FC<ITraderProfileShopListProps> = ({
+export const TraderProfileShopList: React.FC<ITraderProfileShopListProps> = ({
     shops
 }) => {
     const [selectedShopId, setSelectedShopId] = useState<string | undefined>(undefined);
@@ -69,7 +69,7 @@ const TraderProfileShopList: React.FC<ITraderProfileShopListProps> = ({
     );
 };
 
-enum InfoSearcher {
+export enum InfoSearcher {
     SEARCHING,
     NOTFOUND,
     FOUND
@@ -94,7 +94,7 @@ interface IPaymentSolutionListProps {
     paymentSolutions: IStripeCard[];
 }
 
-const PaymentSolutionList: React.FC<IPaymentSolutionListProps> = ({
+export const PaymentSolutionList: React.FC<IPaymentSolutionListProps> = ({
     paymentSolutions
 }) => {
     return (
@@ -119,7 +119,7 @@ interface IUserProfileProps {
     setUser: (user: IUser) => void;
 }
 
-const UserProfile: React.FC<IUserProfileProps> = ({
+export const UserProfile: React.FC<IUserProfileProps> = ({
     user,
     isUpdateView,
     setUser
@@ -144,7 +144,7 @@ interface ITraderProfileProps {
     setSearcherState: (searcherState: InfoSearcher) => void;
 }
 
-const TraderProfile: React.FC<ITraderProfileProps> = ({
+export const TraderProfile: React.FC<ITraderProfileProps> = ({
     isUpdateView,
     professional,
     searcherState,

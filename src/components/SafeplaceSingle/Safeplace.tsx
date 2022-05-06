@@ -24,7 +24,7 @@ interface ITimeInputProps {
     readonly?: boolean;
 }
 
-const splitValue = (value: string) => {
+export const splitValue = (value: string) => {
     const regex = new RegExp(/^(\d|([01]\d)|(2[0123])):[012345]\d$/g);
     const found = value.match(regex);
 
@@ -33,7 +33,7 @@ const splitValue = (value: string) => {
     return [ "", "" ];
 };
 
-const TimeInput: React.FC<ITimeInputProps> = ({
+export const TimeInput: React.FC<ITimeInputProps> = ({
     value,
     setValue,
     readonly
@@ -89,7 +89,7 @@ interface ISafeplaceTimetableDayProps {
     isReadOnly: boolean;
 }
 
-const SafeplaceTimetableDay: React.FC<ISafeplaceTimetableDayProps> = ({
+export const SafeplaceTimetableDay: React.FC<ISafeplaceTimetableDayProps> = ({
     day,
     setDay,
     isReadOnly
@@ -144,7 +144,7 @@ interface ISafeplaceTimetableProps {
     isReadOnly?: boolean;
 }
 
-const SafeplaceTimetable: React.FC<ISafeplaceTimetableProps> = ({
+export const SafeplaceTimetable: React.FC<ISafeplaceTimetableProps> = ({
     safeplace,
     setSafeplace,
     isReadOnly
@@ -180,7 +180,7 @@ interface ISafeplaceSingleInfoProps {
     safeplace: ISafeplace;
 }
 
-const SafeplaceSingleInfo: React.FC<ISafeplaceSingleInfoProps> = ({
+export const SafeplaceSingleInfo: React.FC<ISafeplaceSingleInfoProps> = ({
     safeplace
 }) => {
     const [onUpdate, setOnUpdate] = useState(false);
