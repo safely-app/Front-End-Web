@@ -145,6 +145,7 @@ test('ensure that isTimetableValid occurs as expected', () => {
 
 test('ensure that isProfessionalValid occurs as expected', () => {
     const data: IProfessional = {
+        id: "1",
         userId: "",
         companyName: "",
         companyAddress: "",

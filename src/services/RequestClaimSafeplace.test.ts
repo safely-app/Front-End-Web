@@ -45,8 +45,10 @@ test('ensure that creating a new request claim safeplace works', async () => {
         id: '1',
         userId: '1',
         safeplaceId: '1',
+        safeplaceName: 'Test',
+        safeplaceDescription: '',
+        coordinate: ['1', '1'],
         status: 'Pending',
-        comment: 'This is great'
     };
 
     const response = await RequestClaimSafeplace.create(data, "");
@@ -70,8 +72,10 @@ test('ensure that updating a request claim safeplace works', async () => {
             id: '1',
             userId: '1',
             safeplaceId: '1',
+            safeplaceName: 'Test',
+            safeplaceDescription: '',
+            coordinate: ['1', '1'],
             status: 'Pending',
-            comment: 'This is great'
         };
 
         const response = await RequestClaimSafeplace.update("1", data, "");
