@@ -9,6 +9,7 @@ import SafeplaceUpdate from './SafeplaceUpdate';
 import Notification from './Notification';
 import Comment from './Comment';
 import BugReportManager from './BugReport';
+import SupportRequest from './SupportRequest';
 
 export {
     User,
@@ -21,5 +22,6 @@ export {
     SafeplaceUpdate,
     Notification,
     Comment,
-    BugReportManager
+    BugReportManager,
+    SupportRequest
 };
