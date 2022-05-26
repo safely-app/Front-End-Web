@@ -106,7 +106,7 @@ test('test getErrorMsgByErrorName', () => {
 
     expect(getErrorMsgByErrorName({
         ...error
-    })).toEqual(" : Une erreur s'est produite. Si cela persiste, veuillez nous contacter.");
+    })).toEqual("");
 });
 
 test("test getTimetableFromSafeplace", () => {

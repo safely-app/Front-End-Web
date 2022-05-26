@@ -132,14 +132,15 @@ test('render CommercialPageCampaigns create', async () => {
         </Provider>
     );
 
+
     fireEvent.click(screen.getByText("Créer une nouvelle campagne"));
     fireEvent.change(screen.getByRole("name"), { target: { value: "test name" } });
     fireEvent.change(screen.getByRole("budget"), { target: { value: "6000" } });
-    fireEvent.change(screen.getByRole("status"), { target: { value: "test status" } });
-    fireEvent.change(screen.getByRole("startingDate"), { target: { value: "test startingDate" } });
+    fireEvent.change(screen.getByRole("status"), { target: { value: "active" } });
+    fireEvent.change(screen.getByRole("startingDate"), { target: { value: "2022-05-26" } });
     fireEvent.click(screen.getByText("Créer une campagne"));
 
-    await act(async () => await testDelay(1000));
+    await act(async () => await testDelay(2000));
     expect(addCampaign).toHaveBeenCalled();
     scopeCreateCampaign.done();
 });
@@ -163,8 +164,8 @@ test('render CommercialPageTargets create', async () => {
 
     fireEvent.click(screen.getByText("Créer une nouvelle cible"));
     fireEvent.change(screen.getByRole("name"), { target: { value: "test name" } });
-    fireEvent.change(screen.getByRole("csp"), { target: { value: "6000" } });
-    fireEvent.change(screen.getByRole("ageRange"), { target: { value: "test status" } });
+    fireEvent.change(screen.getByRole("csp"), { target: { value: "csp" } });
+    fireEvent.change(screen.getByRole("ageRange"), { target: { value: "18-23" } });
     fireEvent.click(screen.getByText("Créer une cible"));
 
     await act(async () => await testDelay(1000));
