@@ -53,10 +53,10 @@ test('ensure that createCampaign occurs without technical errors', async () => {
     const data: ICampaign = {
         id: '1',
         ownerId: "",
-        name: "",
-        budget: "",
-        status: "",
-        startingDate: "",
+        name: "test",
+        budget: "100",
+        status: "active",
+        startingDate: "2022-05-26",
         targets: []
     };
 
@@ -73,9 +73,9 @@ test('ensure that createTarget occurs without technical errors', async () => {
     const data: ITarget = {
         id: '1',
         ownerId: "",
-        name: "",
-        csp: "",
-        ageRange: "",
+        name: "test",
+        csp: "csp",
+        ageRange: "18-23",
         interests: []
     };
 
@@ -95,10 +95,10 @@ test('ensure that updateCampaign occurs without technical occurs', async () => {
     const data: ICampaign = {
         id: '1',
         ownerId: "",
-        name: "",
-        budget: "",
-        status: "",
-        startingDate: "",
+        name: "test",
+        budget: "100",
+        status: "active",
+        startingDate: "2022-05-26",
         targets: []
     };
 
@@ -119,9 +119,9 @@ test('ensure that updateTarget occurs without technical occurs', async () => {
     const data: ITarget = {
         id: '1',
         ownerId: "",
-        name: "",
-        csp: "",
-        ageRange: "",
+        name: "test",
+        csp: "csp",
+        ageRange: "18-23",
         interests: []
     };
 

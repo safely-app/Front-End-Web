@@ -84,7 +84,7 @@ const CampaignModal: React.FC<ICampaignModalProps> = ({
                     label="Budget" value={campaign.budget} setValue={setBudget} />
                 <TextInput key={`${campaign.id}-status`} type="text" role="status"
                     label="Status" value={campaign.status} setValue={setStatus} />
-                <TextInput key={`${campaign.id}-startingDate`} type="text" role="startingDate"
+                <TextInput key={`${campaign.id}-startingDate`} type="date" role="startingDate"
                     label="Date de départ" value={campaign.startingDate} setValue={setStartingDate} />
                 <TextInput key={`${campaign.id}-targetField`} type="text" role="targetField"
                     label="Rechercher une cible" value={targetField} setValue={setTargetField} />
@@ -216,6 +216,12 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
         targets: []
     });
 
+    const CAMPAIGN_STATUS = [
+        "active",
+        "pause",
+        "template"
+    ];
+
     const cancelNewCampaign = () => {
         setShowModal(false);
         setNewCampaign({
@@ -229,45 +235,46 @@ const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
         });
     };
 
-    const createCampaign = (campaign = newCampaign) => {
+    const createCampaign = async (campaign = newCampaign) => {
         const finalCampaign = {
             ...campaign,
+            status: CAMPAIGN_STATUS.includes(campaign.status) ? campaign.status : "active",
             ownerId: userCredentials._id
         };
 
-        Commercial.createCampaign(finalCampaign, userCredentials.token)
-            .then(result => {
-                addCampaign({ ...finalCampaign, id: result.data._id });
-                cancelNewCampaign();
-                log.log(result);
-            }).catch(err => {
-                notifyError(err);
-                log.error(err);
-            });
+        try {
+            const response = await Commercial.createCampaign(finalCampaign, userCredentials.token);
+            addCampaign({ ...finalCampaign, id: response.data._id });
+            cancelNewCampaign();
+            log.log(response);
+        } catch (err) {
+            notifyError(err);
+            log.error(err);
+        }
     };
 
-    const updateCampaign = (campaign: ICampaign) => {
-        Commercial.updateCampaign(campaign.id, campaign, userCredentials.token)
-            .then(result => {
-                setCampaign(focusCampaign as ICampaign);
-                setFocusCampaign(undefined);
-                log.log(result);
-            }).catch(err => {
-                notifyError(err);
-                log.error(err);
-            });
+    const updateCampaign = async (campaign: ICampaign) => {
+        try {
+            const response = await Commercial.updateCampaign(campaign.id, campaign, userCredentials.token);
+            setCampaign(focusCampaign as ICampaign);
+            setFocusCampaign(undefined);
+            log.log(response);
+        } catch (err) {
+            notifyError(err);
+            log.error(err);
+        }
     };
 
-    const deleteCampaign = (campaign: ICampaign) => {
-        Commercial.deleteCampaign(campaign.id, userCredentials.token)
-            .then(result => {
-                removeCampaign(focusCampaign as ICampaign);
-                setFocusCampaign(undefined);
-                log.log(result);
-            }).catch(err => {
-                notifyError(err);
-                log.error(err);
-            });
+    const deleteCampaign = async (campaign: ICampaign) => {
+        try {
+            const response = await Commercial.deleteCampaign(campaign.id, userCredentials.token);
+            removeCampaign(focusCampaign as ICampaign);
+            setFocusCampaign(undefined);
+            log.log(response);
+        } catch (err) {
+            notifyError(err);
+            log.error(err);
+        }
     };
 
     return (

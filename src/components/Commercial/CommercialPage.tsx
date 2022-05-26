@@ -39,6 +39,18 @@ const CommercialPage: React.FC = () => {
     };
 
     useEffect(() => {
+        const startingDateToString = (startingDate: string) => {
+            const date = new Date(startingDate);
+
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+
+            const strMonth = (month < 10) ? `0${month}` : `${month}`;
+            const strDay = (day < 10) ? `0${day}` : `${day}`;
+
+            return `${date.getFullYear()}-${strMonth}-${strDay}`;
+        };
+
         Commercial.getAllCampaignByOwner(userCredentials._id, userCredentials.token)
             .then(result => {
                 const gotCampaigns = result.data.map(campaign => ({
@@ -47,7 +59,7 @@ const CommercialPage: React.FC = () => {
                     name: campaign.name,
                     budget: campaign.budget,
                     status: campaign.status,
-                    startingDate: campaign.startingDate,
+                    startingDate: startingDateToString(campaign.startingDate),
                     targets: campaign.targets
                 }));
 

@@ -138,45 +138,45 @@ const CommercialPageTargets: React.FC<ICommercialPageTargetsProps> = ({
         });
     };
 
-    const createTarget = () => {
+    const createTarget = async () => {
         const finalTarget = {
             ...newTarget,
             ownerId: userCredentials._id
         };
 
-        Commercial.createTarget(finalTarget, userCredentials.token)
-            .then(result => {
-                addTarget({ ...finalTarget, id: result.data._id });
-                cancelNewTarget();
-                log.log(result);
-            }).catch(err => {
-                notifyError(err);
-                log.error(err);
-            });
+        try {
+            const response = await Commercial.createTarget(finalTarget, userCredentials.token);
+            addTarget({ ...finalTarget, id: response.data._id });
+            cancelNewTarget();
+            log.log(response);
+        } catch (err) {
+            notifyError(err);
+            log.error(err);
+        }
     };
 
-    const updateTarget = (target: ITarget) => {
-        Commercial.updateTarget(target.id, target, userCredentials.token)
-            .then(result => {
-                setTarget(focusTarget as ITarget);
-                setFocusTarget(undefined);
-                log.log(result);
-            }).catch(err => {
-                notifyError(err);
-                log.error(err);
-            });
+    const updateTarget = async (target: ITarget) => {
+        try {
+            const response = await Commercial.updateTarget(target.id, target, userCredentials.token);
+            setTarget(focusTarget as ITarget);
+            setFocusTarget(undefined);
+            log.log(response);
+        } catch (err) {
+            notifyError(err);
+            log.error(err);
+        }
     };
 
-    const deleteTarget = (target: ITarget) => {
-        Commercial.deleteTarget(target.id, userCredentials.token)
-            .then(result => {
-                removeTarget(focusTarget as ITarget);
-                setFocusTarget(undefined);
-                log.log(result);
-            }).catch(err => {
-                notifyError(err);
-                log.error(err);
-            });
+    const deleteTarget = async (target: ITarget) => {
+        try {
+            const response = await Commercial.deleteTarget(target.id, userCredentials.token);
+            removeTarget(focusTarget as ITarget);
+            setFocusTarget(undefined);
+            log.log(response);
+        } catch (err) {
+            notifyError(err);
+            log.error(err);
+        }
     };
 
     return (
