@@ -3,8 +3,8 @@ import { useAppSelector } from "../../../redux";
 import { SupportRequest } from "../../../services";
 import ISupportRequest from "../../interfaces/ISupportRequest";
 import log from "loglevel";
-import { Button, Dropdown, Modal, TextInput } from "../../common";
-import { notifyError } from "../../utils";
+import { Button, Dropdown, Modal, SearchBar, TextInput } from "../../common";
+import { convertStringToRegex, notifyError } from "../../utils";
 
 interface ISupportRequestProps {
     supportRequest: ISupportRequest;
@@ -61,10 +61,38 @@ const SupportRequestUpdater: React.FC<ISupportRequestUpdaterProps> = ({
     );
 };
 
+interface ISupportMonitorFilterProps {
+    searchBarValue: string;
+    setSupportType: (value: string) => void;
+    setSearchBarValue: (value: string) => void;
+}
+
+const SupportMonitorFilter: React.FC<ISupportMonitorFilterProps> = ({
+    searchBarValue,
+    setSupportType,
+    setSearchBarValue,
+}) => {
+    const SUPPORT_TYPES = [
+        'all',
+        'Bug',
+        'Opinion'
+    ];
+
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-3 md:grid-rows-1 px-4">
+            <Dropdown width="10em" defaultValue="all" values={SUPPORT_TYPES} setValue={setSupportType} />
+            <SearchBar label="Rechercher un commentaire" value={searchBarValue} setValue={setSearchBarValue} />
+        </div>
+    );
+};
+
 const SupportMonitor: React.FC = () => {
     const userCredentials = useAppSelector(state => state.user.credentials);
     const [supportRequests, setSupportRequests] = useState<ISupportRequest[]>([]);
     const [focusSupportRequest, setFocusSupportRequest] = useState<ISupportRequest | undefined>(undefined);
+
+    const [searchText, setSearchText] = useState("");
+    const [supportType, setSupportType] = useState("all");
 
     useEffect(() => {
         SupportRequest.getAll(userCredentials.token)
@@ -111,8 +139,28 @@ const SupportMonitor: React.FC = () => {
         }
     };
 
+    const filterSupportRequests = () => {
+        const lowerSearchText = convertStringToRegex(searchText.toLocaleLowerCase());
+
+        if (searchText === "" && supportType === "all")
+            return supportRequests;
+        return supportRequests
+            .filter(support => supportType !== "all" ? support.type === supportType : true)
+            .filter(comment => comment.id.toLowerCase().match(lowerSearchText) !== null
+                || comment.userId.toLowerCase().match(lowerSearchText) !== null
+                || comment.title.toLowerCase().match(lowerSearchText) !== null
+                || comment.comment.toLowerCase().match(lowerSearchText) !== null);
+    };
+
     return (
         <div className="text-center">
+
+            <SupportMonitorFilter
+                searchBarValue={searchText}
+                setSupportType={setSupportType}
+                setSearchBarValue={setSearchText}
+            />
+
             <div>
                 {focusSupportRequest !== undefined &&
                     <SupportRequestUpdater
@@ -126,7 +174,7 @@ const SupportMonitor: React.FC = () => {
                     />
                 }
                 <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 p-4">
-                    {supportRequests.map(supportRequest =>
+                    {filterSupportRequests().map(supportRequest =>
                         <SupportRequestDisplayer
                             key={supportRequest.id}
                             supportRequest={supportRequest}
