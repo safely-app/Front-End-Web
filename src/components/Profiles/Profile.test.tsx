@@ -1,7 +1,7 @@
-import { render, act } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { store } from '../../redux';
-import Profile, {
+import {
     InfoSearcher,
     PaymentSolutionList,
     TraderProfile,
@@ -9,23 +9,6 @@ import Profile, {
     UserProfile
 } from './Profile';
 import Router from '../../Router';
-
-test('renders profile', () => {
-    const routes = [
-        {
-            path: "/",
-            exact: false,
-            protected: false,
-            render: <Profile />
-        }
-    ];
-
-    render(
-        <Provider store={store}>
-            <Router routes={routes} />
-        </Provider>
-    );
-});
 
 test('renders UserProfile', () => {
     const user = {

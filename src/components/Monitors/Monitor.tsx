@@ -9,6 +9,7 @@ import SafeplaceUpdateMonitor from './SafeplaceUpdateMonitor/SafeplaceUpdateMoni
 import CampaignMonitor from './CampaignMonitor/CampaignMonitor';
 import TargetMonitor from './TargetMonitor/TargetMonitor';
 import CommentMonitor from './CommentMonitor/CommentMonitor';
+import SupportMonitor from './SupportMonitor/SupportMonitor';
 import './Monitor.css';
 
 enum MonitorView {
@@ -19,7 +20,8 @@ enum MonitorView {
     SAFEPLACEUPDATE,
     CAMPAIGN,
     TARGET,
-    COMMENT
+    COMMENT,
+    SUPPORT
 }
 
 const Monitor: React.FC = () => {
@@ -32,11 +34,14 @@ const Monitor: React.FC = () => {
         { text: "Cibles", onClick: () => setView(MonitorView.TARGET) },
         { text: "Requêtes de safeplace", onClick: () => setView(MonitorView.REQUESTCLAIMSAFEPLACE) },
         { text: "Modifications de safeplace", onClick: () => setView(MonitorView.SAFEPLACEUPDATE) },
-        { text: "Commentaires", onClick: () => setView(MonitorView.COMMENT) }
+        { text: "Commentaires", onClick: () => setView(MonitorView.COMMENT) },
+        { text: "Requêtes de support", onClick: () => setView(MonitorView.SUPPORT) }
     ];
 
     const getView = (): JSX.Element => {
         switch (view) {
+            case MonitorView.SUPPORT:
+                return <SupportMonitor />;
             case MonitorView.SAFEPLACEUPDATE:
                 return <SafeplaceUpdateMonitor />;
             case MonitorView.COMMENT:

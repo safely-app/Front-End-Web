@@ -13,6 +13,9 @@ test('render safeplacesingle', async () => {
     const scope = nock(testURL)
         .get('/safeplace/safeplace/undefined')
         .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+    const scopeNotifs = nock(testURL)
+        .get('/commercial/notifications')
+        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
 
     render(
         <Provider store={store}>
@@ -21,6 +24,7 @@ test('render safeplacesingle', async () => {
     );
 
     await act(async () => await testDelay(1000));
+    scopeNotifs.done();
     scope.done();
 });
 
