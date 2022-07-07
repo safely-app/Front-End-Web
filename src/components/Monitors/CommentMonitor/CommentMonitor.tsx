@@ -73,7 +73,7 @@ const CommentInfoDisplayer: React.FC<ICommentInfoDisplayerProps> = ({
     };
 
     return (
-        <div className="bg-white p-4 rounded">
+        <div className="bg-white p-4 rounded" key={`info-displayer-${comment.id}`}>
             <button className="w-full h-full" onClick={() => onClick(comment)}>
                 <ul className="text-left w-full h-full">
                     <li key={`${comment.id}-userId`}><b>User ID : </b>{comment.userId}</li>
@@ -280,9 +280,9 @@ const CommentMonitor: React.FC = () => {
                     />
                 }
                 <div className="grid gap-4 grid-cols-2 lg:grid-cols-3 p-4">
-                    {filterComments().map(comment =>
+                    {filterComments().map((comment, index) =>
                         <CommentInfoDisplayer
-                            key={comment.id}
+                            key={index}
                             comment={comment}
                             safeplace={getSafeplace(comment.safeplaceId)}
                             onClick={setFocusComment}

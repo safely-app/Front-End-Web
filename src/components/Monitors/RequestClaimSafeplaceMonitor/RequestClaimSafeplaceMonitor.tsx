@@ -206,7 +206,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
 
     return (
         <div key={requestClaimSafeplace.id} className="bg-white p-4 rounded">
-            <button className="w-full h-full text-left" onClick={handleClick}>
+            <div className="w-full h-full text-left cursor-pointer" onClick={handleClick}>
                 <ul>
                     <li key={`${requestClaimSafeplace.id}-id`}><b>Identifiant : </b>{requestClaimSafeplace.id}</li>
                     <li key={`${requestClaimSafeplace.id}-userId`}><b>Identifiant d'utilisateur : </b>{requestClaimSafeplace.userId}</li>
@@ -225,7 +225,7 @@ const RequestClaimSafeplaceInfoListElement: React.FC<IRequestClaimSafeplaceInfoL
                         }
                     </li>
                 </ul>
-            </button>
+            </div>
             <Modal shown={refusedMessage !== undefined} content={
                 <div className="Monitor-Info text-center">
                     <TextInput type="text" role="comment" label="Commentaire"

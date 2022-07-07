@@ -128,9 +128,7 @@ test('ensure that safeplace filtering is working', async () => {
 test('ensure that invalid input does not crash the safeplace filtering', async () => {
     const scope = nock(testUrl)
         .get('/safeplace/safeplace')
-        .reply(200, [], {
-            'Access-Control-Allow-Origin': '*'
-        });
+        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
 
     render(
         <Provider store={store}>
