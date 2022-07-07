@@ -11,6 +11,7 @@ import Monitor from './Monitors/Monitor';
 import SafeplaceSingle from './SafeplaceSingle/Safeplace';
 import VerifyHours from './VerifyHours/VerifyHours';
 import CommercialPage from './Commercial/CommercialPage';
+import CampaignDashboard from './CampaignDashboard/CampaignDashboard';
 
 export {
     App,
@@ -23,5 +24,6 @@ export {
     Profile,
     SafeplaceSingle,
     VerifyHours,
-    CommercialPage
+    CommercialPage,
+    CampaignDashboard
 };
