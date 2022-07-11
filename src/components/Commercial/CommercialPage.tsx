@@ -3,7 +3,6 @@ import CommercialPageCampaigns from './CommercialCampaigns';
 import CommercialPageTargets from './CommercialTargets';
 import { useAppSelector } from '../../redux';
 import { Commercial } from '../../services';
-import { AppHeader } from '../Header/Header';
 import ICampaign from '../interfaces/ICampaign';
 import ITarget from '../interfaces/ITarget';
 import log from 'loglevel';
@@ -83,7 +82,6 @@ const CommercialPage: React.FC = () => {
 
     return (
         <div className="w-full h-full">
-            <AppHeader />
             <div className="Commercial-grid-container">
                 <CommercialPageCampaigns
                     campaigns={campaigns}

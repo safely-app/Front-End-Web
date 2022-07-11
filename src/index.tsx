@@ -12,7 +12,6 @@ import {
     ResetPassword,
     SafeplaceSingle,
     VerifyHours,
-    CommercialPage,
     CampaignDashboard
 } from './components';
 import reportWebVitals from './reportWebVitals';
@@ -32,12 +31,12 @@ const routes = [
     { path: '/reset', exact: false, protected: false, render: <ResetPassword /> },
     { path: '/version', exact: false, protected: false, render: <Version /> },
     { path: '/profile', exact: true, protected: true, render: <Profile /> },
-    { path: '/commercial', exact: true, protected: true, render: <CommercialPage /> },
+    // { path: '/commercial', exact: true, protected: true, render: <CommercialPage /> },
+    { path: '/commercial', exact: true, protected: true, render: <CampaignDashboard /> },
     { path: '/safeplace-page', exact: false, protected: false, render: <SafeplaceSingle /> },
     { path: '/reset', exact: false, protected: false, render: <ResetPassword /> },
     { path: '/verifyHours', exact: false, protected: false, render: <VerifyHours /> },
-    { path: '/bugreport', exact: false, protected: true, render: <BugReport /> },
-    { path: '/campaign', exact: false, protected: true, render: <CampaignDashboard /> }
+    { path: '/bugreport', exact: false, protected: true, render: <BugReport /> }
 ];
 
 log.setLevel((process.env.REACT_APP_STAGE === "prod")
