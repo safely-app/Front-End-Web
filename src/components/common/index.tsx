@@ -5,6 +5,7 @@ import SearchBar from './SearchBar';
 import NavBar from './NavBar';
 import CommonLoader from './Loader';
 import Modal from './Modal';
+import Table from './Table';
 
 export {
     TextInput,
@@ -14,5 +15,6 @@ export {
     SearchBar,
     Modal,
     NavBar,
-    CommonLoader
+    CommonLoader,
+    Table
 };
