@@ -3,22 +3,25 @@ import { AppHeader } from '../Header/Header';
 import { ImCross } from 'react-icons/im';
 import { BsPencilSquare } from 'react-icons/bs';
 import { FaSearch, FaPlusCircle } from 'react-icons/fa';
+import {
+  MdOutlineKeyboardArrowUp,
+  MdOutlineKeyboardArrowDown
+} from 'react-icons/md';
 import ICampaign from '../interfaces/ICampaign';
 import { useAppSelector } from '../../redux';
 import { Commercial } from '../../services';
 import { convertStringToRegex } from '../utils';
+import { Chart, AxisOptions } from 'react-charts';
 import { Table } from '../common';
 import log from 'loglevel';
 
 const CustomDiv: React.FC<{
-  index: number;
   content: JSX.Element | string;
 }> = ({
-  index,
   content
 }) => {
   return (
-    <div key={`tbl-val-${index}`} className='table-cell border-t-2 border-solid border-neutral-300'>
+    <div className='table-cell border-t-2 border-solid border-neutral-300'>
       {content}
     </div>
   );
@@ -60,7 +63,7 @@ const CommercialCampaigns: React.FC<{
   };
 
   return (
-    <div>
+    <div className='my-3'>
       <div className='inline-block flex'>
         <div className='relative'>
           <input
@@ -75,6 +78,188 @@ const CommercialCampaigns: React.FC<{
       </div>
       <div className='mt-3'>
         <Table content={filterCampaigns()} keys={keys} />
+      </div>
+    </div>
+  );
+};
+
+interface GraphDataElement {
+  date: Date;
+  value: number;
+}
+
+interface GraphData {
+  label: string;
+  data: GraphDataElement[];
+}
+
+const Area: React.FC<{
+  data: GraphData[];
+}> = ({
+  data
+}) => {
+  const primaryAxis = React.useMemo<AxisOptions<GraphDataElement>>(
+    () => ({
+      getValue: datum => datum.date,
+    }),
+    []
+  );
+
+  const secondaryAxes = React.useMemo<AxisOptions<GraphDataElement>[]>(
+    () => [
+      {
+        getValue: datum => datum.value,
+        stacked: true
+      }
+    ],
+    []
+  );
+
+  return (
+    <div className='mx-6'>
+      <div className="h-60">
+        <Chart
+          options={{
+            data,
+            primaryAxis,
+            secondaryAxes
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+const Graph: React.FC<{
+  data: GraphData[];
+}> = ({
+  data
+}) => {
+  const primaryAxis = React.useMemo<AxisOptions<GraphDataElement>>(
+    () => ({
+      getValue: datum => datum.date,
+    }),
+    []
+  );
+
+  const secondaryAxes = React.useMemo<AxisOptions<GraphDataElement>[]>(
+    () => [
+      {
+        getValue: datum => datum.value,
+      }
+    ],
+    []
+  );
+
+  return (
+    <div className='mx-6'>
+      <div className="h-60">
+        <Chart
+          options={{
+            data,
+            primaryAxis,
+            secondaryAxes
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+const StatisticsCard: React.FC<{
+  title: string;
+  amount: string;
+  description: string;
+}> = ({
+  title,
+  amount,
+  description
+}) => {
+  return (
+    <div className='w-2/3 mx-8'>
+      <p className='text-xl leading-loose'>{title}</p>
+      <p className='font-bold text-2xl leading-loose'>{amount}</p>
+      <p className='text-neutral-500'>{description}</p>
+    </div>
+  );
+};
+
+const CommercialStatistics: React.FC<{
+  campaigns: ICampaign[];
+}> = ({
+  campaigns
+}) => {
+  const [dropdownOn, setDropdownOn] = useState(false);
+  const [dropdownIndex, setDropdownIndex] = useState(0);
+
+  const data: GraphData = React.useMemo(
+    () => ({
+      label: "Series 1",
+      data: (new Array(7).fill(0)).map((_value, index) => ({
+          date: new Date(Date.now() - (86400000 * (15 - index))),
+          value: Math.random() * 100
+      }))
+    }),
+    []
+  );
+
+  return (
+    <div className='mt-10 mb-3'>
+      <div className='relative cursor-pointer select-none font-bold text-3xl'>
+        <span className='bg-white' onClick={() => setDropdownOn(!dropdownOn)}>
+          <span>{campaigns[dropdownIndex].name}</span>
+          {(dropdownOn)
+            ? <MdOutlineKeyboardArrowUp className='inline ml-2' />
+            : <MdOutlineKeyboardArrowDown className='inline ml-2' />}
+        </span>
+        <div className={(dropdownOn) ? 'absolute z-10' : 'hidden'}>
+          <ul className='bg-white'>
+            {campaigns.map((campaign, index) =>
+              <li key={'dropdown-option-' + index} className='text-2xl' onClick={() => {
+                setDropdownIndex(index);
+                setDropdownOn(false);
+              }}>{campaign.name}</li>
+            )}
+          </ul>
+        </div>
+      </div>
+
+      <div className='grid grid-cols-2'>
+        <div>
+          <span className='font-bold text-2xl'>Impressions</span>
+          <Area data={[ data ]} />
+          <div className='grid grid-cols-2'>
+            <StatisticsCard
+              title='Impressions'
+              amount='100,203'
+              description="Le nombre d'affichage de votre publicité sur l'application mobile."
+            />
+
+            <StatisticsCard
+              title='Coût'
+              amount='1,034€'
+              description="La somme totale dépensée pour cette campagne publicitaire."
+            />
+          </div>
+        </div>
+
+        <div>
+          <span className='font-bold text-2xl'>Conversions</span>
+          <Graph data={[ data ]} />
+          <div className='grid grid-cols-2'>
+            <StatisticsCard
+              title='Conversions'
+              amount='3,403'
+              description="Le nombre de fois qu'un utilisateurs a cliqué sur votre publicité."
+            />
+
+            <StatisticsCard
+              title='Coût par clique'
+              amount='0.05€'
+              description="Le coût que vous payez lorsqu'un utilisateur clique sur votre publicité."
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -150,10 +335,10 @@ const CommercialPage: React.FC = () => {
           <CommercialSectionBtn btnText='Mes campagnes' sectionType={SECTION.CAMPAIGNS} displayedSection={displayedSection} setDisplayedSection={setDisplayedSection} />
           <CommercialSectionBtn btnText='Statistiques' sectionType={SECTION.STATISTIC} displayedSection={displayedSection} setDisplayedSection={setDisplayedSection} />
         </div>
-        <hr className='border-none my-3' />
+        <hr className='border-none' />
         {(displayedSection === SECTION.CAMPAIGNS)
           ? <CommercialCampaigns campaigns={campaigns} />
-          : <div>STATS</div>
+          : <CommercialStatistics campaigns={campaigns} />
         }
       </div>
     </div>
