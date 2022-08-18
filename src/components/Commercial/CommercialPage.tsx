@@ -32,17 +32,17 @@ const CommercialCampaigns: React.FC<{
   const [campaignSearch, setCampaignSearch] = useState("");
 
   const keys = useMemo(() => [
-    {displayedName: 'NOM', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv index={index} content={campaign.name} />},
-    {displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv index={index} content={campaign.budget + '€'} />},
-    {displayedName: 'STATUS', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv index={index} content={campaign.status} />},
-    {displayedName: 'DATE DE DÉPART', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv index={index} content={campaign.startingDate} />},
-    {displayedName: 'REACH', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv index={index} content={"21 023"} />},
-    {displayedName: 'IMPRESSIONS', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv index={index} content={"100 234"} />},
-    {displayedName: 'CIBLES', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv index={index} content={
-      <div className='ml-3'><button><BsPencilSquare /></button></div>
+    {displayedName: 'NOM', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.name} />},
+    {displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.budget + '€'} />},
+    {displayedName: 'STATUS', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.status} />},
+    {displayedName: 'DATE DE DÉPART', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.startingDate} />},
+    {displayedName: 'REACH', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={"21 023"} />},
+    {displayedName: 'IMPRESSIONS', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={"100 234"} />},
+    {displayedName: 'CIBLES', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={
+      <div key={`tbl-val-${index}`} className='ml-3'><button><BsPencilSquare /></button></div>
     } />},
-    {displayedName: 'ACTIONS', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv index={index} content={
-      <div className='ml-3 flex space-x-2'><button><BsPencilSquare /></button><button><ImCross /></button></div>
+    {displayedName: 'ACTIONS', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={
+      <div key={`tbl-val-${index}`} className='ml-3 flex space-x-2'><button><BsPencilSquare /></button><button><ImCross /></button></div>
     } />},
   ], []);
 

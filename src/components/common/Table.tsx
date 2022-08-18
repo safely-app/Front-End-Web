@@ -42,16 +42,20 @@ const Table: React.FC<{
           <div className='table-cell w-8 text-center py-2'>
             <input type='checkbox' onChange={setAllCheckedBoxes} checked={allChecked} />
           </div>
-          {keys.map((key, index) => <div key={`tbl-head-${index}`} className='table-cell font-bold'>{key.displayedName}</div>)}
+          {keys.map((key, index) =>
+            <div key={`tbl-head-${index}`} className='table-cell font-bold'>
+              {key.displayedName}
+            </div>
+          )}
         </div>
       </div>
       <div className='table-row-group'>
-        {content.map((obj, index) =>
-          <div key={`tbl-row-${index}`} className='table-row'>
+        {content.map((obj, objIndex) =>
+          <div key={`tbl-row-${objIndex}`} className='table-row'>
             <div className='table-cell w-8 text-center py-1 border-t-2 border-solid border-neutral-300'>
-              <input type='checkbox' checked={checkedBoxes.includes(index)} onChange={() => updateCheckedBoxes(index)} />
+              <input type='checkbox' checked={checkedBoxes.includes(objIndex)} onChange={() => updateCheckedBoxes(objIndex)} />
             </div>
-            {keys.map((key, index) => key.displayFunction(obj, index))}
+            {keys.map((key, keyIndex) => key.displayFunction(obj, (objIndex + 1) * (keys.length) + keyIndex))}
           </div>
         )}
       </div>
