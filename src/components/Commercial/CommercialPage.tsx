@@ -116,8 +116,8 @@ const Area: React.FC<{
   );
 
   return (
-    <div className='mx-6'>
-      <div className="h-60">
+    <div className='mx-8'>
+      <div className="h-80">
         <Chart
           options={{
             data,
@@ -152,8 +152,8 @@ const Graph: React.FC<{
   );
 
   return (
-    <div className='mx-6'>
-      <div className="h-60">
+    <div className='mx-8'>
+      <div className="h-80">
         <Chart
           options={{
             data,
@@ -176,7 +176,7 @@ const StatisticsCard: React.FC<{
   description
 }) => {
   return (
-    <div className='w-2/3 mx-8'>
+    <div className='w-2/3 mx-12'>
       <p className='text-xl leading-loose'>{title}</p>
       <p className='font-bold text-2xl leading-loose'>{amount}</p>
       <p className='text-neutral-500'>{description}</p>
@@ -203,22 +203,27 @@ const CommercialStatistics: React.FC<{
     []
   );
 
+  const onDropdownClicked = (index: number) => {
+    setDropdownIndex(index);
+    setDropdownOn(false);
+  };
+
   return (
     <div className='mt-10 mb-3'>
-      <div className='relative cursor-pointer select-none font-bold text-3xl'>
-        <span className='bg-white' onClick={() => setDropdownOn(!dropdownOn)}>
+      <div className='relative cursor-pointer select-none font-bold text-3xl w-fit rounded-t-lg'>
+        <div className='p-3' onClick={() => setDropdownOn(!dropdownOn)}>
           <span>{campaigns[dropdownIndex].name}</span>
           {(dropdownOn)
             ? <MdOutlineKeyboardArrowUp className='inline ml-2' />
             : <MdOutlineKeyboardArrowDown className='inline ml-2' />}
-        </span>
-        <div className={(dropdownOn) ? 'absolute z-10' : 'hidden'}>
-          <ul className='bg-white'>
+        </div>
+        <div className={(dropdownOn) ? 'absolute z-10 w-full' : 'hidden'}>
+          <ul className='w-full rounded-b-lg bg-white shadow-lg'>
             {campaigns.map((campaign, index) =>
-              <li key={'dropdown-option-' + index} className='text-2xl' onClick={() => {
-                setDropdownIndex(index);
-                setDropdownOn(false);
-              }}>{campaign.name}</li>
+              <li key={'dropdown-option-' + index}
+                  className={(index !== dropdownIndex) ? 'text-3xl p-3 border-t-2 border-solid border-neutral-300' : 'hidden'}
+                  onClick={() => onDropdownClicked(index)}
+              >{campaign.name}</li>
             )}
           </ul>
         </div>
@@ -226,9 +231,9 @@ const CommercialStatistics: React.FC<{
 
       <div className='grid grid-cols-2'>
         <div>
-          <span className='font-bold text-2xl'>Impressions</span>
+          <p className='font-bold text-2xl mt-10 mb-6 ml-12'>Impressions</p>
           <Area data={[ data ]} />
-          <div className='grid grid-cols-2'>
+          <div className='grid grid-cols-2 my-6'>
             <StatisticsCard
               title='Impressions'
               amount='100,203'
@@ -244,9 +249,9 @@ const CommercialStatistics: React.FC<{
         </div>
 
         <div>
-          <span className='font-bold text-2xl'>Conversions</span>
+          <p className='font-bold text-2xl mt-10 mb-6 ml-12'>Conversions</p>
           <Graph data={[ data ]} />
-          <div className='grid grid-cols-2'>
+          <div className='grid grid-cols-2 my-6'>
             <StatisticsCard
               title='Conversions'
               amount='3,403'
