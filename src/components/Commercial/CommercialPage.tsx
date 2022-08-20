@@ -6,6 +6,7 @@ import { Commercial } from '../../services';
 import CommercialCampaigns from './CommercialCampaigns';
 import CommercialStatistics from './CommercialStatistics';
 import log from 'loglevel';
+import ITarget from '../interfaces/ITarget';
 
 enum SECTION {
   CAMPAIGNS,
@@ -38,6 +39,7 @@ const CommercialPage: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
   const [displayedSection, setDisplayedSection] = useState(SECTION.CAMPAIGNS);
 
+  const [targets, setTargets] = useState<ITarget[]>([]);
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
 
   useEffect(() => {
@@ -67,6 +69,20 @@ const CommercialPage: React.FC = () => {
 
         setCampaigns(gotCampaigns);
       }).catch(err => log.error(err));
+
+    Commercial.getAllTargetByOwner(userCredentials._id, userCredentials.token)
+      .then(result => {
+        const gotTargets = result.data.map(target => ({
+          id: target._id,
+          ownerId: target.ownerId,
+          name: target.name,
+          csp: target.csp,
+          interests: target.interests,
+          ageRange: target.ageRange
+        }));
+
+        setTargets(gotTargets);
+      }).catch(err => log.error(err));
   }, [userCredentials]);
 
   return (
@@ -79,7 +95,12 @@ const CommercialPage: React.FC = () => {
         </div>
         <hr className='border-none' />
         {(displayedSection === SECTION.CAMPAIGNS)
-          ? <CommercialCampaigns campaigns={campaigns} setCampaigns={setCampaigns} />
+          ? <CommercialCampaigns
+              campaigns={campaigns}
+              setCampaigns={setCampaigns}
+              targets={targets}
+              setTargets={setTargets}
+            />
           : <CommercialStatistics campaigns={campaigns} />
         }
       </div>

@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
+import ITarget from '../interfaces/ITarget';
 import ICampaign from '../interfaces/ICampaign';
+import TargetModal from './CommercialTargetModal';
+import CampaignModal from './CommercialCampaignModal';
+import MultipleTargetsModal from './CommercialMultipleTargetsModal';
 import { BsPencilSquare } from 'react-icons/bs';
 import {
   FaPlusCircle,
@@ -10,6 +14,7 @@ import { convertStringToRegex } from '../utils';
 import { Table } from '../common';
 import { Commercial } from '../../services';
 import { useAppSelector } from '../../redux';
+import { ModalType } from './CommercialModalType';
 
 const CustomDiv: React.FC<{
   content: JSX.Element | string;
@@ -25,74 +30,40 @@ const CustomDiv: React.FC<{
 
 const ModalBtn: React.FC<{
   content: string;
+  warning?: boolean;
   onClick: () => void;
 }> = ({
   content,
+  warning,
   onClick
 }) => {
   return (
-    <button className='block p-1 bg-blue-400 text-white text-sm rounded-lg w-48 mx-auto my-2' onClick={onClick}>
+    <button
+      className={`block p-1 text-white text-sm rounded-lg w-48 mx-auto my-2 ${warning === true ? 'bg-red-400' : 'bg-blue-400'}`}
+      onClick={onClick}
+    >
       {content}
     </button>
   );
 };
 
-const CampaignModal: React.FC<{
-  title: string;
-  modalOn: boolean;
-  campaign: ICampaign;
-  setCampaign: (campaign: ICampaign) => void;
-  buttons: JSX.Element[];
-}> = ({
-  title,
-  modalOn,
-  campaign,
-  setCampaign,
-  buttons
-}) => {
-  const setField = (key: string, event: React.ChangeEvent<HTMLInputElement>) => {
-    setCampaign({
-      ...campaign,
-      [key]: event.target.value
-    });
-  };
-
-  return (
-    <form onSubmit={(e) => e.preventDefault()} className='absolute bg-white z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6' hidden={!modalOn}>
-      <p className='font-bold'>{title}</p>
-      <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={campaign.name} onChange={(event) => setField('name', event)} />
-      <input type='number' placeholder='Budget' className='block m-2 w-60 text-sm' value={campaign.budget} onChange={(event) => setField('budget', event)} />
-      <input type='date' placeholder='Date de départ' className='block m-2 w-60 text-sm' value={campaign.startingDate} onChange={(event) => setField('startingDate', event)} />
-      <div className='relative'>
-        <input type='text' placeholder='Rechercher une cible...' className='block m-2 w-52 text-sm' />
-        <button className='absolute right-1 bottom-0'>
-          <FaPlusCircle className='w-6 h-6 text-blue-400' />
-        </button>
-      </div>
-      <div className='w-full mt-4'>
-        {buttons}
-      </div>
-    </form>
-  );
-};
-
-enum ModalType {
-  OFF,
-  CREATE,
-  UPDATE
-}
-
 const CommercialCampaigns: React.FC<{
   campaigns: ICampaign[];
   setCampaigns: (campaigns: ICampaign[]) => void;
+  targets: ITarget[];
+  setTargets: (target: ITarget[]) => void;
 }> = ({
   campaigns,
-  setCampaigns
+  setCampaigns,
+  targets,
+  setTargets
 }) => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [modalOn, setModalOn] = useState(ModalType.OFF);
   const [campaignSearch, setCampaignSearch] = useState("");
+  const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
+
   const [campaign, setCampaign] = useState<ICampaign>({
     id: "",
     name: "",
@@ -103,6 +74,15 @@ const CommercialCampaigns: React.FC<{
     targets: []
   });
 
+  const [target, setTarget] = useState<ITarget>({
+    id: "",
+    csp: "csp",
+    name: "",
+    ownerId: "",
+    ageRange: "",
+    interests: []
+  });
+
   const keys = [
     { displayedName: 'NOM', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.name} /> },
     { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.budget + '€'} /> },
@@ -110,17 +90,17 @@ const CommercialCampaigns: React.FC<{
     { displayedName: 'DATE DE DÉPART', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.startingDate} /> },
     { displayedName: 'REACH', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={"21 023"} /> },
     { displayedName: 'IMPRESSIONS', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={"100 234"} /> },
-    { displayedName: 'CIBLES', displayFunction: (_campaign: ICampaign, index: number) =>
+    { displayedName: 'CIBLES', displayFunction: (campaign: ICampaign, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div key={`tbl-val-${index}`} className='ml-3'>
-          <button><BsPencilSquare /></button>
+          <button onClick={() => updateModal(campaign, ModalType.UPDATE_TARGETS)}><BsPencilSquare /></button>
         </div>
       } />
     },
     {displayedName: 'ACTIONS', displayFunction: (campaign: ICampaign, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div key={`tbl-val-${index}`} className='ml-3 flex space-x-2'>
-          <button onClick={() => updateModal(campaign)}><BsPencilSquare /></button>
+          <button onClick={() => updateModal(campaign, ModalType.UPDATE)}><BsPencilSquare /></button>
           <button onClick={() => deleteCampaign(campaign)}><ImCross /></button>
         </div>
       } />
@@ -140,26 +120,50 @@ const CommercialCampaigns: React.FC<{
         || campaign.startingDate.toLowerCase().match(lowerSearchText) !== null : true);
   };
 
-  const createCampaign = async (status: string) => {
-    const newCampaign = {
-      ...campaign,
-      status: status,
-      ownerId: userCredentials._id
-    };
+  const setModal = (modalType: ModalType) => {
+    setModalTypes([ ...modalTypes, modalType ]);
+    setModalOn(modalType);
+  };
 
-    const result = await Commercial.createCampaign(
-      newCampaign,
-      userCredentials.token
-    );
+  const createTarget = async () => {
+    const newTarget = { ...target, ownerId: userCredentials._id };
+    const result = await Commercial.createTarget(newTarget, userCredentials.token);
+
+    setTargets([ ...targets, { ...newTarget, id: result.data._id } ]);
+    setCampaign({ ...campaign, targets: [ ...campaign.targets, result.data._id ] });
+    setModal(modalTypes[modalTypes.length - 2]);
+    resetTarget();
+  };
+
+  const updateTarget = async (target: ITarget) => {
+    await Commercial.updateTarget(target.id, target, userCredentials.token);
+    setTargets(targets.map(t => (t.id === target.id) ? target : t));
+    setModal(modalTypes[modalTypes.length - 2]);
+    resetTarget();
+  };
+
+  const deleteTarget = async (target: ITarget) => {
+    deleteCampaign({ ...campaign, targets: campaign.targets.filter(tId => tId !== target.id) });
+
+    await Commercial.deleteTarget(target.id, userCredentials.token);
+    setTargets(targets.filter(t => t.id !== target.id));
+    setModal(modalTypes[modalTypes.length - 2]);
+  };
+
+  const createCampaign = async (status: string) => {
+    const newCampaign = { ...campaign, status: status, ownerId: userCredentials._id };
+    const result = await Commercial.createCampaign(newCampaign, userCredentials.token);
 
     setCampaigns([ ...campaigns, { ...newCampaign, id: result.data._id } ]);
-    closeModal();
+    setModal(ModalType.OFF);
+    resetCampaign();
   };
 
   const updateCampaign = async (campaign: ICampaign) => {
     await Commercial.updateCampaign(campaign.id, campaign, userCredentials.token);
     setCampaigns(campaigns.map(c => (c.id === campaign.id) ? campaign : c));
-    closeModal();
+    setModal(ModalType.OFF);
+    resetCampaign();
   };
 
   const deleteCampaign = async (campaign: ICampaign) => {
@@ -167,13 +171,12 @@ const CommercialCampaigns: React.FC<{
     setCampaigns(campaigns.filter(c => c.id !== campaign.id));
   };
 
-  const updateModal = (campaign: ICampaign) => {
-    setModalOn(ModalType.UPDATE);
+  const updateModal = (campaign: ICampaign, modalType: ModalType) => {
+    setModal(modalType);
     setCampaign(campaign);
   };
 
-  const closeModal = () => {
-    setModalOn(ModalType.OFF);
+  const resetCampaign = () => {
     setCampaign({
       id: "",
       name: "",
@@ -185,29 +188,94 @@ const CommercialCampaigns: React.FC<{
     });
   };
 
+  const resetTarget = () => {
+    setTarget({
+      id: "",
+      name: "",
+      csp: "csp",
+      ownerId: "",
+      ageRange: "",
+      interests: []
+    });
+  };
+
   return (
     <div className='my-3'>
 
       <CampaignModal
         title='Créer une nouvelle campagne'
         modalOn={modalOn === ModalType.CREATE}
+        setModalOn={setModal}
+        targets={targets}
         campaign={campaign}
         setCampaign={setCampaign}
         buttons={[
           <ModalBtn content='Créer une campagne' onClick={() => createCampaign('active')} />,
           <ModalBtn content='Créer un template' onClick={() => createCampaign('template')} />,
-          <ModalBtn content='Annuler' onClick={closeModal} />
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetCampaign();
+          }} />
         ]}
       />
 
       <CampaignModal
         title='Modifier une campagne'
         modalOn={modalOn === ModalType.UPDATE}
+        setModalOn={setModal}
+        targets={targets}
         campaign={campaign}
         setCampaign={setCampaign}
         buttons={[
           <ModalBtn content='Modifier la campagne' onClick={() => updateCampaign(campaign)} />,
-          <ModalBtn content='Annuler' onClick={closeModal} />
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetCampaign();
+          }} />
+        ]}
+      />
+
+      <TargetModal
+        title='Créer une nouvelle cible'
+        modalOn={modalOn === ModalType.CREATE_TARGET}
+        target={target}
+        setTarget={setTarget}
+        buttons={[
+          <ModalBtn content='Créer une cible' onClick={() => createTarget()} />,
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(modalTypes[modalTypes.length - 2]);
+            resetTarget();
+          }} />
+        ]}
+      />
+
+      <MultipleTargetsModal
+        title='Modifier les cibles'
+        modalOn={modalOn === ModalType.UPDATE_TARGETS}
+        setModalOn={setModal}
+        campaign={campaign}
+        targets={targets}
+        setTarget={setTarget}
+        buttons={[
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetCampaign();
+          }} />
+        ]}
+      />
+
+      <TargetModal
+        title='Modifier une cible'
+        modalOn={modalOn === ModalType.UPDATE_TARGET}
+        target={target}
+        setTarget={setTarget}
+        buttons={[
+          <ModalBtn content='Modifier la cible' onClick={() => updateTarget(target)} />,
+          <ModalBtn content='Supprimer la cible' onClick={() => deleteTarget(target)} warning={true} />,
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(modalTypes[modalTypes.length - 2]);
+            resetTarget();
+          }} />
         ]}
       />
 
@@ -221,7 +289,7 @@ const CommercialCampaigns: React.FC<{
           />
           <button className='absolute right-1 top-1'><FaSearch className='text-blue-400' /></button>
         </div>
-        <button className='ml-5' onClick={() => setModalOn(ModalType.CREATE)}>
+        <button className='ml-5' onClick={() => setModal(ModalType.CREATE)}>
           <FaPlusCircle className='w-6 h-6 text-blue-400' />
         </button>
       </div>
