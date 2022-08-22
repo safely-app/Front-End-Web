@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { AppHeader } from '../Header/Header';
 import IUser from '../interfaces/IUser';
 import IProfessional from '../interfaces/IProfessional';
-import { ProfessionalInfo, User } from '../../services';
+import { ProfessionalInfo, Stripe, User } from '../../services';
 import { useAppDispatch, useAppSelector } from '../../redux';
 import {
   MdOutlineKeyboardArrowDown,
   MdOutlineKeyboardArrowUp
 } from 'react-icons/md';
 import userProfilePicture from '../../assets/image/user.png';
+import { IStripeCard } from '../interfaces/IStripe';
 import { notifyError } from '../utils';
+import BankCard from './BankCard';
 import log from 'loglevel';
 
 const ProfileField: React.FC<{
@@ -106,6 +108,7 @@ const Profile: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [sectionState, setSectionState] = useState(SectionState.PERSO);
+  const [paymentSolutions, setPaymentSolutions] = useState<IStripeCard[]>([]);
 
   const [user, setUser] = useState<IUser>({
     id: userUserInfo.id,
@@ -177,7 +180,25 @@ const Profile: React.FC = () => {
           notifyError(err);
         }
       });
-  }, []);
+  }, [userCredentials]);
+
+  useEffect(() => {
+    Stripe.getCards(userUserInfo.stripeId as string, userCredentials.token)
+      .then(result => {
+        const gotPaymentSolutions = result.data.data.map(paymentSolution => ({
+          id: paymentSolution.id,
+          customerId: paymentSolution.customer,
+          brand: paymentSolution.card.brand,
+          country: paymentSolution.card.country,
+          expMonth: paymentSolution.card.exp_month,
+          expYear: paymentSolution.card.exp_year,
+          last4: paymentSolution.card.last4,
+          created: paymentSolution.created * 1000
+        }));
+
+        setPaymentSolutions(gotPaymentSolutions);
+      }).catch(err => log.error(err));
+  }, [userCredentials, userUserInfo]);
 
   return (
       <div className='w-full h-full bg-neutral-100'>
@@ -249,7 +270,17 @@ const Profile: React.FC = () => {
               active={sectionState === SectionState.PAYMENT}
               setActive={(active) => setSectionState(active ? SectionState.PAYMENT : SectionState.OFF)}
               content={
-                <div></div>
+                <div className='grid grid-cols-2 gap-4 mt-4'>
+                  {paymentSolutions.slice(0, 4).map(paymentSolution =>
+                    <div className='mb-4'>
+                      <BankCard stripeCard={paymentSolution} name={user.username} />
+                      <div className='grid grid-cols-2 mt-2 text-xs text-white'>
+                        <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-blue-400'>Définir comme carte principale</button>
+                        <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-red-400'>Supprimer</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               }
             />
 
