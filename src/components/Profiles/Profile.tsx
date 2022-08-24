@@ -109,6 +109,7 @@ const Profile: React.FC = () => {
 
   const [sectionState, setSectionState] = useState(SectionState.PERSO);
   const [paymentSolutions, setPaymentSolutions] = useState<IStripeCard[]>([]);
+  const [paymentSolutionsIndex, setPaymentSolutionsIndex] = useState(0);
 
   const [user, setUser] = useState<IUser>({
     id: userUserInfo.id,
@@ -200,6 +201,12 @@ const Profile: React.FC = () => {
       }).catch(err => log.error(err));
   }, [userCredentials, userUserInfo]);
 
+  const updatePaymentSolutionsIndex = (offset: number) => {
+    if (paymentSolutionsIndex + offset >= 0 && 4 * (paymentSolutionsIndex + offset) <= paymentSolutions.length) {
+      setPaymentSolutionsIndex(paymentSolutionsIndex + offset);
+    }
+  };
+
   return (
       <div className='w-full h-full bg-neutral-100'>
         <AppHeader />
@@ -237,7 +244,7 @@ const Profile: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className='col-span-3 py-4'>
+          <div className='relative col-span-3 py-4'>
 
             <ProfileInputSection
               title='Informations personnelles'
@@ -270,16 +277,23 @@ const Profile: React.FC = () => {
               active={sectionState === SectionState.PAYMENT}
               setActive={(active) => setSectionState(active ? SectionState.PAYMENT : SectionState.OFF)}
               content={
-                <div className='grid grid-cols-2 gap-4 mt-4'>
-                  {paymentSolutions.slice(0, 4).map(paymentSolution =>
-                    <div className='mb-4'>
-                      <BankCard stripeCard={paymentSolution} name={user.username} />
-                      <div className='grid grid-cols-2 mt-2 text-xs text-white'>
-                        <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-blue-400'>Définir comme carte principale</button>
-                        <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-red-400'>Supprimer</button>
+                <div className='mt-4'>
+                  <div className='grid grid-cols-2 gap-4'>
+                    {paymentSolutions.slice(4 * paymentSolutionsIndex, (4 * paymentSolutionsIndex) + 4).map(paymentSolution =>
+                      <div className='mb-4'>
+                        <BankCard stripeCard={paymentSolution} name={user.username} />
+                        <div className='grid grid-cols-2 mt-2 text-xs text-white'>
+                          <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-blue-400'>Définir comme carte principale</button>
+                          <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-red-400'>Supprimer</button>
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                  <div className='absolute w-5/6 bg-white rounded-lg drop-shadow-lg grid grid-cols-12 text-center bottom-0 left-1/2 -translate-x-1/2 mb-8 font-bold' hidden={paymentSolutions.length < 4}>
+                    <div className='col-span-1 cursor-pointer rounded-l-lg' onClick={() => updatePaymentSolutionsIndex(-1)}>{'<'}</div>
+                    <div className='col-span-10'>{(paymentSolutionsIndex + 1) + '/' + Math.ceil(paymentSolutions.length / 4)}</div>
+                    <div className='col-span-1 cursor-pointer rounded-r-lg' onClick={() => updatePaymentSolutionsIndex(1)}>{'>'}</div>
+                  </div>
                 </div>
               }
             />
