@@ -29,17 +29,11 @@ const ProfileField: React.FC<{
   );
 };
 
-interface ProfileSectionProperty {
-  value: string;
-  label: string;
-}
-
 const ProfileSection: React.FC<{
   title: string;
   active: boolean;
   setActive: (active: boolean) => void;
   content: JSX.Element;
-  // properties: ProfileSectionProperty[];
 }> = ({
   title,
   active,
@@ -64,6 +58,12 @@ const ProfileSection: React.FC<{
   );
 };
 
+interface ProfileSectionProperty {
+  value: string;
+  label: string;
+  setValue: (value: string) => void;
+}
+
 const ProfileInputSection: React.FC<{
   title: string;
   active: boolean;
@@ -75,6 +75,10 @@ const ProfileInputSection: React.FC<{
   setActive,
   properties
 }) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>, property: ProfileSectionProperty) => {
+    property.setValue(event.target.value);
+  };
+
   return (
     <ProfileSection
       title={title}
@@ -85,8 +89,12 @@ const ProfileInputSection: React.FC<{
           {properties.map(property =>
             <div>
               <label className='block text-neutral-400 font-bold'>{property.label}</label>
-              <input className='border-solid border-neutral-300 rounded-lg w-full max-w-md py-1 px-2 my-2'
-                    type='text' value={property.value} style={{ borderWidth: "1px" }} />
+              <div className='my-2'>
+                {/* <input className='border-solid border-neutral-300 rounded-l-lg w-full max-w-md h-8 py-1 px-2' */}
+                <input className='border border-solid border-neutral-300 rounded-l-lg w-1/2 xl:w-full max-w-md py-1 px-2 focus:outline-none'
+                       type='text' value={property.value} onChange={(event) => handleChange(event, property)}/>
+                <button className='border border-l-0 border-solid border-neutral-300 rounded-r-lg py-1 px-2 hover:bg-neutral-100'>Modifier</button>
+              </div>
             </div>
           )}
         </div>
@@ -110,6 +118,9 @@ const Profile: React.FC = () => {
   const [sectionState, setSectionState] = useState(SectionState.PERSO);
   const [paymentSolutions, setPaymentSolutions] = useState<IStripeCard[]>([]);
   const [paymentSolutionsIndex, setPaymentSolutionsIndex] = useState(0);
+
+  const [savedUser, setSavedUser] = useState<IUser | undefined>(undefined);
+  const [savedProfessional, setSavedProfessional] = useState<IProfessional | undefined>(undefined);
 
   const [user, setUser] = useState<IUser>({
     id: userUserInfo.id,
@@ -148,7 +159,7 @@ const Profile: React.FC = () => {
         };
 
         setUser(gotUser);
-        // setSavedUser(gotUser);
+        setSavedUser(gotUser);
       }).catch(error => log.error(error));
 
     ProfessionalInfo.getOwner(userCredentials._id, userCredentials.token)
@@ -172,11 +183,9 @@ const Profile: React.FC = () => {
         };
 
         setProfessional(gotProfessional);
-        // setSavedProfessional(gotProfessional);
-        // setSearcherState(InfoSearcher.FOUND);
+        setSavedProfessional(gotProfessional);
       }).catch(err => {
         log.error(err);
-        // setSearcherState(InfoSearcher.NOTFOUND);
         if (err.response === undefined || err.response.status !== 404) {
           notifyError(err);
         }
@@ -207,6 +216,14 @@ const Profile: React.FC = () => {
     }
   };
 
+  const setUserField = (field: string, value: string) => {
+    setUser({ ...user, [field]: value });
+  };
+
+  const setProfessionalField = (field: string, value: string) => {
+    setProfessional({ ...professional, [field]: value });
+  };
+
   return (
       <div className='w-full h-full bg-neutral-100'>
         <AppHeader />
@@ -215,32 +232,32 @@ const Profile: React.FC = () => {
           <div className='col-span-2 border-r-2 border-solid border-neutral-300 px-4'>
             <div className='font-bold mt-8'>
               <img className='block object-center h-20 w-20 mx-auto' src={userProfilePicture} alt='' />
-              <p className='text-2xl text-center my-4'>{user.username}</p>
-              <p className='text-sm text-center mb-6'>{user.email}</p>
+              <p className='text-2xl text-center my-4'>{savedUser?.username}</p>
+              <p className='text-sm text-center mb-6'>{savedUser?.email}</p>
             </div>
 
             <hr className='border-t-2 border-solid border-neutral-300' />
 
             <div className='font-light'>
-              <ProfileField leftText="Nom d'utilisateur" rightText={user.username} />
-              <ProfileField leftText="Adresse électronique" rightText={user.email} />
+              <ProfileField leftText="Nom d'utilisateur" rightText={savedUser?.username || ""} />
+              <ProfileField leftText="Adresse électronique" rightText={savedUser?.email || ""} />
             </div>
 
             <hr />
 
             <div className='font-light'>
-              <ProfileField leftText="Nom de l'entreprise" rightText={professional.companyName} />
-              <ProfileField leftText="Adresse de l'entreprise" rightText={professional.companyAddress} />
-              <ProfileField leftText="Adresse de l'entreprise 2" rightText={professional.companyAddress2} />
-              <ProfileField leftText="Adresse de facturation" rightText={professional.billingAddress} />
-              <ProfileField leftText="Numéro de client TVA" rightText={professional.clientNumberTVA} />
-              <ProfileField leftText="Numéro de téléphone personnel" rightText={professional.personalPhone} />
-              <ProfileField leftText="Numéro de téléphone professionel" rightText={professional.companyPhone} />
-              <ProfileField leftText="Type d'entreprise" rightText={professional.type} />
+              <ProfileField leftText="Nom de l'entreprise" rightText={savedProfessional?.companyName || ""} />
+              <ProfileField leftText="Adresse de l'entreprise" rightText={savedProfessional?.companyAddress || ""} />
+              <ProfileField leftText="Adresse de l'entreprise 2" rightText={savedProfessional?.companyAddress2 || ""} />
+              <ProfileField leftText="Adresse de facturation" rightText={savedProfessional?.billingAddress || ""} />
+              <ProfileField leftText="Numéro de client TVA" rightText={savedProfessional?.clientNumberTVA || ""} />
+              <ProfileField leftText="Numéro de téléphone personnel" rightText={savedProfessional?.personalPhone || ""} />
+              <ProfileField leftText="Numéro de téléphone professionel" rightText={savedProfessional?.companyPhone || ""} />
+              <ProfileField leftText="Type d'entreprise" rightText={savedProfessional?.type || ""} />
 
               <div className='grid grid-cols-1 xl:grid-cols-2 mt-4 lg:mt-8'>
-                <button className='block p-2 text-white text-sm rounded-lg w-48 mx-auto my-2 bg-blue-400'>Se déconnecter</button>
-                <button className='block p-2 text-white text-sm rounded-lg w-48 mx-auto my-2 bg-red-400'>Supprimer mon compte</button>
+                <button className='block p-2 text-white text-sm rounded-lg w-48 mx-auto my-2 bg-blue-400 hover:bg-blue-300'>Se déconnecter</button>
+                <button className='block p-2 text-white text-sm rounded-lg w-48 mx-auto my-2 bg-red-400 hover:bg-red-300'>Supprimer mon compte</button>
               </div>
             </div>
           </div>
@@ -251,8 +268,8 @@ const Profile: React.FC = () => {
               active={sectionState === SectionState.PERSO}
               setActive={(active) => setSectionState(active ? SectionState.PERSO : SectionState.OFF)}
               properties={[
-                { label: "Nom d'utilisateur", value: user.username },
-                { label: "Adresse électronique", value: user.email },
+                { label: "Nom d'utilisateur", value: user.username, setValue: (value) => setUserField("username", value) },
+                { label: "Adresse électronique", value: user.email, setValue: (value) => setUserField("email", value) },
               ]}
             />
 
@@ -261,14 +278,14 @@ const Profile: React.FC = () => {
               active={sectionState === SectionState.COMPANY}
               setActive={(active) => setSectionState(active ? SectionState.COMPANY : SectionState.OFF)}
               properties={[
-                { label: "Nom de l'entreprise", value: professional.companyName },
-                { label: "Adresse de l'entreprise", value: professional.companyAddress },
-                { label: "Adresse de l'entreprise 2", value: professional.companyAddress2 },
-                { label: "Adresse de facturation", value: professional.billingAddress },
-                { label: "Numéro de client TVA", value: professional.clientNumberTVA },
-                { label: "Numéro de télephone personnel", value: professional.personalPhone },
-                { label: "Numéro de télephone professionel", value: professional.companyPhone },
-                { label: "Type d'entreprise", value: professional.type },
+                { label: "Nom de l'entreprise", value: professional.companyName, setValue: (value) => setProfessionalField("companyName", value) },
+                { label: "Adresse de l'entreprise", value: professional.companyAddress, setValue: (value) => setProfessionalField("companyAddress", value) },
+                { label: "Adresse de l'entreprise 2", value: professional.companyAddress2, setValue: (value) => setProfessionalField("companyAddress2", value) },
+                { label: "Adresse de facturation", value: professional.billingAddress, setValue: (value) => setProfessionalField("billingAddress", value) },
+                { label: "Numéro de client TVA", value: professional.clientNumberTVA, setValue: (value) => setProfessionalField("clientNumberTVA", value) },
+                { label: "Numéro de télephone personnel", value: professional.personalPhone, setValue: (value) => setProfessionalField("personalPhone", value) },
+                { label: "Numéro de télephone professionel", value: professional.companyPhone, setValue: (value) => setProfessionalField("companyPhone", value) },
+                { label: "Type d'entreprise", value: professional.type, setValue: (value) => setProfessionalField("type", value) },
               ]}
             />
 
@@ -283,8 +300,8 @@ const Profile: React.FC = () => {
                       <div className='mb-4'>
                         <BankCard stripeCard={paymentSolution} name={user.username} />
                         <div className='grid grid-cols-2 mt-2 text-xs text-white'>
-                          <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-blue-400'>Définir comme carte principale</button>
-                          <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-red-400'>Supprimer</button>
+                          <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-blue-400 hover:bg-blue-300'>Définir comme carte principale</button>
+                          <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-red-400 hover:bg-red-300'>Supprimer</button>
                         </div>
                       </div>
                     )}
