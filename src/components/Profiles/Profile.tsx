@@ -3,7 +3,7 @@ import { AppHeader } from '../Header/Header';
 import IUser from '../interfaces/IUser';
 import IProfessional from '../interfaces/IProfessional';
 import { ProfessionalInfo, Stripe, User } from '../../services';
-import { useAppDispatch, useAppSelector } from '../../redux';
+import { disconnect, useAppDispatch, useAppSelector } from '../../redux';
 import {
   MdOutlineKeyboardArrowDown,
   MdOutlineKeyboardArrowUp
@@ -68,11 +68,13 @@ const ProfileInputSection: React.FC<{
   title: string;
   active: boolean;
   setActive: (active: boolean) => void;
+  updateProperties: () => void;
   properties: ProfileSectionProperty[];
 }> = ({
   title,
   active,
   setActive,
+  updateProperties,
   properties
 }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, property: ProfileSectionProperty) => {
@@ -90,10 +92,10 @@ const ProfileInputSection: React.FC<{
             <div>
               <label className='block text-neutral-400 font-bold'>{property.label}</label>
               <div className='my-2'>
-                {/* <input className='border-solid border-neutral-300 rounded-l-lg w-full max-w-md h-8 py-1 px-2' */}
                 <input className='border border-solid border-neutral-300 rounded-l-lg w-1/2 xl:w-full max-w-md py-1 px-2 focus:outline-none'
                        type='text' value={property.value} onChange={(event) => handleChange(event, property)}/>
-                <button className='border border-l-0 border-solid border-neutral-300 rounded-r-lg py-1 px-2 hover:bg-neutral-100'>Modifier</button>
+                <button className='border border-l-0 border-solid border-neutral-300 rounded-r-lg py-1 px-2 hover:bg-neutral-200'
+                        onClick={updateProperties}>Modifier</button>
               </div>
             </div>
           )}
@@ -224,6 +226,44 @@ const Profile: React.FC = () => {
     setProfessional({ ...professional, [field]: value });
   };
 
+  const updateUser = async () => {
+    try {
+      await User.update(user.id, user, userCredentials.token);
+      setSavedUser(user);
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const updateProfessional = async () => {
+    try {
+      await ProfessionalInfo.update(professional.id, professional, userCredentials.token);
+      setSavedProfessional(professional);
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const disconnectUser = () => {
+    dispatch(disconnect());
+    window.location.href = "/";
+  };
+
+  const deleteAccount = async () => {
+    try {
+      if (professional.id !== "")
+        await ProfessionalInfo.delete(professional.id, userCredentials.token);
+
+      await User.delete(user.id, userCredentials.token);
+    } catch (err) {
+      log.error(err);
+    } finally {
+      disconnectUser();
+    }
+  };
+
   return (
       <div className='w-full h-full bg-neutral-100'>
         <AppHeader />
@@ -256,8 +296,8 @@ const Profile: React.FC = () => {
               <ProfileField leftText="Type d'entreprise" rightText={savedProfessional?.type || ""} />
 
               <div className='grid grid-cols-1 xl:grid-cols-2 mt-4 lg:mt-8'>
-                <button className='block p-2 text-white text-sm rounded-lg w-48 mx-auto my-2 bg-blue-400 hover:bg-blue-300'>Se déconnecter</button>
-                <button className='block p-2 text-white text-sm rounded-lg w-48 mx-auto my-2 bg-red-400 hover:bg-red-300'>Supprimer mon compte</button>
+                <button className='block p-2 text-white text-sm rounded-lg w-48 mx-auto my-2 bg-blue-400 hover:bg-blue-300' onClick={disconnectUser}>Se déconnecter</button>
+                <button className='block p-2 text-white text-sm rounded-lg w-48 mx-auto my-2 bg-red-400 hover:bg-red-300' onClick={deleteAccount}>Supprimer mon compte</button>
               </div>
             </div>
           </div>
@@ -267,6 +307,7 @@ const Profile: React.FC = () => {
               title='Informations personnelles'
               active={sectionState === SectionState.PERSO}
               setActive={(active) => setSectionState(active ? SectionState.PERSO : SectionState.OFF)}
+              updateProperties={updateUser}
               properties={[
                 { label: "Nom d'utilisateur", value: user.username, setValue: (value) => setUserField("username", value) },
                 { label: "Adresse électronique", value: user.email, setValue: (value) => setUserField("email", value) },
@@ -277,6 +318,7 @@ const Profile: React.FC = () => {
               title='Informations de votre entreprise'
               active={sectionState === SectionState.COMPANY}
               setActive={(active) => setSectionState(active ? SectionState.COMPANY : SectionState.OFF)}
+              updateProperties={updateProfessional}
               properties={[
                 { label: "Nom de l'entreprise", value: professional.companyName, setValue: (value) => setProfessionalField("companyName", value) },
                 { label: "Adresse de l'entreprise", value: professional.companyAddress, setValue: (value) => setProfessionalField("companyAddress", value) },
