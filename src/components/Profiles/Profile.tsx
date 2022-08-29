@@ -9,8 +9,10 @@ import {
   MdOutlineKeyboardArrowUp
 } from 'react-icons/md';
 import userProfilePicture from '../../assets/image/user.png';
-import { IStripeCard } from '../interfaces/IStripe';
-import { notifyError } from '../utils';
+import IStripe, { IStripeCard } from '../interfaces/IStripe';
+import { PaymentMethod } from '@stripe/stripe-js';
+import { notifyError, notifySuccess } from '../utils';
+import StripeCard from './StripeCard';
 import BankCard from './BankCard';
 import log from 'loglevel';
 
@@ -105,6 +107,24 @@ const ProfileInputSection: React.FC<{
   );
 };
 
+const LinkCardModal: React.FC<{
+  modalOn: boolean;
+  setModalOn: (modalOn: boolean) => void;
+  linkCardToUser: (value: PaymentMethod) => void;
+}> = ({
+  modalOn,
+  setModalOn,
+  linkCardToUser
+}) => {
+  return (
+    <div className='absolute bg-white z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6 text-center' hidden={!modalOn}>
+      <StripeCard onSubmit={linkCardToUser} />
+      <button className='bg-blue-400 text-white font-bold rounded-lg shadow-lg m-2 py-2 px-2 w-52'
+              onClick={() => setModalOn(false)}>Annuler</button>
+    </div>
+  );
+};
+
 enum SectionState {
   OFF,
   PERSO,
@@ -120,6 +140,8 @@ const Profile: React.FC = () => {
   const [sectionState, setSectionState] = useState(SectionState.PERSO);
   const [paymentSolutions, setPaymentSolutions] = useState<IStripeCard[]>([]);
   const [paymentSolutionsIndex, setPaymentSolutionsIndex] = useState(0);
+
+  const [cardModalOn, setCardModalOn] = useState(true);
 
   const [savedUser, setSavedUser] = useState<IUser | undefined>(undefined);
   const [savedProfessional, setSavedProfessional] = useState<IProfessional | undefined>(undefined);
@@ -264,9 +286,64 @@ const Profile: React.FC = () => {
     }
   };
 
+  const createStripeUser = async (userObj: IUser): Promise<string> => {
+    const stripeInfo = await Stripe.create({
+      id: '',
+      name: professional.companyName,
+      address: professional.billingAddress,
+      phone: professional.personalPhone,
+      description: ''
+    }, userCredentials.token);
+    const stripeObj = stripeInfo.data as IStripe;
+
+    await User.update(userCredentials._id, {
+      stripeId: stripeObj.id,
+      id: userObj.id,
+      username: userObj.username,
+      email: userObj.email,
+      role: userObj.role
+    }, userCredentials.token);
+
+    return stripeObj.id;
+  };
+
+  const linkCardToUser = async (value: PaymentMethod) => {
+    try {
+      const userInfo = await User.get(userCredentials._id, userCredentials.token);
+      const userObj = (userInfo.data as IUser);
+
+      if (userObj !== undefined) {
+        if (userObj.stripeId === undefined) {
+          await createStripeUser(userObj);
+        }
+
+        const response = await Stripe.linkCard(value.id, userCredentials.token);
+        const paymentSolution = response.data;
+
+        setPaymentSolutions([ ...paymentSolutions, {
+          id: paymentSolution.id,
+          customerId: paymentSolution.customer,
+          brand: paymentSolution.card.brand,
+          country: paymentSolution.card.country,
+          expMonth: paymentSolution.card.exp_month,
+          expYear: paymentSolution.card.exp_year,
+          last4: paymentSolution.card.last4,
+          created: String(paymentSolution.created * 1000)
+        } ]);
+        notifySuccess("Votre carte a été enregistré !");
+        setCardModalOn(false);
+      }
+    } catch (err) {
+      log.error(err);
+      notifyError(err);
+    }
+  };
+
   return (
       <div className='w-full h-full bg-neutral-100'>
         <AppHeader />
+
+        <LinkCardModal modalOn={cardModalOn} setModalOn={setCardModalOn} linkCardToUser={linkCardToUser} />
 
         <div className='grid grid-cols-5 w-5/6 2xl:w-4/6 h-5/6 bg-white m-auto mt-6 rounded shadow-lg'>
           <div className='col-span-2 border-r-2 border-solid border-neutral-300 px-4'>
@@ -339,15 +416,16 @@ const Profile: React.FC = () => {
                 <div className='mt-4'>
                   <div className='grid grid-cols-2 gap-4'>
                     {paymentSolutions.slice(4 * paymentSolutionsIndex, (4 * paymentSolutionsIndex) + 4).map(paymentSolution =>
-                      <div className='mb-4'>
+                      <div className='mb-1'>
                         <BankCard stripeCard={paymentSolution} name={user.username} />
-                        <div className='grid grid-cols-2 mt-2 text-xs text-white'>
-                          <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-blue-400 hover:bg-blue-300'>Définir comme carte principale</button>
-                          <button className='block p-1 rounded-lg w-28 mx-auto my-1 bg-red-400 hover:bg-red-300'>Supprimer</button>
+                        <div className='grid grid-cols-2 mt-2 text-xs text-white gap-2'>
+                          <button className='block p-1 rounded-lg w-full mx-auto bg-blue-400 hover:bg-blue-300'>Définir comme carte principale</button>
+                          <button className='block p-1 rounded-lg w-full mx-auto bg-red-400 hover:bg-red-300'>Supprimer</button>
                         </div>
                       </div>
                     )}
                   </div>
+                  <button className='absolute p-1 text-sm font-bold w-5/6 rounded-lg bg-white drop-shadow-lg bottom-16 left-1/2 -translate-x-1/2' onClick={() => setCardModalOn(true)}>Ajouter une carte</button>
                   <div className='absolute w-5/6 bg-white rounded-lg drop-shadow-lg grid grid-cols-12 text-center bottom-0 left-1/2 -translate-x-1/2 mb-8 font-bold' hidden={paymentSolutions.length < 4}>
                     <div className='col-span-1 cursor-pointer rounded-l-lg' onClick={() => updatePaymentSolutionsIndex(-1)}>{'<'}</div>
                     <div className='col-span-10'>{(paymentSolutionsIndex + 1) + '/' + Math.ceil(paymentSolutions.length / 4)}</div>
