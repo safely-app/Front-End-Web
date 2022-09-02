@@ -22,48 +22,71 @@ enum MonitorView {
     COMMENT
 }
 
+const CommercialSectionBtn: React.FC<{
+  btnText: string;
+  sectionType: MonitorView;
+  displayedSection: MonitorView;
+  setDisplayedSection: (section: MonitorView) => void;
+  customStyle?: string;
+}> = ({
+  btnText,
+  sectionType,
+  displayedSection,
+  setDisplayedSection,
+  customStyle
+}) => {
+  const finalStyle = 'inline pb-2 font-bold text-lg text-neutral-500 cursor-pointer '
+    + (displayedSection === sectionType ? 'border-b-2 border-solid border-neutral-800 ' : ' ')
+    + (customStyle !== undefined ? customStyle : '');
+
+  return (
+    <div className={finalStyle} onClick={() => setDisplayedSection(sectionType)}>{btnText}</div>
+  );
+};
+
 const Monitor: React.FC = () => {
-    const [view, setView] = useState(MonitorView.USER);
-    const navBarElements = [
-        { text: "Utilisateurs", onClick: () => setView(MonitorView.USER) },
-        { text: "Safeplaces", onClick: () => setView(MonitorView.SAFEPLACE) },
-        { text: "Factures", onClick: () => setView(MonitorView.INVOICE) },
-        { text: "Campagnes", onClick: () => setView(MonitorView.CAMPAIGN) },
-        { text: "Cibles", onClick: () => setView(MonitorView.TARGET) },
-        { text: "Requêtes de safeplace", onClick: () => setView(MonitorView.REQUESTCLAIMSAFEPLACE) },
-        { text: "Modifications de safeplace", onClick: () => setView(MonitorView.SAFEPLACEUPDATE) },
-        { text: "Commentaires", onClick: () => setView(MonitorView.COMMENT) }
-    ];
+  const [view, setView] = useState(MonitorView.USER);
 
-    const getView = (): JSX.Element => {
-        switch (view) {
-            case MonitorView.SAFEPLACEUPDATE:
-                return <SafeplaceUpdateMonitor />;
-            case MonitorView.COMMENT:
-                return <CommentMonitor />;
-            case MonitorView.TARGET:
-                return <TargetMonitor />;
-            case MonitorView.CAMPAIGN:
-                return <CampaignMonitor />;
-            case MonitorView.INVOICE:
-                return <BillingMonitor />;
-            case MonitorView.REQUESTCLAIMSAFEPLACE:
-                return <RequestClaimSafeplace />;
-            case MonitorView.SAFEPLACE:
-                return <SafeplaceMonitor />;
-            case MonitorView.USER:
-            default:
-                return <UserMonitor />;
-        }
-    };
+  const getView = (): JSX.Element => {
+    switch (view) {
+      case MonitorView.SAFEPLACEUPDATE:
+        return <SafeplaceUpdateMonitor />;
+      case MonitorView.COMMENT:
+        return <CommentMonitor />;
+      case MonitorView.TARGET:
+        return <TargetMonitor />;
+      case MonitorView.CAMPAIGN:
+        return <CampaignMonitor />;
+      case MonitorView.INVOICE:
+        return <BillingMonitor />;
+      case MonitorView.REQUESTCLAIMSAFEPLACE:
+        return <RequestClaimSafeplace />;
+      case MonitorView.SAFEPLACE:
+        return <SafeplaceMonitor />;
+      case MonitorView.USER:
+      default:
+        return <UserMonitor />;
+    }
+  };
 
-    return (
-        <div className="min-h-screen bg-blue-safely-dark bg-transparent space-y-4 bg-cover bg-center">
-            <AppHeader />
-            <NavBar elements={navBarElements} />
-            {getView()}
+  return (
+    <div className="relative w-full h-full">
+      <AppHeader />
+      <div className='mt-14 mx-14'>
+        <div className='inline-block flex-shrink space-x-4 pb-1.5 border-b-2 border-solid border-neutral-300'>
+          <CommercialSectionBtn btnText='Utilisateurs' sectionType={MonitorView.USER} displayedSection={view} setDisplayedSection={setView} />
+          <CommercialSectionBtn btnText='Safeplaces' sectionType={MonitorView.SAFEPLACE} displayedSection={view} setDisplayedSection={setView} />
+          <CommercialSectionBtn btnText='Factures' sectionType={MonitorView.INVOICE} displayedSection={view} setDisplayedSection={setView} />
+          <CommercialSectionBtn btnText='Campagnes' sectionType={MonitorView.CAMPAIGN} displayedSection={view} setDisplayedSection={setView} />
+          <CommercialSectionBtn btnText='Cibles' sectionType={MonitorView.TARGET} displayedSection={view} setDisplayedSection={setView} />
+          <CommercialSectionBtn btnText='Requêtes de safeplace' sectionType={MonitorView.REQUESTCLAIMSAFEPLACE} displayedSection={view} setDisplayedSection={setView} />
+          <CommercialSectionBtn btnText='Modification de safeplace' sectionType={MonitorView.SAFEPLACEUPDATE} displayedSection={view} setDisplayedSection={setView} />
+          <CommercialSectionBtn btnText='Commentaires' sectionType={MonitorView.COMMENT} displayedSection={view} setDisplayedSection={setView} />
         </div>
-    );
+        {getView()}
+      </div>
+    </div>
+  );
 };
 
 export default Monitor;

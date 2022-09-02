@@ -5,13 +5,9 @@ import TargetModal from './CommercialTargetModal';
 import CampaignModal from './CommercialCampaignModal';
 import MultipleTargetsModal from './CommercialMultipleTargetsModal';
 import { BsPencilSquare } from 'react-icons/bs';
-import {
-  FaPlusCircle,
-  FaSearch
-} from 'react-icons/fa';
 import { ImCross } from 'react-icons/im';
 import { convertStringToRegex } from '../utils';
-import { Table } from '../common';
+import { SearchBar, Table } from '../common';
 import { Commercial } from '../../services';
 import { useAppSelector } from '../../redux';
 import { ModalType } from './CommercialModalType';
@@ -279,20 +275,12 @@ const CommercialCampaigns: React.FC<{
         ]}
       />
 
-      <div className='inline-block flex'>
-        <div className='relative'>
-          <input
-            className='text-sm w-52 border-b-2 border-solid border-blue-400 bg-neutral-100'
-            placeholder='Rechercher une campagne...'
-            value={campaignSearch}
-            onChange={(event) => setCampaignSearch(event.target.value)}
-          />
-          <button className='absolute right-1 top-1'><FaSearch className='text-blue-400' /></button>
-        </div>
-        <button className='ml-5' onClick={() => setModal(ModalType.CREATE)}>
-          <FaPlusCircle className='w-6 h-6 text-blue-400' />
-        </button>
-      </div>
+      <SearchBar
+        textSearch={campaignSearch}
+        setTextSearch={setCampaignSearch}
+        placeholder='Rechercher une campagne...'
+        openCreateModal={() => setModal(ModalType.CREATE)}
+      />
       <div className='mt-3'>
         <Table content={filterCampaigns()} keys={keys} />
       </div>
