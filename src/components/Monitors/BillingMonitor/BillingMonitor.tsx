@@ -158,7 +158,10 @@ const BillingMonitor: React.FC = () => {
         setBilling={setBilling}
         buttons={[
           <ModalBtn content="Modifier la safeplace" onClick={() => updateBilling(billing)} />,
-          <ModalBtn content="Annuler" onClick={() => setModal(ModalType.OFF)} />
+          <ModalBtn content="Annuler" onClick={() => {
+            setModal(ModalType.OFF);
+            resetBilling();
+          }} />
         ]}
       />
 
