@@ -103,6 +103,18 @@ const BillingMonitor: React.FC = () => {
     }
   };
 
+  const resetBilling = () => {
+    setBilling({
+      id: "",
+      amount: 0,
+      currency: "",
+      receiptEmail: "",
+      paymentMethod: "",
+      description: "",
+      status: ""
+    });
+  };
+
   useEffect(() => {
     Billing.getAll(userCredentials.token).then(response => {
       const gotBillings = response.data.data.map(billing => ({
@@ -132,7 +144,10 @@ const BillingMonitor: React.FC = () => {
         setBilling={setBilling}
         buttons={[
           <ModalBtn content="Modifier la safeplace" onClick={() => createBilling(billing)} />,
-          <ModalBtn content="Annuler" onClick={() => setModal(ModalType.OFF)} />
+          <ModalBtn content="Annuler" onClick={() => {
+            setModal(ModalType.OFF);
+            resetBilling();
+          }} />
         ]}
       />
 
