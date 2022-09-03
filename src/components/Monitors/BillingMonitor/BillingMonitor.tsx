@@ -5,8 +5,8 @@ import { Billing } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IBilling from "../../interfaces/IBilling";
 import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { ModalBtn, ModalType, BillingCreateModal, BillingUpdateModal } from "./BillingMonitorModal";
 import log from "loglevel";
-import { ModalBtn, ModalType, SafeplaceCreateModal, SafeplaceUpdateModal } from "./BillingMonitorModal";
 
 const CustomDiv: React.FC<{
   content: JSX.Element | string;
@@ -125,7 +125,7 @@ const BillingMonitor: React.FC = () => {
   return (
     <div className='my-3'>
 
-      <SafeplaceCreateModal
+      <BillingCreateModal
         title="Créer une nouvelle facture"
         modalOn={modalOn === ModalType.CREATE}
         billing={billing}
@@ -136,7 +136,7 @@ const BillingMonitor: React.FC = () => {
         ]}
       />
 
-      <SafeplaceUpdateModal
+      <BillingUpdateModal
         title="Modifier une facture"
         modalOn={modalOn === ModalType.UPDATE}
         billing={billing}

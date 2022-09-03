@@ -25,7 +25,7 @@ export const ModalBtn: React.FC<{
   );
 };
 
-export const SafeplaceCreateModal: React.FC<{
+export const BillingCreateModal: React.FC<{
   title: string;
   modalOn: boolean;
   billing: IBilling;
@@ -56,7 +56,7 @@ export const SafeplaceCreateModal: React.FC<{
   );
 };
 
-export const SafeplaceUpdateModal: React.FC<{
+export const BillingUpdateModal: React.FC<{
   title: string;
   modalOn: boolean;
   billing: IBilling;
