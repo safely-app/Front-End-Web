@@ -6,20 +6,11 @@ import { RequestClaimSafeplace } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IRequestClaimSafeplace from "../../interfaces/IRequestClaimSafeplace";
 import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
-import { ModalBtn, ModalType, RequestClaimSafeplaceModal } from "./RequestClaimSafeplaceMonitorModal";
+import { RequestClaimSafeplaceModal } from "./RequestClaimSafeplaceMonitorModal";
+import { CustomDiv } from "../../common/Table";
+import { ModalBtn } from "../../common/Modal";
+import { ModalType } from "../ModalType";
 import log from "loglevel";
-
-const CustomDiv: React.FC<{
-  content: JSX.Element | string,
-}> = ({
-  content
-}) => {
-  return (
-    <div className='table-cell border-t-2 border-solid border-neutral-300'>
-      {content}
-    </div>
-  );
-};
 
 const RequestClaimSafeplaceMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);

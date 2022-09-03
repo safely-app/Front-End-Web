@@ -6,20 +6,11 @@ import { Comment } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IComment from "../../interfaces/IComment";
 import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
-import { CommentModal, ModalBtn, ModalType } from "./CommentMonitorModal";
+import { CommentModal } from "./CommentMonitorModal";
+import { CustomDiv } from "../../common/Table";
+import { ModalBtn } from "../../common/Modal";
+import { ModalType } from "../ModalType";
 import log from "loglevel";
-
-const CustomDiv: React.FC<{
-  content: JSX.Element | string;
-}> = ({
-  content
-}) => {
-  return (
-    <div className='table-cell border-t-2 border-solid border-neutral-300'>
-      {content}
-    </div>
-  );
-};
 
 const CommentMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);

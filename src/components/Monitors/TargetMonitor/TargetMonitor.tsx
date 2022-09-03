@@ -6,20 +6,11 @@ import { Commercial } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import ITarget from "../../interfaces/ITarget";
 import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { TargetModal } from "./TargetMonitorModal";
+import { CustomDiv } from "../../common/Table";
+import { ModalBtn } from "../../common/Modal";
+import { ModalType } from "../ModalType";
 import log from "loglevel";
-import { ModalBtn, ModalType, TargetModal } from "./TargetMonitorModal";
-
-const CustomDiv: React.FC<{
-  content: JSX.Element | string;
-}> = ({
-  content
-}) => {
-  return (
-    <div className='table-cell border-t-2 border-solid border-neutral-300'>
-      {content}
-    </div>
-  );
-};
 
 const TargetMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);

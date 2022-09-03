@@ -11,37 +11,8 @@ import { SearchBar, Table } from '../common';
 import { Commercial } from '../../services';
 import { useAppSelector } from '../../redux';
 import { ModalType } from './CommercialModalType';
-
-const CustomDiv: React.FC<{
-  content: JSX.Element | string;
-}> = ({
-  content
-}) => {
-  return (
-    <div className='table-cell border-t-2 border-solid border-neutral-300'>
-      {content}
-    </div>
-  );
-};
-
-const ModalBtn: React.FC<{
-  content: string;
-  warning?: boolean;
-  onClick: () => void;
-}> = ({
-  content,
-  warning,
-  onClick
-}) => {
-  return (
-    <button
-      className={`block p-1 text-white text-sm rounded-lg w-48 mx-auto my-2 ${warning === true ? 'bg-red-400' : 'bg-blue-400'}`}
-      onClick={onClick}
-    >
-      {content}
-    </button>
-  );
-};
+import { CustomDiv } from '../common/Table';
+import { ModalBtn } from '../common/Modal';
 
 const CommercialCampaigns: React.FC<{
   campaigns: ICampaign[];

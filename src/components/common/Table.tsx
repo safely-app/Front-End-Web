@@ -5,6 +5,18 @@ interface ListObjKey {
   displayFunction: (obj: any, index: number) => JSX.Element;
 }
 
+export const CustomDiv: React.FC<{
+  content: JSX.Element | string;
+}> = ({
+  content
+}) => {
+  return (
+    <div className='table-cell border-t-2 border-solid border-neutral-300'>
+      {content}
+    </div>
+  );
+};
+
 const Table: React.FC<{
   content: any[];
   keys: ListObjKey[];

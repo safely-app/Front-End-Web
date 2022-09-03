@@ -6,20 +6,11 @@ import { Safeplace } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import ISafeplace from "../../interfaces/ISafeplace";
 import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
-import { ModalBtn, ModalType, SafeplaceModal } from "./SafeplaceMonitorModal";
+import { SafeplaceModal } from "./SafeplaceMonitorModal";
+import { CustomDiv } from "../../common/Table";
+import { ModalBtn } from "../../common/Modal";
+import { ModalType } from "../ModalType";
 import log from "loglevel";
-
-const CustomDiv: React.FC<{
-  content: JSX.Element | string;
-}> = ({
-  content
-}) => {
-  return (
-    <div className='table-cell border-t-2 border-solid border-neutral-300'>
-      {content}
-    </div>
-  );
-};
 
 const SafeplaceMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);

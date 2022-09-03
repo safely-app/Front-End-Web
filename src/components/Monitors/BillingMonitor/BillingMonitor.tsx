@@ -5,20 +5,11 @@ import { Billing } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IBilling from "../../interfaces/IBilling";
 import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
-import { ModalBtn, ModalType, BillingCreateModal, BillingUpdateModal } from "./BillingMonitorModal";
+import { BillingCreateModal, BillingUpdateModal } from "./BillingMonitorModal";
+import { CustomDiv } from "../../common/Table";
+import { ModalBtn } from "../../common/Modal";
+import { ModalType } from "../ModalType";
 import log from "loglevel";
-
-const CustomDiv: React.FC<{
-  content: JSX.Element | string;
-}> = ({
-  content
-}) => {
-  return (
-    <div className='table-cell border-t-2 border-solid border-neutral-300'>
-      {content}
-    </div>
-  );
-};
 
 const BillingMonitor: React.FC = () => {
   const userInfo = useAppSelector(state => state.user.userInfo);

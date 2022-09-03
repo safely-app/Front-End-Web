@@ -5,22 +5,13 @@ import { useAppSelector } from "../../../redux";
 import { Commercial } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import ICampaign from "../../interfaces/ICampaign";
-import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
-import log from "loglevel";
 import ITarget from "../../interfaces/ITarget";
-import { CampaignModal, ModalBtn, ModalType } from "./CampaignMonitorModal";
-
-const CustomDiv: React.FC<{
-  content: JSX.Element | string;
-}> = ({
-  content
-}) => {
-  return (
-    <div className='table-cell border-t-2 border-solid border-neutral-300'>
-      {content}
-    </div>
-  );
-};
+import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { CampaignModal } from "./CampaignMonitorModal";
+import { CustomDiv } from "../../common/Table";
+import { ModalBtn } from "../../common/Modal";
+import { ModalType } from "../ModalType";
+import log from "loglevel";
 
 const CampaignMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
