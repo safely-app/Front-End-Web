@@ -11,11 +11,13 @@ const SearchBar: React.FC<{
   placeholder: string;
   setTextSearch: (value: string) => void;
   openCreateModal: () => void;
+  noCreate?: boolean;
 }> = ({
   textSearch,
   placeholder,
   setTextSearch,
-  openCreateModal
+  openCreateModal,
+  noCreate
 }) => {
   const [isMouseOn, setIsMouseOut] = useState(false);
 
@@ -31,7 +33,7 @@ const SearchBar: React.FC<{
         />
         <button className='absolute right-1 top-1'><FaSearch className='text-blue-400' /></button>
       </div>
-      <button className='ml-3' onClick={() => openCreateModal()} onMouseEnter={() => setIsMouseOut(true)} onMouseLeave={() => setIsMouseOut(false)}>
+      <button hidden={noCreate} className='ml-3' onClick={() => openCreateModal()} onMouseEnter={() => setIsMouseOut(true)} onMouseLeave={() => setIsMouseOut(false)}>
         {isMouseOn ? <FaPlusCircle className='w-6 h-6 text-blue-400' /> : <FaPlus className='ml-1 w-4 h-4 text-blue-400' />}
       </button>
     </div>

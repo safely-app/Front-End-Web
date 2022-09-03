@@ -3,17 +3,11 @@ import { useAppSelector } from "../../../redux";
 import { User } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IUser from "../../interfaces/IUser";
-import { notifyError } from "../../utils";
+import { notifyError, notifySuccess } from "../../utils";
 import { ImCross } from "react-icons/im";
 import { BsPencilSquare } from "react-icons/bs";
-import { FaPlusCircle, FaSearch } from "react-icons/fa";
+import { ModalBtn, ModalType, UserModal } from "./UserMonitorModal";
 import log from "loglevel";
-
-
-enum ModalType {
-  CREATE,
-  OFF
-}
 
 const CustomDiv: React.FC<{
   content: JSX.Element | string;
@@ -32,8 +26,14 @@ const UserMonitor: React.FC = () => {
 
   const [users, setUsers] = useState<IUser[]>([]);
   const [textSearch, setTextSearch] = useState("");
-  const [modalOn, setModalOn] = useState(ModalType.OFF);
-  const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
+  const [modalOn, setModal] = useState(ModalType.OFF);
+
+  const [user, setUser] = useState<IUser>({
+    id: "",
+    username: "",
+    email: "",
+    role: ""
+  });
 
   const keys = [
     { displayedName: 'NOM', displayFunction: (user: IUser, index: number) => <CustomDiv key={'tbl-val-' + index} content={user.username} /> },
@@ -43,16 +43,40 @@ const UserMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (user: IUser, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => {}}><BsPencilSquare /></button>
-          <button onClick={() => {}}><ImCross /></button>
+          <button onClick={() => updateModal(user, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button onClick={() => deleteUser(user)}><ImCross /></button>
         </div>
       } />
     },
   ];
 
-  const setModal = (modalType: ModalType) => {
-    setModalTypes([ ...modalTypes, modalType ]);
-    setModalOn(modalType);
+  const updateModal = (user: IUser, modalType: ModalType) => {
+    setModal(modalType);
+    setUser(user);
+  };
+
+  const updateUser = async (user: IUser) => {
+    try {
+      await User.update(user.id, user, userCredentials.token);
+      setUsers(users.map(u => (u.id === user.id) ? user : u));
+      notifySuccess("Modifications enregistrées");
+      setModal(ModalType.OFF);
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const deleteUser = async (user: IUser) => {
+    try {
+      await User.delete(user.id, userCredentials.token);
+      setUsers(users.filter(u => u.id !== user.id));
+      notifySuccess("Utilisateur supprimé");
+      setModal(ModalType.OFF);
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
   };
 
   useEffect(() => {
@@ -76,11 +100,23 @@ const UserMonitor: React.FC = () => {
   return (
     <div className='my-3'>
 
+      <UserModal
+        title="Modifier un utilisateur"
+        modalOn={modalOn === ModalType.UPDATE}
+        user={user}
+        setUser={setUser}
+        buttons={[
+          <ModalBtn content="Modifier l'utilisateur" onClick={() => updateUser(user)} />,
+          <ModalBtn content="Annuler" onClick={() => setModal(ModalType.OFF)} />
+        ]}
+      />
+
       <SearchBar
         placeholder='Rechercher un utilisateur...'
         textSearch={textSearch}
         setTextSearch={setTextSearch}
-        openCreateModal={() => setModal(ModalType.CREATE)}
+        openCreateModal={() => {}}
+        noCreate
       />
       <div className='mt-3'>
         <Table content={users} keys={keys} />
