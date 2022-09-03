@@ -1,3 +1,5 @@
 {
-    "/safeplace/*": "/$1"
+    "/safeplace/*": "/$1",
+    "/commercial/*": "/$1",
+    "/stripe/stripe/*": "/$1"
 }
