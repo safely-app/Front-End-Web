@@ -5,16 +5,12 @@ import { useAppSelector } from "../../../redux";
 import { RequestClaimSafeplace } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IRequestClaimSafeplace from "../../interfaces/IRequestClaimSafeplace";
-import { notifyError } from "../../utils";
+import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { ModalBtn, ModalType, RequestClaimSafeplaceModal } from "./RequestClaimSafeplaceMonitorModal";
 import log from "loglevel";
 
-enum ModalType {
-  CREATE,
-  OFF
-}
-
 const CustomDiv: React.FC<{
-  content: JSX.Element | string;
+  content: JSX.Element | string,
 }> = ({
   content
 }) => {
@@ -29,10 +25,18 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [requestClaimSafeplaces, setRequestClaimSafeplaces] = useState<IRequestClaimSafeplace[]>([]);
-
   const [textSearch, setTextSearch] = useState("");
-  const [modalOn, setModalOn] = useState(ModalType.OFF);
-  const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
+  const [modalOn, setModal] = useState(ModalType.OFF);
+
+  const [requestClaimSafeplace, setRequestClaimSafeplace] = useState<IRequestClaimSafeplace>({
+    id: "",
+    userId: "",
+    safeplaceId: "",
+    safeplaceName: "",
+    status: "",
+    safeplaceDescription: "",
+    coordinate: []
+  });
 
   const keys = [
     { displayedName: 'NOM', displayFunction: (request: IRequestClaimSafeplace, index: number) => <CustomDiv key={'tbl-val-' + index} content={request.safeplaceName} /> },
@@ -45,16 +49,83 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (request: IRequestClaimSafeplace, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => {}}><BsPencilSquare /></button>
-          <button onClick={() => {}}><ImCross /></button>
+          <button onClick={() => updateModal(request, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button onClick={() => deleteRequestClaimSafeplace(request)}><ImCross /></button>
         </div>
       } />
     },
   ];
 
-  const setModal = (modalType: ModalType) => {
-    setModalTypes([ ...modalTypes, modalType ]);
-    setModalOn(modalType);
+  const filterRequestClaimSafeplaces = (): IRequestClaimSafeplace[] => {
+    const lowerSearchText = convertStringToRegex(textSearch.toLocaleLowerCase());
+
+    if (textSearch === '') {
+      return requestClaimSafeplaces;
+    }
+
+    return requestClaimSafeplaces
+      .filter(requestClaimSafeplace => textSearch !== ''
+        ? requestClaimSafeplace.safeplaceName.toLowerCase().match(lowerSearchText) !== null
+        || requestClaimSafeplace.safeplaceId.toLowerCase().match(lowerSearchText) !== null
+        || requestClaimSafeplace.safeplaceDescription.toLowerCase().match(lowerSearchText) !== null
+        || requestClaimSafeplace.status.toLowerCase().match(lowerSearchText) !== null
+        || requestClaimSafeplace.userId.toLowerCase().match(lowerSearchText) !== null
+        || requestClaimSafeplace.id.toLowerCase().match(lowerSearchText) !== null : true);
+  };
+
+  const updateModal = (requestClaimSafeplace: IRequestClaimSafeplace, modalType: ModalType) => {
+    setModal(modalType);
+    setRequestClaimSafeplace(requestClaimSafeplace);
+  };
+
+  const createRequestClaimSafeplace = async () => {
+    try {
+      const result = await RequestClaimSafeplace.create(requestClaimSafeplace, userCredentials.token);
+
+      setRequestClaimSafeplaces([ ...requestClaimSafeplaces, { ...requestClaimSafeplace, id: result.data._id } ]);
+      notifySuccess("Nouvelle cible créée");
+      setModal(ModalType.OFF);
+      resetRequestClaimSafeplace();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const updateRequestClaimSafeplace = async (requestClaimSafeplace: IRequestClaimSafeplace) => {
+    try {
+      await RequestClaimSafeplace.update(requestClaimSafeplace.id, requestClaimSafeplace, userCredentials.token);
+      setRequestClaimSafeplaces(requestClaimSafeplaces.map(t => (t.id === requestClaimSafeplace.id) ? requestClaimSafeplace : t));
+      notifySuccess("Modifications enregistrées");
+      setModal(ModalType.OFF);
+      resetRequestClaimSafeplace();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const deleteRequestClaimSafeplace = async (requestClaimSafeplace: IRequestClaimSafeplace) => {
+    try {
+      await RequestClaimSafeplace.delete(requestClaimSafeplace.id, userCredentials.token);
+      setRequestClaimSafeplaces(requestClaimSafeplaces.filter(t => t.id !== requestClaimSafeplace.id));
+      notifySuccess("Cible supprimée");
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const resetRequestClaimSafeplace = () => {
+    setRequestClaimSafeplace({
+      id: "",
+      userId: "",
+      safeplaceId: "",
+      safeplaceName: "",
+      status: "",
+      safeplaceDescription: "",
+      coordinate: []
+    });
   };
 
   useEffect(() => {
@@ -82,6 +153,34 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
   return (
     <div className='my-3'>
 
+      <RequestClaimSafeplaceModal
+        title='Créer une nouvelle cible'
+        modalOn={modalOn === ModalType.CREATE}
+        request={requestClaimSafeplace}
+        setRequest={setRequestClaimSafeplace}
+        buttons={[
+          <ModalBtn content='Créer une cible' onClick={() => createRequestClaimSafeplace()} />,
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetRequestClaimSafeplace();
+          }} />
+        ]}
+      />
+
+      <RequestClaimSafeplaceModal
+        title='Modifier une cible'
+        modalOn={modalOn === ModalType.UPDATE}
+        request={requestClaimSafeplace}
+        setRequest={setRequestClaimSafeplace}
+        buttons={[
+          <ModalBtn content='Modifier la cible' onClick={() => updateRequestClaimSafeplace(requestClaimSafeplace)} />,
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetRequestClaimSafeplace();
+          }} />
+        ]}
+      />
+
       <SearchBar
         placeholder='Rechercher une requête de safeplace...'
         textSearch={textSearch}
@@ -89,7 +188,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={requestClaimSafeplaces} keys={keys} />
+        <Table content={filterRequestClaimSafeplaces()} keys={keys} />
       </div>
     </div>
   );
