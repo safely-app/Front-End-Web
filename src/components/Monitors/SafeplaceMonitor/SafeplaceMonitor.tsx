@@ -5,13 +5,9 @@ import { useAppSelector } from "../../../redux";
 import { Safeplace } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import ISafeplace from "../../interfaces/ISafeplace";
-import { notifyError } from "../../utils";
+import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { ModalBtn, ModalType, SafeplaceModal } from "./SafeplaceMonitorModal";
 import log from "loglevel";
-
-enum ModalType {
-  CREATE,
-  OFF
-}
 
 const CustomDiv: React.FC<{
   content: JSX.Element | string;
@@ -29,10 +25,18 @@ const SafeplaceMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
-
   const [textSearch, setTextSearch] = useState("");
-  const [modalOn, setModalOn] = useState(ModalType.OFF);
-  const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
+  const [modalOn, setModal] = useState(ModalType.OFF);
+
+  const [safeplace, setSafeplace] = useState<ISafeplace>({
+    id: "",
+    name: "",
+    city: "",
+    address: "",
+    type: "",
+    dayTimetable: [],
+    coordinate: []
+  });
 
   const keys = [
     { displayedName: 'NOM', displayFunction: (safeplace: ISafeplace, index: number) => <CustomDiv key={'tbl-val-' + index} content={safeplace.name} /> },
@@ -46,16 +50,56 @@ const SafeplaceMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (safeplace: ISafeplace, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => {}}><BsPencilSquare /></button>
-          <button onClick={() => {}}><ImCross /></button>
+          <button onClick={() => updateModal(safeplace, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button onClick={() => deleteSafeplace(safeplace)}><ImCross /></button>
         </div>
       } />
     },
   ];
 
-  const setModal = (modalType: ModalType) => {
-    setModalTypes([ ...modalTypes, modalType ]);
-    setModalOn(modalType);
+  const filterSafeplaces = (): ISafeplace[] => {
+    const lowerSearchText = convertStringToRegex(textSearch.toLocaleLowerCase());
+
+    if (textSearch === '') {
+      return safeplaces;
+    }
+
+    return safeplaces
+      .filter(safeplace => textSearch !== ''
+        ? safeplace.name.toLowerCase().match(lowerSearchText) !== null
+        || safeplace.id.toLowerCase().match(lowerSearchText) !== null
+        || safeplace.city.toLowerCase().match(lowerSearchText) !== null
+        || safeplace.address.toLowerCase().match(lowerSearchText) !== null
+        || safeplace.type.toLowerCase().match(lowerSearchText) !== null : true);
+  };
+
+  const updateModal = (safeplace: ISafeplace, modalType: ModalType) => {
+    setModal(modalType);
+    setSafeplace(safeplace);
+  };
+
+  const updateSafeplace = async (safeplace: ISafeplace) => {
+    try {
+      await Safeplace.update(safeplace.id, safeplace, userCredentials.token);
+      setSafeplaces(safeplaces.map(s => (s.id === safeplace.id) ? safeplace : s));
+      notifySuccess("Modifications enregistrées");
+      setModal(ModalType.OFF);
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const deleteSafeplace = async (safeplace: ISafeplace) => {
+    try {
+      await Safeplace.delete(safeplace.id, userCredentials.token);
+      setSafeplaces(safeplaces.filter(s => s.id !== safeplace.id));
+      notifySuccess("Safeplace supprimée");
+      setModal(ModalType.OFF);
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
   };
 
   useEffect(() => {
@@ -83,14 +127,26 @@ const SafeplaceMonitor: React.FC = () => {
   return (
     <div className='my-3'>
 
+      <SafeplaceModal
+        title="Modifier une safeplace"
+        modalOn={modalOn === ModalType.UPDATE}
+        safeplace={safeplace}
+        setSafeplace={setSafeplace}
+        buttons={[
+          <ModalBtn content="Modifier la safeplace" onClick={() => updateSafeplace(safeplace)} />,
+          <ModalBtn content="Annuler" onClick={() => setModal(ModalType.OFF)} />
+        ]}
+      />
+
       <SearchBar
         placeholder='Rechercher une safeplace...'
         textSearch={textSearch}
         setTextSearch={setTextSearch}
-        openCreateModal={() => setModal(ModalType.CREATE)}
+        openCreateModal={() => {}}
+        noCreate
       />
       <div className='mt-3'>
-        <Table content={safeplaces} keys={keys} />
+        <Table content={filterSafeplaces()} keys={keys} />
       </div>
     </div>
   );
