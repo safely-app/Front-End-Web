@@ -85,6 +85,7 @@ const BillingMonitor: React.FC = () => {
       setBillings([ ...billings, newBilling ]);
       notifySuccess("Nouvelle facture créée");
       setModal(ModalType.OFF);
+      resetBilling();
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -97,6 +98,7 @@ const BillingMonitor: React.FC = () => {
       setBillings(billings.map(b => (b.id === billing.id) ? billing : b));
       notifySuccess("Modifications enregistrées");
       setModal(ModalType.OFF);
+      resetBilling();
     } catch (err) {
       notifyError(err);
       log.error(err);

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { NavBar } from '../common';
 import { AppHeader } from '../Header/Header';
 import UserMonitor from './UserMonitor/UserMonitor';
 import SafeplaceMonitor from './SafeplaceMonitor/SafeplaceMonitor';

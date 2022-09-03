@@ -87,6 +87,7 @@ const CampaignMonitor: React.FC = () => {
       setCampaigns([ ...campaigns, newCampaign ]);
       notifySuccess("Nouvelle facture créée");
       setModal(ModalType.OFF);
+      resetCampaign();
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -99,6 +100,7 @@ const CampaignMonitor: React.FC = () => {
       setCampaigns(campaigns.map(c => (c.id === campagin.id) ? campagin : c));
       notifySuccess("Modifications enregistrées");
       setModal(ModalType.OFF);
+      resetCampaign();
     } catch (err) {
       notifyError(err);
       log.error(err);
