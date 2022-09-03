@@ -5,13 +5,9 @@ import { useAppSelector } from "../../../redux";
 import { SafeplaceUpdate } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import ISafeplaceUpdate from "../../interfaces/ISafeplaceUpdate";
-import { notifyError } from "../../utils";
+import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { ModalBtn, ModalType, SafeplaceUpdateModal } from "./SafeplaceUpdateMonitorModal";
 import log from "loglevel";
-
-enum ModalType {
-  CREATE,
-  OFF
-}
 
 const CustomDiv: React.FC<{
   content: JSX.Element | string;
@@ -29,10 +25,19 @@ const SafeplaceUpdateMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [safeplaceUpdates, setSafeplaceUpdates] = useState<ISafeplaceUpdate[]>([]);
-
   const [textSearch, setTextSearch] = useState("");
-  const [modalOn, setModalOn] = useState(ModalType.OFF);
-  const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
+  const [modalOn, setModal] = useState(ModalType.OFF);
+
+  const [safeplaceUpdate, setSafeplaceUpdate] = useState<ISafeplaceUpdate>({
+    id: "",
+    name: "",
+    city: "",
+    address: "",
+    type: "",
+    dayTimetable: [],
+    coordinate: [],
+    safeplaceId: ""
+  });
 
   const keys = [
     { displayedName: 'NOM', displayFunction: (update: ISafeplaceUpdate, index: number) => <CustomDiv key={'tbl-val-' + index} content={update.name} /> },
@@ -47,16 +52,85 @@ const SafeplaceUpdateMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (update: ISafeplaceUpdate, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => {}}><BsPencilSquare /></button>
-          <button onClick={() => {}}><ImCross /></button>
+          <button onClick={() => updateModal(update, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button onClick={() => deleteSafeplaceUpdate(update)}><ImCross /></button>
         </div>
       } />
     },
   ];
 
-  const setModal = (modalType: ModalType) => {
-    setModalTypes([ ...modalTypes, modalType ]);
-    setModalOn(modalType);
+  const filterSafeplaceUpdates = (): ISafeplaceUpdate[] => {
+    const lowerSearchText = convertStringToRegex(textSearch.toLocaleLowerCase());
+
+    if (textSearch === '') {
+      return safeplaceUpdates;
+    }
+
+    return safeplaceUpdates
+      .filter(safeplaceUpdate => textSearch !== ''
+        ? safeplaceUpdate.name.toLowerCase().match(lowerSearchText) !== null
+        || safeplaceUpdate.id.toLowerCase().match(lowerSearchText) !== null
+        || safeplaceUpdate.city.toLowerCase().match(lowerSearchText) !== null
+        || safeplaceUpdate.address.toLowerCase().match(lowerSearchText) !== null
+        || safeplaceUpdate.type.toLowerCase().match(lowerSearchText) !== null : true);
+  };
+
+  const updateModal = (safeplaceUpdate: ISafeplaceUpdate, modalType: ModalType) => {
+    setModal(modalType);
+    setSafeplaceUpdate(safeplaceUpdate);
+  };
+
+  const createSafeplaceUpdate = async (safeplaceUpdate: ISafeplaceUpdate) => {
+    try {
+      const result = await SafeplaceUpdate.create(safeplaceUpdate, userCredentials.token);
+
+      setSafeplaceUpdates([ ...safeplaceUpdates, { ...safeplaceUpdate, id: result.data._id } ]);
+      notifySuccess("Nouvelle modification créée");
+      setModal(ModalType.OFF);
+      resetSafeplaceUpdate();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const updateSafeplaceUpdate = async (safeplaceUpdate: ISafeplaceUpdate) => {
+    try {
+      await SafeplaceUpdate.update(safeplaceUpdate.id, safeplaceUpdate, userCredentials.token);
+      setSafeplaceUpdates(safeplaceUpdates.map(s => (s.id === safeplaceUpdate.id) ? safeplaceUpdate : s));
+      notifySuccess("Modifications enregistrées");
+      setModal(ModalType.OFF);
+      resetSafeplaceUpdate();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const deleteSafeplaceUpdate = async (safeplace: ISafeplaceUpdate) => {
+    try {
+      await SafeplaceUpdate.delete(safeplace.id, userCredentials.token);
+      setSafeplaceUpdates(safeplaceUpdates.filter(s => s.id !== safeplace.id));
+      notifySuccess("Modification supprimée");
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const resetSafeplaceUpdate = () => {
+    setSafeplaceUpdate({
+      id: "",
+      name: "",
+      city: "",
+      address: "",
+      type: "",
+      dayTimetable: [],
+      coordinate: [ "", "" ],
+      safeplaceId: "",
+      description: "",
+      ownerId: ""
+    });
   };
 
   useEffect(() => {
@@ -85,6 +159,34 @@ const SafeplaceUpdateMonitor: React.FC = () => {
   return (
     <div className='my-3'>
 
+      <SafeplaceUpdateModal
+        title="Créer une nouvelle modification"
+        modalOn={modalOn === ModalType.CREATE}
+        safeplaceUpdate={safeplaceUpdate}
+        setSafeplaceUpdate={setSafeplaceUpdate}
+        buttons={[
+          <ModalBtn content="Créer une modification" onClick={() => createSafeplaceUpdate(safeplaceUpdate)} />,
+          <ModalBtn content="Annuler" onClick={() => {
+            setModal(ModalType.OFF);
+            resetSafeplaceUpdate();
+          }} />
+        ]}
+      />
+
+      <SafeplaceUpdateModal
+        title="Modifier une modification"
+        modalOn={modalOn === ModalType.UPDATE}
+        safeplaceUpdate={safeplaceUpdate}
+        setSafeplaceUpdate={setSafeplaceUpdate}
+        buttons={[
+          <ModalBtn content="Modifier la modification" onClick={() => updateSafeplaceUpdate(safeplaceUpdate)} />,
+          <ModalBtn content="Annuler" onClick={() => {
+            setModal(ModalType.OFF);
+            resetSafeplaceUpdate();
+          }} />
+        ]}
+      />
+
       <SearchBar
         placeholder='Rechercher une modification de safeplace...'
         textSearch={textSearch}
@@ -92,7 +194,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={safeplaceUpdates} keys={keys} />
+        <Table content={filterSafeplaceUpdates()} keys={keys} />
       </div>
     </div>
   );
