@@ -70,6 +70,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         || requestClaimSafeplace.safeplaceDescription.toLowerCase().match(lowerSearchText) !== null
         || requestClaimSafeplace.status.toLowerCase().match(lowerSearchText) !== null
         || requestClaimSafeplace.userId.toLowerCase().match(lowerSearchText) !== null
+        || requestClaimSafeplace.adminId?.toLowerCase().match(lowerSearchText) !== null
         || requestClaimSafeplace.id.toLowerCase().match(lowerSearchText) !== null : true);
   };
 
@@ -78,11 +79,12 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     setRequestClaimSafeplace(requestClaimSafeplace);
   };
 
-  const createRequestClaimSafeplace = async () => {
+  const createRequestClaimSafeplace = async (requestClaimSafeplace: IRequestClaimSafeplace) => {
     try {
-      const result = await RequestClaimSafeplace.create(requestClaimSafeplace, userCredentials.token);
+      const newRequestClaimSafeplace = { ...requestClaimSafeplace, adminId: userCredentials._id };
+      const result = await RequestClaimSafeplace.create(newRequestClaimSafeplace, userCredentials.token);
 
-      setRequestClaimSafeplaces([ ...requestClaimSafeplaces, { ...requestClaimSafeplace, id: result.data._id } ]);
+      setRequestClaimSafeplaces([ ...requestClaimSafeplaces, { ...newRequestClaimSafeplace, id: result.data._id } ]);
       notifySuccess("Nouvelle cible créée");
       setModal(ModalType.OFF);
       resetRequestClaimSafeplace();
@@ -124,7 +126,9 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
       safeplaceName: "",
       status: "",
       safeplaceDescription: "",
-      coordinate: []
+      coordinate: [ "", "" ],
+      adminComment: "",
+      adminId: ""
     });
   };
 
@@ -154,12 +158,12 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     <div className='my-3'>
 
       <RequestClaimSafeplaceModal
-        title='Créer une nouvelle cible'
+        title='Créer une nouvelle requête'
         modalOn={modalOn === ModalType.CREATE}
         request={requestClaimSafeplace}
         setRequest={setRequestClaimSafeplace}
         buttons={[
-          <ModalBtn content='Créer une cible' onClick={() => createRequestClaimSafeplace()} />,
+          <ModalBtn content='Créer une requête' onClick={() => createRequestClaimSafeplace(requestClaimSafeplace)} />,
           <ModalBtn content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetRequestClaimSafeplace();
@@ -168,12 +172,12 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
       />
 
       <RequestClaimSafeplaceModal
-        title='Modifier une cible'
+        title='Modifier une requête'
         modalOn={modalOn === ModalType.UPDATE}
         request={requestClaimSafeplace}
         setRequest={setRequestClaimSafeplace}
         buttons={[
-          <ModalBtn content='Modifier la cible' onClick={() => updateRequestClaimSafeplace(requestClaimSafeplace)} />,
+          <ModalBtn content='Modifier la requête' onClick={() => updateRequestClaimSafeplace(requestClaimSafeplace)} />,
           <ModalBtn content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetRequestClaimSafeplace();
