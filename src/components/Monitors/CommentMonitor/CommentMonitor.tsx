@@ -5,13 +5,9 @@ import { useAppSelector } from "../../../redux";
 import { Comment } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IComment from "../../interfaces/IComment";
-import { notifyError } from "../../utils";
+import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { CommentModal, ModalBtn, ModalType } from "./CommentMonitorModal";
 import log from "loglevel";
-
-enum ModalType {
-  CREATE,
-  OFF
-}
 
 const CustomDiv: React.FC<{
   content: JSX.Element | string;
@@ -30,8 +26,16 @@ const CommentMonitor: React.FC = () => {
 
   const [comments, setComments] = useState<IComment[]>([]);
   const [textSearch, setTextSearch] = useState("");
-  const [modalOn, setModalOn] = useState(ModalType.OFF);
-  const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
+  const [modalOn, setModal] = useState(ModalType.OFF);
+
+  const [comment, setComment] = useState<IComment>({
+    id: "",
+    comment: "",
+    grade: 0,
+    safeplaceId: "",
+    userId: "",
+    hasBeenValidated: false
+  });
 
   const keys = [
     { displayedName: 'ID DE PROPRIÉTAIRE', displayFunction: (comment: IComment, index: number) => <CustomDiv key={'tbl-val-' + index} content={comment.userId} /> },
@@ -43,16 +47,82 @@ const CommentMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (comment: IComment, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => {}}><BsPencilSquare /></button>
-          <button onClick={() => {}}><ImCross /></button>
+          <button onClick={() => updateModal(comment, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button onClick={() => deleteComment(comment)}><ImCross /></button>
         </div>
       } />
     },
   ];
 
-  const setModal = (modalType: ModalType) => {
-    setModalTypes([ ...modalTypes, modalType ]);
-    setModalOn(modalType);
+  const filterComments = (): IComment[] => {
+    const lowerSearchText = convertStringToRegex(textSearch.toLocaleLowerCase());
+
+    if (textSearch === '') {
+      return comments;
+    }
+
+    return comments
+      .filter(comment => textSearch !== ''
+        ? comment.comment.toLowerCase().match(lowerSearchText) !== null
+        || comment.safeplaceId.toLowerCase().match(lowerSearchText) !== null
+        || comment.userId.toLowerCase().match(lowerSearchText) !== null
+        || comment.grade.toString().toLowerCase().match(lowerSearchText) !== null
+        || comment.id.toLowerCase().match(lowerSearchText) !== null : true);
+  };
+
+  const updateModal = (comment: IComment, modalType: ModalType) => {
+    setModal(modalType);
+    setComment(comment);
+  };
+
+  const createComment = async (comment: IComment) => {
+    try {
+      const newComment = { ...comment, adminId: userCredentials._id };
+      const result = await Comment.create(newComment, userCredentials.token);
+
+      setComments([ ...comments, { ...newComment, id: result.data._id } ]);
+      notifySuccess("Nouvelle cible créée");
+      setModal(ModalType.OFF);
+      resetComment();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const updateComment = async (comment: IComment) => {
+    try {
+      await Comment.update(comment.id, comment, userCredentials.token);
+      setComments(comments.map(c => (c.id === comment.id) ? comment : c));
+      notifySuccess("Modifications enregistrées");
+      setModal(ModalType.OFF);
+      resetComment();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const deleteComment = async (comment: IComment) => {
+    try {
+      await Comment.delete(comment.id, userCredentials.token);
+      setComments(comments.filter(c => c.id !== comment.id));
+      notifySuccess("Cible supprimée");
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const resetComment = () => {
+    setComment({
+      id: "",
+      comment: "",
+      grade: 0,
+      safeplaceId: "",
+      userId: "",
+      hasBeenValidated: false
+    });
   };
 
   useEffect(() => {
@@ -77,6 +147,34 @@ const CommentMonitor: React.FC = () => {
   return (
     <div className='my-3'>
 
+      <CommentModal
+        title='Créer un nouveau commentaire'
+        modalOn={modalOn === ModalType.CREATE}
+        comment={comment}
+        setComment={setComment}
+        buttons={[
+          <ModalBtn content='Créer un commentaire' onClick={() => createComment(comment)} />,
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetComment();
+          }} />
+        ]}
+      />
+
+      <CommentModal
+        title='Modifier un commentaire'
+        modalOn={modalOn === ModalType.UPDATE}
+        comment={comment}
+        setComment={setComment}
+        buttons={[
+          <ModalBtn content='Modifier le commentaire' onClick={() => updateComment(comment)} />,
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetComment();
+          }} />
+        ]}
+      />
+
       <SearchBar
         placeholder='Rechercher un commentaire...'
         textSearch={textSearch}
@@ -84,7 +182,7 @@ const CommentMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={comments} keys={keys} />
+        <Table content={filterComments()} keys={keys} />
       </div>
     </div>
   );
