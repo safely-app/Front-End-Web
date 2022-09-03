@@ -5,13 +5,9 @@ import { useAppSelector } from "../../../redux";
 import { Commercial } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import ITarget from "../../interfaces/ITarget";
-import { notifyError } from "../../utils";
+import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
 import log from "loglevel";
-
-enum ModalType {
-  CREATE,
-  OFF
-}
+import { ModalBtn, ModalType, TargetModal } from "./TargetMonitorModal";
 
 const CustomDiv: React.FC<{
   content: JSX.Element | string;
@@ -29,10 +25,17 @@ const TargetMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [targets, setTargets] = useState<ITarget[]>([]);
-
   const [textSearch, setTextSearch] = useState("");
-  const [modalOn, setModalOn] = useState(ModalType.OFF);
-  const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
+  const [modalOn, setModal] = useState(ModalType.OFF);
+
+  const [target, setTarget] = useState<ITarget>({
+    id: "",
+    csp: "csp",
+    name: "",
+    ownerId: "",
+    ageRange: "",
+    interests: []
+  });
 
   const keys = [
     { displayedName: "NOM", displayFunction: (target: ITarget, index: number) => <CustomDiv key={'tbl-val-' + index} content={target.name} /> },
@@ -43,16 +46,81 @@ const TargetMonitor: React.FC = () => {
     { displayedName: "ACTION", displayFunction: (target: ITarget, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => {}}><BsPencilSquare /></button>
-          <button onClick={() => {}}><ImCross /></button>
+          <button onClick={() => updateModal(target, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button onClick={() => deleteTarget(target)}><ImCross /></button>
         </div>
       } />
     },
   ];
 
-  const setModal = (modalType: ModalType) => {
-    setModalTypes([ ...modalTypes, modalType ]);
-    setModalOn(modalType);
+  const filterTargets = (): ITarget[] => {
+    const lowerSearchText = convertStringToRegex(textSearch.toLocaleLowerCase());
+
+    if (textSearch === '') {
+      return targets;
+    }
+
+    return targets
+      .filter(target => textSearch !== ''
+        ? target.name.toLowerCase().match(lowerSearchText) !== null
+        || target.csp.toLowerCase().match(lowerSearchText) !== null
+        || target.ageRange.toLowerCase().match(lowerSearchText) !== null
+        || target.id.toLowerCase().match(lowerSearchText) !== null : true);
+  };
+
+  const updateModal = (target: ITarget, modalType: ModalType) => {
+    setModal(modalType);
+    setTarget(target);
+  };
+
+  const createTarget = async () => {
+    try {
+      const newTarget = { ...target, ownerId: userCredentials._id };
+      const result = await Commercial.createTarget(newTarget, userCredentials.token);
+
+      setTargets([ ...targets, { ...newTarget, id: result.data._id } ]);
+      notifySuccess("Nouvelle cible créée");
+      setModal(ModalType.OFF);
+      resetTarget();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const updateTarget = async (target: ITarget) => {
+    try {
+      await Commercial.updateTarget(target.id, target, userCredentials.token);
+      setTargets(targets.map(t => (t.id === target.id) ? target : t));
+      notifySuccess("Modifications enregistrées");
+      setModal(ModalType.OFF);
+      resetTarget();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const deleteTarget = async (target: ITarget) => {
+    try {
+      await Commercial.deleteTarget(target.id, userCredentials.token);
+      setTargets(targets.filter(t => t.id !== target.id));
+      notifySuccess("Cible supprimée");
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const resetTarget = () => {
+    setTarget({
+      id: "",
+      name: "",
+      csp: "csp",
+      ownerId: "",
+      ageRange: "",
+      interests: []
+    });
   };
 
   useEffect(() => {
@@ -76,6 +144,34 @@ const TargetMonitor: React.FC = () => {
   return (
     <div className='my-3'>
 
+      <TargetModal
+        title='Créer une nouvelle cible'
+        modalOn={modalOn === ModalType.CREATE}
+        target={target}
+        setTarget={setTarget}
+        buttons={[
+          <ModalBtn content='Créer une cible' onClick={() => createTarget()} />,
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetTarget();
+          }} />
+        ]}
+      />
+
+      <TargetModal
+        title='Modifier une cible'
+        modalOn={modalOn === ModalType.UPDATE}
+        target={target}
+        setTarget={setTarget}
+        buttons={[
+          <ModalBtn content='Modifier la cible' onClick={() => updateTarget(target)} />,
+          <ModalBtn content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetTarget();
+          }} />
+        ]}
+      />
+
       <SearchBar
         placeholder='Rechercher une target...'
         textSearch={textSearch}
@@ -83,7 +179,7 @@ const TargetMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={targets} keys={keys} />
+        <Table content={filterTargets()} keys={keys} />
       </div>
     </div>
   );
