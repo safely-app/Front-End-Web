@@ -3,7 +3,7 @@ import { useAppSelector } from "../../../redux";
 import { User } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IUser from "../../interfaces/IUser";
-import { notifyError, notifySuccess } from "../../utils";
+import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
 import { ImCross } from "react-icons/im";
 import { BsPencilSquare } from "react-icons/bs";
 import { ModalBtn, ModalType, UserModal } from "./UserMonitorModal";
@@ -49,6 +49,21 @@ const UserMonitor: React.FC = () => {
       } />
     },
   ];
+
+  const filterUsers = (): IUser[] => {
+    const lowerSearchText = convertStringToRegex(textSearch.toLocaleLowerCase());
+
+    if (textSearch === '') {
+      return users;
+    }
+
+    return users
+      .filter(user => textSearch !== ''
+        ? user.username.toLowerCase().match(lowerSearchText) !== null
+        || user.id.toLowerCase().match(lowerSearchText) !== null
+        || user.email.toLowerCase().match(lowerSearchText) !== null
+        || user.role.toLowerCase().match(lowerSearchText) !== null : true);
+  };
 
   const updateModal = (user: IUser, modalType: ModalType) => {
     setModal(modalType);
@@ -119,7 +134,7 @@ const UserMonitor: React.FC = () => {
         noCreate
       />
       <div className='mt-3'>
-        <Table content={users} keys={keys} />
+        <Table content={filterUsers()} keys={keys} />
       </div>
     </div>
   );
