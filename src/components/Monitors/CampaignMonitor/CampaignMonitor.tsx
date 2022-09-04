@@ -41,8 +41,8 @@ const CampaignMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (campaign: ICampaign, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => updateModal(campaign, ModalType.UPDATE)}><BsPencilSquare /></button>
-          <button onClick={() => deleteCampaign(campaign)}><ImCross /></button>
+          <button data-testid={'cu-btn-' + index} onClick={() => updateModal(campaign, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button data-testid={'cd-btn-' + index} onClick={() => deleteCampaign(campaign)}><ImCross /></button>
         </div>
       } />
     },
@@ -168,9 +168,9 @@ const CampaignMonitor: React.FC = () => {
         campaign={campaign}
         setCampaign={setCampaign}
         buttons={[
-          <ModalBtn content='Créer une campagne' onClick={() => createCampaign(campaign, 'active')} />,
-          <ModalBtn content='Créer un template' onClick={() => createCampaign(campaign, 'template')} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='ccm-btn-0' content='Créer la campagne' onClick={() => createCampaign(campaign, 'active')} />,
+          <ModalBtn key='ccm-btn-1' content='Créer le template' onClick={() => createCampaign(campaign, 'template')} />,
+          <ModalBtn key='ccm-btn-2' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetCampaign();
           }} />
@@ -184,8 +184,8 @@ const CampaignMonitor: React.FC = () => {
         campaign={campaign}
         setCampaign={setCampaign}
         buttons={[
-          <ModalBtn content='Modifier la campagne' onClick={() => updateCampaign(campaign)} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='ucm-btn-0' content='Modifier la campagne' onClick={() => updateCampaign(campaign)} />,
+          <ModalBtn key='ucm-btn-1' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetCampaign();
           }} />
