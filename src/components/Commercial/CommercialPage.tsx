@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { AppHeader } from '../Header/Header';
+import ITarget from '../interfaces/ITarget';
 import ICampaign from '../interfaces/ICampaign';
 import { useAppSelector } from '../../redux';
 import { Commercial } from '../../services';
 import CommercialCampaigns from './CommercialCampaigns';
 import CommercialStatistics from './CommercialStatistics';
 import log from 'loglevel';
-import ITarget from '../interfaces/ITarget';
 
 enum SECTION {
   CAMPAIGNS,

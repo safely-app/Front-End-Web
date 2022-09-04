@@ -60,15 +60,15 @@ const CommercialCampaigns: React.FC<{
     { displayedName: 'CIBLES', displayFunction: (campaign: ICampaign, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div key={`tbl-val-${index}`} className='ml-3'>
-          <button onClick={() => updateModal(campaign, ModalType.UPDATE_TARGETS)}><BsPencilSquare /></button>
+          <button onClick={() => updateModal(campaign, ModalType.UPDATE_TARGETS)} data-testid={'utmb-' + index}><BsPencilSquare /></button>
         </div>
       } />
     },
     {displayedName: 'ACTIONS', displayFunction: (campaign: ICampaign, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div key={`tbl-val-${index}`} className='ml-3 flex space-x-2'>
-          <button onClick={() => updateModal(campaign, ModalType.UPDATE)}><BsPencilSquare /></button>
-          <button onClick={() => deleteCampaign(campaign)}><ImCross /></button>
+          <button onClick={() => updateModal(campaign, ModalType.UPDATE)} data-testid={'ucmb-' + index}><BsPencilSquare /></button>
+          <button onClick={() => deleteCampaign(campaign)} data-testid={'dcmb-' + index}><ImCross /></button>
         </div>
       } />
     }
@@ -177,9 +177,9 @@ const CommercialCampaigns: React.FC<{
         campaign={campaign}
         setCampaign={setCampaign}
         buttons={[
-          <ModalBtn content='Créer une campagne' onClick={() => createCampaign('active')} />,
-          <ModalBtn content='Créer un template' onClick={() => createCampaign('template')} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='ccm-1' content='Créer une campagne' onClick={() => createCampaign('active')} />,
+          <ModalBtn key='ccm-2' content='Créer un template' onClick={() => createCampaign('template')} />,
+          <ModalBtn key='ccm-3' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetCampaign();
           }} />
@@ -194,8 +194,8 @@ const CommercialCampaigns: React.FC<{
         campaign={campaign}
         setCampaign={setCampaign}
         buttons={[
-          <ModalBtn content='Modifier la campagne' onClick={() => updateCampaign(campaign)} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='ucm-1' content='Modifier la campagne' onClick={() => updateCampaign(campaign)} />,
+          <ModalBtn key='ucm-2' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetCampaign();
           }} />
@@ -208,8 +208,8 @@ const CommercialCampaigns: React.FC<{
         target={target}
         setTarget={setTarget}
         buttons={[
-          <ModalBtn content='Créer une cible' onClick={() => createTarget()} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='ctm-1' content='Créer une cible' onClick={() => createTarget()} />,
+          <ModalBtn key='ctm-2' content='Annuler' onClick={() => {
             setModal(modalTypes[modalTypes.length - 2]);
             resetTarget();
           }} />
@@ -224,7 +224,7 @@ const CommercialCampaigns: React.FC<{
         targets={targets}
         setTarget={setTarget}
         buttons={[
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='mtm-1' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetCampaign();
           }} />
@@ -237,9 +237,9 @@ const CommercialCampaigns: React.FC<{
         target={target}
         setTarget={setTarget}
         buttons={[
-          <ModalBtn content='Modifier la cible' onClick={() => updateTarget(target)} />,
-          <ModalBtn content='Supprimer la cible' onClick={() => deleteTarget(target)} warning={true} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='utm-1' content='Modifier la cible' onClick={() => updateTarget(target)} />,
+          <ModalBtn key='utm-2' content='Supprimer la cible' onClick={() => deleteTarget(target)} warning={true} />,
+          <ModalBtn key='utm-3' content='Annuler' onClick={() => {
             setModal(modalTypes[modalTypes.length - 2]);
             resetTarget();
           }} />

@@ -33,8 +33,8 @@ const MultipleTargetsModal: React.FC<{
     <div className='absolute bg-white z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6' hidden={!modalOn}>
       <p className='font-bold'>{title}</p>
       <ul className='m-2 w-60'>
-        {campaign.targets.map(targetId =>
-          <li className='relative w-full p-1 mx-1 my-2 shadow-lg rounded-xl cursor-pointer' onClick={() => selectTarget(targetId)}>
+        {campaign.targets.map((targetId, index) =>
+          <li key={'ct-' + index} data-testid={'ct-' + index} className='relative w-full p-1 mx-1 my-2 shadow-lg rounded-xl cursor-pointer' onClick={() => selectTarget(targetId)}>
             <span className='ml-2'>{targets.find(t => t.id === targetId)?.name}</span>
           </li>
         )}

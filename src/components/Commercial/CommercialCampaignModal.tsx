@@ -67,20 +67,20 @@ const CampaignModal: React.FC<{
       <input type='date' placeholder='Date de départ' className='block m-2 w-60 text-sm' value={campaign.startingDate} onChange={(event) => setField('startingDate', event)} />
       <div className='relative'>
         <input type='text' placeholder='Rechercher une cible...' className='block m-2 w-52 text-sm' value={targetField} onChange={(event) => setTargetField(event.target.value)} />
-        <button className='absolute right-1 bottom-0' onClick={() => setModalOn(ModalType.CREATE_TARGET)}>
+        <button className='absolute right-1 bottom-0' onClick={() => setModalOn(ModalType.CREATE_TARGET)} data-testid='modalon-btn'>
           <FaPlusCircle className='w-6 h-6 text-blue-400' />
         </button>
         <ul className='absolute bg-white z-20 mx-2 w-52 shadow-lg rounded-b-lg' hidden={targetField === ""}>
-          {filterTargets().map(target =>
-            <li className='m-1 cursor-pointer' onClick={() => addTarget(target)}>{target.name}</li>
+          {filterTargets().map((target, index) =>
+            <li key={'ft-' + index} className='m-1 cursor-pointer' onClick={() => addTarget(target)} data-testid={'aft-' + index}>{target.name}</li>
           )}
         </ul>
       </div>
       <ul className='m-2 w-60'>
-        {campaign.targets.map(target =>
-          <li className='inline-block p-1 mx-1 shadow-lg rounded-xl'>
+        {campaign.targets.map((target, index) =>
+          <li key={'ct-' + index} className='inline-block p-1 mx-1 shadow-lg rounded-xl'>
             <span>{targets.find(t => t.id === target)?.name}</span>
-            <button onClick={() => removeTarget(target)} className='w-3 h-3 mx-1 text-red-500 translate-y-1/4'>
+            <button onClick={() => removeTarget(target)} className='w-3 h-3 mx-1 text-red-500 translate-y-1/4' data-testid={'rft-' + index}>
               <ImCross />
             </button>
           </li>
