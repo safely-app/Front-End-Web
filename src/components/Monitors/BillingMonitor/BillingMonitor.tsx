@@ -39,7 +39,7 @@ const BillingMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (billing: IBilling, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex">
-          <button onClick={() => updateModal(billing, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button data-testid={'bu-btn-id-' + index} onClick={() => updateModal(billing, ModalType.UPDATE)}><BsPencilSquare /></button>
         </div>
       } />
     },
@@ -111,13 +111,13 @@ const BillingMonitor: React.FC = () => {
   useEffect(() => {
     Billing.getAll(userCredentials.token).then(response => {
       const gotBillings = response.data.data.map(billing => ({
-          id: billing.id,
-          paymentMethod: billing.payment_method,
-          receiptEmail: billing.receipt_email,
-          description: billing.description,
-          currency: billing.currency,
-          status: billing.status,
-          amount: billing.amount
+        id: billing.id,
+        paymentMethod: billing.payment_method,
+        receiptEmail: billing.receipt_email,
+        description: billing.description,
+        currency: billing.currency,
+        status: billing.status,
+        amount: billing.amount
       }));
 
       setBillings(gotBillings);
@@ -136,8 +136,8 @@ const BillingMonitor: React.FC = () => {
         billing={billing}
         setBilling={setBilling}
         buttons={[
-          <ModalBtn content="Modifier la safeplace" onClick={() => createBilling(billing)} />,
-          <ModalBtn content="Annuler" onClick={() => {
+          <ModalBtn key='bc-btn-0' content="Créer la facture" onClick={() => createBilling(billing)} />,
+          <ModalBtn key='bc-btn-1' content="Annuler" onClick={() => {
             setModal(ModalType.OFF);
             resetBilling();
           }} />
@@ -150,8 +150,8 @@ const BillingMonitor: React.FC = () => {
         billing={billing}
         setBilling={setBilling}
         buttons={[
-          <ModalBtn content="Modifier la safeplace" onClick={() => updateBilling(billing)} />,
-          <ModalBtn content="Annuler" onClick={() => {
+          <ModalBtn key='bu-btn-0' content="Modifier la facture" onClick={() => updateBilling(billing)} />,
+          <ModalBtn key='bu-btn-1' content="Annuler" onClick={() => {
             setModal(ModalType.OFF);
             resetBilling();
           }} />
