@@ -38,8 +38,8 @@ const CommentMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (comment: IComment, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => updateModal(comment, ModalType.UPDATE)}><BsPencilSquare /></button>
-          <button onClick={() => deleteComment(comment)}><ImCross /></button>
+          <button data-testid={'uc-btn-' + index} onClick={() => updateModal(comment, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button data-testid={'dc-btn-' + index} onClick={() => deleteComment(comment)}><ImCross /></button>
         </div>
       } />
     },
@@ -144,8 +144,8 @@ const CommentMonitor: React.FC = () => {
         comment={comment}
         setComment={setComment}
         buttons={[
-          <ModalBtn content='Créer un commentaire' onClick={() => createComment(comment)} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='ccm-0' content='Créer un commentaire' onClick={() => createComment(comment)} />,
+          <ModalBtn key='ccm-1' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetComment();
           }} />
@@ -158,8 +158,8 @@ const CommentMonitor: React.FC = () => {
         comment={comment}
         setComment={setComment}
         buttons={[
-          <ModalBtn content='Modifier le commentaire' onClick={() => updateComment(comment)} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='ucm-0' content='Modifier le commentaire' onClick={() => updateComment(comment)} />,
+          <ModalBtn key='ucm-1' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetComment();
           }} />
