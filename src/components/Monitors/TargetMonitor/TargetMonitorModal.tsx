@@ -43,7 +43,7 @@ export const TargetModal: React.FC<{
       <p className='font-bold'>{title}</p>
       <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={target.name} onChange={(event) => setField('name', event)} />
 
-      <select className='ml-2 text-sm' value={target.csp} onChange={(event) => setField('csp', event)}>
+      <select data-testid="select" className='ml-2 text-sm' value={target.csp} onChange={(event) => setField('csp', event)}>
         <option>csp--</option>
         <option>csp-</option>
         <option>csp</option>
@@ -54,10 +54,10 @@ export const TargetModal: React.FC<{
       <input type='text' placeholder="Fourchette d'âge" className='block m-2 w-60 text-sm' value={target.ageRange} onChange={(event) => setField('ageRange', event)} />
       <input type='text' placeholder="Ajouter un centre d'intérêt" className='block m-2 w-60 text-sm' value={interestField} onChange={(event) => setInterestField(event.target.value)} onKeyPress={onEnterKeyPressed} />
       <ul className='m-2 w-60'>
-        {target.interests.map(interest =>
-          <li className='inline-block p-1 mx-1 shadow-lg rounded-xl'>
+        {target.interests.map((interest, index) =>
+          <li key={'ti-' + index} className='inline-block p-1 mx-1 shadow-lg rounded-xl'>
             <span>{interest}</span>
-            <button onClick={() => removeInterest(interest)} className='w-3 h-3 mx-1 text-red-500 translate-y-1/4'>
+            <button data-testid={'dti-btn-' + index} onClick={() => removeInterest(interest)} className='w-3 h-3 mx-1 text-red-500 translate-y-1/4'>
               <ImCross />
             </button>
           </li>

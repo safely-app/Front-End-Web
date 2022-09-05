@@ -37,8 +37,8 @@ const TargetMonitor: React.FC = () => {
     { displayedName: "ACTION", displayFunction: (target: ITarget, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => updateModal(target, ModalType.UPDATE)}><BsPencilSquare /></button>
-          <button onClick={() => deleteTarget(target)}><ImCross /></button>
+          <button data-testid={'ut-btn-' + index} onClick={() => updateModal(target, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button data-testid={'dt-btn-' + index} onClick={() => deleteTarget(target)}><ImCross /></button>
         </div>
       } />
     },
@@ -141,8 +141,8 @@ const TargetMonitor: React.FC = () => {
         target={target}
         setTarget={setTarget}
         buttons={[
-          <ModalBtn content='Créer une cible' onClick={() => createTarget()} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='tcm-btn-0' content='Créer une cible' onClick={() => createTarget()} />,
+          <ModalBtn key='tcm-btn-1' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetTarget();
           }} />
@@ -155,8 +155,8 @@ const TargetMonitor: React.FC = () => {
         target={target}
         setTarget={setTarget}
         buttons={[
-          <ModalBtn content='Modifier la cible' onClick={() => updateTarget(target)} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='tum-btn-0' content='Modifier la cible' onClick={() => updateTarget(target)} />,
+          <ModalBtn key='tum-btn-1' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetTarget();
           }} />
@@ -164,7 +164,7 @@ const TargetMonitor: React.FC = () => {
       />
 
       <SearchBar
-        placeholder='Rechercher une target...'
+        placeholder='Rechercher une cible...'
         textSearch={textSearch}
         setTextSearch={setTextSearch}
         openCreateModal={() => setModal(ModalType.CREATE)}
