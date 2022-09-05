@@ -42,6 +42,7 @@ export const SafeplaceUpdateModal: React.FC<{
       <input type='text' placeholder='Longitude' className='block m-2 w-60 text-sm' value={safeplaceUpdate.coordinate[1]} onChange={(event) => setCoordinate(1, event)} />
       <input type='text' placeholder='ID de safeplace' className='block m-2 w-60 text-sm' value={safeplaceUpdate.safeplaceId} onChange={(event) => setField('safeplaceId', event)} />
       <input type='text' placeholder='ID de propriétaire' className='block m-2 w-60 text-sm' value={safeplaceUpdate.ownerId} onChange={(event) => setField('ownerId', event)} />
+      <input type='text' placeholder='Type' className='block m-2 w-60 text-sm' value={safeplaceUpdate.type} onChange={(event) => setField('type', event)} />
       <div className='w-full mt-4'>
         {buttons}
       </div>

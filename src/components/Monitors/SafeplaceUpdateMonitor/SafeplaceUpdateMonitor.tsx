@@ -25,8 +25,8 @@ const SafeplaceUpdateMonitor: React.FC = () => {
     city: "",
     address: "",
     type: "",
-    dayTimetable: [],
-    coordinate: [],
+    dayTimetable: [ null, null, null, null, null, null, null ],
+    coordinate: [ "", "" ],
     safeplaceId: ""
   });
 
@@ -43,8 +43,8 @@ const SafeplaceUpdateMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (update: ISafeplaceUpdate, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => updateModal(update, ModalType.UPDATE)}><BsPencilSquare /></button>
-          <button onClick={() => deleteSafeplaceUpdate(update)}><ImCross /></button>
+          <button data-testid={'usu-btn-' + index} onClick={() => updateModal(update, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button data-testid={'dsu-btn-' + index} onClick={() => deleteSafeplaceUpdate(update)}><ImCross /></button>
         </div>
       } />
     },
@@ -116,7 +116,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
       city: "",
       address: "",
       type: "",
-      dayTimetable: [],
+      dayTimetable: [ null, null, null, null, null, null, null ],
       coordinate: [ "", "" ],
       safeplaceId: "",
       description: "",
@@ -156,8 +156,8 @@ const SafeplaceUpdateMonitor: React.FC = () => {
         safeplaceUpdate={safeplaceUpdate}
         setSafeplaceUpdate={setSafeplaceUpdate}
         buttons={[
-          <ModalBtn content="Créer une modification" onClick={() => createSafeplaceUpdate(safeplaceUpdate)} />,
-          <ModalBtn content="Annuler" onClick={() => {
+          <ModalBtn key='sucm-btn-0' content="Créer une modification" onClick={() => createSafeplaceUpdate(safeplaceUpdate)} />,
+          <ModalBtn key='sucm-btn-1' content="Annuler" onClick={() => {
             setModal(ModalType.OFF);
             resetSafeplaceUpdate();
           }} />
@@ -170,8 +170,8 @@ const SafeplaceUpdateMonitor: React.FC = () => {
         safeplaceUpdate={safeplaceUpdate}
         setSafeplaceUpdate={setSafeplaceUpdate}
         buttons={[
-          <ModalBtn content="Modifier la modification" onClick={() => updateSafeplaceUpdate(safeplaceUpdate)} />,
-          <ModalBtn content="Annuler" onClick={() => {
+          <ModalBtn key='suum-btn-0' content="Modifier la modification" onClick={() => updateSafeplaceUpdate(safeplaceUpdate)} />,
+          <ModalBtn key='suum-btn-1' content="Annuler" onClick={() => {
             setModal(ModalType.OFF);
             resetSafeplaceUpdate();
           }} />
