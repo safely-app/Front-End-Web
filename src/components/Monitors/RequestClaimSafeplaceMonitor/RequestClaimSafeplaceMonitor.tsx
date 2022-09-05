@@ -40,8 +40,8 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (request: IRequestClaimSafeplace, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => updateModal(request, ModalType.UPDATE)}><BsPencilSquare /></button>
-          <button onClick={() => deleteRequestClaimSafeplace(request)}><ImCross /></button>
+          <button data-testid={'usr-btn-' + index} onClick={() => updateModal(request, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button data-testid={'dsr-btn-' + index} onClick={() => deleteRequestClaimSafeplace(request)}><ImCross /></button>
         </div>
       } />
     },
@@ -154,8 +154,8 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         request={requestClaimSafeplace}
         setRequest={setRequestClaimSafeplace}
         buttons={[
-          <ModalBtn content='Créer une requête' onClick={() => createRequestClaimSafeplace(requestClaimSafeplace)} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='srcm-btn-0' content='Créer une requête' onClick={() => createRequestClaimSafeplace(requestClaimSafeplace)} />,
+          <ModalBtn key='srcm-btn-1' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetRequestClaimSafeplace();
           }} />
@@ -168,8 +168,8 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         request={requestClaimSafeplace}
         setRequest={setRequestClaimSafeplace}
         buttons={[
-          <ModalBtn content='Modifier la requête' onClick={() => updateRequestClaimSafeplace(requestClaimSafeplace)} />,
-          <ModalBtn content='Annuler' onClick={() => {
+          <ModalBtn key='srum-btn-0' content='Modifier la requête' onClick={() => updateRequestClaimSafeplace(requestClaimSafeplace)} />,
+          <ModalBtn key='srum-btn-1' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetRequestClaimSafeplace();
           }} />
