@@ -81,7 +81,7 @@ test('test search bar', () => {
         <SearchBar placeholder="Recherche" textSearch="" setTextSearch={setValue} openCreateModal={openCreateModal} />
     );
 
-    fireEvent.change(screen.getByRole("searchbox"), {
+    fireEvent.change(screen.getByPlaceholderText("Recherche"), {
         target: { value: "test" }
     });
 
