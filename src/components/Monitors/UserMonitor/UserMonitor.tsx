@@ -34,8 +34,8 @@ const UserMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (user: IUser, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => updateModal(user, ModalType.UPDATE)}><BsPencilSquare /></button>
-          <button onClick={() => deleteUser(user)}><ImCross /></button>
+          <button data-testid={'uu-btn-' + index} onClick={() => updateModal(user, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button data-testid={'du-btn-' + index} onClick={() => deleteUser(user)}><ImCross /></button>
         </div>
       } />
     },
@@ -112,8 +112,8 @@ const UserMonitor: React.FC = () => {
         user={user}
         setUser={setUser}
         buttons={[
-          <ModalBtn content="Modifier l'utilisateur" onClick={() => updateUser(user)} />,
-          <ModalBtn content="Annuler" onClick={() => setModal(ModalType.OFF)} />
+          <ModalBtn key='uum-btn-0' content="Modifier l'utilisateur" onClick={() => updateUser(user)} />,
+          <ModalBtn key='uum-btn-1' content="Annuler" onClick={() => setModal(ModalType.OFF)} />
         ]}
       />
 

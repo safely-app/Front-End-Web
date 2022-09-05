@@ -47,8 +47,6 @@ test('render CampaignMonitor', async () => {
     fireEvent.click(button);
   });
 
-  await act(async () => testDelay(1000));
-
   scopeCampaign.done();
   scopeTarget.done();
 });
