@@ -107,6 +107,7 @@ test('ensure that safeplace update occurs without technical errors', async () =>
   fireEvent.change(screen.getByPlaceholderText('Description'), { target: { value: 'Description' } });
   fireEvent.change(screen.getByPlaceholderText('Latitude'), { target: { value: '42.679' } });
   fireEvent.change(screen.getByPlaceholderText('Longitude'), { target: { value: '87.261' } });
+  fireEvent.change(screen.getByPlaceholderText('Type'), { target: { value: 'shop' } });
 
   fireEvent.click(screen.getByText("Modifier la safeplace"));
 
