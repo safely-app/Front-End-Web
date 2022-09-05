@@ -41,8 +41,8 @@ const SafeplaceMonitor: React.FC = () => {
     { displayedName: 'ACTION', displayFunction: (safeplace: ISafeplace, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
-          <button onClick={() => updateModal(safeplace, ModalType.UPDATE)}><BsPencilSquare /></button>
-          <button onClick={() => deleteSafeplace(safeplace)}><ImCross /></button>
+          <button data-testid={'us-btn-' + index} onClick={() => updateModal(safeplace, ModalType.UPDATE)}><BsPencilSquare /></button>
+          <button data-testid={'ds-btn-' + index} onClick={() => deleteSafeplace(safeplace)}><ImCross /></button>
         </div>
       } />
     },
@@ -124,8 +124,8 @@ const SafeplaceMonitor: React.FC = () => {
         safeplace={safeplace}
         setSafeplace={setSafeplace}
         buttons={[
-          <ModalBtn content="Modifier la safeplace" onClick={() => updateSafeplace(safeplace)} />,
-          <ModalBtn content="Annuler" onClick={() => setModal(ModalType.OFF)} />
+          <ModalBtn key='sum-btn-0' content="Modifier la safeplace" onClick={() => updateSafeplace(safeplace)} />,
+          <ModalBtn key='sum-btn-1' content="Annuler" onClick={() => setModal(ModalType.OFF)} />
         ]}
       />
 
