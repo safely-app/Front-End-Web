@@ -138,8 +138,8 @@ test('render CampaignMonitor update modal', async () => {
 
   await act(async () => testDelay(1000));
 
-  expect(screen.getByTestId('cu-btn-13')).toBeInTheDocument();
-  fireEvent.click(screen.getByTestId('cu-btn-13'));
+  expect(screen.getByTestId('cu-btn-15')).toBeInTheDocument();
+  fireEvent.click(screen.getByTestId('cu-btn-15'));
 
   expect(screen.getByText('Campagne 1')).toBeInTheDocument();
   expect(screen.getByText('2022-08-08')).toBeInTheDocument();
@@ -194,8 +194,8 @@ test('render CampaignMonitor delete campaign', async () => {
 
   await act(async () => testDelay(1000));
 
-  expect(screen.getByTestId('cd-btn-13')).toBeInTheDocument();
-  fireEvent.click(screen.getByTestId('cd-btn-13'));
+  expect(screen.getByTestId('cd-btn-15')).toBeInTheDocument();
+  fireEvent.click(screen.getByTestId('cd-btn-15'));
 
   await act(async () => testDelay(1000));
 
