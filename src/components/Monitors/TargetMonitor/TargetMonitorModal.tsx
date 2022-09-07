@@ -41,9 +41,9 @@ export const TargetModal: React.FC<{
   return (
     <div className='absolute bg-white z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6' hidden={!modalOn}>
       <p className='font-bold'>{title}</p>
-      <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={target.name} onChange={(event) => setField('name', event)} />
+      <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={target.name || ''} onChange={(event) => setField('name', event)} />
 
-      <select data-testid="select" className='ml-2 text-sm' value={target.csp} onChange={(event) => setField('csp', event)}>
+      <select data-testid="select" className='ml-2 text-sm' value={target.csp || 'csp'} onChange={(event) => setField('csp', event)}>
         <option>csp--</option>
         <option>csp-</option>
         <option>csp</option>
@@ -51,7 +51,7 @@ export const TargetModal: React.FC<{
         <option>csp++</option>
       </select>
 
-      <input type='text' placeholder="Fourchette d'âge" className='block m-2 w-60 text-sm' value={target.ageRange} onChange={(event) => setField('ageRange', event)} />
+      <input type='text' placeholder="Fourchette d'âge" className='block m-2 w-60 text-sm' value={target.ageRange || ''} onChange={(event) => setField('ageRange', event)} />
       <input type='text' placeholder="Ajouter un centre d'intérêt" className='block m-2 w-60 text-sm' value={interestField} onChange={(event) => setInterestField(event.target.value)} onKeyPress={onEnterKeyPressed} />
       <ul className='m-2 w-60'>
         {target.interests.map((interest, index) =>

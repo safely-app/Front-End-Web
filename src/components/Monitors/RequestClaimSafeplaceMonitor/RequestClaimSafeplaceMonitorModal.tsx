@@ -33,13 +33,13 @@ export const RequestClaimSafeplaceModal: React.FC<{
   return (
     <div className='absolute bg-white z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6' hidden={!modalOn}>
       <p className='font-bold'>{title}</p>
-      <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={request.safeplaceName} onChange={(event) => setField('safeplaceName', event)} />
-      <input type='text' placeholder='Statut' className='block m-2 w-60 text-sm' value={request.status} onChange={(event) => setField('status', event)} />
-      <input type='text' placeholder='Description' className='block m-2 w-60 text-sm' value={request.safeplaceDescription} onChange={(event) => setField('safeplaceDescription', event)} />
-      <input type='text' placeholder='Latitude' className='block m-2 w-60 text-sm' value={request.coordinate[0]} onChange={(event) => setCoordinate(0, event)} />
-      <input type='text' placeholder='Longitude' className='block m-2 w-60 text-sm' value={request.coordinate[1]} onChange={(event) => setCoordinate(1, event)} />
-      <input type='text' placeholder='ID de safeplace' className='block m-2 w-60 text-sm' value={request.safeplaceId} onChange={(event) => setField('safeplaceId', event)} />
-      <input type='text' placeholder='ID de propriétaire' className='block m-2 w-60 text-sm' value={request.userId} onChange={(event) => setField('userId', event)} />
+      <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={request.safeplaceName || ''} onChange={(event) => setField('safeplaceName', event)} />
+      <input type='text' placeholder='Statut' className='block m-2 w-60 text-sm' value={request.status || ''} onChange={(event) => setField('status', event)} />
+      <input type='text' placeholder='Description' className='block m-2 w-60 text-sm' value={request.safeplaceDescription || ''} onChange={(event) => setField('safeplaceDescription', event)} />
+      <input type='text' placeholder='Latitude' className='block m-2 w-60 text-sm' value={request.coordinate[0] || ''} onChange={(event) => setCoordinate(0, event)} />
+      <input type='text' placeholder='Longitude' className='block m-2 w-60 text-sm' value={request.coordinate[1] || ''} onChange={(event) => setCoordinate(1, event)} />
+      <input type='text' placeholder='ID de safeplace' className='block m-2 w-60 text-sm' value={request.safeplaceId || ''} onChange={(event) => setField('safeplaceId', event)} />
+      <input type='text' placeholder='ID de propriétaire' className='block m-2 w-60 text-sm' value={request.userId || ''} onChange={(event) => setField('userId', event)} />
       <div className='w-full mt-4'>
         {buttons}
       </div>

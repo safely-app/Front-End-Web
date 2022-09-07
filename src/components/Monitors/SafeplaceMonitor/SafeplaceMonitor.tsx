@@ -25,8 +25,8 @@ const SafeplaceMonitor: React.FC = () => {
     city: "",
     address: "",
     type: "",
-    dayTimetable: [],
-    coordinate: []
+    dayTimetable: [ null, null, null, null, null, null, null ],
+    coordinate: [ "1", "1" ]
   });
 
   const keys = [

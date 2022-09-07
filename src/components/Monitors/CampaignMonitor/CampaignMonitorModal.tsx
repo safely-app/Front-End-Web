@@ -58,9 +58,9 @@ export const CampaignModal: React.FC<{
   return (
     <div className='absolute bg-white z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6' hidden={!modalOn}>
       <p className='font-bold'>{title}</p>
-      <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={campaign.name} onChange={(event) => setField('name', event)} />
-      <input type='number' placeholder='Budget' className='block m-2 w-60 text-sm' value={campaign.budget} onChange={(event) => setField('budget', event)} />
-      <input type='date' placeholder='Date de départ' className='block m-2 w-60 text-sm' value={campaign.startingDate} onChange={(event) => setField('startingDate', event)} />
+      <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={campaign.name || ''} onChange={(event) => setField('name', event)} />
+      <input type='number' placeholder='Budget' className='block m-2 w-60 text-sm' value={campaign.budget || ''} onChange={(event) => setField('budget', event)} />
+      <input type='date' placeholder='Date de départ' className='block m-2 w-60 text-sm' value={campaign.startingDate || ''} onChange={(event) => setField('startingDate', event)} />
       <div className='relative'>
         <input type='text' placeholder='Rechercher une cible...' className='block m-2 w-52 text-sm' value={targetField} onChange={(event) => setTargetField(event.target.value)} />
         <ul className='absolute bg-white z-20 mx-2 w-52 shadow-lg rounded-b-lg' hidden={targetField === ""}>
