@@ -3,9 +3,10 @@ import { AppHeader } from '../Header/Header';
 import ITarget from '../interfaces/ITarget';
 import ICampaign from '../interfaces/ICampaign';
 import { useAppSelector } from '../../redux';
-import { Commercial } from '../../services';
+import { Commercial, Safeplace } from '../../services';
 import CommercialCampaigns from './CommercialCampaigns';
 import CommercialStatistics from './CommercialStatistics';
+import ISafeplace from '../interfaces/ISafeplace';
 import log from 'loglevel';
 
 enum SECTION {
@@ -41,6 +42,18 @@ const CommercialPage: React.FC = () => {
 
   const [targets, setTargets] = useState<ITarget[]>([]);
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
+
+  const [safeplace, setSafeplace] = useState<ISafeplace>({
+    id: "",
+    name: "",
+    city: "",
+    address: "",
+    description: "",
+    dayTimetable: [ null, null, null, null, null, null, null ],
+    coordinate: [ "1", "1" ],
+    ownerId: "",
+    type: "",
+  });
 
   useEffect(() => {
     const startingDateToString = (startingDate: string) => {
@@ -83,6 +96,21 @@ const CommercialPage: React.FC = () => {
 
         setTargets(gotTargets);
       }).catch(err => log.error(err));
+
+    Safeplace.getByOwnerId(userCredentials._id, userCredentials.token)
+      .then(result =>
+        setSafeplace({
+          id: result.data._id,
+          name: result.data.name,
+          description: result.data.description,
+          city: result.data.city,
+          address: result.data.address,
+          type: result.data.type,
+          dayTimetable: result.data.dayTimetable,
+          coordinate: result.data.coordinate,
+          ownerId: result.data.ownerId,
+        })
+      ).catch(err => log.error(err));
   }, [userCredentials]);
 
   return (
@@ -96,6 +124,7 @@ const CommercialPage: React.FC = () => {
         <hr className='border-none' />
         {(displayedSection === SECTION.CAMPAIGNS)
           ? <CommercialCampaigns
+              safeplace={safeplace}
               campaigns={campaigns}
               setCampaigns={setCampaigns}
               targets={targets}

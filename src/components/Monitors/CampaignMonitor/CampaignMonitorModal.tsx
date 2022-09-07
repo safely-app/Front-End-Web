@@ -61,6 +61,7 @@ export const CampaignModal: React.FC<{
       <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={campaign.name || ''} onChange={(event) => setField('name', event)} />
       <input type='number' placeholder='Budget' className='block m-2 w-60 text-sm' value={campaign.budget || ''} onChange={(event) => setField('budget', event)} />
       <input type='date' placeholder='Date de départ' className='block m-2 w-60 text-sm' value={campaign.startingDate || ''} onChange={(event) => setField('startingDate', event)} />
+      <input type='text' placeholder='ID de safeplace' className='block m-2 w-60 text-sm' value={campaign.safeplaceId || ''} onChange={(event) => setField('safeplaceId', event)} />
       <div className='relative'>
         <input type='text' placeholder='Rechercher une cible...' className='block m-2 w-52 text-sm' value={targetField} onChange={(event) => setTargetField(event.target.value)} />
         <ul className='absolute bg-white z-20 mx-2 w-52 shadow-lg rounded-b-lg' hidden={targetField === ""}>

@@ -4,6 +4,7 @@ export default interface ICampaign {
     name: string;
     budget: string;
     status: string;
+    safeplaceId?: string;
     startingDate: string;
     targets: string[];
 }

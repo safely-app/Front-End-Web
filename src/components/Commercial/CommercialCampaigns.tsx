@@ -8,18 +8,21 @@ import { BsPencilSquare } from 'react-icons/bs';
 import { ImCross } from 'react-icons/im';
 import { convertStringToRegex } from '../utils';
 import { SearchBar, Table } from '../common';
-import { Commercial } from '../../services';
+import { Commercial, Safeplace } from '../../services';
 import { useAppSelector } from '../../redux';
 import { ModalType } from './CommercialModalType';
 import { CustomDiv } from '../common/Table';
 import { ModalBtn } from '../common/Modal';
+import ISafeplace from '../interfaces/ISafeplace';
 
 const CommercialCampaigns: React.FC<{
+  safeplace: ISafeplace;
   campaigns: ICampaign[];
   setCampaigns: (campaigns: ICampaign[]) => void;
   targets: ITarget[];
   setTargets: (target: ITarget[]) => void;
 }> = ({
+  safeplace,
   campaigns,
   setCampaigns,
   targets,
@@ -118,7 +121,7 @@ const CommercialCampaigns: React.FC<{
   };
 
   const createCampaign = async (status: string) => {
-    const newCampaign = { ...campaign, status: status, ownerId: userCredentials._id };
+    const newCampaign = { ...campaign, status: status, ownerId: userCredentials._id, safeplaceId: safeplace.id };
     const result = await Commercial.createCampaign(newCampaign, userCredentials.token);
 
     setCampaigns([ ...campaigns, { ...newCampaign, id: result.data._id } ]);

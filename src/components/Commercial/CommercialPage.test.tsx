@@ -51,9 +51,22 @@ test('render CommercialCampaigns', () => {
     }
   ];
 
+  const safeplace = {
+    id: "s1",
+    type: "resto",
+    city: "Ville",
+    name: "Safeplace 1",
+    address: "Adresse",
+    description: "Description",
+    dayTimetable: [ null, null, null, null, null, null, null ],
+    coordinate: [ "1", "1" ],
+    ownerId: "",
+  };
+
   render(
     <Provider store={store}>
       <CommercialCampaigns
+        safeplace={safeplace}
         campaigns={campaigns}
         setCampaigns={setCampaigns}
         targets={targets}

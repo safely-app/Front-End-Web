@@ -38,6 +38,7 @@ const CampaignMonitor: React.FC = () => {
     { displayedName: 'ID DE PROPRIÉTAIRE', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.ownerId} /> },
     { displayedName: 'DATE DE DÉPART', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.startingDate} /> },
     { displayedName: 'ID', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.id} /> },
+    { displayedName: 'ID DE SAFEPLACE', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.safeplaceId || ''} /> },
     { displayedName: 'ACTION', displayFunction: (campaign: ICampaign, index: number) =>
       <CustomDiv key={'tbl-val-' + index} content={
         <div className="ml-3 flex space-x-2">
@@ -131,6 +132,7 @@ const CampaignMonitor: React.FC = () => {
           budget: campaign.budget,
           status: campaign.status,
           startingDate: campaign.startingDate,
+          safeplaceId: campaign.safeplaceId,
           targets: campaign.targets
         }) as ICampaign);
 
