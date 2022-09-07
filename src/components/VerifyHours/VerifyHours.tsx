@@ -76,7 +76,6 @@ const VerifyHours: React.FC = () => {
         index: number,
         value: string
     ) => {
-        console.log(value);
         setDayTimetable({
             ...day,
             timetable: day.timetable.map((element, elIndex) =>
