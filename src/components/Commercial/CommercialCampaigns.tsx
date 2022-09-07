@@ -8,7 +8,7 @@ import { BsPencilSquare } from 'react-icons/bs';
 import { ImCross } from 'react-icons/im';
 import { convertStringToRegex } from '../utils';
 import { SearchBar, Table } from '../common';
-import { Commercial, Safeplace } from '../../services';
+import { Commercial } from '../../services';
 import { useAppSelector } from '../../redux';
 import { ModalType } from './CommercialModalType';
 import { CustomDiv } from '../common/Table';
