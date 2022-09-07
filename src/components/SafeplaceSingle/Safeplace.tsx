@@ -46,7 +46,7 @@ export const TimeInput: React.FC<ITimeInputProps> = ({
         const regex = new RegExp(/^(\d|([01]\d)|(2[0123]))$/g);
         const found = value.match(regex);
 
-        if (value === "" || found !== null) {
+        if (value !== "" || found !== null) {
             setValue(`${value}:${minutes}`);
             setHours(value);
         }
@@ -56,7 +56,7 @@ export const TimeInput: React.FC<ITimeInputProps> = ({
         const regex = new RegExp(/^([012345]\d{0,1})$/g);
         const found = value.match(regex);
 
-        if (value === "" || found !== null) {
+        if (value !== "" || found !== null) {
             setValue(`${hours}:${value}`);
             setMinutes(value);
         }
