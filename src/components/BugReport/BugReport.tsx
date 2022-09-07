@@ -35,7 +35,7 @@ const BugReport: React.FC = () => {
     return (
         <div className="min-h-screen bg-background bg-transparent space-y-2 bg-cover bg-center">
             <AppHeader />
-            <body className="antialiased text-gray-900 bg-transparent">
+            <div className="antialiased text-gray-900 bg-transparent">
 
     
     <div className="mx-4 card bg-white max-w-md p-10 md:rounded-lg my-8 mx-auto">
@@ -70,7 +70,7 @@ const BugReport: React.FC = () => {
     </div>
     
 
-</body>
+</div>
             
         </div>
     );

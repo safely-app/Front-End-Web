@@ -121,13 +121,13 @@ const VerifyHours: React.FC = () => {
                     </thead>
                     <tbody>
                         <tr>
-                            <td><input type="time" value={day.timetable[0]} onChange={(e) => setDayTimetableValue(day, 0, e.target.value)} /></td>
+                            <td><input type="time" value={day.timetable[0] || ''} onChange={(e) => setDayTimetableValue(day, 0, e.target.value)} /></td>
                             <td>-</td>
-                            <td><input type="time" value={day.timetable[1]} onChange={(e) => setDayTimetableValue(day, 1, e.target.value)} /></td>
+                            <td><input type="time" value={day.timetable[1] || ''} onChange={(e) => setDayTimetableValue(day, 1, e.target.value)} /></td>
                             <td>,</td>
-                            <td><input type="time" value={day.timetable[2]} onChange={(e) => setDayTimetableValue(day, 2, e.target.value)} /></td>
+                            <td><input type="time" value={day.timetable[2] || ''} onChange={(e) => setDayTimetableValue(day, 2, e.target.value)} /></td>
                             <td>-</td>
-                            <td><input type="time" value={day.timetable[3]} onChange={(e) => setDayTimetableValue(day, 3, e.target.value)} /></td>
+                            <td><input type="time" value={day.timetable[3] || ''} onChange={(e) => setDayTimetableValue(day, 3, e.target.value)} /></td>
                         </tr>
                     </tbody>
                 </table>
