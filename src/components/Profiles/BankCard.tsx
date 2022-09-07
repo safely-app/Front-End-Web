@@ -107,6 +107,14 @@ const BankCard: React.FC<{
   const g2 = g1 + 150 % 200;
   const b2 = b1 + 150 % 200;
 
+  const expYear =
+    (stripeCard.expYear === undefined) ? ""
+      : (stripeCard.expYear % 100).toString();
+
+  const expMonth =
+    (stripeCard.expMonth === undefined) ? ""
+      : (stripeCard.expMonth < 10 ? '0' + stripeCard.expMonth : stripeCard.expMonth.toString());
+
   return (
     <div className='relative w-full h-52 rounded-lg flex flex-col justify-between p-6' style={{
       boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
@@ -124,8 +132,8 @@ const BankCard: React.FC<{
       <Line>
         <Field>{name}</Field>
         <Expiry>
-          <Field>{stripeCard.expMonth < 10 ? '0' + stripeCard.expMonth : stripeCard.expMonth}</Field>
-          <Field>{stripeCard.expYear % 100}</Field>
+          <Field>{expMonth}</Field>
+          <Field>{expYear}</Field>
         </Expiry>
       </Line>
     </div>

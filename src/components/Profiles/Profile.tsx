@@ -44,7 +44,7 @@ const ProfileSection: React.FC<{
 }) => {
   return (
     <div className='mx-12 select-none'>
-      <div className='grid grid-cols-4 text-left text-2xl font-bold cursor-pointer' onClick={() => setActive(!active)}>
+      <div data-testid={'div-' + title} className='grid grid-cols-4 text-left text-2xl font-bold cursor-pointer' onClick={() => setActive(!active)}>
         <span className='col-span-3 py-2'>{title}</span>
         <div className='text-right text-4xl'>
           {(active)
@@ -90,14 +90,14 @@ const ProfileInputSection: React.FC<{
       setActive={setActive}
       content={
         <div>
-          {properties.map(property =>
-            <div>
+          {properties.map((property, index) =>
+            <div key={'property-key-' + index}>
               <label className='block text-neutral-400 font-bold'>{property.label}</label>
               <div className='my-2'>
                 <input className='border border-solid border-neutral-300 rounded-l-lg w-1/2 xl:w-full max-w-md py-1 px-2 focus:outline-none'
-                       type='text' value={property.value} onChange={(event) => handleChange(event, property)}/>
+                       type='text' placeholder={property.label} value={property.value} onChange={(event) => handleChange(event, property)}/>
                 <button className='border border-l-0 border-solid border-neutral-300 rounded-r-lg py-1 px-2 hover:bg-neutral-200'
-                        onClick={updateProperties}>Modifier</button>
+                        data-testid={`section-btn-${title}-${index}`} onClick={updateProperties}>Modifier</button>
               </div>
             </div>
           )}
@@ -141,7 +141,7 @@ const Profile: React.FC = () => {
   const [paymentSolutions, setPaymentSolutions] = useState<IStripeCard[]>([]);
   const [paymentSolutionsIndex, setPaymentSolutionsIndex] = useState(0);
 
-  const [cardModalOn, setCardModalOn] = useState(true);
+  const [cardModalOn, setCardModalOn] = useState(false);
 
   const [savedUser, setSavedUser] = useState<IUser | undefined>(undefined);
   const [savedProfessional, setSavedProfessional] = useState<IProfessional | undefined>(undefined);
@@ -415,8 +415,8 @@ const Profile: React.FC = () => {
               content={
                 <div className='mt-4'>
                   <div className='grid grid-cols-2 gap-4'>
-                    {paymentSolutions.slice(4 * paymentSolutionsIndex, (4 * paymentSolutionsIndex) + 4).map(paymentSolution =>
-                      <div className='mb-1'>
+                    {paymentSolutions.slice(4 * paymentSolutionsIndex, (4 * paymentSolutionsIndex) + 4).map((paymentSolution, index) =>
+                      <div key={'paymentSolutions-key-' + index} className='mb-1'>
                         <BankCard stripeCard={paymentSolution} name={user.username} />
                         <div className='grid grid-cols-2 mt-2 text-xs text-white gap-2'>
                           <button className='block p-1 rounded-lg w-full mx-auto bg-blue-400 hover:bg-blue-300'>Définir comme carte principale</button>
