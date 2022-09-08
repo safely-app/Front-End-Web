@@ -413,12 +413,12 @@ const Profile: React.FC = () => {
               active={sectionState === SectionState.PAYMENT}
               setActive={(active) => setSectionState(active ? SectionState.PAYMENT : SectionState.OFF)}
               content={
-                <div className='mt-4'>
-                  <div className='grid grid-cols-2 gap-4'>
+                <div className='mt-2'>
+                  <div className='grid grid-cols-2 gap-x-4 gap-y-2'>
                     {paymentSolutions.slice(4 * paymentSolutionsIndex, (4 * paymentSolutionsIndex) + 4).map((paymentSolution, index) =>
-                      <div key={'paymentSolutions-key-' + index} className='mb-1'>
+                      <div key={'paymentSolutions-key-' + index} className=''>
                         <BankCard stripeCard={paymentSolution} name={user.username} />
-                        <div className='grid grid-cols-2 mt-2 text-xs text-white gap-2'>
+                        <div className='grid grid-cols-2 mt-1 text-xs text-white gap-2'>
                           <button className='block p-1 rounded-lg w-full mx-auto bg-blue-400 hover:bg-blue-300'>Définir comme carte principale</button>
                           <button className='block p-1 rounded-lg w-full mx-auto bg-red-400 hover:bg-red-300'>Supprimer</button>
                         </div>
