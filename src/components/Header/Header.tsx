@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../redux';
-import logo from '../../assets/image/logo.png'
 import { canAccess, Role } from './utils';
 import { FaBell, FaCircle } from 'react-icons/fa';
 import INotification from '../interfaces/INotification';
@@ -25,9 +24,10 @@ const useOutsideAlerter = (ref, func: () => void) => {
 
 const HeaderNotif: React.FC = () => {
   const notifListRef = useRef(null);
+  const userCredentials = useAppSelector(state => state.user.credentials);
+
   const [hidden, setHidden] = useState(true);
   const [notifs, setNotifs] = useState<INotification[]>([]);
-  const userCredentials = useAppSelector(state => state.user.credentials);
 
   useOutsideAlerter(notifListRef, () => {
     setHidden(true);
@@ -65,15 +65,18 @@ const HeaderNotif: React.FC = () => {
   };
 
   return (
-    <div ref={notifListRef} className="p-1 px-8 text-2xl relative">
-      <button className="mt-2" onClick={() => setHidden(!hidden)}>
-        <FaBell />
+    <div ref={notifListRef} className="text-2xl relative">
+      <button style={{ marginTop: "1.65rem" }} onClick={() => setHidden(!hidden)}>
+        <FaBell style={{ color: '#f7e249' }} />
         <div style={{
-          marginTop: "-2.25em",
-          marginLeft: "1.5em",
-          fontSize: "10px"
-        }} className="absolute text-xs glow" hidden={notifs.length === 0}>
+          marginTop: "-1.95em",
+          marginLeft: "1.05em",
+          fontSize: "14px"
+        }} className="absolute glow text-center" hidden={notifs.length === 0}>
           <FaCircle />
+          <div style={{ top: "-1em", fontSize: "10px" }} className='absolute text-white left-0 w-full'>
+            {(notifs.length < 10) ? notifs.length : '+9'}
+          </div>
         </div>
       </button>
 
@@ -105,77 +108,38 @@ interface HeaderLink {
   onAuth?: boolean;
 }
 
-interface IHeaderProps {
-  links: HeaderLink[];
-}
-
-export const Header: React.FC<IHeaderProps> = ({ links }) => {
+export const Header: React.FC<{
+  links: HeaderLink[]
+}> = ({
+  links
+}) => {
   const user = useAppSelector(state => state.user);
-  const [isMenuHidden, setIsMenuHidden] = useState(true);
+  const currentPath = window.location.pathname;
 
   const isAuthenticated = () => {
     return !!user.credentials._id && !!user.credentials.token;
   };
 
   return (
-    <div className="text-center">
-      <nav className="bg-gradient-to-r from-blue-400 to-blue-900 border-gray-200 px-2 sm:px-4 py-2.5 rounded-b-lg dark:bg-gray-800">
-        <div className="xl:flex xl:flex-wrap xl:space-x-10 items-center">
-          <div className="flex flex-wrap">
-            <a href="/" className="flex space-x-4">
-              <img object-left="true" className="h-20 w-20 ml-auto mr-auto" src={logo} alt="Logo Safely" />
-              <span className="self-center text-2xl text-lg font-semibold whitespace-nowrap text-yellowS">Safely</span>
-            </a>
-            <div className="flex-grow p-4">
-              <div className="float-right">
-                <div className="flex">
-                  <div className="xl:hidden my-auto">
-                    <HeaderNotif />
-                  </div>
-                  <div className="xl:hidden">
-                    <button className="border-solid border-3 rounded border-black p-1" onClick={() => setIsMenuHidden(!isMenuHidden)}>
-                      <svg viewBox="0 0 100 50" width="35" height="30">
-                        <rect y="0" width="100" height="8"></rect>
-                        <rect y="20" width="100" height="8"></rect>
-                        <rect y="40" width="100" height="8"></rect>
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="hidden w-full md:block md:w-auto" id="mobile-menu"></div>
-          <ul className="hidden xl:block text-right py-4 xl:py-0">
-            {links
-              .filter(link => link.onAuth === undefined || link.onAuth === isAuthenticated())
-              .filter(link => link.role === undefined || canAccess(user.userInfo.role, link.role))
-              .map((link, index) =>
-                <li className="xl:float-left px-4 py-0.5 xl:p-0" key={index}>
-                  <a className="xl:pr-3 xl:pl-2 text-xl text-gray-900 hover:bg-gray-50 xl:hover:bg-transparent xl:border-0 xl:hover:text-yellow-200 xl:p-0 dark:text-gray-400 xl:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white xl:dark:hover:bg-transparent dark:border-gray-700" href={link.link}>{link.name}</a>
-                </li>
-              )
-            }
-          </ul>
-          <div className="hidden xl:block absolute right-0">
-            <HeaderNotif />
-          </div>
+    <div className='bg-white font-bold text-xl flex border-b-2 border-neutral-300'>
+      <div className='flex pl-4'>
+        <div className='px-2 py-6 cursor-pointer hover:opacity-70 mx-2'>
+          <a href='/'>Dashboard</a>
         </div>
-      </nav>
-      <div className={`${isMenuHidden ? "hidden" : "block"} xl:hidden fixed bg-white top-0 right-0 min-w-max w-1/4 h-full z-10`}>
-        <button className="py-8" onClick={() => setIsMenuHidden(!isMenuHidden)}>
-          <svg viewBox="0 0 20 20" width="30" height="30">
-            <line x1="5" y1="5" x2="15" y2="15" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeMiterlimit="10"></line>
-            <line x1="15" y1="5" x2="5" y2="15" stroke="#000" strokeWidth="1.5" strokeLinecap="round" strokeMiterlimit="10"></line>
-          </svg>
-        </button>
-        <ul className="pt-4">
+        <div className='px-2'>
+          <HeaderNotif />
+        </div>
+      </div>
+      <div className='w-full'>
+        <ul className='float-right'>
           {links
             .filter(link => link.onAuth === undefined || link.onAuth === isAuthenticated())
             .filter(link => link.role === undefined || canAccess(user.userInfo.role, link.role))
             .map((link, index) =>
-              <li className="px-4 py-1" key={index}>
-                <a className="text-xl text-gray-900 hover:bg-gray-50 xl:hover:bg-transparent xl:border-0 xl:hover:text-yellow-200 xl:p-0 dark:text-gray-400 xl:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white xl:dark:hover:bg-transparent dark:border-gray-700" href={link.link}>{link.name}</a>
+              <li key={index} className='float-left'>
+                <a href={link.link} className={'inline-block px-2 py-6 font-bold cursor-pointer hover:opacity-70 mx-2 ' + (currentPath === link.link ? 'border-b-2 border-solid border-neutral-800' : '')}>
+                  {link.name}
+                </a>
               </li>
             )
           }
@@ -183,7 +147,7 @@ export const Header: React.FC<IHeaderProps> = ({ links }) => {
       </div>
     </div>
   );
-}
+};
 
 export const AppHeader: React.FC = () => {
   const links = [

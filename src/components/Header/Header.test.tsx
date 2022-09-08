@@ -26,9 +26,9 @@ render(
     </Provider>
   );
 
-  expect(screen.getAllByText("Link 1").length).toEqual(2);
-  expect(screen.getAllByText("Link 2").length).toEqual(2);
-  expect(screen.getAllByText("Link 3").length).toEqual(2);
+  expect(screen.getByText("Link 1")).toBeInTheDocument();
+  expect(screen.getByText("Link 2")).toBeInTheDocument();
+  expect(screen.getByText("Link 3")).toBeInTheDocument();
 });
 
 test('renders header links with on auth obligation', () => {
@@ -44,7 +44,7 @@ test('renders header links with on auth obligation', () => {
 
   expect(screen.queryByText("Link 1")).toBeNull();
   expect(screen.queryByText("Link 2")).toBeNull();
-  expect(screen.getAllByText("Link 3").length).toEqual(2);
+  expect(screen.getByText("Link 3")).toBeInTheDocument();
 });
 
 test('renders header links with on admin obligation', () => {
@@ -60,7 +60,7 @@ test('renders header links with on admin obligation', () => {
 
   expect(screen.queryByText("Link 1")).toBeNull();
   expect(screen.queryByText("Link 2")).toBeNull();
-  expect(screen.getAllByText("Link 3").length).toEqual(2);
+  expect(screen.getByText("Link 3")).toBeInTheDocument();
 });
 
 test('renders app header', () => {
@@ -70,7 +70,7 @@ test('renders app header', () => {
     </Provider>
   );
 
-  expect(screen.getAllByText("Connexion").length).toEqual(2);
+  expect(screen.getByText("Connexion")).toBeInTheDocument();
 });
 
 test('ensure that canAccess returns true value', () => {
