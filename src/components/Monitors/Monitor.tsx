@@ -10,6 +10,7 @@ import TargetMonitor from './TargetMonitor/TargetMonitor';
 import CommentMonitor from './CommentMonitor/CommentMonitor';
 import SupportMonitor from './SupportMonitor/SupportMonitor';
 import './Monitor.css';
+import AdvertisingMonitor from './AdvertisingMonitor/AdvertisingMonitor';
 
 enum MonitorView {
     USER,
@@ -20,7 +21,8 @@ enum MonitorView {
     CAMPAIGN,
     TARGET,
     COMMENT,
-    SUPPORT
+    SUPPORT,
+    ADVERTISING,
 }
 
 const MonitorBtn: React.FC<{
@@ -50,6 +52,8 @@ const Monitor: React.FC = () => {
 
   const getView = (): JSX.Element => {
     switch (view) {
+      case MonitorView.ADVERTISING:
+        return <AdvertisingMonitor />;
       case MonitorView.SUPPORT:
         return <SupportMonitor />;
       case MonitorView.SAFEPLACEUPDATE:
@@ -86,6 +90,7 @@ const Monitor: React.FC = () => {
           <MonitorBtn btnText='Modifications de safeplace' sectionType={MonitorView.SAFEPLACEUPDATE} displayedSection={view} setDisplayedSection={setView} />
           <MonitorBtn btnText='Commentaires' sectionType={MonitorView.COMMENT} displayedSection={view} setDisplayedSection={setView} />
           <MonitorBtn btnText='Rapports' sectionType={MonitorView.SUPPORT} displayedSection={view} setDisplayedSection={setView} />
+          <MonitorBtn btnText='Publicités' sectionType={MonitorView.ADVERTISING} displayedSection={view} setDisplayedSection={setView} />
         </div>
         {getView()}
       </div>

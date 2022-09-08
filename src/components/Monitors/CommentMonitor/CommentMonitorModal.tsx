@@ -4,7 +4,7 @@ export const CommentModal: React.FC<{
   title: string;
   modalOn: boolean;
   comment: IComment;
-  setComment: (target: IComment) => void;
+  setComment: (comment: IComment) => void;
   buttons: JSX.Element[];
 }> = ({
   title,
