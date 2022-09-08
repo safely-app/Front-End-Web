@@ -8,6 +8,7 @@ import { BugReportManager } from '../../services';
 const BugReport: React.FC = () => {
     const userCredientials = useAppSelector(state => state.user.credentials);
     const [report, setReport] = useState<IReport>({
+        id: '',
         userId: '',
         title: '',
         comment: '',
