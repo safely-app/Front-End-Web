@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import ISafeplace from '../interfaces/ISafeplace';
+import React, { useEffect, useMemo, useState } from 'react';
+import ISafeplace, {ISafeplaceVariant} from '../interfaces/ISafeplace';
 import { AppHeader } from '../Header/Header';
 import {
     Button,
     Modal,
+    SearchBar,
     TextInput
 } from '../common';
 import {
@@ -21,9 +22,15 @@ import {
     MapContainer,
     TileLayer,
     Marker,
-    Popup
+    Popup,
+    useMap,
+    Rectangle,
 } from 'react-leaflet'
-
+import { LatLng, LatLngBounds, LatLngBoundsExpression, LatLngExpression } from 'leaflet';
+import { FaEdit, FaShoppingBasket, FaBreadSlice, FaUtensils, FaStore, FaHandScissors, FaMapPin, FaStar, FaArrowRight, FaArrowLeft } from 'react-icons/fa';
+import { render } from '@testing-library/react';
+import { ModalBtn } from '../common/Modal';
+import { SafeplaceModal } from '../Monitors/SafeplaceMonitor/SafeplaceMonitorModal';
 
 interface ISafeplaceInfoProps {
     safeplace: ISafeplace;
@@ -104,11 +111,11 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
                     <p key={`${safeplace.id}-address`}><b>Adresse : </b>{safeplace.address}</p>
                 </div>
                 <div hidden={!canAccess(userInfo.role, Role.TRADER)} className="flex flex-col justify-between space-y-2">
-                    <button data-testid={`request-shop-${safeplace.id}`} onClick={handleClickClaim} className="inline-flex w-56 items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button data-testId={`request-shop-${safeplace.id}`} onClick={handleClickClaim} className="inline-flex w-56 items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Réclamer ce commerce
                         <svg className="ml-2 -mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
                     </button>
-                    <button data-testid={`update-shop-${safeplace.id}`} onClick={handleClick} className="inline-flex w-56 items-center py-2 px-3 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button data-testId={`update-shop-${safeplace.id}`} onClick={handleClick} className="inline-flex w-56 items-center py-2 px-3 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Modifier
                         <svg className="ml-2 -mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
                     </button>
@@ -119,30 +126,53 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
 }
 
 interface IMapProps {
-    safeplaces: ISafeplace[];
+    safeplaces: {setter: (val: ISafeplaceVariant[]) => void, value: ISafeplaceVariant[]};
 }
 
 const SafeplacesMap: React.FC<IMapProps> = ({
     safeplaces
 }) => {
+    const [safeplaceWithinBound, setSafeplaceWithinBound] = useState<ISafeplaceVariant[]>([])
+
+    const UpdateSafeplace = () => {
+        const map = useMap()
+        const [bounds, setBounds] = useState<LatLngBounds>(map.getBounds())
+
+        
+        map.on('moveend', function(e) {
+            setBounds(map.getBounds())
+            const tmpArray: ISafeplaceVariant[] = []
+
+            for (var index = 0; index < safeplaces.value.length; index++) {
+                const point: LatLngExpression = new LatLng(safeplaces.value[index].coordinate[0], safeplaces.value[index].coordinate[1])
+
+                if (bounds.contains(point)) {
+                    tmpArray.push(safeplaces.value[index])
+                }
+            }
+            setSafeplaceWithinBound(tmpArray)
+            safeplaces.setter(tmpArray)
+        });
+
+        return (
+            <Rectangle bounds={bounds} pathOptions={{color: 'red'}}/>
+        )
+    }
+
     return (
-        <div className="relative top-2/4 left-2/4 w-2/3 max-w-4xl text-center mt-8" style={{
-            transform: 'translate(-50%, 0%)'
-        }}>
-            <p className="mb-8 text-white text-2xl">
-                Les safeplaces
-                <b className="block text-3xl">Strasbourgeoises</b>
-            </p>
+        <div className="relative w-full h-full max-w-4xl text-center z-0">
             <MapContainer style={{
-                height: '60vh'
+                height: "100vh",
+                width: "100vh",
             }} center={[48.58193415814247, 7.751016938855309]} zoom={14} scrollWheelZoom={true}>
+                <UpdateSafeplace />
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
 
                 <MarkerClusterGroup showCoverageOnHover={false}>
-                    {safeplaces.map((safeplace, index) => (
+                    {safeplaceWithinBound.map((safeplace, index) => (
                         <Marker key={index} position={[
                             Number(safeplace.coordinate[0]),
                             Number(safeplace.coordinate[1])
@@ -155,6 +185,159 @@ const SafeplacesMap: React.FC<IMapProps> = ({
         </div>
     );
 };
+
+interface ISafeplaceListProps {
+    safeplaces: {setter: (val: ISafeplace[]) => void, value: ISafeplace[]};
+    comments: []
+}
+
+const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) => {
+    const [focusSafeplace, setFocusSafeplace] = useState<boolean>(false);
+    const [getSafeplaceDetail, setGetSafeplaceDetail] = useState<boolean>(false);
+    const userCredentials = useAppSelector(state => state.user.credentials);
+    const [safeplace, setSafeplace] = useState<ISafeplace>({
+        id: "",
+        name: "",
+        city: "",
+        address: "",
+        type: "",
+        dayTimetable: [ null, null, null, null, null, null, null ],
+        coordinate: [ "1", "1" ]
+    });
+    const [currentPage, setCurrentPage] = useState<number>(0)
+
+    const updateSafeplace = async (safeplace: ISafeplace) => {
+        try {
+          await Safeplace.update(safeplace.id, safeplace, userCredentials.token);
+          safeplaces.setter(safeplaces.value.map(s => (s.id === safeplace.id) ? safeplace : s));
+          notifySuccess("Modifications enregistrées");
+          setFocusSafeplace(false);
+        } catch (err) {
+          notifyError(err);
+          log.error(err);
+        }
+      };
+    
+    const deleteSafeplace = async (safeplace: ISafeplace) => {
+        try {
+            await Safeplace.delete(safeplace.id, userCredentials.token);
+            safeplaces.setter(safeplaces.value.filter(s => s.id !== safeplace.id));
+            notifySuccess("Safeplace supprimée");
+            setFocusSafeplace(false);
+        } catch (err) {
+            notifyError(err);
+            log.error(err);
+        }
+    };
+
+    const claimSafeplace = async (safeplace: ISafeplace) => {
+        try {
+            const response = await RequestClaimSafeplace.create({
+                id: '',
+                userId: userCredentials._id,
+                safeplaceId: safeplace.id,
+                safeplaceName: safeplace.name,
+                status: 'Pending',
+                safeplaceDescription: (safeplace?.description !== undefined) ? safeplace?.description : "Vide",
+                coordinate: safeplace.coordinate
+            }, userCredentials.token);
+
+            log.log(response);
+            notifySuccess("Votre requête a été créée");
+        } catch (e) {
+            log.error(e);
+            notifyError(e);
+        }
+    };
+
+    function paginate(a, pageIndex, pageSize) {
+        var endIndex = Math.min((pageIndex + 1) * pageSize, a.length);
+        return a.slice(Math.max(endIndex - pageSize, 0), endIndex);   
+    }
+
+    useEffect(() => {
+        console.log(paginate(comments, currentPage, 5))
+    }, [currentPage])
+
+    const test = () => {
+        return paginate(comments, currentPage, 5)
+    }
+
+    return (
+        <div>
+            {getSafeplaceDetail ? (
+                <div className="h-screen">
+                    <div className="bg-safeplace-placeholder h-96 rounded-3xl divide-y-3">
+                        <img className="object-cover" />
+                    </div>
+                    <div className="flex flex-row justify-between">
+                        <div>
+                            <p className="font-bold text-2xl mt-2">{safeplace.name}</p>
+                            <p>{safeplace.type}</p>
+                            <p className="text-blue-600">{comments.length} commentaires</p>
+                        </div>
+                        <Button text="Réclamer ce commerce" onClick={() => {claimSafeplace(safeplace)}} width="100"/>
+                    </div>
+                    <div className="border-t-2 border-gray border-b-2 pt-3 pb-3 mt-3">
+                        <div className="flex flex-row items-center">
+                            <FaMapPin className="h-8 w-8"/>
+                            <p>{safeplace.address + ', ' + safeplace.city}</p>
+                        </div>
+                    </div>
+                    <div className="h-6 w-full mt-5">
+                        {Object.keys(paginate(comments, currentPage, 5)).map(index => {
+                            var tmpValue = paginate(comments, currentPage, 5);
+                            return (
+                                <div>
+                                    <div className="flex flex-row items-center mb-3">
+                                        <p>Anonyme</p>
+                                        {[...Array(tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: '#f7e249' }}/>)}
+                                        {[...Array(5 - tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6"  style={{ color: 'lightgray' }}/>)}
+                                    </div>
+                                    <p className="mb-3">{tmpValue[index].comment}</p>
+                                </div>
+                            )
+                        })}
+                        <div className="flex flex-row items-center mt-10">
+                            <FaArrowLeft className="mr-2" onClick={() => {currentPage > 0 ? setCurrentPage(currentPage => currentPage - 1) : setCurrentPage(currentPage)}}/>
+                            <FaArrowRight onClick={() => {currentPage >= 0 ? setCurrentPage(currentPage => currentPage + 1) : setCurrentPage(currentPage)}} />
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <div className="h-screen grid grid-cols-2 gap-10 overflow-y-auto px-30">
+                    {safeplaces.value && safeplaces.value.length > 0 ? safeplaces.value.map(sp => (
+                        <div onClick={() => {setSafeplace(sp); setGetSafeplaceDetail(true)}}>
+                            <div className="bg-safeplace-placeholder w-90 h-80 rounded-3xl">
+                                <img className="object-cover" />
+                            </div>
+                            <div className="flex justify-between">
+                                <div>
+                                    <p className="font-bold text-lg mt-2">{sp.name}</p>
+                                    <p>{sp.type}</p>
+                                </div>
+                                <FaEdit className="mt-2" onClick={() => {setFocusSafeplace(true); setSafeplace(sp)}}/>
+                            </div>
+                        </div>
+                    )) : null}
+                    <SafeplaceModal 
+                        title={"title"}
+                        modalOn={focusSafeplace}
+                        safeplace={safeplace}
+                        setSafeplace={setSafeplace}
+                        buttons={[
+                            <ModalBtn key='sum-btn-0' content="Modifier la safeplace" onClick={() => updateSafeplace(safeplace)} />,
+                            <ModalBtn key='sum-btn-1' content="Supprimer" onClick={() => deleteSafeplace(safeplace)} warning />,
+                            <ModalBtn key='sum-btn-2' content="Annuler" onClick={() => setFocusSafeplace(false)} />
+                        ]}
+                    />
+                </div>
+            )}
+        </div>
+
+
+    )
+}
 
 interface ISafeplacesListProps {
     safeplaces: ISafeplace[];
@@ -264,10 +447,96 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({
     );
 };
 
+interface ISafeplaceDetail {
+    safeplace: ISafeplace;
+}
+
+
+const SafeplaceDetail: React.FC<ISafeplaceDetail> = ({safeplace}: ISafeplaceDetail) => {
+    return (
+        <p>{safeplace.name}</p>
+    )
+}
+
 const Safeplaces: React.FC = () => {
     const user = useAppSelector(state => state.user);
     const [searchBarValue, setSearchBarValue] = useState<string>('');
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
+    const [safeplaces2, setSafeplaces2] = useState<ISafeplaceVariant[]>([])
+    const [stateFilterType, setStateFilterType] = useState<String>("");
+    const [allComments, setAllComments] = useState<[]>([]);
+
+    useEffect(() => {
+        console.log(stateFilterType)
+    }, [stateFilterType])
+    const safeplace3: ISafeplaceVariant[] = [
+        {
+            id: "test",
+            name: "Marché de Strasbourg",
+            description: "Test",
+            city: "Strasbourg",
+            address: "Test",
+            type: "Market",
+            dayTimetable: ["day"],
+            coordinate: [1, 2],
+            ownerId: "test"
+        },
+        {
+            id: "test",
+            name: "Marché de Strasbourg",
+            description: "Test",
+            city: "Strasbourg",
+            address: "Test",
+            type: "Market",
+            dayTimetable: ["day"],
+            coordinate: [1, 2],
+            ownerId: "test"
+        },
+        {
+            id: "test",
+            name: "Marché de Strasbourg",
+            description: "Test",
+            city: "Strasbourg",
+            address: "Test",
+            type: "Market",
+            dayTimetable: ["day"],
+            coordinate: [1, 2],
+            ownerId: "test"
+        },
+        {
+            id: "test",
+            name: "Marché de Colmar",
+            description: "Test",
+            city: "Strasbourg",
+            address: "Test",
+            type: "Market",
+            dayTimetable: ["day"],
+            coordinate: [1, 2],
+            ownerId: "test"
+        },
+        {
+            id: "test",
+            name: "Marché de Colbourg",
+            description: "Test",
+            city: "Strasbourg",
+            address: "Test",
+            type: "Market",
+            dayTimetable: ["day"],
+            coordinate: [1, 2],
+            ownerId: "test"
+        },
+        {
+            id: "test",
+            name: "Marché de Strasbourg",
+            description: "Test",
+            city: "Strasbourg",
+            address: "Test",
+            type: "Market",
+            dayTimetable: ["day"],
+            coordinate: [1, 2],
+            ownerId: "test"
+        },
+    ]
 
     const setSafeplace = (safeplace: ISafeplace) => {
         setSafeplaces(safeplaces.map(safeplaceElement => safeplaceElement.id === safeplace.id ? safeplace : safeplaceElement));
@@ -286,7 +555,8 @@ const Safeplaces: React.FC = () => {
                 || safeplace.city.toLowerCase().match(lowerSearchText) !== null
                 || safeplace.name.toLowerCase().match(lowerSearchText) !== null
                 || safeplace.type.toLowerCase().match(lowerSearchText) !== null
-                || safeplace.address.toLowerCase().match(lowerSearchText) !== null : true);
+                || safeplace.address.toLowerCase().match(lowerSearchText) !== null
+                || safeplace.type.toLowerCase().match(stateFilterType.length > 0 ? stateFilterType.toLowerCase() : lowerSearchText) !== null : safeplace.type.toLowerCase().match(stateFilterType.toLocaleLowerCase()) !== null);
     };
 
     useEffect(() => {
@@ -300,28 +570,67 @@ const Safeplaces: React.FC = () => {
                 dayTimetable: safeplace.dayTimetable,
                 coordinate: safeplace.coordinate
             }));
+            Safeplace.getComments(user.credentials.token).then(res => {
+                setAllComments(res.data);
+            })
+            // const gotSafeplaces2: ISafeplaceVariant[] = response.data.map(safeplace => ({
+            //     id: safeplace._id,
+            //     name: safeplace.name,
+            //     city: safeplace.city,
+            //     address: safeplace.address,
+            //     type: safeplace.type,
+            //     dayTimetable: safeplace.dayTimetable,
+            //     coordinate: [parseFloat(safeplace.coordinate[0]), parseFloat(safeplace.coordinate[1])]
+            // }));
 
             log.log(response);
             setSafeplaces(gotSafeplaces);
+            // setSafeplaces2(gotSafeplaces2);
         }).catch(error => {
             log.error(error);
             notifyError(error);
         })
     }, [user]);
 
+
     return (
-        <div className="min-h-screen bg-background bg-transparent space-y-2 bg-cover bg-center">
+        <div className="h-screen">
             <AppHeader />
-            <div className="w-full h-full">
-                {canAccess(user.userInfo.role, Role.TRADER)
-                    ? <SafeplacesList
-                        safeplaces={filterSafeplaces()}
-                        setSafeplace={setSafeplace}
-                        removeSafeplace={removeSafeplace}
-                        searchBarValue={searchBarValue}
-                        setSearchBarValue={setSearchBarValue} />
-                    : <SafeplacesMap safeplaces={safeplaces} />}
+            <div className="w-3/6 h-12 ml-10 mt-10 flex justify-between">
+                <p className="font-bold text-2xl ml-5 mt-3">{filterSafeplaces().length} marchés</p>
+                <div className="flex border-b-2">
+                    <div onClick={() => {setStateFilterType(stateFilterType === "restaurant" ? "" : "restaurant")}} className={"flex flex-col justify-center items-center" + (stateFilterType === "restaurant" ? " border-b-2 border-black" : '')}>
+                        <FaUtensils className="w-10 h-10" />
+                        <p className="text-xs">Restaurant</p>
+                    </div>
+                    <div onClick={() => {setStateFilterType(stateFilterType === "Market" ? "" : "Market")}} className={"ml-6 flex flex-col justify-center items-center" + (stateFilterType === "Market" ? " border-b-2 border-black" : '')}>
+                        <FaStore className="w-10 h-10" />
+                        <p className="text-xs">Marché</p>
+                    </div>
+                    <div onClick={() => {setStateFilterType(stateFilterType === "bakery" ? "" : "bakery")}} className={"ml-6 flex flex-col justify-center items-center" + (stateFilterType === "bakery" ? " border-b-2 border-black" : '')}>
+                        <FaBreadSlice className="w-10 h-10" />
+                        <p className="text-xs">Boulangerie</p>
+                    </div>
+                    <div onClick={() => {setStateFilterType(stateFilterType === "supermarket" ? "" : "supermarket")}} className={"ml-6 flex flex-col justify-center items-center" + (stateFilterType === "supermarket" ? " border-b-2 border-black" : '')}>
+                        <FaShoppingBasket className="w-10 h-10" />
+                        <p className="text-xs">Supermarché</p>
+                    </div>
+                    <div onClick={() => {setStateFilterType(stateFilterType === "hairdresser" ? "" : "hairdresser")}} className={"ml-6 flex flex-col justify-center items-center" + (stateFilterType === "hairdresser" ? " border-b-2 border-black" : '')}>
+                        <FaHandScissors className="w-10 h-10" />
+                        <p className="text-xs">Coiffeur</p>
+                    </div>
+                    <div className="pl-10 mt-2">
+                        <SearchBar placeholder="Rechercher" textSearch={searchBarValue} setTextSearch={setSearchBarValue} openCreateModal={() => {}} noCreate />
+                    </div>
+                </div>
             </div>
+            <div className="grid grid-cols-2 p-10 gap-5">
+                <SafeplaceList safeplaces={{setter: setSafeplaces, value: filterSafeplaces()}} comments={allComments} />                    
+                <div className="h-full">
+                    <SafeplacesMap safeplaces={{setter: setSafeplaces2, value: safeplace3}} />
+                </div>
+            </div>
+
         </div>
     );
 };

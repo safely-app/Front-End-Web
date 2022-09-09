@@ -55,6 +55,7 @@ const App: React.FC = () => {
     const userCredientials = useAppSelector(state => state.user.credentials);
 
     useEffect(() => {
+        console.log(userCredientials.token)
         User.get(userCredientials._id, userCredientials.token)
             .then(response => dispatch(setInfo(response.data)))
             .catch(error => notifyError(error));
