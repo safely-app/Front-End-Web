@@ -286,6 +286,31 @@ const Profile: React.FC = () => {
     }
   };
 
+  const deleteCard = async (card: IStripeCard) => {
+    try {
+        await Stripe.deleteCard(card.id, userCredentials.token);
+
+        Stripe.getCards(userUserInfo.stripeId as string, userCredentials.token)
+        .then(result => {
+          const gotPaymentSolutions = result.data.data.map(paymentSolution => ({
+            id: paymentSolution.id,
+            customerId: paymentSolution.customer,
+            brand: paymentSolution.card.brand,
+            country: paymentSolution.card.country,
+            expMonth: paymentSolution.card.exp_month,
+            expYear: paymentSolution.card.exp_year,
+            last4: paymentSolution.card.last4,
+            created: paymentSolution.created * 1000
+          }));
+  
+          setPaymentSolutions(gotPaymentSolutions);
+        }).catch(err => log.error(err));
+    } catch (err) {
+      log.error(err)
+      notifyError(err)
+    }
+  }
+
   const createStripeUser = async (userObj: IUser): Promise<string> => {
     const stripeInfo = await Stripe.create({
       id: '',
@@ -420,7 +445,7 @@ const Profile: React.FC = () => {
                         <BankCard stripeCard={paymentSolution} name={user.username} />
                         <div className='grid grid-cols-2 mt-1 text-xs text-white gap-2'>
                           <button className='block p-1 rounded-lg w-full mx-auto bg-blue-400 hover:bg-blue-300'>Définir comme carte principale</button>
-                          <button className='block p-1 rounded-lg w-full mx-auto bg-red-400 hover:bg-red-300'>Supprimer</button>
+                          <button className='block p-1 rounded-lg w-full mx-auto bg-red-400 hover:bg-red-300' onClick={() => {deleteCard(paymentSolution)}}>Supprimer</button>
                         </div>
                       </div>
                     )}

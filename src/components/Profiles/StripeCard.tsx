@@ -18,7 +18,6 @@ const CardRegister: React.FC<ICardRegister> = ({
 }) => {
   const stripe = useStripe();
   const elements = useElements();
-
   const cardElementOptions = {
     style: {
       base: {
