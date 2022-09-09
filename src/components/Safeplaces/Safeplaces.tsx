@@ -27,7 +27,6 @@ import {
 import { FaEdit, FaShoppingBasket, FaBreadSlice, FaUtensils, FaStore, FaHandScissors, FaMapPin, FaStar, FaArrowRight, FaArrowLeft } from 'react-icons/fa';
 import { ModalBtn } from '../common/Modal';
 import { SafeplaceModal } from '../Monitors/SafeplaceMonitor/SafeplaceMonitorModal';
-import safeplaceImg from '../../assets/image/safeplace.jpeg';
 
 interface ISafeplaceInfoProps {
     safeplace: ISafeplace;
@@ -108,11 +107,11 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
                     <p key={`${safeplace.id}-address`}><b>Adresse : </b>{safeplace.address}</p>
                 </div>
                 <div hidden={!canAccess(userInfo.role, Role.TRADER)} className="flex flex-col justify-between space-y-2">
-                    <button data-testId={`request-shop-${safeplace.id}`} onClick={handleClickClaim} className="inline-flex w-56 items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button data-testid={`request-shop-${safeplace.id}`} onClick={handleClickClaim} className="inline-flex w-56 items-center py-2 px-3 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Réclamer ce commerce
                         <svg className="ml-2 -mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
                     </button>
-                    <button data-testId={`update-shop-${safeplace.id}`} onClick={handleClick} className="inline-flex w-56 items-center py-2 px-3 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <button data-testid={`update-shop-${safeplace.id}`} onClick={handleClick} className="inline-flex w-56 items-center py-2 px-3 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         Modifier
                         <svg className="ml-2 -mr-1 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
                     </button>
@@ -257,7 +256,7 @@ const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) =>
             {getSafeplaceDetail ? (
                 <div className="h-screen">
                     <div className="bg-safeplace-placeholder h-96 rounded-3xl">
-                        <img className="object-cover" src={safeplaceImg} alt="" />
+                        <img className="object-cover" alt="" />
                         <FaArrowLeft onClick={() => { setGetSafeplaceDetail(false) }} className="w-10 h-10" style={{ color: "white" }}/>
                     </div>
                     <div className="flex flex-row justify-between">
@@ -300,7 +299,7 @@ const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) =>
                     {safeplaces.value && safeplaces.value.length > 0 ? safeplaces.value.map(sp => (
                         <div>
                             <div className="bg-safeplace-placeholder w-90 h-80 rounded-3xl" onClick={() => {setSafeplace(sp); setGetSafeplaceDetail(true)}}>
-                                <img className="object-cover" src={safeplaceImg} alt=""  />
+                                <img className="object-cover" alt=""  />
                             </div>
                             <div className="flex justify-between">
                                 <div>

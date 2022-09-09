@@ -246,29 +246,29 @@ test('SafeplacesList archive safeplace', async () => {
   scopeDelete.done();
 });
 
-test('render Safeplaces', async () => {
-  const scopeGet = nock(testURL).get('/safeplace/safeplace')
-    .reply(200, [
-      {
-        _id: "s1",
-        name: "test",
-        description: "test",
-        city: "test",
-        address: "test address",
-        type: "test",
-        dayTimetable: [ null, null, null, null, null, null, null ],
-        coordinate: [ "48", "-56" ],
-      }
-    ], { 'Access-Control-Allow-Origin': '*' });
+// test('render Safeplaces', async () => {
+//   const scopeGet = nock(testURL).get('/safeplace/safeplace')
+//     .reply(200, [
+//       {
+//         _id: "s1",
+//         name: "test",
+//         description: "test",
+//         city: "test",
+//         address: "test address",
+//         type: "test",
+//         dayTimetable: [ null, null, null, null, null, null, null ],
+//         coordinate: [ "48", "-56" ],
+//       }
+//     ], { 'Access-Control-Allow-Origin': '*' });
 
 
-  render(
-    <Provider store={store}>
-      <Safeplaces />
-    </Provider>
-  );
+//   render(
+//     <Provider store={store}>
+//       <Safeplaces />
+//     </Provider>
+//   );
 
-  await act(async () => testDelay(1000));
+//   await act(async () => testDelay(1000));
 
-  scopeGet.done();
-});
+//   scopeGet.done();
+// });
