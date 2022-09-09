@@ -75,6 +75,7 @@ const SignInView: React.FC<IAuthProps> = ({
       setPassword("");
       setRemember("");
       setTries(tries + 1);
+      log.log(remember);
     };
 
     const getInvalidInputClassName = (cond: boolean) => {
@@ -155,9 +156,9 @@ const SignInView: React.FC<IAuthProps> = ({
           <div className="flex flex-col">
             <div className="w-96 border-b-2 h-2" />
             <div className="flex flex-row">
-              <a href="" className="underline text-sm text-gray-500">Téléchargez l'application</a>
+              <p className="underline text-sm text-gray-500">Téléchargez l'application</p>
               <FaCircle style={{ color: 'lightgray' }} className="ml-2 mt-2" size={7}/>
-              <a href="" className="underline text-sm text-gray-500 ml-2">Nous contacter</a>
+              <p className="underline text-sm text-gray-500 ml-2">Nous contacter</p>
             </div>
           </div>
         </div>
@@ -435,9 +436,9 @@ const SignUpView: React.FC<IAuthProps> = ({
           <div className="flex flex-col">
             <div className="w-96 border-b-2 h-2" />
             <div className="flex flex-row">
-              <a href="" className="underline text-sm text-gray-500">Téléchargez l'application</a>
+              <p className="underline text-sm text-gray-500">Téléchargez l'application</p>
               <FaCircle style={{ color: 'lightgray' }} className="ml-2 mt-2" size={7}/>
-              <a href="" className="underline text-sm text-gray-500 ml-2">Nous contacter</a>
+              <p className="underline text-sm text-gray-500 ml-2">Nous contacter</p>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import ISafeplace, {ISafeplaceVariant} from '../interfaces/ISafeplace';
+import React, { useEffect, useState } from 'react';
+import ISafeplace from '../interfaces/ISafeplace';
 import { AppHeader } from '../Header/Header';
 import {
     Button,
@@ -23,14 +23,11 @@ import {
     TileLayer,
     Marker,
     Popup,
-    useMap,
-    Rectangle,
 } from 'react-leaflet'
-import { LatLng, LatLngBounds, LatLngBoundsExpression, LatLngExpression } from 'leaflet';
 import { FaEdit, FaShoppingBasket, FaBreadSlice, FaUtensils, FaStore, FaHandScissors, FaMapPin, FaStar, FaArrowRight, FaArrowLeft } from 'react-icons/fa';
-import { render } from '@testing-library/react';
 import { ModalBtn } from '../common/Modal';
 import { SafeplaceModal } from '../Monitors/SafeplaceMonitor/SafeplaceMonitorModal';
+import safeplaceImg from '../../assets/image/safeplace.jpeg';
 
 interface ISafeplaceInfoProps {
     safeplace: ISafeplace;
@@ -132,7 +129,7 @@ interface IMapProps {
 const SafeplacesMap: React.FC<IMapProps> = ({
     safeplaces
 }) => {
-    const [safeplaceWithinBound, setSafeplaceWithinBound] = useState<ISafeplaceVariant[]>([])
+    // const [safeplaceWithinBound, setSafeplaceWithinBound] = useState<ISafeplaceVariant[]>([])
 
     // const UpdateSafeplace = () => {
     //     const map = useMap()
@@ -252,7 +249,7 @@ const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) =>
 
     function paginate(a, pageIndex, pageSize) {
         var endIndex = Math.min((pageIndex + 1) * pageSize, a.length);
-        return a.slice(Math.max(endIndex - pageSize, 0), endIndex);   
+        return a.slice(Math.max(endIndex - pageSize, 0), endIndex);
     }
 
     return (
@@ -260,7 +257,7 @@ const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) =>
             {getSafeplaceDetail ? (
                 <div className="h-screen">
                     <div className="bg-safeplace-placeholder h-96 rounded-3xl">
-                        <img className="object-cover" />
+                        <img className="object-cover" src={safeplaceImg} alt="" />
                         <FaArrowLeft onClick={() => { setGetSafeplaceDetail(false) }} className="w-10 h-10" style={{ color: "white" }}/>
                     </div>
                     <div className="flex flex-row justify-between">
@@ -303,7 +300,7 @@ const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) =>
                     {safeplaces.value && safeplaces.value.length > 0 ? safeplaces.value.map(sp => (
                         <div>
                             <div className="bg-safeplace-placeholder w-90 h-80 rounded-3xl" onClick={() => {setSafeplace(sp); setGetSafeplaceDetail(true)}}>
-                                <img className="object-cover" />
+                                <img className="object-cover" src={safeplaceImg} alt=""  />
                             </div>
                             <div className="flex justify-between">
                                 <div>
@@ -441,16 +438,16 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({
     );
 };
 
-interface ISafeplaceDetail {
-    safeplace: ISafeplace;
-}
+// interface ISafeplaceDetail {
+//     safeplace: ISafeplace;
+// }
 
 
-const SafeplaceDetail: React.FC<ISafeplaceDetail> = ({safeplace}: ISafeplaceDetail) => {
-    return (
-        <p>{safeplace.name}</p>
-    )
-}
+// const SafeplaceDetail: React.FC<ISafeplaceDetail> = ({safeplace}: ISafeplaceDetail) => {
+//     return (
+//         <p>{safeplace.name}</p>
+//     )
+// }
 
 const Safeplaces: React.FC = () => {
     const user = useAppSelector(state => state.user);
@@ -461,15 +458,7 @@ const Safeplaces: React.FC = () => {
 
     useEffect(() => {
         console.log(stateFilterType)
-    }, [stateFilterType])
-
-    const setSafeplace = (safeplace: ISafeplace) => {
-        setSafeplaces(safeplaces.map(safeplaceElement => safeplaceElement.id === safeplace.id ? safeplace : safeplaceElement));
-    };
-
-    const removeSafeplace = (safeplace: ISafeplace) => {
-        setSafeplaces(safeplaces.filter(safeplaceElement => safeplaceElement.id !== safeplace.id));
-    };
+    }, [stateFilterType]);
 
     const filterSafeplaces = (): ISafeplace[] => {
         const lowerSearchText = convertStringToRegex(searchBarValue.toLocaleLowerCase());
