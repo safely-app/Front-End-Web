@@ -1,324 +1,265 @@
 import React, { useState } from 'react';
-import ICampaign from '../interfaces/ICampaign';
 import ITarget from '../interfaces/ITarget';
-import {
-    Button,
-    Modal,
-    TextInput
-} from '../common';
-import { convertStringToRegex, notifyError } from '../utils';
-import { useAppSelector } from '../../redux';
+import ICampaign from '../interfaces/ICampaign';
+import TargetModal from './CommercialTargetModal';
+import CampaignModal from './CommercialCampaignModal';
+import MultipleTargetsModal from './CommercialMultipleTargetsModal';
+import { BsPencilSquare } from 'react-icons/bs';
+import { ImCross } from 'react-icons/im';
+import { convertStringToRegex } from '../utils';
+import { SearchBar, Table } from '../common';
 import { Commercial } from '../../services';
-import log from 'loglevel';
-import './Commercial.css';
+import { useAppSelector } from '../../redux';
+import { ModalType } from './CommercialModalType';
+import { CustomDiv } from '../common/Table';
+import { ModalBtn } from '../common/Modal';
+import ISafeplace from '../interfaces/ISafeplace';
 
-
-interface ICampaignModalProps {
-    campaign: ICampaign;
-    setCampaign: (campaign: ICampaign) => void;
-    buttons: JSX.Element[];
-    targets: ITarget[];
-    shown?: boolean;
-}
-
-const CampaignModal: React.FC<ICampaignModalProps> = ({
-    campaign,
-    setCampaign,
-    buttons,
-    targets,
-    shown
+const CommercialCampaigns: React.FC<{
+  safeplace: ISafeplace;
+  campaigns: ICampaign[];
+  setCampaigns: (campaigns: ICampaign[]) => void;
+  targets: ITarget[];
+  setTargets: (target: ITarget[]) => void;
+}> = ({
+  safeplace,
+  campaigns,
+  setCampaigns,
+  targets,
+  setTargets
 }) => {
-    const [targetField, setTargetField] = useState("");
+  const userCredentials = useAppSelector(state => state.user.credentials);
 
-    const setName = (name: string) => {
-        setCampaign({ ...campaign, name: name });
-    };
+  const [modalOn, setModalOn] = useState(ModalType.OFF);
+  const [campaignSearch, setCampaignSearch] = useState("");
+  const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
 
-    const setBudget = (budget: string) => {
-        setCampaign({ ...campaign, budget: budget });
-    };
+  const [campaign, setCampaign] = useState<ICampaign>({
+    id: "",
+    name: "",
+    budget: "",
+    status: "",
+    ownerId: "",
+    startingDate: "",
+    targets: []
+  });
 
-    const setStatus = (status: string) => {
-        setCampaign({ ...campaign, status: status });
-    };
+  const [target, setTarget] = useState<ITarget>({
+    id: "",
+    csp: "csp",
+    name: "",
+    ownerId: "",
+    ageRange: "",
+    interests: []
+  });
 
-    const setStartingDate = (startingDate: string) => {
-        setCampaign({ ...campaign, startingDate: startingDate });
-    };
-
-    const addTarget = (target: string) => {
-        setTargetField("");
-        if (campaign.targets.find(t => t === target) === undefined) {
-            setCampaign({
-                ...campaign, targets: [
-                    ...campaign.targets, target
-                ]
-            });
-        }
-    };
-
-    const removeTarget = (target: string) => {
-        const filteredTargets = campaign.targets.filter(c => c !== target);
-        setCampaign({ ...campaign, targets: filteredTargets });
-    };
-
-    const getTargetsFiltered = (): ITarget[] => {
-        const lowerSearchText = convertStringToRegex(targetField.toLocaleLowerCase());
-        const filteredTargets = targets
-            .filter(target => target.name.toLowerCase().match(lowerSearchText) !== null)
-            .sort((a, b) => a.name.localeCompare(b.name));
-
-        return filteredTargets.slice(0, (filteredTargets.length > 3) ? 3 : filteredTargets.length);
-    };
-
-    const getTargetName = (targetId: string): string => {
-        return targets.find(target => target.id === targetId)?.name || targetId;
-    };
-
-    return (
-        <Modal shown={(shown !== undefined) ? shown : true} content={
-            <div className="User-Info">
-                <TextInput key={`${campaign.id}-name`} type="text" role="name"
-                    label="Nom" value={campaign.name} setValue={setName} />
-                <TextInput key={`${campaign.id}-budget`} type="number" role="budget"
-                    label="Budget" value={campaign.budget} setValue={setBudget} />
-                <TextInput key={`${campaign.id}-status`} type="text" role="status"
-                    label="Status" value={campaign.status} setValue={setStatus} />
-                <TextInput key={`${campaign.id}-startingDate`} type="date" role="startingDate"
-                    label="Date de départ" value={campaign.startingDate} setValue={setStartingDate} />
-                <TextInput key={`${campaign.id}-targetField`} type="text" role="targetField"
-                    label="Rechercher une cible" value={targetField} setValue={setTargetField} />
-                <ul className="Monitor-list target-list" hidden={targetField === ""}>
-                    {getTargetsFiltered().map((target, index) => {
-                        return (
-                            <li key={index}>
-                                <button className="target-btn" onClick={() => addTarget(target.id)}>
-                                    {target.name}
-                                </button>
-                            </li>
-                        );
-                    })}
-                </ul>
-                <ul className="target-campaign-list">
-                    {campaign.targets.map((target, index) => {
-                        return <li key={index}><button className="target-delete-btn" onClick={() => removeTarget(target)}>x</button> {getTargetName(target)}</li>
-                    })}
-                </ul>
-                {buttons}
-            </div>
-        } />
-    );
-};
-
-interface ICampaignInfoDisplayerProps {
-    campaign: ICampaign;
-    setCampaign: (campaign: ICampaign) => void;
-    onClick: (campaign: ICampaign | undefined) => void;
-    createCampaignFromTemplate: (campaign: ICampaign) => void;
-    targets: ITarget[];
-}
-
-const CampaignInfoDisplayer: React.FC<ICampaignInfoDisplayerProps> = ({
-    campaign,
-    setCampaign,
-    onClick,
-    createCampaignFromTemplate,
-    targets
-}) => {
-    const getTargetName = (targetId: string): string => {
-        return targets.find(target => target.id === targetId)?.name || targetId;
-    };
-
-    const setStatus = (status: string) => {
-        setCampaign({ ...campaign, status: status });
-    };
-
-    const campaignStatusIsValid = (): boolean => {
-        return (
-            campaign.status === "pause" ||
-            campaign.status === "active" ||
-            campaign.status === "template"
-        );
-    };
-
-    const getPauseButton = (): JSX.Element => {
-        switch (campaign.status) {
-            case "pause":
-                return (
-                    <Button
-                        width="3em"
-                        text="⏵"
-                        onClick={() => setStatus("active")}
-                    />
-                );
-            case "active":
-                return (
-                    <Button
-                        width="3em"
-                        text="⏸"
-                        onClick={() => setStatus("pause")}
-                    />
-                );
-            case "template":
-                return (
-                    <Button
-                        width="3em"
-                        text="+"
-                        onClick={() => createCampaignFromTemplate(campaign)}
-                    />
-                );
-            default:
-                return <div />;
-        }
-    };
-
-    return (
-        <div key={campaign.id} className={`bg-white p-4 m-4 ${campaignStatusIsValid() ? "Campaign-grid-container" : ""}`}>
-            <button className="w-full h-full" onClick={() => onClick(campaign)}>
-                <ul className="text-left w-full h-full">
-                    <li key={`${campaign.id}-name`}><b>Nom : </b>{campaign.name}</li>
-                    <li key={`${campaign.id}-budget`}><b>Budget : </b>{campaign.budget}</li>
-                    <li key={`${campaign.id}-status`}><b>Status : </b>{campaign.status}</li>
-                    <li key={`${campaign.id}-startingDate`}><b>Date de départ : </b>{campaign.startingDate}</li>
-                    <li key={`${campaign.id}-targets`}><b>Cibles : </b>{campaign.targets.map(targetId => getTargetName(targetId)).join(", ")}</li>
-                </ul>
-            </button>
-            <div>{getPauseButton()}</div>
+  const keys = [
+    { displayedName: 'NOM', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.name} /> },
+    { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.budget + '€'} /> },
+    { displayedName: 'STATUS', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.status} /> },
+    { displayedName: 'DATE DE DÉPART', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.startingDate} /> },
+    { displayedName: 'REACH', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={"21 023"} /> },
+    { displayedName: 'IMPRESSIONS', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={"100 234"} /> },
+    { displayedName: 'CIBLES', displayFunction: (campaign: ICampaign, index: number) =>
+      <CustomDiv key={'tbl-val-' + index} content={
+        <div key={`tbl-val-${index}`} className='ml-3'>
+          <button onClick={() => updateModal(campaign, ModalType.UPDATE_TARGETS)} data-testid={'utmb-' + index}><BsPencilSquare /></button>
         </div>
-    );
-};
+      } />
+    },
+    {displayedName: 'ACTIONS', displayFunction: (campaign: ICampaign, index: number) =>
+      <CustomDiv key={'tbl-val-' + index} content={
+        <div key={`tbl-val-${index}`} className='ml-3 flex space-x-2'>
+          <button onClick={() => updateModal(campaign, ModalType.UPDATE)} data-testid={'ucmb-' + index}><BsPencilSquare /></button>
+          <button onClick={() => deleteCampaign(campaign)} data-testid={'dcmb-' + index}><ImCross /></button>
+        </div>
+      } />
+    }
+  ];
 
-interface ICommercialPageCampaignProps {
-    campaigns: ICampaign[];
-    addCampaign: (campaign: ICampaign) => void;
-    setCampaign: (campaign: ICampaign) => void;
-    removeCampaign: (campaign: ICampaign) => void;
-    targets: ITarget[];
-}
+  const filterCampaigns = (): ICampaign[] => {
+    const lowerSearchText = convertStringToRegex(campaignSearch.toLocaleLowerCase());
 
-const CommercialPageCampaigns: React.FC<ICommercialPageCampaignProps> = ({
-    campaigns,
-    addCampaign,
-    setCampaign,
-    removeCampaign,
-    targets
-}) => {
-    const [showModal, setShowModal] = useState(false);
-    const userCredentials = useAppSelector(state => state.user.credentials);
-    const [focusCampaign, setFocusCampaign] = useState<ICampaign | undefined>(undefined);
-    const [newCampaign, setNewCampaign] = useState<ICampaign>({
-        id: "",
-        ownerId: "",
-        name: "",
-        budget: "",
-        status: "",
-        startingDate: "",
-        targets: []
+    if (campaignSearch === '') {
+      return campaigns;
+    }
+
+    return campaigns
+      .filter(campaign => campaignSearch !== ''
+        ? campaign.name.toLowerCase().match(lowerSearchText) !== null
+        || campaign.startingDate.toLowerCase().match(lowerSearchText) !== null : true);
+  };
+
+  const setModal = (modalType: ModalType) => {
+    setModalTypes([ ...modalTypes, modalType ]);
+    setModalOn(modalType);
+  };
+
+  const createTarget = async () => {
+    const newTarget = { ...target, ownerId: userCredentials._id };
+    const result = await Commercial.createTarget(newTarget, userCredentials.token);
+
+    setTargets([ ...targets, { ...newTarget, id: result.data._id } ]);
+    setCampaign({ ...campaign, targets: [ ...campaign.targets, result.data._id ] });
+    setModal(modalTypes[modalTypes.length - 2]);
+    resetTarget();
+  };
+
+  const updateTarget = async (target: ITarget) => {
+    await Commercial.updateTarget(target.id, target, userCredentials.token);
+    setTargets(targets.map(t => (t.id === target.id) ? target : t));
+    setModal(modalTypes[modalTypes.length - 2]);
+    resetTarget();
+  };
+
+  const deleteTarget = async (target: ITarget) => {
+    deleteCampaign({ ...campaign, targets: campaign.targets.filter(tId => tId !== target.id) });
+
+    await Commercial.deleteTarget(target.id, userCredentials.token);
+    setTargets(targets.filter(t => t.id !== target.id));
+    setModal(modalTypes[modalTypes.length - 2]);
+  };
+
+  const createCampaign = async (status: string) => {
+    const newCampaign = { ...campaign, status: status, ownerId: userCredentials._id, safeplaceId: safeplace.id };
+    const result = await Commercial.createCampaign(newCampaign, userCredentials.token);
+
+    setCampaigns([ ...campaigns, { ...newCampaign, id: result.data._id } ]);
+    setModal(ModalType.OFF);
+    resetCampaign();
+  };
+
+  const updateCampaign = async (campaign: ICampaign) => {
+    await Commercial.updateCampaign(campaign.id, campaign, userCredentials.token);
+    setCampaigns(campaigns.map(c => (c.id === campaign.id) ? campaign : c));
+    setModal(ModalType.OFF);
+    resetCampaign();
+  };
+
+  const deleteCampaign = async (campaign: ICampaign) => {
+    await Commercial.deleteCampaign(campaign.id, userCredentials.token);
+    setCampaigns(campaigns.filter(c => c.id !== campaign.id));
+  };
+
+  const updateModal = (campaign: ICampaign, modalType: ModalType) => {
+    setModal(modalType);
+    setCampaign(campaign);
+  };
+
+  const resetCampaign = () => {
+    setCampaign({
+      id: "",
+      name: "",
+      budget: "",
+      status: "",
+      ownerId: "",
+      startingDate: "",
+      targets: []
     });
+  };
 
-    const CAMPAIGN_STATUS = [
-        "active",
-        "pause",
-        "template"
-    ];
+  const resetTarget = () => {
+    setTarget({
+      id: "",
+      name: "",
+      csp: "csp",
+      ownerId: "",
+      ageRange: "",
+      interests: []
+    });
+  };
 
-    const cancelNewCampaign = () => {
-        setShowModal(false);
-        setNewCampaign({
-            id: "",
-            ownerId: "",
-            name: "",
-            budget: "",
-            status: "",
-            startingDate: "",
-            targets: []
-        });
-    };
+  return (
+    <div className='my-3'>
 
-    const createCampaign = async (campaign = newCampaign) => {
-        const finalCampaign = {
-            ...campaign,
-            status: CAMPAIGN_STATUS.includes(campaign.status) ? campaign.status : "active",
-            ownerId: userCredentials._id
-        };
+      <CampaignModal
+        title='Créer une nouvelle campagne'
+        modalOn={modalOn === ModalType.CREATE}
+        setModalOn={setModal}
+        targets={targets}
+        campaign={campaign}
+        setCampaign={setCampaign}
+        buttons={[
+          <ModalBtn key='ccm-1' content='Créer une campagne' onClick={() => createCampaign('active')} />,
+          <ModalBtn key='ccm-2' content='Créer un template' onClick={() => createCampaign('template')} />,
+          <ModalBtn key='ccm-3' content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetCampaign();
+          }} />
+        ]}
+      />
 
-        try {
-            const response = await Commercial.createCampaign(finalCampaign, userCredentials.token);
-            addCampaign({ ...finalCampaign, id: response.data._id });
-            cancelNewCampaign();
-            log.log(response);
-        } catch (err) {
-            notifyError(err);
-            log.error(err);
-        }
-    };
+      <CampaignModal
+        title='Modifier une campagne'
+        modalOn={modalOn === ModalType.UPDATE}
+        setModalOn={setModal}
+        targets={targets}
+        campaign={campaign}
+        setCampaign={setCampaign}
+        buttons={[
+          <ModalBtn key='ucm-1' content='Modifier la campagne' onClick={() => updateCampaign(campaign)} />,
+          <ModalBtn key='ucm-2' content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetCampaign();
+          }} />
+        ]}
+      />
 
-    const updateCampaign = async (campaign: ICampaign) => {
-        try {
-            const response = await Commercial.updateCampaign(campaign.id, campaign, userCredentials.token);
-            setCampaign(focusCampaign as ICampaign);
-            setFocusCampaign(undefined);
-            log.log(response);
-        } catch (err) {
-            notifyError(err);
-            log.error(err);
-        }
-    };
+      <TargetModal
+        title='Créer une nouvelle cible'
+        modalOn={modalOn === ModalType.CREATE_TARGET}
+        target={target}
+        setTarget={setTarget}
+        buttons={[
+          <ModalBtn key='ctm-1' content='Créer une cible' onClick={() => createTarget()} />,
+          <ModalBtn key='ctm-2' content='Annuler' onClick={() => {
+            setModal(modalTypes[modalTypes.length - 2]);
+            resetTarget();
+          }} />
+        ]}
+      />
 
-    const deleteCampaign = async (campaign: ICampaign) => {
-        try {
-            const response = await Commercial.deleteCampaign(campaign.id, userCredentials.token);
-            removeCampaign(focusCampaign as ICampaign);
-            setFocusCampaign(undefined);
-            log.log(response);
-        } catch (err) {
-            notifyError(err);
-            log.error(err);
-        }
-    };
+      <MultipleTargetsModal
+        title='Modifier les cibles'
+        modalOn={modalOn === ModalType.UPDATE_TARGETS}
+        setModalOn={setModal}
+        campaign={campaign}
+        targets={targets}
+        setTarget={setTarget}
+        buttons={[
+          <ModalBtn key='mtm-1' content='Annuler' onClick={() => {
+            setModal(ModalType.OFF);
+            resetCampaign();
+          }} />
+        ]}
+      />
 
-    return (
-        <div>
-            <Button text="Créer une nouvelle campagne" width="100%" onClick={() => setShowModal(true)} />
-            <CampaignModal
-                campaign={newCampaign}
-                setCampaign={setNewCampaign}
-                targets={targets}
-                shown={showModal}
-                buttons={[
-                    <Button key={1} text="Créer une campagne" onClick={createCampaign} />,
-                    <Button key={2} text="Créer un template" onClick={() => createCampaign({ ...newCampaign, status: "template" })} />,
-                    <Button key={3} text="Annuler" onClick={cancelNewCampaign} />
-                ]}
-            />
-            <div>
-                {(focusCampaign !== undefined) &&
-                    <CampaignModal
-                        campaign={focusCampaign}
-                        setCampaign={setFocusCampaign}
-                        targets={targets}
-                        buttons={[
-                            <Button key={1} text="Modifier" onClick={() => updateCampaign(focusCampaign)} />,
-                            <Button key={2} text="Annuler" onClick={() => setFocusCampaign(undefined)} />,
-                            <Button key={3} text="Supprimer" type="warning" onClick={() => deleteCampaign(focusCampaign)} />
-                        ]}
-                    />
-                }
-                <div className="" style={{ maxHeight: '42em', overflow: 'auto' }}>
-                    {campaigns.map((item, index) =>
-                        <CampaignInfoDisplayer
-                            key={index}
-                            campaign={item}
-                            setCampaign={setCampaign}
-                            onClick={setFocusCampaign}
-                            createCampaignFromTemplate={(campaign) => createCampaign(campaign)}
-                            targets={targets}
-                        />
-                    )}
-                </div>
-            </div>
-        </div>
-    );
+      <TargetModal
+        title='Modifier une cible'
+        modalOn={modalOn === ModalType.UPDATE_TARGET}
+        target={target}
+        setTarget={setTarget}
+        buttons={[
+          <ModalBtn key='utm-1' content='Modifier la cible' onClick={() => updateTarget(target)} />,
+          <ModalBtn key='utm-2' content='Supprimer la cible' onClick={() => deleteTarget(target)} warning={true} />,
+          <ModalBtn key='utm-3' content='Annuler' onClick={() => {
+            setModal(modalTypes[modalTypes.length - 2]);
+            resetTarget();
+          }} />
+        ]}
+      />
+
+      <SearchBar
+        textSearch={campaignSearch}
+        setTextSearch={setCampaignSearch}
+        placeholder='Rechercher une campagne...'
+        openCreateModal={() => setModal(ModalType.CREATE)}
+      />
+      <div className='mt-3'>
+        <Table content={filterCampaigns()} keys={keys} />
+      </div>
+    </div>
+  );
 };
 
-export default CommercialPageCampaigns;
+export default CommercialCampaigns;

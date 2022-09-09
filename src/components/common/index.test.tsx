@@ -75,12 +75,13 @@ test('simulate DropDown', () => {
 
 test('test search bar', () => {
     const setValue = jest.fn();
+    const openCreateModal = jest.fn();
 
     render(
-        <SearchBar label="Recherche" value="" setValue={setValue} />
+        <SearchBar placeholder="Recherche" textSearch="" setTextSearch={setValue} openCreateModal={openCreateModal} />
     );
 
-    fireEvent.change(screen.getByRole("searchbox"), {
+    fireEvent.change(screen.getByPlaceholderText("Recherche"), {
         target: { value: "test" }
     });
 

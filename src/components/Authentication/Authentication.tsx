@@ -21,6 +21,7 @@ import {
   isUsernameValid,
   isUserValid
 } from '../../services/utils';
+import { FaCircle } from 'react-icons/fa';
 
 enum View {
     SIGNIN,
@@ -74,6 +75,7 @@ const SignInView: React.FC<IAuthProps> = ({
       setPassword("");
       setRemember("");
       setTries(tries + 1);
+      log.log(remember);
     };
 
     const getInvalidInputClassName = (cond: boolean) => {
@@ -83,133 +85,210 @@ const SignInView: React.FC<IAuthProps> = ({
     };
 
     return (
-        <div className="min-h-screen bg-transparent flex bg-background-auth bg-cover bg-center">
-          <div className="hidden lg:block relative w-0 flex-1">
-            <div className="absolute inset-20 w-full object-cover">
-              <p className="font-extrabold uppercase text-yellow-200 text-5xl mb-2">Bienvenue sur Safely</p>
-              <p className="font-normal uppercase text-yellow-200 text-xl">L'application qui sécurise vos déplacements</p>
-              <button onClick={() => setView(View.SIGNUP)} className="font-medium text-white uppercase text-2xl ring-3 ring-gray border border-gray rounded-3xl pt-2 pb-2 pl-12 pr-12 hover:text-yellow-200 hover:border-yellow-200 mt-10 focus:outline-none">S'inscrire</button>
-            </div>
+      <div className="flex flex-col items-center w-screen h-screen">
+        <img 
+          className="h-20 w-auto ml-auto mr-auto mt-20 mb-3"
+          src={logo}
+          alt="Logo Safely"
+        />
+        <p className="font-black text-2xl mb-3">Connexion</p>
+        <div
+            className="cursor-pointer w-16 inline-flex justify-center py-2 px-4 border-2 border-white rounded-3xl shadow-sm bg-white text-sm font-medium hover:border-red-500 "
+          >
+            <GoogleLogin
+              clientId="409852833093-r8n4tmddotipm85c153kn45hq9i42d78.apps.googleusercontent.com"
+              render={renderProps => (
+                <button className="focus:outline-white ring-white" onClick={renderProps.onClick} disabled={renderProps.disabled}><img alt="google logo" className="focus:outline-white ring-white" src={google} /></button>
+              )}
+              buttonText="Login"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy={'single_host_origin'}
+            />
+        </div>
+        <div className="flex flex-row items-center justify-center mt-3">
+          <div className="w-24 border-b-2 h-2 mr-3" />
+            <p>OU</p>
+            <div className="w-24 border-b-2 h-2 ml-3" />
           </div>
-          <div className="bg-white bg-opacity-20 lg:bg-opacity-90 flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-            <div className="mx-auto w-full max-w-sm lg:w-96">
-              <div>
-                <img
-                  className="h-44 w-auto ml-auto mr-auto"
-                  src={logo}
-                  alt="Logo Safely"
-                />
-                <h2 className="mt-6 text-3xl font-extrabold text-gray">Se connecter</h2>
-                <p className="mt-2 text-sm text-gray-600">
-                  Ou {' '}
-                  <button onClick={() => setView(View.SIGNUP)} className="font-medium text-red-500 hover:text-red-500 cursor-pointer">
-                    S'inscrire
-                  </button>
-                </p>
-              </div>
-              <div className="mt-8">
-                <div className="mt-6">
-                  <div className="space-y-6">
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                        Email
-                      </label>
-                      <div className="mt-1">
-                        <TextInput
-                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
-                          value={email}
-                          setValue={setEmail}
-                          name="email"
-                          type="email"
-                          role="email"
-                          label="Email"
-                          required-500
-                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isEmailValid(email))}`}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-1">
-                      <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                        Mot de passe
-                      </label>
-                      <div className="mt-1">
-                        <TextInput
-                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
-                          value={password}
-                          setValue={setPassword}
-                          name="password"
-                          type="password"
-                          role="password"
-                          label="Mot de passe"
-                          required-500
-                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(password))}`}
-                        />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <TextInput
-                          value={remember}
-                          setValue={setRemember}
-                          name="remember_me"
-                          type="checkbox"
-                          className="h-4 w-4 text-red-500 focus:ring-red-500 border-gray-300 rounded"
-                        />
-                        <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
-                          Rester connecté
-                        </label>
-                      </div>
-                      <div className="text-sm">
-                        <button onClick={() => setView(View.FORGOT)} className="font-medium text-red-500 hover:text-red-500 cursor-pointer">
-                          Mot de passe oublié ?
-                        </button>
-                      </div>
-                    </div>
-                    <div>
-                      <button
-                        onClick={handleClick}
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                      >
-                        Se connecter
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-5">
-                  <div className="mt-6 mb-6 relative">
-                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="w-full border-t border-transparent lg:border-gray" />
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-2 lg:bg-white bg-none text-gray font-normal">Ou se connecter avec</span>
-                    </div>
-                  </div>
-                <div>
-                    <div className="mt-1 grid grid-cols-2 gap-6 text-center ">
-                      <div className="text-right focus:outline-none">
-                      <div
-                          className="cursor-pointer w-24 inline-flex justify-center py-2 px-4 border-2 border-white rounded-3xl shadow-sm bg-white text-sm font-medium hover:border-red-500 "
-                        >
-                          <span className="sr-only">Sign in with Google</span>
-                          <GoogleLogin
-                            clientId="409852833093-r8n4tmddotipm85c153kn45hq9i42d78.apps.googleusercontent.com"
-                            render={renderProps => (
-                              <button className="focus:outline-white ring-white" onClick={renderProps.onClick} disabled={renderProps.disabled}><img alt="google logo" className="focus:outline-white ring-white" src={google} /></button>
-                            )}
-                            buttonText="Login"
-                            onSuccess={responseGoogle}
-                            onFailure={responseGoogle}
-                            cookiePolicy={'single_host_origin'}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div className="w-64">
+            <TextInput
+              onKeyPress={(e) => e.key === "Enter" && handleClick()}
+              value={email}
+              setValue={setEmail}
+              name="email"
+              type="email"
+              role="email"
+              label="Email"
+              required-500
+              className={`appearance-none block mt-5 w-full px-3 py-2 bg-[#EAF1F9] rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isEmailValid(email))}`}
+            />
+          </div>
+          <div className="mt-1 w-64">
+              <TextInput
+                onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                value={password}
+                setValue={setPassword}
+                name="password"
+                type="password"
+                role="password"
+                label="Mot de passe"
+                required-500
+                className={`appearance-none block w-full px-3 py-2 bg-[#EAF1F9] rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(password))}`}
+              />
+          </div>
+          <div className="mt-5 w-60">
+            <button
+              onClick={handleClick}
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Se connecter
+            </button>
+          </div>
+          <div className="text-sm flex flex-col">
+            <button onClick={() => setView(View.FORGOT)} className="mt-5 font-normal text-red-500 hover:text-red-500 cursor-pointer">
+              Réinitialiser votre mot de passe
+            </button>
+            <button onClick={() => setView(View.SIGNUP)} className="mt-3 mb-3 font-normal text-red-500 hover:text-red-500 cursor-pointer">
+              Vous n'avez pas de compte ?
+            </button>
+          </div>
+          <div className="flex flex-col">
+            <div className="w-96 border-b-2 h-2" />
+            <div className="flex flex-row">
+              <p className="underline text-sm text-gray-500">Téléchargez l'application</p>
+              <FaCircle style={{ color: 'lightgray' }} className="ml-2 mt-2" size={7}/>
+              <p className="underline text-sm text-gray-500 ml-2">Nous contacter</p>
             </div>
           </div>
         </div>
+        // <div className="min-h-screen bg-transparent flex bg-background-auth bg-cover bg-center">
+        //   <div className="hidden lg:block relative w-0 flex-1">
+        //     <div className="absolute inset-20 w-full object-cover">
+        //       <p className="font-extrabold uppercase text-yellow-200 text-5xl mb-2">Bienvenue sur Safely</p>
+        //       <p className="font-normal uppercase text-yellow-200 text-xl">L'application qui sécurise vos déplacements</p>
+        //       <button onClick={() => setView(View.SIGNUP)} className="font-medium text-white uppercase text-2xl ring-3 ring-gray border border-gray rounded-3xl pt-2 pb-2 pl-12 pr-12 hover:text-yellow-200 hover:border-yellow-200 mt-10 focus:outline-none">S'inscrire</button>
+        //     </div>
+        //   </div>
+        //   <div className="bg-white bg-opacity-20 lg:bg-opacity-90 flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+        //     <div className="mx-auto w-full max-w-sm lg:w-96">
+        //       <div>
+        //         <img
+        //           className="h-44 w-auto ml-auto mr-auto"
+        //           src={logo}
+        //           alt="Logo Safely"
+        //         />
+        //         <h2 className="mt-6 text-3xl font-extrabold text-gray">Se connecter</h2>
+        //         <p className="mt-2 text-sm text-gray-600">
+        //           Ou {' '}
+                  // <button onClick={() => setView(View.SIGNUP)} className="font-medium text-red-500 hover:text-red-500 cursor-pointer">
+                  //   S'inscrire
+                  // </button>
+        //         </p>
+        //       </div>
+        //       <div className="mt-8">
+        //         <div className="mt-6">
+        //           <div className="space-y-6">
+        //             <div>
+        //               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        //                 Email
+        //               </label>
+                      // <div className="mt-1">
+                      //   <TextInput
+                      //     onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                      //     value={email}
+                      //     setValue={setEmail}
+                      //     name="email"
+                      //     type="email"
+                      //     role="email"
+                      //     label="Email"
+                      //     required-500
+                      //     className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isEmailValid(email))}`}
+                      //   />
+                      // </div>
+        //             </div>
+        //             <div className="space-y-1">
+        //               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+        //                 Mot de passe
+        //               </label>
+                      // <div className="mt-1">
+                      //   <TextInput
+                      //     onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                      //     value={password}
+                      //     setValue={setPassword}
+                      //     name="password"
+                      //     type="password"
+                      //     role="password"
+                      //     label="Mot de passe"
+                      //     required-500
+                      //     className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(password))}`}
+                      //   />
+                      // </div>
+        //             </div>
+        //             <div className="flex items-center justify-between">
+        //               <div className="flex items-center">
+        //                 <TextInput
+        //                   value={remember}
+        //                   setValue={setRemember}
+        //                   name="remember_me"
+        //                   type="checkbox"
+        //                   className="h-4 w-4 text-red-500 focus:ring-red-500 border-gray-300 rounded"
+        //                 />
+        //                 <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
+        //                   Rester connecté
+        //                 </label>
+        //               </div>
+                      // <div className="text-sm">
+                      //   <button onClick={() => setView(View.FORGOT)} className="font-medium text-red-500 hover:text-red-500 cursor-pointer">
+                      //     Mot de passe oublié ?
+                      //   </button>
+                      // </div>
+        //             </div>
+                    // <div>
+                    //   <button
+                    //     onClick={handleClick}
+                    //     className="w-full flex justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    //   >
+                    //     Se connecter
+                    //   </button>
+                    // </div>
+        //           </div>
+        //         </div>
+        //         <div className="mt-5">
+        //           <div className="mt-6 mb-6 relative">
+        //             <div className="absolute inset-0 flex items-center" aria-hidden="true">
+        //               <div className="w-full border-t border-transparent lg:border-gray" />
+        //             </div>
+        //             <div className="relative flex justify-center text-sm">
+        //               <span className="px-2 lg:bg-white bg-none text-gray font-normal">Ou se connecter avec</span>
+        //             </div>
+        //           </div>
+        //         <div>
+        //             <div className="mt-1 grid grid-cols-2 gap-6 text-center ">
+        //               <div className="text-right focus:outline-none">
+                      // <div
+                      //     className="cursor-pointer w-24 inline-flex justify-center py-2 px-4 border-2 border-white rounded-3xl shadow-sm bg-white text-sm font-medium hover:border-red-500 "
+                      //   >
+                      //     <span className="sr-only">Sign in with Google</span>
+                      //     <GoogleLogin
+                      //       clientId="409852833093-r8n4tmddotipm85c153kn45hq9i42d78.apps.googleusercontent.com"
+                      //       render={renderProps => (
+                      //         <button className="focus:outline-white ring-white" onClick={renderProps.onClick} disabled={renderProps.disabled}><img alt="google logo" className="focus:outline-white ring-white" src={google} /></button>
+                      //       )}
+                      //       buttonText="Login"
+                      //       onSuccess={responseGoogle}
+                      //       onFailure={responseGoogle}
+                      //       cookiePolicy={'single_host_origin'}
+                      //     />
+                      //   </div>
+        //               </div>
+        //             </div>
+        //           </div>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </div>
+        // </div>
     );
 }
 
@@ -257,154 +336,260 @@ const SignUpView: React.FC<IAuthProps> = ({
     };
 
     return (
-        <div className="min-h-screen bg-transparent flex bg-background-auth bg-cover bg-center">
-          <div className="hidden lg:block relative w-0 flex-1">
-            <div className="absolute inset-20 w-full object-cover">
-              <p className="font-extrabold uppercase text-yellow-200 text-5xl mb-2">Bienvenue sur Safely</p>
-              <p className="font-normal uppercase text-yellow-200 text-xl">L'application qui sécurise vos déplacements</p>
-              <button onClick={() => setView(View.SIGNIN)} className="font-medium uppercase text-2xl ring-3 ring-gray border border-gray rounded-3xl pt-2 pb-2 pl-12 pr-12 text-white hover:text-yellow-200 hover:border-yellow-200 mt-10 focus:outline-none">Se connecter</button>
-            </div>
+      <div className="flex flex-col items-center w-screen h-screen">
+        <img 
+          className="h-20 w-auto ml-auto mr-auto mt-20 mb-3"
+          src={logo}
+          alt="Logo Safely"
+        />
+        <p className="font-black text-2xl mb-3">Inscription</p>
+        <div
+            className="cursor-pointer w-16 inline-flex justify-center py-2 px-4 border-2 border-white rounded-3xl shadow-sm bg-white text-sm font-medium hover:border-red-500 "
+          >
+            <GoogleLogin
+              clientId="409852833093-r8n4tmddotipm85c153kn45hq9i42d78.apps.googleusercontent.com"
+              render={renderProps => (
+                <button className="focus:outline-white ring-white" onClick={renderProps.onClick} disabled={renderProps.disabled}><img alt="google logo" className="focus:outline-white ring-white" src={google} /></button>
+              )}
+              buttonText="Login"
+              onSuccess={responseGoogle}
+              onFailure={responseGoogle}
+              cookiePolicy={'single_host_origin'}
+            />
+        </div>
+        <div className="flex flex-row items-center justify-center mt-3">
+          <div className="w-24 border-b-2 h-2 mr-3" />
+            <p>OU</p>
+            <div className="w-24 border-b-2 h-2 ml-3" />
           </div>
-          <div className="bg-white bg-opacity-20 lg:bg-opacity-90 flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-            <div className="mx-auto w-full max-w-sm lg:w-96">
-              <div>
-                <img
-                  className="h-44 w-auto ml-auto mr-auto"
-                  src={logo}
-                  alt="Logo Safely"
-                />
-                <h2 className="mt-6 text-3xl font-extrabold text-gray">S'inscrire</h2>
-                <p className="mt-2 text-sm text-gray-600">
-                  Ou {' '}
-                  <button onClick={() => setView(View.SIGNIN)} className="font-medium text-red-500 hover:text-red-500 cursor-pointer">
-                    Se connecter
-                  </button>
-                </p>
-              </div>
-              <div className="mt-8">
-                <div className="mt-6">
-                  <div onSubmit={handleClick} className="space-y-6">
-                    <div>
-                      <label htmlFor="text" className="block text-sm font-medium text-gray-700">
-                        Nom d'utilisateur
-                      </label>
-                      <div className="mt-1">
-                        <TextInput
-                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
-                          value={username}
-                          setValue={setUsername}
-                          name="username"
-                          type="username"
-                          role="username"
-                          label="Nom d'utilisateur"
-                          required-500
-                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isUsernameValid(username))}`}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                        Email
-                      </label>
-                      <div className="mt-1">
-                        <TextInput
-                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
-                          value={email}
-                          setValue={setEmail}
-                          name="email"
-                          type="email"
-                          role="email"
-                          label="Email"
-                          autoComplete="email"
-                          required
-                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isEmailValid(email))}`}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-0.5">
-                      <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                        Mot de passe
-                      </label>
-                      <div className="mt-1">
-                        <TextInput
-                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
-                          value={password}
-                          setValue={setPassword}
-                          name="password"
-                          type="password"
-                          role="password"
-                          label="Mot de passe"
-                          autoComplete="current-password"
-                          required
-                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(password))}`}
-                        />
-                      </div>
-                    </div>
+          <div className="w-64">
+            <TextInput
+              onKeyPress={(e) => e.key === "Enter" && handleClick()}
+              value={username}
+              setValue={setUsername}
+              name="username"
+              type="username"
+              role="username"
+              label="Nom d'utilisateur"
+              required-500
+              className={`appearance-none block w-full mt-5 px-3 py-2 bg-[#EAF1F9] rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isUsernameValid(username))}`}
+            />
+          </div>
+          <div className="mt-1 w-64">
+            <TextInput
+              onKeyPress={(e) => e.key === "Enter" && handleClick()}
+              value={email}
+              setValue={setEmail}
+              name="email"
+              type="email"
+              role="email"
+              label="Email"
+              required-500
+              className={`appearance-none block w-full px-3 py-2 bg-[#EAF1F9] rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isEmailValid(email))}`}
+            />
+          </div>
+          <div className="mt-1 w-64">
+              <TextInput
+                onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                value={password}
+                setValue={setPassword}
+                name="password"
+                type="password"
+                role="password"
+                label="Mot de passe"
+                required-500
+                className={`appearance-none block w-full px-3 py-2 bg-[#EAF1F9] rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(password))}`}
+              />
+          </div>
 
-                    <div className="space-y-1">
-                      <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                      Répeter le mot de passe
-                      </label>
-                      <div className="mt-1">
-                        <TextInput
-                          onKeyPress={(e) => e.key === "Enter" && handleClick()}
-                          value={confirmedPassword}
-                          setValue={setConfirmedPassword}
-                          name="confirmedPassword"
-                          type="password"
-                          role="password"
-                          label="Répeter le mot de passe"
-                          autoComplete="current-password"
-                          required
-                          className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(confirmedPassword))}`}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <button
-                        onClick={handleClick}
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red"
-                      >
-                        S'inscrire
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-5">
-                  <div className="mt-6 mb-6 relative">
-                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="w-full border-t border-transparent lg:border-gray" />
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="px-2 lg:bg-white bg-none text-gray font-normal">Ou se connecter avec</span>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="mt-1 grid grid-cols-2 gap-6 text-center ">
-                      <div className="text-right focus:outline-none">
-                      <div
-                          className="cursor-pointer w-24 inline-flex justify-center py-2 px-4 border-2 border-white rounded-3xl shadow-sm bg-white text-sm font-medium hover:border-red-500 "
-                        >
-                          <span className="sr-only">Sign in with Google</span>
-                          <GoogleLogin
-                            clientId="409852833093-r8n4tmddotipm85c153kn45hq9i42d78.apps.googleusercontent.com"
-                            render={renderProps => (
-                              <button className="focus:outline-white ring-white" onClick={renderProps.onClick} disabled={renderProps.disabled}><img alt="google logo" className="focus:outline-white ring-white" src={google} /></button>
-                            )}
-                            buttonText="Login"
-                            onSuccess={responseGoogle}
-                            onFailure={responseGoogle}
-                            cookiePolicy={'single_host_origin'}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          <div className="mt-1 w-64">
+            <TextInput
+              onKeyPress={(e) => e.key === "Enter" && handleClick()}
+              value={confirmedPassword}
+              setValue={setConfirmedPassword}
+              name="confirmedPassword"
+              type="password"
+              role="password"
+              label="Répeter le mot de passe"
+              autoComplete="current-password"
+              required
+              className={`appearance-none block w-full px-3 py-2 bg-[#EAF1F9] rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(confirmedPassword))}`}
+            />
+          </div>
+          
+          <div className="mt-5 w-60">
+          <button
+            onClick={handleClick}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red"
+          >
+            S'inscrire
+          </button>
+          </div>
+          <div className="text-sm flex flex-col">
+            <button onClick={() => setView(View.FORGOT)} className="mt-5 font-normal text-red-500 hover:text-red-500 cursor-pointer">
+              Réinitialiser votre mot de passe
+            </button>
+            <button onClick={() => setView(View.SIGNIN)} className="mt-3 mb-3 font-normal text-red-500 hover:text-red-500 cursor-pointer">
+                    Se connecter
+            </button>
+          </div>
+          <div className="flex flex-col">
+            <div className="w-96 border-b-2 h-2" />
+            <div className="flex flex-row">
+              <p className="underline text-sm text-gray-500">Téléchargez l'application</p>
+              <FaCircle style={{ color: 'lightgray' }} className="ml-2 mt-2" size={7}/>
+              <p className="underline text-sm text-gray-500 ml-2">Nous contacter</p>
             </div>
           </div>
         </div>
+        // <div className="min-h-screen bg-transparent flex bg-background-auth bg-cover bg-center">
+        //   <div className="hidden lg:block relative w-0 flex-1">
+        //     <div className="absolute inset-20 w-full object-cover">
+        //       <p className="font-extrabold uppercase text-yellow-200 text-5xl mb-2">Bienvenue sur Safely</p>
+        //       <p className="font-normal uppercase text-yellow-200 text-xl">L'application qui sécurise vos déplacements</p>
+        //       <button onClick={() => setView(View.SIGNIN)} className="font-medium uppercase text-2xl ring-3 ring-gray border border-gray rounded-3xl pt-2 pb-2 pl-12 pr-12 text-white hover:text-yellow-200 hover:border-yellow-200 mt-10 focus:outline-none">Se connecter</button>
+        //     </div>
+        //   </div>
+        //   <div className="bg-white bg-opacity-20 lg:bg-opacity-90 flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+        //     <div className="mx-auto w-full max-w-sm lg:w-96">
+        //       <div>
+        //         <img
+        //           className="h-44 w-auto ml-auto mr-auto"
+        //           src={logo}
+        //           alt="Logo Safely"
+        //         />
+        //         <h2 className="mt-6 text-3xl font-extrabold text-gray">S'inscrire</h2>
+        //         <p className="mt-2 text-sm text-gray-600">
+        //           Ou {' '}
+                  // <button onClick={() => setView(View.SIGNIN)} className="font-medium text-red-500 hover:text-red-500 cursor-pointer">
+                  //   Se connecter
+                  // </button>
+        //         </p>
+        //       </div>
+        //       <div className="mt-8">
+        //         <div className="mt-6">
+        //           <div onSubmit={handleClick} className="space-y-6">
+        //             <div>
+        //               <label htmlFor="text" className="block text-sm font-medium text-gray-700">
+        //                 Nom d'utilisateur
+        //               </label>
+                      // <div className="mt-1">
+                      //   <TextInput
+                      //     onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                      //     value={username}
+                      //     setValue={setUsername}
+                      //     name="username"
+                      //     type="username"
+                      //     role="username"
+                      //     label="Nom d'utilisateur"
+                      //     required-500
+                      //     className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isUsernameValid(username))}`}
+                      //   />
+                      // </div>
+        //             </div>
+        //             <div>
+        //               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        //                 Email
+        //               </label>
+        //               <div className="mt-1">
+        //                 <TextInput
+        //                   onKeyPress={(e) => e.key === "Enter" && handleClick()}
+        //                   value={email}
+        //                   setValue={setEmail}
+        //                   name="email"
+        //                   type="email"
+        //                   role="email"
+        //                   label="Email"
+        //                   autoComplete="email"
+        //                   required
+        //                   className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isEmailValid(email))}`}
+        //                 />
+        //               </div>
+        //             </div>
+        //             <div className="space-y-0.5">
+        //               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+        //                 Mot de passe
+        //               </label>
+        //               <div className="mt-1">
+        //                 <TextInput
+        //                   onKeyPress={(e) => e.key === "Enter" && handleClick()}
+        //                   value={password}
+        //                   setValue={setPassword}
+        //                   name="password"
+        //                   type="password"
+        //                   role="password"
+        //                   label="Mot de passe"
+        //                   autoComplete="current-password"
+        //                   required
+        //                   className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(password))}`}
+        //                 />
+        //               </div>
+        //             </div>
+
+        //             <div className="space-y-1">
+        //               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+        //               Répeter le mot de passe
+        //               </label>
+                      // <div className="mt-1">
+                      //   <TextInput
+                      //     onKeyPress={(e) => e.key === "Enter" && handleClick()}
+                      //     value={confirmedPassword}
+                      //     setValue={setConfirmedPassword}
+                      //     name="confirmedPassword"
+                      //     type="password"
+                      //     role="password"
+                      //     label="Répeter le mot de passe"
+                      //     autoComplete="current-password"
+                      //     required
+                      //     className={`appearance-none block w-full px-3 py-2 border-2 border-gray-300 rounded-3xl shadow-sm placeholder-gray-400 sm:text-sm ${getInvalidInputClassName(isPasswordValid(confirmedPassword))}`}
+                      //   />
+                      // </div>
+        //             </div>
+        //             <div>
+                      // <button
+                      //   onClick={handleClick}
+                      //   className="w-full flex justify-center py-2 px-4 border border-transparent rounded-3xl shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red"
+                      // >
+                      //   S'inscrire
+                      // </button>
+        //             </div>
+        //           </div>
+        //         </div>
+        //         <div className="mt-5">
+        //           <div className="mt-6 mb-6 relative">
+        //             <div className="absolute inset-0 flex items-center" aria-hidden="true">
+        //               <div className="w-full border-t border-transparent lg:border-gray" />
+        //             </div>
+        //             <div className="relative flex justify-center text-sm">
+        //               <span className="px-2 lg:bg-white bg-none text-gray font-normal">Ou se connecter avec</span>
+        //             </div>
+        //           </div>
+        //           <div>
+        //             <div className="mt-1 grid grid-cols-2 gap-6 text-center ">
+        //               <div className="text-right focus:outline-none">
+        //               <div
+        //                   className="cursor-pointer w-24 inline-flex justify-center py-2 px-4 border-2 border-white rounded-3xl shadow-sm bg-white text-sm font-medium hover:border-red-500 "
+        //                 >
+        //                   <span className="sr-only">Sign in with Google</span>
+        //                   <GoogleLogin
+        //                     clientId="409852833093-r8n4tmddotipm85c153kn45hq9i42d78.apps.googleusercontent.com"
+        //                     render={renderProps => (
+        //                       <button className="focus:outline-white ring-white" onClick={renderProps.onClick} disabled={renderProps.disabled}><img alt="google logo" className="focus:outline-white ring-white" src={google} /></button>
+        //                     )}
+        //                     buttonText="Login"
+        //                     onSuccess={responseGoogle}
+        //                     onFailure={responseGoogle}
+        //                     cookiePolicy={'single_host_origin'}
+        //                   />
+        //                 </div>
+        //               </div>
+        //             </div>
+        //           </div>
+        //         </div>
+        //       </div>
+        //     </div>
+        //   </div>
+        // </div>
     );
 }
 

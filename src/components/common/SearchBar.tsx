@@ -1,46 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
+import {
+  FaPlus,
+  FaPlusCircle,
+  FaSearch
+} from 'react-icons/fa';
 import './index.css';
 
-interface ISearchBarProps {
-    label: string;
-    value: string;
-    setValue: (value: string) => void;
-}
-
-const SearchBar: React.FC<ISearchBarProps> = ({
-    label,
-    value,
-    setValue
+const SearchBar: React.FC<{
+  textSearch: string;
+  placeholder: string;
+  setTextSearch: (value: string) => void;
+  openCreateModal: () => void;
+  noCreate?: boolean;
+}> = ({
+  textSearch,
+  placeholder,
+  setTextSearch,
+  openCreateModal,
+  noCreate
 }) => {
+  const [isMouseOn, setIsMouseOut] = useState(false);
 
-    const handleInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setValue(e.target.value);
-    };
-
-    return (
-        <div className="flex items-center justify-center">
-            <div className="flex border-2 rounded">
-                <div>
-                    <input
-                        name="searchbox"
-                        type="text"
-                        role="searchbox"
-                        value={value}
-                        placeholder={label}
-                        onChange={handleInput}
-                        className="px-4 py-2 w-80"
-                    />
-                </div>
-                <button className="flex items-center justify-center px-4 border-l">
-                    <svg className="w-6 h-6 text-gray-600" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24">
-                        <path
-                            d="M16.32 14.9l5.39 5.4a1 1 0 0 1-1.42 1.4l-5.38-5.38a8 8 0 1 1 1.41-1.41zM10 16a6 6 0 1 0 0-12 6 6 0 0 0 0 12z" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    );
-}
+  return (
+    <div className='inline-block flex'>
+      <div className='relative'>
+        <div className='invisible text-sm h-0 pr-6'>{placeholder}</div>
+        <input
+          className='text-sm min-w-52 w-full border-b-2 border-solid border-blue-400 bg-neutral-100'
+          placeholder={placeholder}
+          value={textSearch}
+          onChange={(event) => setTextSearch(event.target.value)}
+        />
+        <button className='absolute right-1 top-1'><FaSearch className='text-blue-400' /></button>
+      </div>
+      <button hidden={noCreate} className='ml-3' onClick={() => openCreateModal()} onMouseEnter={() => setIsMouseOut(true)} onMouseLeave={() => setIsMouseOut(false)}>
+        {isMouseOn ? <FaPlusCircle className='w-6 h-6 text-blue-400' /> : <FaPlus className='ml-1 w-4 h-4 text-blue-400' />}
+      </button>
+    </div>
+  );
+};
 
 export default SearchBar;
