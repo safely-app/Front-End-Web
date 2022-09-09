@@ -456,81 +456,12 @@ const Safeplaces: React.FC = () => {
     const user = useAppSelector(state => state.user);
     const [searchBarValue, setSearchBarValue] = useState<string>('');
     const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
-    const [safeplaces2, setSafeplaces2] = useState<ISafeplaceVariant[]>([])
     const [stateFilterType, setStateFilterType] = useState<String>("");
     const [allComments, setAllComments] = useState<[]>([]);
 
     useEffect(() => {
         console.log(stateFilterType)
     }, [stateFilterType])
-    const safeplace3: ISafeplaceVariant[] = [
-        {
-            id: "test",
-            name: "Marché de Strasbourg",
-            description: "Test",
-            city: "Strasbourg",
-            address: "Test",
-            type: "Market",
-            dayTimetable: ["day"],
-            coordinate: [1, 2],
-            ownerId: "test"
-        },
-        {
-            id: "test",
-            name: "Marché de Strasbourg",
-            description: "Test",
-            city: "Strasbourg",
-            address: "Test",
-            type: "Market",
-            dayTimetable: ["day"],
-            coordinate: [1, 2],
-            ownerId: "test"
-        },
-        {
-            id: "test",
-            name: "Marché de Strasbourg",
-            description: "Test",
-            city: "Strasbourg",
-            address: "Test",
-            type: "Market",
-            dayTimetable: ["day"],
-            coordinate: [1, 2],
-            ownerId: "test"
-        },
-        {
-            id: "test",
-            name: "Marché de Colmar",
-            description: "Test",
-            city: "Strasbourg",
-            address: "Test",
-            type: "Market",
-            dayTimetable: ["day"],
-            coordinate: [1, 2],
-            ownerId: "test"
-        },
-        {
-            id: "test",
-            name: "Marché de Colbourg",
-            description: "Test",
-            city: "Strasbourg",
-            address: "Test",
-            type: "Market",
-            dayTimetable: ["day"],
-            coordinate: [1, 2],
-            ownerId: "test"
-        },
-        {
-            id: "test",
-            name: "Marché de Strasbourg",
-            description: "Test",
-            city: "Strasbourg",
-            address: "Test",
-            type: "Market",
-            dayTimetable: ["day"],
-            coordinate: [1, 2],
-            ownerId: "test"
-        },
-    ]
 
     const setSafeplace = (safeplace: ISafeplace) => {
         setSafeplaces(safeplaces.map(safeplaceElement => safeplaceElement.id === safeplace.id ? safeplace : safeplaceElement));
@@ -567,19 +498,9 @@ const Safeplaces: React.FC = () => {
             Safeplace.getComments(user.credentials.token).then(res => {
                 setAllComments(res.data);
             })
-            // const gotSafeplaces2: ISafeplaceVariant[] = response.data.map(safeplace => ({
-            //     id: safeplace._id,
-            //     name: safeplace.name,
-            //     city: safeplace.city,
-            //     address: safeplace.address,
-            //     type: safeplace.type,
-            //     dayTimetable: safeplace.dayTimetable,
-            //     coordinate: [parseFloat(safeplace.coordinate[0]), parseFloat(safeplace.coordinate[1])]
-            // }));
 
             log.log(response);
             setSafeplaces(gotSafeplaces);
-            // setSafeplaces2(gotSafeplaces2);
         }).catch(error => {
             log.error(error);
             notifyError(error);
