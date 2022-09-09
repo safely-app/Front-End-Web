@@ -259,7 +259,7 @@ const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) =>
         <div>
             {getSafeplaceDetail ? (
                 <div className="h-screen">
-                    <div className="bg-safeplace-placeholder h-96 rounded-3xl divide-y-3">
+                    <div className="bg-safeplace-placeholder h-96 rounded-3xl">
                         <img className="object-cover" />
                         <FaArrowLeft onClick={() => { setGetSafeplaceDetail(false) }} className="w-10 h-10" style={{ color: "white" }}/>
                     </div>
