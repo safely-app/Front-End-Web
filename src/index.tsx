@@ -13,6 +13,7 @@ import {
     SafeplaceSingle,
     VerifyHours,
     CommercialPage,
+    BugReport,
 } from './components';
 import reportWebVitals from './reportWebVitals';
 import Router from './Router';
@@ -20,7 +21,6 @@ import { Provider } from 'react-redux';
 import { store, persistor } from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import log from 'loglevel';
-import BugReport from './components/BugReport/BugReport';
 
 const routes = [
     { path: '/', exact: true, protected: false, render: <App /> },
