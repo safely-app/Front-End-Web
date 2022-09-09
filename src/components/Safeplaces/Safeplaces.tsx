@@ -126,7 +126,7 @@ const SafeplaceInfoListElement: React.FC<ISafeplaceInfoListElementProps> = ({
 }
 
 interface IMapProps {
-    safeplaces: {setter: (val: ISafeplaceVariant[]) => void, value: ISafeplaceVariant[]};
+    safeplaces: {setter: (val: ISafeplace[]) => void, value: ISafeplace[]};
 }
 
 const SafeplacesMap: React.FC<IMapProps> = ({
@@ -134,30 +134,30 @@ const SafeplacesMap: React.FC<IMapProps> = ({
 }) => {
     const [safeplaceWithinBound, setSafeplaceWithinBound] = useState<ISafeplaceVariant[]>([])
 
-    const UpdateSafeplace = () => {
-        const map = useMap()
-        const [bounds, setBounds] = useState<LatLngBounds>(map.getBounds())
+    // const UpdateSafeplace = () => {
+    //     const map = useMap()
+    //     const [bounds, setBounds] = useState<LatLngBounds>(map.getBounds())
 
         
-        map.on('moveend', function(e) {
-            setBounds(map.getBounds())
-            const tmpArray: ISafeplaceVariant[] = []
+    //     map.on('moveend', function(e) {
+    //         setBounds(map.getBounds())
+    //         const tmpArray: ISafeplaceVariant[] = []
 
-            for (var index = 0; index < safeplaces.value.length; index++) {
-                const point: LatLngExpression = new LatLng(safeplaces.value[index].coordinate[0], safeplaces.value[index].coordinate[1])
+    //         for (var index = 0; index < safeplaces.value.length; index++) {
+    //             const point: LatLngExpression = new LatLng(parseFloat(safeplaces.value[index].coordinate[0]), parseFloat(safeplaces.value[index].coordinate[1]))
 
-                if (bounds.contains(point)) {
-                    tmpArray.push(safeplaces.value[index])
-                }
-            }
-            setSafeplaceWithinBound(tmpArray)
-            safeplaces.setter(tmpArray)
-        });
+    //             if (bounds.contains(point)) {
+    //                 tmpArray.push(safeplaces.value[index])
+    //             }
+    //         }
+    //         setSafeplaceWithinBound(tmpArray)
+    //         safeplaces.setter(tmpArray)
+    //     });
 
-        return (
-            <Rectangle bounds={bounds} pathOptions={{color: 'red'}}/>
-        )
-    }
+    //     return (
+    //         <Rectangle bounds={bounds} pathOptions={{color: 'red'}}/>
+    //     )
+    // }
 
     return (
         <div className="relative w-full h-full max-w-4xl text-center z-0">
@@ -165,14 +165,14 @@ const SafeplacesMap: React.FC<IMapProps> = ({
                 height: "100vh",
                 width: "100vh",
             }} center={[48.58193415814247, 7.751016938855309]} zoom={14} scrollWheelZoom={true}>
-                <UpdateSafeplace />
+                {/* <UpdateSafeplace /> */}
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
 
                 <MarkerClusterGroup showCoverageOnHover={false}>
-                    {safeplaceWithinBound.map((safeplace, index) => (
+                    {safeplaces.value.map((safeplace, index) => (
                         <Marker key={index} position={[
                             Number(safeplace.coordinate[0]),
                             Number(safeplace.coordinate[1])
@@ -255,20 +255,13 @@ const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) =>
         return a.slice(Math.max(endIndex - pageSize, 0), endIndex);   
     }
 
-    useEffect(() => {
-        console.log(paginate(comments, currentPage, 5))
-    }, [currentPage])
-
-    const test = () => {
-        return paginate(comments, currentPage, 5)
-    }
-
     return (
         <div>
             {getSafeplaceDetail ? (
                 <div className="h-screen">
                     <div className="bg-safeplace-placeholder h-96 rounded-3xl divide-y-3">
                         <img className="object-cover" />
+                        <FaArrowLeft onClick={() => { setGetSafeplaceDetail(false) }} className="w-10 h-10" style={{ color: "white" }}/>
                     </div>
                     <div className="flex flex-row justify-between">
                         <div>
@@ -287,16 +280,17 @@ const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) =>
                     <div className="h-6 w-full mt-5">
                         {Object.keys(paginate(comments, currentPage, 5)).map(index => {
                             var tmpValue = paginate(comments, currentPage, 5);
-                            return (
-                                <div>
-                                    <div className="flex flex-row items-center mb-3">
-                                        <p>Anonyme</p>
-                                        {[...Array(tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: '#f7e249' }}/>)}
-                                        {[...Array(5 - tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6"  style={{ color: 'lightgray' }}/>)}
+                                return (
+                                    <div>
+                                        <div className="flex flex-row items-center mb-3">
+                                            <p>Anonyme</p>
+                                            {[...Array(tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: '#f7e249' }}/>)}
+                                            {[...Array(5 - tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6"  style={{ color: 'lightgray' }}/>)}
+                                        </div>
+                                        <p className="mb-3">{tmpValue[index].comment}</p>
                                     </div>
-                                    <p className="mb-3">{tmpValue[index].comment}</p>
-                                </div>
-                            )
+                                )
+
                         })}
                         <div className="flex flex-row items-center mt-10">
                             <FaArrowLeft className="mr-2" onClick={() => {currentPage > 0 ? setCurrentPage(currentPage => currentPage - 1) : setCurrentPage(currentPage)}}/>
@@ -307,8 +301,8 @@ const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) =>
             ) : (
                 <div className="h-screen grid grid-cols-2 gap-10 overflow-y-auto px-30">
                     {safeplaces.value && safeplaces.value.length > 0 ? safeplaces.value.map(sp => (
-                        <div onClick={() => {setSafeplace(sp); setGetSafeplaceDetail(true)}}>
-                            <div className="bg-safeplace-placeholder w-90 h-80 rounded-3xl">
+                        <div>
+                            <div className="bg-safeplace-placeholder w-90 h-80 rounded-3xl" onClick={() => {setSafeplace(sp); setGetSafeplaceDetail(true)}}>
                                 <img className="object-cover" />
                             </div>
                             <div className="flex justify-between">
@@ -321,7 +315,7 @@ const SafeplaceList: React.FC<ISafeplaceListProps> = ({safeplaces, comments}) =>
                         </div>
                     )) : null}
                     <SafeplaceModal 
-                        title={"title"}
+                        title={safeplace.name}
                         modalOn={focusSafeplace}
                         safeplace={safeplace}
                         setSafeplace={setSafeplace}
@@ -627,7 +621,7 @@ const Safeplaces: React.FC = () => {
             <div className="grid grid-cols-2 p-10 gap-5">
                 <SafeplaceList safeplaces={{setter: setSafeplaces, value: filterSafeplaces()}} comments={allComments} />                    
                 <div className="h-full">
-                    <SafeplacesMap safeplaces={{setter: setSafeplaces2, value: safeplace3}} />
+                    <SafeplacesMap safeplaces={{setter: setSafeplaces, value: safeplaces}} />
                 </div>
             </div>
 
