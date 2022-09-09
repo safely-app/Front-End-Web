@@ -8,6 +8,7 @@ module.exports = {
       backgroundImage: theme => ({
         'background-auth': "url('./assets/image/auth_background.png')",
         'background': "url('./assets/image/back.png')",
+        'safeplace-placeholder': "url('./assets/image/safeplace.jpeg')",
       }),
       colors: {
         blue: {
