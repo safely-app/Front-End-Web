@@ -47,7 +47,7 @@ const TextInput: React.FC<ITextInputProps> = ({
                 onKeyPress={onKeyPress}
                 hidden={hidden !== undefined ? hidden : false}
                 readOnly={readonly !== undefined ? readonly : false}
-                className={"mt-1 pt-1 pb-1 border-solid rounded font-l indent-2 w-3/5 " + className}
+                className={"mt-1 pt-1 pb-1 border-solid rounded font-l indent-2 " + className}
                 autoComplete={autoComplete}
                 required={required}
             />

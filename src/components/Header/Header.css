@@ -4,20 +4,20 @@
 
 @keyframes glowanim {
     from {
-        color: #fff4ae;
+        color: #f97b97;
     }
 
     50% {
-        color: #4a4630;
+        color: #f9315c;
     }
 
     to {
-        color: #fff4ae;
+        color: #f97b97;
     }
 }
 
 .notif-list {
     position: absolute;
     width: 25em;
-    right: 2em;
+    left: -1em;
 }

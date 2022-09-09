@@ -1,4 +1,3 @@
-import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { store } from '../../../redux';
@@ -8,184 +7,179 @@ import nock from 'nock';
 const baseURL = process.env.REACT_APP_SERVER_URL as string;
 
 const testDelay = (ms: number): Promise<void> =>
-    new Promise(resolve => setTimeout(resolve, ms));
+  new Promise(resolve => setTimeout(resolve, ms));
 
 test('renders requestclaimsafeplace monitor', async () => {
-    const scope = nock(baseURL)
-        .get('/safeplace/requestClaimSafeplace')
-        .reply(200, [], {
-            'Access-Control-Allow-Origin': '*'
-        });
+  const scope = nock(baseURL).get('/safeplace/requestClaimSafeplace')
+    .reply(200, [
+      {
+        _id: "r1",
+        userId: "u1",
+        safeplaceId: "s1",
+        safeplaceName: "Safeplace 1",
+        status: "pending",
+        safeplaceDescription: "Description",
+        coordinate: [ "1", "1" ],
+        userComment: "Commentaire utilisateur",
+        adminComment: "Commentaire admin",
+        adminId: "a1",
+      }
+    ], { 'Access-Control-Allow-Origin': '*' });
 
-    render(
-        <Provider store={store}>
-            <RequestClaimSafeplace />
-        </Provider>
-    );
+  render(
+    <Provider store={store}>
+      <RequestClaimSafeplace />
+    </Provider>
+  );
 
-    await act(async () => testDelay(1000));
-    scope.done();
-});
+  await act(async () => testDelay(1000));
 
-test('ensure that create button is working', async () => {
-    const scope = nock(baseURL)
-        .get('/safeplace/requestClaimSafeplace')
-        .reply(200, [], {
-            'Access-Control-Allow-Origin': '*'
-        });
+  expect(screen.getByPlaceholderText("Rechercher une requête de safeplace...")).toBeInTheDocument();
+  fireEvent.change(screen.getByPlaceholderText("Rechercher une requête de safeplace..."), { target: { value: "r1" } });
 
-    render(
-        <Provider store={store}>
-            <RequestClaimSafeplace />
-        </Provider>
-    );
+  screen.getAllByText('Annuler').forEach(button => {
+    fireEvent.click(button);
+  });
 
-    const createButton = screen.getByText("Créer une nouvelle requête de safeplace");
-
-    expect(createButton).toBeInTheDocument();
-    fireEvent.click(createButton);
-
-    expect(screen.getByText("Créer une requête de safeplace")).toBeInTheDocument();
-
-    const stopButton = screen.getByText("Annuler");
-
-    expect(stopButton).toBeInTheDocument();
-    fireEvent.click(stopButton);
-
-    await act(async () => testDelay(1000));
-    scope.done();
-});
-
-test('ensure that new request creation occurs without technical errors', async () => {
-    const scopeGet = nock(baseURL)
-        .get('/safeplace/requestClaimSafeplace')
-        .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
-    const scopePost = nock(process.env.REACT_APP_SERVER_URL as string)
-        .post('/safeplace/requestClaimSafeplace')
-        .reply(201, {
-            message: 'Success'
-        }, {
-            'Access-Control-Allow-Origin': '*'
-        });
-
-    render(
-        <Provider store={store}>
-            <RequestClaimSafeplace />
-        </Provider>
-    );
-
-    const createButton = screen.getByText("Créer une nouvelle requête de safeplace");
-
-    expect(createButton).toBeInTheDocument();
-    fireEvent.click(createButton);
-
-    fireEvent.change(screen.getByRole('userId'), {
-        target: { value: '1' }
-    });
-
-    fireEvent.change(screen.getByRole('safeplaceId'), {
-        target: { value: '1' }
-    });
-
-    fireEvent.change(screen.getByRole('userComment'), {
-        target: { value: 'Test comment' }
-    });
-
-    fireEvent.change(screen.getByRole('adminComment'), {
-        target: { value: 'Test comment' }
-    });
-
-    fireEvent.click(screen.getByText("Créer une requête de safeplace"));
-
-    await act(async () => await testDelay(2000));
-
-    scopePost.done();
-    scopeGet.done();
-});
-
-test('ensure that request claim safeplace filtering is working', async () => {
-    const scope = nock(baseURL)
-        .get('/safeplace/requestClaimSafeplace')
-        .reply(200, [
-            {
-                _id: '1',
-                userId: '1',
-                safeplaceId: '1',
-                safeplaceName: 'oui',
-                safeplaceDescription: 'oui',
-                status: 'Pending',
-                userComment: 'This is great'
-            },
-            {
-                _id: '2',
-                userId: '1',
-                safeplaceId: '3',
-                safeplaceName: 'non',
-                safeplaceDescription: 'non',
-                status: 'Refused',
-                comment: 'This is not great'
-            }
-        ], {
-            'Access-Control-Allow-Origin': '*'
-        });
-
-    render(
-        <Provider store={store}>
-            <RequestClaimSafeplace />
-        </Provider>
-    );
-
-    const safeplaceTypeDropdown = screen.getByTestId('all-dropdown-id');
-    const safeplaceTypeInfoSearchBar = screen.getByRole('searchbox');
-
-    await act(async () => await testDelay(2000));
-    expect(safeplaceTypeDropdown).toBeInTheDocument();
-    expect(safeplaceTypeInfoSearchBar).toBeInTheDocument();
-
-    fireEvent.change(safeplaceTypeDropdown, {
-        target: { value: 'Pending' }
-    });
-
-    fireEvent.change(safeplaceTypeInfoSearchBar, {
-        target: { value: 'is great' }
-    });
-
-    expect(screen.getByDisplayValue('is great')).toBeInTheDocument();
-    expect(screen.getAllByDisplayValue('Pending').length > 0).toBeTruthy();
-
-    await act(async () => await testDelay(2000));
-
-    expect(screen.queryByText('not great')).toBeNull();
-
-    scope.done();
+  scope.done();
 });
 
 test('ensure that invalid input does not crash the request claim safeplace filtering', async () => {
-    const scope = nock(baseURL)
-        .get('/safeplace/requestClaimSafeplace')
-        .reply(200, [], {
-            'Access-Control-Allow-Origin': '*'
-        });
+  const scope = nock(baseURL).get('/safeplace/requestClaimSafeplace')
+    .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
 
-    render(
-        <Provider store={store}>
-            <RequestClaimSafeplace />
-        </Provider>
-    );
+  render(
+    <Provider store={store}>
+      <RequestClaimSafeplace />
+    </Provider>
+  );
 
-    const userTypeDropdown = screen.getByTestId('all-dropdown-id');
-    const userInfoSearchBar = screen.getByRole('searchbox');
+  await act(async () => await testDelay(1000));
 
-    await act(async () => await testDelay(2000));
-    expect(userInfoSearchBar).toBeInTheDocument();
-    expect(userTypeDropdown).toBeInTheDocument();
+  expect(screen.getByPlaceholderText('Rechercher une requête de safeplace...')).toBeInTheDocument();
+  fireEvent.change(screen.getByPlaceholderText('Rechercher une requête de safeplace...'), { target: { value: 'eujffeojwefokfewkpo[' } });
 
-    fireEvent.change(userInfoSearchBar, {
-        target: { value: 'eujffeojwefokfewkpo[' }
-    });
+  expect(screen.getByDisplayValue('eujffeojwefokfewkpo[')).toBeInTheDocument();
 
-    expect(screen.getByDisplayValue('eujffeojwefokfewkpo[')).toBeInTheDocument();
+  scope.done();
+});
 
-    await act(async () => await testDelay(2000));
-    scope.done();
+test('ensure that new request creation occurs without technical errors', async () => {
+  const scopeGet = nock(baseURL).get('/safeplace/requestClaimSafeplace')
+    .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+  const scopePost = nock(baseURL).post('/safeplace/requestClaimSafeplace')
+    .reply(201, { message: 'Success' }, { 'Access-Control-Allow-Origin': '*' });
+
+  render(
+    <Provider store={store}>
+      <RequestClaimSafeplace />
+    </Provider>
+  );
+
+  expect(screen.getByText("Créer une nouvelle requête")).toBeInTheDocument();
+
+  fireEvent.change(screen.getAllByPlaceholderText('Nom')[0], { target: { value: 'Requête 1' } });
+  fireEvent.change(screen.getAllByPlaceholderText('Statut')[0], { target: { value: 'pending' } });
+  fireEvent.change(screen.getAllByPlaceholderText('Description')[0], { target: { value: 'Description' } });
+  fireEvent.change(screen.getAllByPlaceholderText('Latitude')[0], { target: { value: '1' } });
+  fireEvent.change(screen.getAllByPlaceholderText('Longitude')[0], { target: { value: '1' } });
+  fireEvent.change(screen.getAllByPlaceholderText('ID de safeplace')[0], { target: { value: 's1' } });
+  fireEvent.change(screen.getAllByPlaceholderText('ID de propriétaire')[0], { target: { value: 'u1' } });
+
+  fireEvent.click(screen.getByText("Créer une requête"));
+
+  await act(async () => await testDelay(2000));
+
+  scopePost.done();
+  scopeGet.done();
+});
+
+test('ensure that request update occurs without technical errors', async () => {
+  const scopeUpdate = nock(baseURL).put('/safeplace/requestClaimSafeplace/r1')
+    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+  const scopeOptions = nock(baseURL).options('/safeplace/requestClaimSafeplace/r1')
+    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+  const scopeGet = nock(baseURL).get('/safeplace/requestClaimSafeplace')
+    .reply(200, [
+      {
+        _id: "r1",
+        userId: "u1",
+        safeplaceId: "s1",
+        safeplaceName: "Safeplace 1",
+        status: "pending",
+        safeplaceDescription: "Description",
+        coordinate: [ "1", "1" ],
+        userComment: "Commentaire utilisateur",
+        adminComment: "Commentaire admin",
+        adminId: "a1",
+      }
+    ], { 'Access-Control-Allow-Origin': '*' });
+
+  render(
+    <Provider store={store}>
+      <RequestClaimSafeplace />
+    </Provider>
+  );
+
+  await act(async () => await testDelay(1000));
+
+  expect(screen.getByTestId('usr-btn-15')).toBeInTheDocument();
+  fireEvent.click(screen.getByTestId('usr-btn-15'));
+
+  expect(screen.getByText('Modifier une requête')).toBeInTheDocument();
+
+  fireEvent.change(screen.getAllByPlaceholderText('Nom')[1], { target: { value: 'Requête 1' } });
+  fireEvent.change(screen.getAllByPlaceholderText('Statut')[1], { target: { value: 'pending' } });
+  fireEvent.change(screen.getAllByPlaceholderText('Description')[1], { target: { value: 'Description' } });
+  fireEvent.change(screen.getAllByPlaceholderText('Latitude')[1], { target: { value: '1' } });
+  fireEvent.change(screen.getAllByPlaceholderText('Longitude')[1], { target: { value: '1' } });
+  fireEvent.change(screen.getAllByPlaceholderText('ID de safeplace')[1], { target: { value: 's1' } });
+  fireEvent.change(screen.getAllByPlaceholderText('ID de propriétaire')[1], { target: { value: 'u1' } });
+
+  fireEvent.click(screen.getByText("Modifier la requête"));
+
+  await act(async () => await testDelay(1000));
+
+  scopeOptions.done();
+  scopeUpdate.done();
+  scopeGet.done();
+});
+
+test('ensure that request delete occurs without technical errors', async () => {
+  const scopeUpdate = nock(baseURL).delete('/safeplace/requestClaimSafeplace/r1')
+    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+  const scopeOptions = nock(baseURL).options('/safeplace/requestClaimSafeplace/r1')
+    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+  const scopeGet = nock(baseURL).get('/safeplace/requestClaimSafeplace')
+    .reply(200, [
+      {
+        _id: "r1",
+        userId: "u1",
+        safeplaceId: "s1",
+        safeplaceName: "Safeplace 1",
+        status: "pending",
+        safeplaceDescription: "Description",
+        coordinate: [ "1", "1" ],
+        userComment: "Commentaire utilisateur",
+        adminComment: "Commentaire admin",
+        adminId: "a1",
+      }
+    ], { 'Access-Control-Allow-Origin': '*' });
+
+  render(
+    <Provider store={store}>
+      <RequestClaimSafeplace />
+    </Provider>
+  );
+
+  await act(async () => await testDelay(1000));
+
+  expect(screen.getByTestId('dsr-btn-15')).toBeInTheDocument();
+  fireEvent.click(screen.getByTestId('dsr-btn-15'));
+
+  await act(async () => await testDelay(1000));
+
+  scopeOptions.done();
+  scopeUpdate.done();
+  scopeGet.done();
 });

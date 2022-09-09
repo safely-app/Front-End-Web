@@ -21,6 +21,10 @@ class Safeplace {
         return createHttpConfig(this.baseURL).get(`/safeplace/safeplace/getHours/${id}`);
     }
 
+    getComments(token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/safeplace/comment`);
+    }
+
     updateTimetable(id: string, timetable: (string | null)[]) {
         return createHttpConfig(this.baseURL).put(`/safeplace/safeplace/modifyHours/${id}`, {
             dayTimetable: timetable

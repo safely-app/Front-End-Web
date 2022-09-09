@@ -11,6 +11,8 @@ import Monitor from './Monitors/Monitor';
 import SafeplaceSingle from './SafeplaceSingle/Safeplace';
 import VerifyHours from './VerifyHours/VerifyHours';
 import CommercialPage from './Commercial/CommercialPage';
+import Onboarding from './Onboarding/Onboarding';
+import BugReport from './BugReport/BugReport';
 
 export {
     App,
@@ -23,5 +25,7 @@ export {
     Profile,
     SafeplaceSingle,
     VerifyHours,
-    CommercialPage
+    CommercialPage,
+    Onboarding,
+    BugReport
 };

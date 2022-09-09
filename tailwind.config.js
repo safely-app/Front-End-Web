@@ -2,12 +2,13 @@ const colors = require('tailwindcss/colors')
 
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  darkMode: false, // or 'media' or 'class'
+  media: false, // or 'media' or 'class'
   theme: {
     extend: {
       backgroundImage: theme => ({
         'background-auth': "url('./assets/image/auth_background.png')",
         'background': "url('./assets/image/back.png')",
+        'safeplace-placeholder': "url('./assets/image/safeplace.jpeg')",
       }),
       colors: {
         blue: {
@@ -16,6 +17,9 @@ module.exports = {
       },
       borderWidth: {
         '3': '3px'
+      },
+      minWidth: {
+        '52': '13rem'
       }
     },
     /*colors: {

@@ -18,5 +18,5 @@ export const getErrorMsgByStatusCode = (response: AxiosResponse): string => {
 export const getErrorMsgByErrorName = (error: Error): string => {
     if (Object.keys(errorMessages).includes(error.message))
         return errorMessages[error.message];
-    return `${error.message} : ${basicErrorMessage}`;
+    return error.message;
 };

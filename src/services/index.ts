@@ -9,8 +9,11 @@ import SafeplaceUpdate from './SafeplaceUpdate';
 import Notification from './Notification';
 import Comment from './Comment';
 import BugReportManager from './BugReport';
+import Advertising from './Advertising';
+import Logs from './Logs';
 
 export {
+    Logs,
     User,
     Safeplace,
     Billing,
@@ -21,5 +24,6 @@ export {
     SafeplaceUpdate,
     Notification,
     Comment,
-    BugReportManager
+    BugReportManager,
+    Advertising
 };

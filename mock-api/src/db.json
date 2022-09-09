@@ -1,5 +1,83 @@
 {
-  "safeplaceUpdate": [
+  "notifications": [],
+  "user": [
+    {
+      "_id": "6152cef3487da44a7de8ceb3",
+      "username": "billylesinge",
+      "email": "billy@lesinge.com",
+      "role": "admin",
+      "id": "6152cef3487da44a7de8ceb3"
+    }
+  ],
+  "professionalinfo": [
+    {
+      "userId": "6152cef3487da44a7de8ceb3",
+      "companyName": "A",
+      "companyAddress": "A",
+      "companyAddress2": "A",
+      "billingAddress": "A",
+      "clientNumberTVA": "FR12345678901",
+      "personalPhone": "0388888888",
+      "companyPhone": "0688888888",
+      "RCS": "",
+      "registrationCity": "A",
+      "SIREN": "",
+      "SIRET": "",
+      "artisanNumber": "",
+      "type": "restaurant",
+      "id": "1",
+      "_id": "1"
+    }
+  ],
+  "campaign": [
+    {
+      "id": "1",
+      "ownerId": "6152cef3487da44a7de8ceb3",
+      "name": "A",
+      "budget": "5",
+      "status": "active",
+      "startingDate": "2022-08-08",
+      "targets": [],
+      "_id": "1"
+    }
+  ],
+  "target": [
+    {
+      "id": "1",
+      "ownerId": "6152cef3487da44a7de8ceb3",
+      "name": "A",
+      "csp": "csp",
+      "interests": [],
+      "ageRange": "18-99",
+      "_id": "1"
+    }
+  ],
+  "safeplace": [
+    {
+      "_id": "6146d428663e0a00a24b8oui",
+      "id": "6146d428663e0a00a24b8oui",
+      "name": "Marché de Hoenheim",
+      "description": "Description",
+      "city": "Strasbourg",
+      "address": "1 Rue du Grenier à Grain",
+      "type": "Market",
+      "dayTimetable": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "coordinate": [
+        "48.6212448082",
+        "7.75567703707"
+      ],
+      "ownerId": "6152cef3487da44a7de8ceb3"
+    }
+  ],
+  "modif": [
     {
       "_id": "6146d428663e0a00a24b8oui",
       "safeplaceId": "6146d428663e0a00a24b85c4",
@@ -23,6 +101,49 @@
       ],
       "ownerId": "6152cef3487da44a7de8ceb3",
       "id": "6146d428663e0a00a24b8oui"
+    }
+  ],
+  "requestClaimSafeplace": [
+    {
+      "id": "1",
+      "userId": "6152cef3487da44a7de8ceb3",
+      "safeplaceId": "6146d428663e0a00a24b85c4",
+      "safeplaceName": "Marché de Hoenheim",
+      "status": "pending",
+      "adminComment": "",
+      "safeplaceDescription": "Description",
+      "coordinate": [
+        "48.6212448082",
+        "7.75567703707"
+      ],
+      "adminId": "",
+      "userComment": "",
+      "_id": "1"
+    }
+  ],
+  "billing": {
+    "data": [
+      {
+        "id": "1",
+        "payment_method": "",
+        "receipt_email": "billy@lesinge.com",
+        "description": "Description",
+        "currency": "eur",
+        "status": "oui",
+        "amount": "1",
+        "_id": "1"
+      }
+    ]
+  },
+  "comment": [
+    {
+      "id": "1",
+      "userId": "6152cef3487da44a7de8ceb3",
+      "safeplaceId": "6146d428663e0a00a24b85c4",
+      "comment": "J'adore manger",
+      "grade": 3,
+      "hasBeenValidated": false,
+      "_id": "1"
     }
   ]
 }

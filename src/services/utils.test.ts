@@ -1,14 +1,30 @@
+import ICampaign from '../components/interfaces/ICampaign';
 import IProfessional from '../components/interfaces/IProfessional';
+import ITarget from '../components/interfaces/ITarget';
 import IUser from '../components/interfaces/IUser';
-import { isProfessionalValid, isTimetableValid, isUserValid } from './utils';
 import {
+    isProfessionalValid,
+    isTimetableValid,
+    isUserValid,
     isEmailValid,
     isUsernameValid,
     isPasswordValid,
     isClientNumberTVA,
     isPhoneNumberValid,
     isSirenValid,
-    isSiretValid
+    isSiretValid,
+    isAmountValid,
+    isBillingValid,
+    isSafeplaceUpdateValid,
+    isCampaignNameValid,
+    isCampaignBudgetValid,
+    isCampaignStatusValid,
+    isCampaignStartingDateValid,
+    isCampaignValid,
+    isTargetNameValid,
+    isTargetCSPValid,
+    isTargetAgeRangeValid,
+    isTargetValid
 } from './utils';
 
 test('isUserValid invalid password', async () => {
@@ -145,6 +161,7 @@ test('ensure that isTimetableValid occurs as expected', () => {
 
 test('ensure that isProfessionalValid occurs as expected', () => {
     const data: IProfessional = {
+        id: "1",
         userId: "",
         companyName: "",
         companyAddress: "",
@@ -164,4 +181,77 @@ test('ensure that isProfessionalValid occurs as expected', () => {
     expect(isProfessionalValid({ ...data, companyPhone: "" }).isValid).toBeFalsy();
     expect(isProfessionalValid({ ...data, SIREN: "aeaoeoa" }).isValid).toBeFalsy();
     expect(isProfessionalValid({ ...data, SIRET: "auieaiu" }).isValid).toBeFalsy();
+});
+
+test('ensure that isCampaignNameValid occurs as expected', () => {
+    expect(isCampaignNameValid("")).toBeFalsy();
+    expect(isCampaignNameValid("test")).toBeTruthy();
+});
+
+test('ensure that isCampaignBudgetValid occurs as expected', () => {
+    expect(isCampaignBudgetValid(0)).toBeFalsy();
+    expect(isCampaignBudgetValid(1)).toBeTruthy();
+});
+
+test('ensure that isCampaignStatusValid occurs as expected', () => {
+    expect(isCampaignStatusValid("")).toBeFalsy();
+    expect(isCampaignStatusValid("active")).toBeTruthy();
+    expect(isCampaignStatusValid("pause")).toBeTruthy();
+    expect(isCampaignStatusValid("template")).toBeTruthy();
+});
+
+test('ensure that isCampaignStartingDateValid occurs as expected', () => {
+    expect(isCampaignStartingDateValid("")).toBeFalsy();
+    expect(isCampaignStartingDateValid("2022-05-12")).toBeTruthy();
+});
+
+test('ensure that isCampaignValid occurs as expected', () => {
+    const campaign: ICampaign = {
+        id: "1",
+        ownerId: "1",
+        name: "test",
+        budget: "100",
+        status: "active",
+        startingDate: "2022-05-12",
+        targets: []
+    };
+
+    expect(isCampaignValid(campaign).isValid).toBeTruthy();
+    expect(isCampaignValid({ ...campaign, name: "" }).isValid).toBeFalsy();
+    expect(isCampaignValid({ ...campaign, budget: "" }).isValid).toBeFalsy();
+    expect(isCampaignValid({ ...campaign, status: "" }).isValid).toBeFalsy();
+    expect(isCampaignValid({ ...campaign, startingDate: "" }).isValid).toBeFalsy();
+});
+
+test('ensure that isTargetNameValid occurs as expected', () => {
+    expect(isTargetNameValid("")).toBeFalsy();
+    expect(isTargetNameValid("test")).toBeTruthy();
+});
+
+test('ensure that isTargetCSPValid occurs as expected', () => {
+    expect(isTargetCSPValid("")).toBeFalsy();
+    expect(isTargetCSPValid("tes")).toBeTruthy();
+    expect(isTargetCSPValid("test")).toBeTruthy();
+    expect(isTargetCSPValid("tests")).toBeTruthy();
+});
+
+test('ensure that isTargetAgeRangeValid occurs as expected', () => {
+    expect(isTargetAgeRangeValid("random")).toBeFalsy();
+    expect(isTargetAgeRangeValid("18-23")).toBeTruthy();
+});
+
+test('ensure that isTargetValid occurs as expected', () => {
+    const target: ITarget = {
+        id: "1",
+        ownerId: "1",
+        name: "test",
+        csp: "csp",
+        ageRange: "18-23",
+        interests: []
+    };
+
+    expect(isTargetValid(target).isValid).toBeTruthy();
+    expect(isTargetValid({ ...target, name: "" }).isValid).toBeFalsy();
+    expect(isTargetValid({ ...target, csp: "" }).isValid).toBeFalsy();
+    expect(isTargetValid({ ...target, ageRange: "" }).isValid).toBeFalsy();
 });

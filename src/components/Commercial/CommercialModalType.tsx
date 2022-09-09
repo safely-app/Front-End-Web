@@ -1,0 +1,8 @@
+export enum ModalType {
+  OFF,
+  CREATE,
+  UPDATE,
+  CREATE_TARGET,
+  UPDATE_TARGET,
+  UPDATE_TARGETS
+}

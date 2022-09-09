@@ -1,4 +1,3 @@
-import React from 'react';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import {
     Authentication,
@@ -13,75 +12,75 @@ import { BrowserRouter } from 'react-router-dom';
 const testDelay = (ms: number): Promise<void> =>
     new Promise(resolve => setTimeout(resolve, ms));
 
-test('renders authentication sign up component', () => {
-    render(
-        <Provider store={store}>
-            <Authentication />
-        </Provider>
-    );
+// test('renders authentication sign up component', () => {
+//     render(
+//         <Provider store={store}>
+//             <Authentication />
+//         </Provider>
+//     );
 
-    expect(screen.getAllByText(/S'inscrire/i).length > 1).toBe(true);
-    expect(screen.getByRole("email")).toBeInTheDocument();
-    expect(screen.getByRole("password")).toBeInTheDocument();
-});
+//     expect(screen.getAllByText(/S'inscrire/i).length > 1).toBe(true);
+//     expect(screen.getByRole("email")).toBeInTheDocument();
+//     expect(screen.getByRole("password")).toBeInTheDocument();
+// });
 
-test('renders authentication sign in component', () => {
-    render(
-        <Provider store={store}>
-            <Authentication />
-        </Provider>
-    );
+// test('renders authentication sign in component', () => {
+//     render(
+//         <Provider store={store}>
+//             <Authentication />
+//         </Provider>
+//     );
 
-    const switchViewButton = screen.getAllByText(/S'inscrire/i)[0];
-    expect(switchViewButton).toBeInTheDocument();
+//     const switchViewButton = screen.getAllByText(/S'inscrire/i)[0];
+//     expect(switchViewButton).toBeInTheDocument();
 
-    fireEvent.click(switchViewButton);
+//     fireEvent.click(switchViewButton);
 
-    const alreadySubscribedButton = screen.getAllByText(/Se connecter/i)[0];
-    expect(alreadySubscribedButton).toBeInTheDocument();
+//     const alreadySubscribedButton = screen.getAllByText(/Se connecter/i)[0];
+//     expect(alreadySubscribedButton).toBeInTheDocument();
 
-    expect(screen.getByRole("email")).toBeInTheDocument();
-    expect(screen.getByRole("username")).toBeInTheDocument();
-    expect(screen.getAllByRole("password").length).toEqual(2);
+//     expect(screen.getByRole("email")).toBeInTheDocument();
+//     expect(screen.getByRole("username")).toBeInTheDocument();
+//     expect(screen.getAllByRole("password").length).toEqual(2);
 
-    fireEvent.click(alreadySubscribedButton);
+//     fireEvent.click(alreadySubscribedButton);
 
-    expect(screen.getByRole("email")).toBeInTheDocument();
-    expect(screen.getByRole("password")).toBeInTheDocument();
-});
+//     expect(screen.getByRole("email")).toBeInTheDocument();
+//     expect(screen.getByRole("password")).toBeInTheDocument();
+// });
 
-test('renders authentication forgotten password component', async () => {
-    const scope = nock('https://api.safely-app.fr')
-        .post('/user/forgotPassword')
-        .reply(200, {}, {
-            'Access-Control-Allow-Origin': '*'
-        });
+// test('renders authentication forgotten password component', async () => {
+//     const scope = nock('https://api.safely-app.fr')
+//         .post('/user/forgotPassword')
+//         .reply(200, {}, {
+//             'Access-Control-Allow-Origin': '*'
+//         });
 
-    render(
-        <Provider store={store}>
-            <Authentication />
-        </Provider>
-    );
+//     render(
+//         <Provider store={store}>
+//             <Authentication />
+//         </Provider>
+//     );
 
-    const forgotPasswordLink = screen.getByText(/Mot de passe oublié/i);
-    expect(forgotPasswordLink).toBeInTheDocument();
+//     const forgotPasswordLink = screen.getByText(/Mot de passe oublié/i);
+//     expect(forgotPasswordLink).toBeInTheDocument();
 
-    fireEvent.click(forgotPasswordLink);
+//     fireEvent.click(forgotPasswordLink);
 
-    const emailInput = screen.getByRole("email");
-    const forgotPasswordButton = screen.getByRole("button");
-    expect(emailInput).toBeInTheDocument();
-    expect(forgotPasswordButton).toBeInTheDocument();
+//     const emailInput = screen.getByRole("email");
+//     const forgotPasswordButton = screen.getByRole("button");
+//     expect(emailInput).toBeInTheDocument();
+//     expect(forgotPasswordButton).toBeInTheDocument();
 
-    fireEvent.change(emailInput, {
-        target: { value: 'testemail@test.de' }
-    });
+//     fireEvent.change(emailInput, {
+//         target: { value: 'testemail@test.de' }
+//     });
 
-    fireEvent.click(forgotPasswordButton);
-    await act(async () => testDelay(3000));
-    scope.done();
+//     fireEvent.click(forgotPasswordButton);
+//     await act(async () => testDelay(3000));
+//     scope.done();
 
-});
+// });
 
 test('renders authentication with filled information', () => {
     render(
