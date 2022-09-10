@@ -13,7 +13,17 @@ test('renders app', async () => {
   const scopeUser = nock(baseURL).get('/user/')
     .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeSafeplace = nock(baseURL).get('/safeplace/safeplace')
-    .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
+    .reply(200, [
+      {
+        _id: "s1",
+        type: "resto",
+        city: "ville",
+        name: "safeplace",
+        address: "adresse",
+        coordinate: [ "1", "1" ],
+        dayTimetable: [ null, null, null, null, null, null, null ]
+      }
+    ], { 'Access-Control-Allow-Origin': '*' });
   // const scopeNotif = nock("https://api.safely-app.fr").get('/commercial/notifications')
   //   .reply(200, [], { 'Access-Control-Allow-Origin': '*' });
 
