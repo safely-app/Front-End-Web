@@ -57,17 +57,17 @@ const Map: React.FC<{
 const AppWelcomePage: React.FC = () => {
   return (
     <div className='w-full px-12'>
-      <p className='font-extrabold text-3xl mt-20 mb-16'>Bienvenue sur Safely !</p>
+      <p className='font-extrabold text-3xl mt-20 mb-16 w-1/2 mx-auto'>Bienvenue sur Safely !</p>
 
       <div className='space-y-12'>
 
-        <div>
+        <div className='w-1/2 mx-auto'>
           <p className='font-bold text-xl'>Réclamez votre commerce</p>
-          <p className='w-1/2 mt-2'>
+          <p className='mt-2'>
             Réclamez votre commerce pour lancer votre première campagne publicitaire
           </p>
 
-          <div className='grid grid-cols-2 gap-8 mt-4'>
+          <div className='space-y-4 mt-4'>
             <div className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none'>
               <div className='ml-2 mr-5 my-auto'>
                 <MdOutlinePlace className='h-10 w-10 text-green-600' />
@@ -80,13 +80,13 @@ const AppWelcomePage: React.FC = () => {
           </div>
         </div>
 
-        <div>
+        <div className='w-1/2 mx-auto'>
           <p className='font-bold text-xl'>Gérez votre campagne publicitare</p>
-          <p className='w-1/2 mt-2'>
+          <p className='mt-2'>
             Lancez votre première campagne publicitaire et suivez son impact depuis votre tableau de bord
           </p>
 
-          <div className='grid grid-cols-2 gap-8 mt-4'>
+          <div className='space-y-4 mt-4'>
             <div className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none'>
               <div className='ml-2 mr-5 my-auto'>
                 <BsMegaphone className='h-10 w-10 text-orange-600 -rotate-12' />
@@ -112,6 +112,65 @@ const AppWelcomePage: React.FC = () => {
     </div>
   );
 };
+
+// const AppWelcomePage: React.FC = () => {
+//   return (
+//     <div className='w-full px-14'>
+//       <p className='font-extrabold text-3xl mt-24 mb-16'>Bienvenue sur Safely !</p>
+
+//       <div className='space-y-12'>
+
+//         <div>
+//           <p className='font-bold text-xl'>Réclamez votre commerce</p>
+//           <p className='w-1/2 mt-2'>
+//             Réclamez votre commerce pour lancer votre première campagne publicitaire
+//           </p>
+
+//           <div className='grid grid-cols-2 gap-8 mt-4'>
+//             <div className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none'>
+//               <div className='ml-2 mr-5 my-auto'>
+//                 <MdOutlinePlace className='h-10 w-10 text-green-600' />
+//               </div>
+//               <div className='my-auto'>
+//                 <p className='font-bold'>Trouvez votre commerce</p>
+//                 <p className='text-sm'>Trouvez votre commerce parmis les enseignes enregistrées sur notre plateforme</p>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         <div>
+//           <p className='font-bold text-xl'>Gérez votre campagne publicitare</p>
+//           <p className='w-1/2 mt-2'>
+//             Lancez votre première campagne publicitaire et suivez son impact depuis votre tableau de bord
+//           </p>
+
+//           <div className='grid grid-cols-2 gap-8 mt-4'>
+//             <div className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none'>
+//               <div className='ml-2 mr-5 my-auto'>
+//                 <BsMegaphone className='h-10 w-10 text-orange-600 -rotate-12' />
+//               </div>
+//               <div className='my-auto'>
+//                 <p className='font-bold'>Campagne publicitaire</p>
+//                 <p className='text-sm'>Créez une campagne publicitaire pour promouvoir votre commerce sur l'application mobile</p>
+//               </div>
+//             </div>
+//             <div className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none'>
+//               <div className='ml-2 mr-4 my-auto'>
+//                 <FiPieChart className='h-12 w-12 text-blue-600' />
+//               </div>
+//               <div className='my-auto'>
+//                 <p className='font-bold'>Informations sur votre campagne</p>
+//                 <p className='text-sm'>Suivez l'état de votre campagne à travers le temps depuis votre tableau de bord</p>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//       </div>
+//     </div>
+//   );
+// };
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
