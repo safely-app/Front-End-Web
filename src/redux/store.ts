@@ -1,6 +1,7 @@
 import { createStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import safeplaceSlice from './slices/safeplaceSlice';
 import userSlice from './slices/userSlice';
 
 const persistConfig = {
@@ -10,6 +11,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     user: userSlice,
+    safeplace: safeplaceSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
