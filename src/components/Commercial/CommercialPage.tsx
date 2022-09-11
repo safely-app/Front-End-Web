@@ -11,7 +11,7 @@ import log from 'loglevel';
 
 enum SECTION {
   CAMPAIGNS,
-  STATISTIC
+  STATISTICS
 }
 
 const CommercialSectionBtn: React.FC<{
@@ -56,6 +56,18 @@ const CommercialPage: React.FC = () => {
   });
 
   useEffect(() => {
+    const parseUrl = (url: string): string => {
+      try {
+        const regex = new RegExp(/\?state=(.*)/);
+        const found = url.match(regex) || ["", ""];
+
+        return found[1];
+      } catch (err) {
+        log.error(err);
+        return "";
+      }
+    };
+
     const startingDateToString = (startingDate: string) => {
       const date = new Date(startingDate);
 
@@ -67,6 +79,10 @@ const CommercialPage: React.FC = () => {
 
       return `${date.getFullYear()}-${strMonth}-${strDay}`;
     };
+
+    if (parseUrl(window.location.search) === "statistics") {
+      setDisplayedSection(SECTION.STATISTICS);
+    }
 
     Commercial.getAllCampaignByOwner(userCredentials._id, userCredentials.token)
       .then(result => {
@@ -119,7 +135,7 @@ const CommercialPage: React.FC = () => {
       <div className='mt-14 mx-14'>
         <div className='inline-block flex-shrink space-x-4 pb-1.5 border-b-2 border-solid border-neutral-300'>
           <CommercialSectionBtn btnText='Mes campagnes' sectionType={SECTION.CAMPAIGNS} displayedSection={displayedSection} setDisplayedSection={setDisplayedSection} />
-          <CommercialSectionBtn btnText='Statistiques' sectionType={SECTION.STATISTIC} displayedSection={displayedSection} setDisplayedSection={setDisplayedSection} />
+          <CommercialSectionBtn btnText='Statistiques' sectionType={SECTION.STATISTICS} displayedSection={displayedSection} setDisplayedSection={setDisplayedSection} />
         </div>
         <hr className='border-none' />
         {(displayedSection === SECTION.CAMPAIGNS)

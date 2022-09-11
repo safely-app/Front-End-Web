@@ -1,8 +1,8 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import {
-    Authentication,
-    ResetPassword,
-    SignOut
+  Authentication,
+  ResetPassword,
+  SignOut
 } from './Authentication';
 import { Provider } from 'react-redux';
 import { store } from '../../redux';
@@ -10,7 +10,7 @@ import nock from 'nock';
 import { BrowserRouter } from 'react-router-dom';
 
 const testDelay = (ms: number): Promise<void> =>
-    new Promise(resolve => setTimeout(resolve, ms));
+  new Promise(resolve => setTimeout(resolve, ms));
 
 // test('renders authentication sign up component', () => {
 //     render(
@@ -83,68 +83,68 @@ const testDelay = (ms: number): Promise<void> =>
 // });
 
 test('renders authentication with filled information', () => {
-    render(
-        <Provider store={store}>
-            <Authentication />
-        </Provider>
-    );
+  render(
+    <Provider store={store}>
+      <Authentication />
+    </Provider>
+  );
 
-    const email = screen.getByRole("email");
-    const password = screen.getByRole("password");
+  const email = screen.getByRole("email");
+  const password = screen.getByRole("password");
 
-    expect(email).toBeInTheDocument();
-    expect(password).toBeInTheDocument();
+  expect(email).toBeInTheDocument();
+  expect(password).toBeInTheDocument();
 
-    fireEvent.change(email, {
-        target: { value: "email@test.com" }
-    });
+  fireEvent.change(email, {
+    target: { value: "email@test.com" }
+  });
 
-    fireEvent.change(password, {
-        target: { value: "passwordtest" }
-    });
+  fireEvent.change(password, {
+    target: { value: "passwordtest" }
+  });
 
-    expect(screen.getByDisplayValue("email@test.com")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("passwordtest")).toBeInTheDocument();
+  expect(screen.getByDisplayValue("email@test.com")).toBeInTheDocument();
+  expect(screen.getByDisplayValue("passwordtest")).toBeInTheDocument();
 });
 
 test('renders reset password component', async () => {
-    const scope = nock('https://api.safely-app.fr')
-        .post('/user/changePassword')
-        .reply(200, {}, {
-            'Access-Control-Allow-Origin': '*'
-        });
-
-    render(
-        <Provider store={store}>
-            <BrowserRouter>
-                <ResetPassword />
-            </BrowserRouter>
-        </Provider>
-    );
-
-    const button = screen.getByRole("button");
-    const passwordInputs = screen.getAllByRole("password");
-
-    expect(button).toBeInTheDocument();
-    expect(passwordInputs.length).toEqual(2);
-
-    passwordInputs.forEach(passwordInput => {
-        fireEvent.change(passwordInput, {
-            target: { value: 'testpassword' }
-        });
+  const scope = nock('https://api.safely-app.fr')
+    .post('/user/changePassword')
+    .reply(200, {}, {
+      'Access-Control-Allow-Origin': '*'
     });
 
-    fireEvent.click(button);
-    await act(async () => await testDelay(3000));
-    scope.done();
+  render(
+    <Provider store={store}>
+      <BrowserRouter>
+        <ResetPassword />
+      </BrowserRouter>
+    </Provider>
+  );
+
+  const button = screen.getByRole("button");
+  const passwordInputs = screen.getAllByRole("password");
+
+  expect(button).toBeInTheDocument();
+  expect(passwordInputs.length).toEqual(2);
+
+  passwordInputs.forEach(passwordInput => {
+    fireEvent.change(passwordInput, {
+      target: { value: 'testpassword' }
+    });
+  });
+
+  fireEvent.click(button);
+  await act(async () => await testDelay(3000));
+  scope.done();
 });
 
 test('renders signout component', () => {
-    render(
-        <Provider store={store}>
-            <BrowserRouter>
-                <SignOut />
-            </BrowserRouter>
-        </Provider>
-    );
+  render(
+    <Provider store={store}>
+      <BrowserRouter>
+        <SignOut />
+      </BrowserRouter>
+    </Provider>
+  );
 });

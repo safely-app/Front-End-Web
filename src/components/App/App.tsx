@@ -4,7 +4,8 @@ import React, {
 import {
   setInfo,
   useAppSelector,
-  useAppDispatch
+  useAppDispatch,
+  setReduxSafeplaces
 } from '../../redux';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import ISafeplace from '../interfaces/ISafeplace';
@@ -68,7 +69,7 @@ const AppWelcomePage: React.FC = () => {
           </p>
 
           <div className='space-y-4 mt-4'>
-            <div className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none'>
+            <a className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none' href='/shops'>
               <div className='ml-2 mr-5 my-auto'>
                 <MdOutlinePlace className='h-10 w-10 text-green-600' />
               </div>
@@ -76,7 +77,7 @@ const AppWelcomePage: React.FC = () => {
                 <p className='font-bold'>Trouvez votre commerce</p>
                 <p className='text-sm'>Trouvez votre commerce parmis les enseignes enregistrées sur notre plateforme</p>
               </div>
-            </div>
+            </a>
           </div>
         </div>
 
@@ -87,7 +88,7 @@ const AppWelcomePage: React.FC = () => {
           </p>
 
           <div className='space-y-4 mt-4'>
-            <div className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none'>
+            <a className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none' href='/commercial?state=campaigns'>
               <div className='ml-2 mr-5 my-auto'>
                 <BsMegaphone className='h-10 w-10 text-orange-600 -rotate-12' />
               </div>
@@ -95,8 +96,8 @@ const AppWelcomePage: React.FC = () => {
                 <p className='font-bold'>Campagne publicitaire</p>
                 <p className='text-sm'>Créez une campagne publicitaire pour promouvoir votre commerce sur l'application mobile</p>
               </div>
-            </div>
-            <div className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none'>
+            </a>
+            <a className='border border-solid border-neutral-400 rounded-lg p-3 flex cursor-pointer select-none' href='/commercial?state=statistics'>
               <div className='ml-2 mr-4 my-auto'>
                 <FiPieChart className='h-12 w-12 text-blue-600' />
               </div>
@@ -104,7 +105,7 @@ const AppWelcomePage: React.FC = () => {
                 <p className='font-bold'>Informations sur votre campagne</p>
                 <p className='text-sm'>Suivez l'état de votre campagne à travers le temps depuis votre tableau de bord</p>
               </div>
-            </div>
+            </a>
           </div>
         </div>
 
@@ -175,31 +176,41 @@ const AppWelcomePage: React.FC = () => {
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const userCredentials = useAppSelector(state => state.user.credentials);
+  const reduxSafeplace = useAppSelector(state => state.safeplace);
 
-  const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
+  const [safeplaces, setSafeplaces] = useState<ISafeplace[]>(reduxSafeplace.safeplaces);
 
   useEffect(() => {
     User.get(userCredentials._id, userCredentials.token)
       .then(response => dispatch(setInfo(response.data)))
       .catch(error => log.error(error));
 
-    Safeplace.getAll(userCredentials.token)
-      .then(response => {
-        const gotSafeplaces = response.data.map(safeplace => ({
-          id: safeplace._id,
-          name: safeplace.name,
-          description: safeplace.description,
-          city: safeplace.city,
-          address: safeplace.address,
-          type: safeplace.type,
-          dayTimetable: safeplace.dayTimetable,
-          coordinate: safeplace.coordinate,
-          ownerId: safeplace.ownerId,
-        }) as ISafeplace);
+    if (reduxSafeplace.safeplaces === undefined
+      || reduxSafeplace.safeplaces.length === 0
+      || reduxSafeplace.date + 86400000 < Date.now()
+    ) {
+      Safeplace.getAll(userCredentials.token)
+        .then(response => {
+          const gotSafeplaces = response.data.map(safeplace => ({
+            id: safeplace._id,
+            name: safeplace.name,
+            description: safeplace.description,
+            city: safeplace.city,
+            address: safeplace.address,
+            type: safeplace.type,
+            dayTimetable: safeplace.dayTimetable,
+            coordinate: safeplace.coordinate,
+            ownerId: safeplace.ownerId,
+          }) as ISafeplace);
 
-        setSafeplaces(gotSafeplaces);
-      }).catch(error => log.error(error));
-  }, [userCredentials, dispatch]);
+          setSafeplaces(gotSafeplaces);
+          dispatch(setReduxSafeplaces({
+            date: Date.now(),
+            safeplaces: gotSafeplaces
+          }));
+        }).catch(error => log.error(error));;
+    }
+  }, [userCredentials, dispatch, reduxSafeplace]);
 
   return (
     <div className='h-screen'>

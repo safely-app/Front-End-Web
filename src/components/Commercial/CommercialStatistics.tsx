@@ -135,7 +135,7 @@ const CommercialStatistics: React.FC<{
     <div className='mt-10 mb-3'>
       <div className='relative cursor-pointer select-none font-bold text-3xl w-fit rounded-t-lg'>
         <div className='p-3' onClick={() => setDropdownOn(!dropdownOn)}>
-          <span>{campaigns[dropdownIndex].name}</span>
+          <span>{campaigns[dropdownIndex]?.name || ""}</span>
           {(dropdownOn)
             ? <MdOutlineKeyboardArrowUp className='inline ml-2' />
             : <MdOutlineKeyboardArrowDown className='inline ml-2' />}
