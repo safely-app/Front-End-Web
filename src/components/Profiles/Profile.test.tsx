@@ -115,7 +115,9 @@ test('render Profile update user', async () => {
       type: "restosushi"
     }, { 'Access-Control-Allow-Origin': '*' });
 
-  const scopeStripeCards = nock(baseURL).get('/stripe/stripe/user/card/undefined')
+  const scopeStripeCards1 = nock(baseURL).get('/stripe/stripe/user/card/undefined')
+    .reply(200, { data: [] }, { 'Access-Control-Allow-Origin': '*' });
+  const scopeStripeCards2 = nock(baseURL).get('/stripe/stripe/user/card/stripe1')
     .reply(200, { data: [] }, { 'Access-Control-Allow-Origin': '*' });
 
   render(
@@ -137,7 +139,8 @@ test('render Profile update user', async () => {
   await act(async () => testDelay(1000));
 
   scopeProfessional.done();
-  scopeStripeCards.done();
+  scopeStripeCards1.done();
+  scopeStripeCards2.done();
   scopeUserOptions.done();
   scopeUserUpdate.done();
   scopeUser.done();
@@ -176,7 +179,7 @@ test('render Profile update professional info', async () => {
       type: "restosushi"
     }, { 'Access-Control-Allow-Origin': '*' });
 
-  const scopeStripeCards = nock(baseURL).get('/stripe/stripe/user/card/undefined')
+  const scopeStripeCards = nock(baseURL).get('/stripe/stripe/user/card/stripe1')
     .reply(200, { data: [] }, { 'Access-Control-Allow-Origin': '*' });
 
   render(

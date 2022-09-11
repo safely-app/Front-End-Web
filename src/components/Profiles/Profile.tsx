@@ -185,7 +185,6 @@ const Profile: React.FC = () => {
 
         setUser(gotUser);
         setSavedUser(gotUser);
-        dispatch(setInfo(gotUser));
       }).catch(error => log.error(error));
 
     ProfessionalInfo.getOwner(userCredentials._id, userCredentials.token)
