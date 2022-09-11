@@ -360,7 +360,9 @@ export const Authentication: React.FC = () => {
   return (
     <div className="Authentication-container">
       {selectView()}
-      {!!userCredientialsId && <Redirect to="/" />}
+      {!!userCredientialsId &&
+        <Redirect to={(view === View.SIGNUP) ? "/?onboarding=true" : "/"} />
+      }
     </div>
   );
 }

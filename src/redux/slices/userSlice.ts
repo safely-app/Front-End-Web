@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import IProfessional from '../../components/interfaces/IProfessional';
 import IUser from '../../components/interfaces/IUser';
 
 interface IUserCredentials {
@@ -8,6 +9,7 @@ interface IUserCredentials {
 
 interface UserState {
   credentials: IUserCredentials;
+  professionalInfo: IProfessional;
   userInfo: IUser;
 }
 
@@ -21,6 +23,23 @@ const initialState: UserState = {
     username: "",
     email: "",
     role: ""
+  },
+  professionalInfo: {
+    userId: "",
+    companyName: "",
+    companyAddress: "",
+    companyAddress2: "",
+    billingAddress: "",
+    clientNumberTVA: "",
+    personalPhone: "",
+    companyPhone: "",
+    registrationCity: "",
+    artisanNumber: "",
+    SIREN: "",
+    SIRET: "",
+    type: "",
+    RCS: "",
+    id: "",
   }
 };
 
@@ -43,16 +62,34 @@ export const userSlice = createSlice({
         stripeId: action.payload.stripeId
       };
     },
+    setProfessionalInfo: (state, action) => {
+      state.professionalInfo = {
+        userId: action.payload.userId,
+        companyName: action.payload.companyName,
+        companyAddress: action.payload.companyAddress,
+        companyAddress2: action.payload.companyAddress2,
+        billingAddress: action.payload.billingAddress,
+        clientNumberTVA: action.payload.clientNumberTVA,
+        personalPhone: action.payload.personalPhone,
+        companyPhone: action.payload.companyPhone,
+        registrationCity: action.payload.registrationCity,
+        artisanNumber: action.payload.artisanNumber,
+        SIREN: action.payload.SIREN,
+        SIRET: action.payload.SIRET,
+        type: action.payload.type,
+        RCS: action.payload.RCS,
+        id: action.payload.id,
+      };
+    },
     disconnect: (state) => {
       state.credentials = {
-        _id: "",
-        token: ""
+        ...initialState.credentials
       };
       state.userInfo = {
-        id: "",
-        username: "",
-        email: "",
-        role: ""
+        ...initialState.userInfo
+      };
+      state.professionalInfo = {
+        ...initialState.professionalInfo
       };
     },
   }
@@ -61,6 +98,7 @@ export const userSlice = createSlice({
 export const {
   setCredentials,
   setInfo,
+  setProfessionalInfo,
   disconnect
 } = userSlice.actions;
 

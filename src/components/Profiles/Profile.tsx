@@ -3,7 +3,7 @@ import { AppHeader } from '../Header/Header';
 import IUser from '../interfaces/IUser';
 import IProfessional from '../interfaces/IProfessional';
 import { ProfessionalInfo, Stripe, User } from '../../services';
-import { disconnect, useAppDispatch, useAppSelector } from '../../redux';
+import { disconnect, setInfo, setProfessionalInfo, useAppDispatch, useAppSelector } from '../../redux';
 import {
   MdOutlineKeyboardArrowDown,
   MdOutlineKeyboardArrowUp
@@ -136,6 +136,7 @@ const Profile: React.FC = () => {
   const dispatch = useAppDispatch();
   const userUserInfo = useAppSelector(state => state.user.userInfo);
   const userCredentials = useAppSelector(state => state.user.credentials);
+  const userProfessionalInfo = useAppSelector(state => state.user.professionalInfo);
 
   const [sectionState, setSectionState] = useState(SectionState.PERSO);
   const [paymentSolutions, setPaymentSolutions] = useState<IStripeCard[]>([]);
@@ -154,21 +155,21 @@ const Profile: React.FC = () => {
   });
 
   const [professional, setProfessional] = useState<IProfessional>({
-    id: "",
-    userId: userCredentials._id,
-    companyName: "",
-    companyAddress: "",
-    companyAddress2: "",
-    billingAddress: "",
-    clientNumberTVA: "",
-    personalPhone: "",
-    companyPhone: "",
-    RCS: "",
-    registrationCity: "",
-    SIREN: "",
-    SIRET: "",
-    artisanNumber: "",
-    type: ""
+    id: userProfessionalInfo.id,
+    userId: userProfessionalInfo.userId,
+    companyName: userProfessionalInfo.companyName,
+    companyAddress: userProfessionalInfo.companyAddress,
+    companyAddress2: userProfessionalInfo.companyAddress2,
+    billingAddress: userProfessionalInfo.billingAddress,
+    clientNumberTVA: userProfessionalInfo.clientNumberTVA,
+    personalPhone: userProfessionalInfo.personalPhone,
+    companyPhone: userProfessionalInfo.companyPhone,
+    RCS: userProfessionalInfo.RCS,
+    registrationCity: userProfessionalInfo.registrationCity,
+    SIREN: userProfessionalInfo.SIREN,
+    SIRET: userProfessionalInfo.SIRET,
+    artisanNumber: userProfessionalInfo.artisanNumber,
+    type: userProfessionalInfo.type
   });
 
   useEffect(() => {
@@ -184,6 +185,7 @@ const Profile: React.FC = () => {
 
         setUser(gotUser);
         setSavedUser(gotUser);
+        dispatch(setInfo(gotUser));
       }).catch(error => log.error(error));
 
     ProfessionalInfo.getOwner(userCredentials._id, userCredentials.token)
@@ -208,13 +210,14 @@ const Profile: React.FC = () => {
 
         setProfessional(gotProfessional);
         setSavedProfessional(gotProfessional);
+        dispatch(setProfessionalInfo(gotProfessional));
       }).catch(err => {
         log.error(err);
         if (err.response === undefined || err.response.status !== 404) {
           notifyError(err);
         }
       });
-  }, [userCredentials]);
+  }, [userCredentials, dispatch]);
 
   useEffect(() => {
     Stripe.getCards(userUserInfo.stripeId as string, userCredentials.token)
@@ -251,6 +254,7 @@ const Profile: React.FC = () => {
   const updateUser = async () => {
     try {
       await User.update(user.id, user, userCredentials.token);
+      dispatch(setInfo(user));
       setSavedUser(user);
     } catch (err) {
       notifyError(err);
@@ -261,6 +265,7 @@ const Profile: React.FC = () => {
   const updateProfessional = async () => {
     try {
       await ProfessionalInfo.update(professional.id, professional, userCredentials.token);
+      dispatch(setProfessionalInfo(professional));
       setSavedProfessional(professional);
     } catch (err) {
       notifyError(err);
@@ -302,7 +307,7 @@ const Profile: React.FC = () => {
             last4: paymentSolution.card.last4,
             created: paymentSolution.created * 1000
           }));
-  
+
           setPaymentSolutions(gotPaymentSolutions);
         }).catch(err => log.error(err));
     } catch (err) {
@@ -451,7 +456,7 @@ const Profile: React.FC = () => {
                     )}
                   </div>
                   <button className='absolute p-1 text-sm font-bold w-5/6 rounded-lg bg-white drop-shadow-lg bottom-16 left-1/2 -translate-x-1/2' onClick={() => setCardModalOn(true)}>Ajouter une carte</button>
-                  <div className='absolute w-5/6 bg-white rounded-lg drop-shadow-lg grid grid-cols-12 text-center bottom-0 left-1/2 -translate-x-1/2 mb-8 font-bold' hidden={paymentSolutions.length < 4}>
+                  <div className={`absolute w-5/6 bg-white rounded-lg drop-shadow-lg grid grid-cols-12 text-center bottom-0 left-1/2 -translate-x-1/2 mb-8 font-bold ${paymentSolutions.length < 4 && 'hidden'}`}>
                     <div className='col-span-1 cursor-pointer rounded-l-lg' onClick={() => updatePaymentSolutionsIndex(-1)}>{'<'}</div>
                     <div className='col-span-10'>{(paymentSolutionsIndex + 1) + '/' + Math.ceil(paymentSolutions.length / 4)}</div>
                     <div className='col-span-1 cursor-pointer rounded-r-lg' onClick={() => updatePaymentSolutionsIndex(1)}>{'>'}</div>

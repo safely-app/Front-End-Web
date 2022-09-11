@@ -1,7 +1,8 @@
 import reducer, {
   setCredentials,
   setInfo,
-  disconnect
+  disconnect,
+  setProfessionalInfo
 } from './userSlice';
 
 const initialState = {
@@ -14,7 +15,24 @@ const initialState = {
     id: "",
     role: "",
     username: ""
-  }
+  },
+  professionalInfo: {
+    userId: "",
+    companyName: "",
+    companyAddress: "",
+    companyAddress2: "",
+    billingAddress: "",
+    clientNumberTVA: "",
+    personalPhone: "",
+    companyPhone: "",
+    registrationCity: "",
+    artisanNumber: "",
+    SIREN: "",
+    SIRET: "",
+    type: "",
+    RCS: "",
+    id: "",
+  },
 };
 
 test('ensure that empty reducer returns initial state', () => {
@@ -47,6 +65,45 @@ test('ensure that setInfo occurs without technical errors', () => {
       id: "random_id",
       role: "random_role",
       username: "random_username"
+    }
+  });
+});
+
+test('ensure that setProfessional occurs without technical errors', () => {
+  expect(reducer(initialState, setProfessionalInfo({
+    userId: "test",
+    companyName: "test",
+    companyAddress: "test",
+    companyAddress2: "test",
+    billingAddress: "test",
+    clientNumberTVA: "test",
+    personalPhone: "test",
+    companyPhone: "test",
+    registrationCity: "test",
+    artisanNumber: "test",
+    SIREN: "test",
+    SIRET: "test",
+    type: "test",
+    RCS: "test",
+    id: "test",
+  }))).toEqual({
+    ...initialState,
+    professionalInfo: {
+      userId: "test",
+      companyName: "test",
+      companyAddress: "test",
+      companyAddress2: "test",
+      billingAddress: "test",
+      clientNumberTVA: "test",
+      personalPhone: "test",
+      companyPhone: "test",
+      registrationCity: "test",
+      artisanNumber: "test",
+      SIREN: "test",
+      SIRET: "test",
+      type: "test",
+      RCS: "test",
+      id: "test",
     }
   });
 });

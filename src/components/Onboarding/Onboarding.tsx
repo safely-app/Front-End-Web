@@ -1,11 +1,15 @@
 import { useState } from 'react';
+import {
+  useAppSelector,
+  useAppDispatch,
+  setProfessionalInfo
+} from '../../redux';
 import { BsFillCircleFill } from 'react-icons/bs';
 import imgOnboarding from '../../assets/image/mec_allongé.png';
 import IProfessional from '../interfaces/IProfessional';
 import { notifyError } from '../utils';
 import log from "loglevel";
 import { ProfessionalInfo } from '../../services';
-import { useAppSelector } from '../../redux';
 
 const OnboardingPageOne: React.FC = () => {
   return (
@@ -13,7 +17,7 @@ const OnboardingPageOne: React.FC = () => {
       <p className='text-xl font-bold py-6'>Avant de commencer...</p>
       <p className='text-lg w-96'>
         C'est votre première connexion au sein de votre espace commerçant ? Ne paniquez pas !
-        Suivez ce guide step-by-step pour comprendre les fonctionnalités que vous propsent notre application web !
+        Suivez ce guide étape par étape pour comprendre les fonctionnalités que vous propose notre application web !
       </p>
     </div>
   );
@@ -66,7 +70,7 @@ const OnboardingPageThree: React.FC = () => {
         <ul className='list-disc ml-6 mt-4'>
           <li>Suivi de l'état de votre commerce sur Safely</li>
           <li>Création de campagnes publicitaires</li>
-          <li>Suivi en temps réel à l'aide de graphes de vos campagnes</li>
+          <li>Suivi en temps réel à l'aide de graphiques de vos campagnes publicitaires</li>
         </ul>
       </div>
     </div>
@@ -79,16 +83,16 @@ const OnboardingPageFour: React.FC = () => {
       <p className='text-xl font-bold py-6'>Votre campagne publicitaire</p>
       <div className='text-lg w-96'>
         <span>
-          Vous souhaitez vous lancer et creér une campagne publicitaire sur Safely ? Ça n'a jamais été aussi facile, il suffit de définir :
+          Vous souhaitez vous lancer et créer une campagne publicitaire sur Safely ? Ça n'a jamais été aussi facile, il suffit de définir :
         </span>
         <ul className='list-disc ml-6 mt-4'>
           <li>Un nom de campagne</li>
-          <li>Un budget</li>
+          <li>Un budget maximum</li>
           <li>Une date de départ</li>
-          <li>Des cibles</li>
+          <li>Vos cibles publicitaires</li>
         </ul>
         <span className='block mt-4'>
-          Et voila ! Après avoir défini ces critères, votre campagne publicitaire sera officiellement déployé.
+          Et voila ! Après avoir défini ces critères, votre campagne publicitaire sera officiellement lancée !
         </span>
       </div>
     </div>
@@ -107,6 +111,7 @@ const OnboardingPageFifth: React.FC = () => {
 };
 
 const Onboarding: React.FC = () => {
+  const dispatch = useAppDispatch();
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [step, setStep] = useState(0);
@@ -130,6 +135,7 @@ const Onboarding: React.FC = () => {
   const createProfessional = async () => {
     try {
       await ProfessionalInfo.create(professional);
+      dispatch(setProfessionalInfo(professional));
       addStep();
     } catch (error) {
       notifyError(error);

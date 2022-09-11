@@ -5,12 +5,13 @@ import {
   setInfo,
   useAppSelector,
   useAppDispatch,
-  setReduxSafeplaces
+  setReduxSafeplaces,
+  setProfessionalInfo
 } from '../../redux';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import ISafeplace from '../interfaces/ISafeplace';
 import { AppHeader } from '../Header/Header';
-import { Safeplace, User } from '../../services';
+import { ProfessionalInfo, Safeplace, User } from '../../services';
 import { MdOutlinePlace } from 'react-icons/md';
 import { BsMegaphone } from 'react-icons/bs';
 import { FiPieChart } from 'react-icons/fi';
@@ -21,6 +22,7 @@ import {
   Popup
 } from 'react-leaflet'
 import log from "loglevel";
+import Onboarding from '../Onboarding/Onboarding';
 
 const Map: React.FC<{
   safeplaces: ISafeplace[];
@@ -178,12 +180,39 @@ const App: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
   const reduxSafeplace = useAppSelector(state => state.safeplace);
 
+  const parseUrl = (url: string): string => {
+    try {
+      const regex = new RegExp(/\?onboarding=(.*)/);
+      const found = url.match(regex) || ["", ""];
+
+      return found[1];
+    } catch (err) {
+      log.error(err);
+      return "";
+    }
+  };
+
   const [safeplaces, setSafeplaces] = useState<ISafeplace[]>(reduxSafeplace.safeplaces);
+  const [isOnboarding, setIsOnboarding] = useState(parseUrl(window.location.search) === "true");
 
   useEffect(() => {
     User.get(userCredentials._id, userCredentials.token)
       .then(response => dispatch(setInfo(response.data)))
       .catch(error => log.error(error));
+
+    ProfessionalInfo.getOwner(userCredentials._id, userCredentials.token)
+      .then(response => {
+        setIsOnboarding(false);
+        dispatch(setProfessionalInfo({
+          ...response.data,
+          id: response.data._id
+        }));
+      }).catch(error => {
+        log.error(error);
+        if (error.response.status === 404) {
+          setIsOnboarding(true);
+        }
+      });
 
     if (reduxSafeplace.safeplaces === undefined
       || reduxSafeplace.safeplaces.length === 0
@@ -213,13 +242,17 @@ const App: React.FC = () => {
   }, [userCredentials, dispatch, reduxSafeplace]);
 
   return (
-    <div className='h-screen'>
-      <AppHeader />
-      <div className='grid grid-cols-2'>
-        <AppWelcomePage />
-        <Map safeplaces={safeplaces} />
+    isOnboarding ? (
+      <Onboarding />
+    ) : (
+      <div className='h-screen'>
+        <AppHeader />
+        <div className='grid grid-cols-2'>
+          <AppWelcomePage />
+          <Map safeplaces={safeplaces} />
+        </div>
       </div>
-    </div>
+    )
   );
 };
 
