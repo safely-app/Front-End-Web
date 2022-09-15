@@ -9,7 +9,7 @@ class BugReportManager {
             userId: userId,
             title: data.title,
             comment: data.comment,
-            type: 'Bug',
+            type: data.type,
         });
     };
 
