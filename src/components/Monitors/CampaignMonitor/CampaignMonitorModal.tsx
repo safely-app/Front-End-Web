@@ -39,7 +39,7 @@ export const CampaignModal: React.FC<{
     setModifiedStartingDate(event.target.value);
     setCampaign({
       ...campaign,
-      status: event.target.value
+      startingDate: event.target.value
     });
   };
 
@@ -76,7 +76,7 @@ export const CampaignModal: React.FC<{
       <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={campaign.name || ''} onChange={(event) => setField('name', event)} />
       <input type='number' placeholder='Budget' className='block m-2 w-60 text-sm' value={campaign.budget || ''} onChange={(event) => setField('budget', event)} />
       <select value={campaign.status || ''} className='block m-2 text-sm' onChange={(event) => setField('status', event)}>
-        {[ "active", "pause", "template" ].map(status => <option>{status}</option>)}
+        {[ "active", "pause", "template" ].map((status, index) => <option key={index}>{status}</option>)}
       </select>
       <input type='date' placeholder='Date de départ' className='block m-2 w-60 text-sm' value={modifiedStartingDate} onChange={(event) => setStartingDate(event)} />
       <input type='text' placeholder='ID de safeplace' className='block m-2 w-60 text-sm' value={campaign.safeplaceId || ''} onChange={(event) => setField('safeplaceId', event)} />
