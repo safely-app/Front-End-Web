@@ -13,6 +13,7 @@ interface IButtonProps {
     hidden?: boolean;
 }
 
+// TODO: remove Button component
 const Button: React.FC<IButtonProps> = ({
     text,
     onClick,
