@@ -8,7 +8,7 @@ import {
   notifySuccess
 } from '../utils';
 import log from 'loglevel';
-import { Safeplace, RequestClaimSafeplace } from '../../services';
+import { Safeplace, RequestClaimSafeplace, SafeplaceUpdate } from '../../services';
 import { setReduxSafeplaces, useAppDispatch, useAppSelector } from '../../redux';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import {
@@ -88,15 +88,14 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
   });
   const [currentPage, setCurrentPage] = useState<number>(0)
 
-  const updateSafeplace = async (safeplace: ISafeplace) => {
+  const createSafeplaceUpdateRequest = async (safeplace: ISafeplace) => {
     try {
-      await Safeplace.update(safeplace.id, safeplace, userCredentials.token);
-      safeplaces.setter(safeplaces.value.map(s => (s.id === safeplace.id) ? safeplace : s));
-      notifySuccess("Modifications enregistrées");
+      await SafeplaceUpdate.create({ ...safeplace, safeplaceId: safeplace.id }, userCredentials.token);
+      notifySuccess("Votre demande de modification a été enregistrée.");
       setFocusSafeplace(false);
-    } catch (err) {
-      notifyError(err);
-      log.error(err);
+    } catch (error) {
+      notifyError(error);
+      log.error(error);
     }
   };
 
@@ -106,9 +105,9 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
       safeplaces.setter(safeplaces.value.filter(s => s.id !== safeplace.id));
       notifySuccess("Safeplace supprimée");
       setFocusSafeplace(false);
-    } catch (err) {
-      notifyError(err);
-      log.error(err);
+    } catch (error) {
+      notifyError(error);
+      log.error(error);
     }
   };
 
@@ -125,10 +124,10 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
       }, userCredentials.token);
 
       log.log(response);
-      notifySuccess("Votre requête a été créée");
-    } catch (e) {
-      log.error(e);
-      notifyError(e);
+      notifySuccess("Votre requête a été enregistrée.");
+    } catch (error) {
+      log.error(error);
+      notifyError(error);
     }
   };
 
@@ -212,7 +211,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
             safeplace={safeplace}
             setSafeplace={setSafeplace}
             buttons={[
-              <ModalBtn key='sum-btn-0' content="Modifier le commerce" onClick={() => updateSafeplace(safeplace)} />,
+              <ModalBtn key='sum-btn-0' content="Modifier le commerce" onClick={() => createSafeplaceUpdateRequest(safeplace)} />,
               <ModalBtn key='sum-btn-1' content="Supprimer" onClick={() => deleteSafeplace(safeplace)} warning />,
               <ModalBtn key='sum-btn-2' content="Annuler" onClick={() => setFocusSafeplace(false)} />
             ]}

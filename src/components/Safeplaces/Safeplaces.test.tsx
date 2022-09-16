@@ -88,9 +88,7 @@ test('SafeplacesList update info', async () => {
     }
   ];
 
-  const scopeOptions = nock(testURL).options('/safeplace/safeplace/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
-  const scopeUpdate = nock(testURL).put('/safeplace/safeplace/s1')
+  const scopeCreate = nock(testURL).post('/commercial/modif')
     .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
 
   render(
@@ -118,8 +116,7 @@ test('SafeplacesList update info', async () => {
 
   await act(async () => await testDelay(1000));
 
-  scopeOptions.done();
-  scopeUpdate.done();
+  scopeCreate.done();
 });
 
 test('SafeplacesList remove safeplace', async () => {
