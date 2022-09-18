@@ -30,9 +30,9 @@ const Map: React.FC<{
   safeplaces
 }) => {
   return (
-    <div>
+    <div className='z-0'>
       <MapContainer
-        style={{ height: "92vh" }}
+        style={{ height: "100vh" }}
         center={[48.58193415814247, 7.751016938855309]}
         scrollWheelZoom={true}
         zoom={14}
@@ -59,7 +59,7 @@ const Map: React.FC<{
 
 const AppWelcomePage: React.FC = () => {
   return (
-    <div className='w-full px-12'>
+    <div className='w-full px-12 pt-20'>
       <p className='font-extrabold text-3xl mt-20 mb-16 w-1/2 mx-auto'>Bienvenue sur Safely !</p>
 
       <div className='space-y-12'>
@@ -246,7 +246,9 @@ const App: React.FC = () => {
       <Onboarding />
     ) : (
       <div className='h-screen'>
-        <AppHeader />
+        <div className='absolute w-full z-30'>
+          <AppHeader />
+        </div>
         <div className='grid grid-cols-2'>
           <AppWelcomePage />
           <Map safeplaces={safeplaces} />

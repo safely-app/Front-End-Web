@@ -43,7 +43,7 @@ const SafeplacesMap: React.FC<IMapProps> = ({
   return (
     <div className='z-0'>
       <MapContainer
-        style={{ height: "83vh" }}
+        style={{ height: "100vh" }}
         center={[48.58193415814247, 7.751016938855309]}
         scrollWheelZoom={true}
         zoom={14}
@@ -138,12 +138,12 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
   }
 
   return (
-    <div className='px-4'>
+    <div className='px-4 pt-44'>
       {getSafeplaceDetail ? (
-        <div className='overflow-y-auto' style={{ height: "83vh" }}>
+        <div className='overflow-y-auto' style={{ height: "80vh" }}>
           <div className="bg-safeplace-placeholder h-96 rounded-3xl">
             <img className="object-cover" alt="" />
-            <FaArrowLeft onClick={() => { setGetSafeplaceDetail(false) }} className="w-10 h-10" style={{ color: "white" }} />
+            <FaArrowLeft onClick={() => setGetSafeplaceDetail(false)} className="w-10 h-10 cursor-pointer" style={{ color: "white" }} />
           </div>
           <div className="flex flex-row justify-between">
             <div>
@@ -184,7 +184,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-10 overflow-y-auto px-30" style={{ height: "83vh" }}>
+        <div className="grid grid-cols-2 gap-10 overflow-y-auto px-30" style={{ height: "80vh" }}>
           {safeplaces.value && safeplaces.value.length > 0 ? safeplaces.value.map(safeplace => (
             <div className='cursor-pointer' key={safeplace.id}>
               <div data-testid={"safeplace-get-detail-" + safeplace.id} className="bg-safeplace-placeholder w-90 h-80 rounded-3xl" onClick={() => {
@@ -219,10 +219,65 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
         </div>
       )}
     </div>
+  );
+};
 
+const SafeplacesSearchBar: React.FC<{
+  safeplaces: ISafeplace[];
+  stateFilterType: string;
+  setStateFilterType: (value: string) => void;
+  searchBarValue: string;
+  setSearchBarValue: (value: string) => void;
+}> = ({
+  safeplaces,
+  stateFilterType,
+  setStateFilterType,
+  searchBarValue,
+  setSearchBarValue
+}) => {
+  return (
+    <div className="w-1/2 h-12 mt-8 flex justify-between bg-white">
+      <p className="font-bold text-2xl ml-5 mt-3">{safeplaces.length} commerces</p>
 
-  )
-}
+      <div className="flex border-b-2 border-white">
+        <div onClick={() => setStateFilterType(stateFilterType === "restaurant" ? "" : "restaurant")}
+             className={"flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "restaurant" ? " border-b-2 border-black" : '')}>
+          <FaUtensils className="w-10 h-10" />
+          <p className="text-xs">Restaurant</p>
+        </div>
+        <div onClick={() => setStateFilterType(stateFilterType === "Market" ? "" : "Market")}
+             className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "Market" ? " border-b-2 border-black" : '')}>
+          <FaStore className="w-10 h-10" />
+          <p className="text-xs">Marché</p>
+        </div>
+        <div onClick={() => setStateFilterType(stateFilterType === "bakery" ? "" : "bakery")}
+             className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "bakery" ? " border-b-2 border-black" : '')}>
+          <FaBreadSlice className="w-10 h-10" />
+          <p className="text-xs">Boulangerie</p>
+        </div>
+        <div onClick={() => setStateFilterType(stateFilterType === "supermarket" ? "" : "supermarket")}
+             className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "supermarket" ? " border-b-2 border-black" : '')}>
+          <FaShoppingBasket className="w-10 h-10" />
+          <p className="text-xs">Supermarché</p>
+        </div>
+        <div onClick={() => setStateFilterType(stateFilterType === "hairdresser" ? "" : "hairdresser")}
+             className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "hairdresser" ? " border-b-2 border-black" : '')}>
+          <FaHandScissors className="w-10 h-10" />
+          <p className="text-xs">Coiffeur</p>
+        </div>
+        <div className="pl-8 mt-2 mr-4">
+          <SearchBar
+            placeholder="Rechercher"
+            textSearch={searchBarValue}
+            setTextSearch={setSearchBarValue}
+            openCreateModal={() => {}}
+            noCreate
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const Safeplaces: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -231,7 +286,7 @@ const Safeplaces: React.FC = () => {
 
   const [searchBarValue, setSearchBarValue] = useState<string>('');
   const [safeplaces, setSafeplaces] = useState<ISafeplace[]>(reduxSafeplace.safeplaces);
-  const [stateFilterType, setStateFilterType] = useState<String>("");
+  const [stateFilterType, setStateFilterType] = useState<string>("");
   const [allComments, setAllComments] = useState<[]>([]);
 
   useEffect(() => {
@@ -291,34 +346,15 @@ const Safeplaces: React.FC = () => {
 
   return (
     <div className="h-screen">
-      <AppHeader />
-      <div className="w-3/6 h-12 ml-10 mt-10 flex justify-between">
-        <p className="font-bold text-2xl ml-5 mt-3">{filterSafeplaces().length} commerces</p>
-        <div className="flex border-b-2">
-          <div onClick={() => { setStateFilterType(stateFilterType === "restaurant" ? "" : "restaurant") }} className={"flex flex-col justify-center items-center" + (stateFilterType === "restaurant" ? " border-b-2 border-black" : '')}>
-            <FaUtensils className="w-10 h-10" />
-            <p className="text-xs">Restaurant</p>
-          </div>
-          <div onClick={() => { setStateFilterType(stateFilterType === "Market" ? "" : "Market") }} className={"ml-6 flex flex-col justify-center items-center" + (stateFilterType === "Market" ? " border-b-2 border-black" : '')}>
-            <FaStore className="w-10 h-10" />
-            <p className="text-xs">Marché</p>
-          </div>
-          <div onClick={() => { setStateFilterType(stateFilterType === "bakery" ? "" : "bakery") }} className={"ml-6 flex flex-col justify-center items-center" + (stateFilterType === "bakery" ? " border-b-2 border-black" : '')}>
-            <FaBreadSlice className="w-10 h-10" />
-            <p className="text-xs">Boulangerie</p>
-          </div>
-          <div onClick={() => { setStateFilterType(stateFilterType === "supermarket" ? "" : "supermarket") }} className={"ml-6 flex flex-col justify-center items-center" + (stateFilterType === "supermarket" ? " border-b-2 border-black" : '')}>
-            <FaShoppingBasket className="w-10 h-10" />
-            <p className="text-xs">Supermarché</p>
-          </div>
-          <div onClick={() => { setStateFilterType(stateFilterType === "hairdresser" ? "" : "hairdresser") }} className={"ml-6 flex flex-col justify-center items-center" + (stateFilterType === "hairdresser" ? " border-b-2 border-black" : '')}>
-            <FaHandScissors className="w-10 h-10" />
-            <p className="text-xs">Coiffeur</p>
-          </div>
-          <div className="pl-10 mt-2">
-            <SearchBar placeholder="Rechercher" textSearch={searchBarValue} setTextSearch={setSearchBarValue} openCreateModal={() => { }} noCreate />
-          </div>
-        </div>
+      <div className='absolute w-full z-30'>
+        <AppHeader />
+        <SafeplacesSearchBar
+          safeplaces={filterSafeplaces()}
+          stateFilterType={stateFilterType}
+          setStateFilterType={setStateFilterType}
+          searchBarValue={searchBarValue}
+          setSearchBarValue={setSearchBarValue}
+        />
       </div>
       <div className="grid grid-cols-2">
         <SafeplacesList safeplaces={{ setter: setSafeplaces, value: filterSafeplaces() }} comments={allComments} />
