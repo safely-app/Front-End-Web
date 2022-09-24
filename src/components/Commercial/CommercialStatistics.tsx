@@ -132,7 +132,7 @@ const CommercialStatistics: React.FC<{
   };
 
   return (
-    <div className='mt-10 mb-3'>
+    <div className='flex-auto bg-white p-5 rounded-lg shadow-xl'>
       <div className='relative cursor-pointer select-none font-bold text-3xl w-fit rounded-t-lg'>
         <div className='p-3' onClick={() => setDropdownOn(!dropdownOn)}>
           <span>{campaigns[dropdownIndex]?.name || ""}</span>

@@ -7,32 +7,123 @@ import { Commercial, Safeplace } from '../../services';
 import CommercialCampaigns from './CommercialCampaigns';
 import CommercialStatistics from './CommercialStatistics';
 import ISafeplace from '../interfaces/ISafeplace';
+import imgOnboarding from '../../assets/image/mec_allongé.png';
+import { RiAdvertisementLine } from 'react-icons/ri';
+import { MdOutlinePlace } from 'react-icons/md';
+import { BsMegaphone } from 'react-icons/bs';
+import { FiPieChart } from 'react-icons/fi';
 import log from 'loglevel';
 
 enum SECTION {
   CAMPAIGNS,
-  STATISTICS
+  STATISTICS,
+  ADVERTISING,
+  SAFEPLACES,
+  NONE
 }
 
-const CommercialSectionBtn: React.FC<{
-  btnText: string;
+const CommercialNavbarButton: React.FC<{
+  title: string;
+  icon: JSX.Element;
   sectionType: SECTION;
   displayedSection: SECTION;
-  setDisplayedSection: (section: SECTION) => void;
-  customStyle?: string;
+  onClick: (value: SECTION) => void;
 }> = ({
-  btnText,
+  title,
+  icon,
   sectionType,
   displayedSection,
-  setDisplayedSection,
-  customStyle
+  onClick,
 }) => {
-  const finalStyle = 'inline pb-2 font-bold text-lg text-neutral-500 cursor-pointer '
-    + (displayedSection === sectionType ? 'border-b-2 border-solid border-neutral-800 ' : ' ')
-    + (customStyle !== undefined ? customStyle : '');
-
   return (
-    <div className={finalStyle} onClick={() => setDisplayedSection(sectionType)}>{btnText}</div>
+    <li
+      className={`font-bold px-2 h-10 grid grid-cols-6 rounded-2xl cursor-pointer ${(displayedSection === sectionType) ? 'bg-neutral-200 text-black' : 'bg-white text-neutral-500'}`}
+      onClick={() => onClick(sectionType)}
+    >
+      {icon} <div className='col-span-5 my-auto pl-4 pr-2'>{title}</div>
+    </li>
+  );
+};
+
+const CommercialNavbar: React.FC<{
+  displayedSection: SECTION;
+  setDisplayedSection: (value: SECTION) => void;
+}> = ({
+  displayedSection,
+  setDisplayedSection,
+}) => {
+  return (
+    <div className='flex-auto bg-white rounded-lg shadow-xl w-fit py-5 border border-solid border-neutral-100 flex flex-col'>
+      <div className='flex-none'>
+        <ul className='mx-5 my-5 space-y-4'>
+          <CommercialNavbarButton
+            title="Mes campagnes"
+            icon={<BsMegaphone className='col-span-1 w-6 h-6 -rotate-45 my-auto mb-2' />}
+            sectionType={SECTION.CAMPAIGNS}
+            displayedSection={displayedSection}
+            onClick={setDisplayedSection}
+          />
+
+          <CommercialNavbarButton
+            title="Dashboard"
+            icon={<FiPieChart className='col-span-1 w-7 h-7 my-auto' />}
+            sectionType={SECTION.STATISTICS}
+            displayedSection={displayedSection}
+            onClick={setDisplayedSection}
+          />
+
+          <CommercialNavbarButton
+            title="Mes publicités"
+            icon={<RiAdvertisementLine className='col-span-1 w-7 h-7 my-auto' />}
+            sectionType={SECTION.ADVERTISING}
+            displayedSection={displayedSection}
+            onClick={setDisplayedSection}
+          />
+
+          <CommercialNavbarButton
+            title="Mes commerces"
+            icon={<MdOutlinePlace className='col-span-1 w-7 h-7 my-auto' />}
+            sectionType={SECTION.SAFEPLACES}
+            displayedSection={displayedSection}
+            onClick={setDisplayedSection}
+          />
+        </ul>
+      </div>
+
+      <div className='flex-none'>
+        <p className='text-xl font-bold mx-5'>Aide</p>
+
+        <ul className='mx-5 my-5 space-y-4'>
+          <CommercialNavbarButton
+            title="Support"
+            icon={<BsMegaphone className='col-span-1 w-6 h-6 -rotate-45 my-auto mb-2' />}
+            sectionType={SECTION.NONE}
+            displayedSection={displayedSection}
+            onClick={() => { }}
+          />
+
+          <CommercialNavbarButton
+            title="Foire aux questions"
+            icon={<FiPieChart className='col-span-1 w-7 h-7 my-auto' />}
+            sectionType={SECTION.NONE}
+            displayedSection={displayedSection}
+            onClick={() => { }}
+          />
+        </ul>
+      </div>
+
+      <div className='flex-auto flex flex-col-reverse'>
+        <div className='flex-initial bg-white m-2 rounded-lg'>
+          <div className='w-56 text-right text-neutral-500 px-2 mb-2 mx-auto'>
+            <p className='text-center text-base'>Conseil</p>
+            <p className='text-center text-xs'>
+              Vous pouvez suivre les performances de vos campagnes en temps réel sur votre Dashboard !
+            </p>
+          </div>
+          <img className='block object-center h-32 mx-auto' src={imgOnboarding} alt="" />
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -129,25 +220,37 @@ const CommercialPage: React.FC = () => {
       ).catch(err => log.error(err));
   }, [userCredentials]);
 
+  const getSectionComponent = (): JSX.Element => {
+    switch (displayedSection) {
+      case SECTION.STATISTICS:
+        return <CommercialStatistics
+          campaigns={campaigns}
+        />;
+      case SECTION.CAMPAIGNS:
+      default:
+        return <CommercialCampaigns
+          safeplace={safeplace}
+          campaigns={campaigns}
+          setCampaigns={setCampaigns}
+          targets={targets}
+          setTargets={setTargets}
+        />;
+    }
+  };
+
   return (
-    <div className='relative w-full h-full'>
+    <div className='relative w-full h-full flex flex-col'>
       <AppHeader />
-      <div className='mt-14 mx-14'>
-        <div className='inline-block flex-shrink space-x-4 pb-1.5 border-b-2 border-solid border-neutral-300'>
-          <CommercialSectionBtn btnText='Mes campagnes' sectionType={SECTION.CAMPAIGNS} displayedSection={displayedSection} setDisplayedSection={setDisplayedSection} />
-          <CommercialSectionBtn btnText='Statistiques' sectionType={SECTION.STATISTICS} displayedSection={displayedSection} setDisplayedSection={setDisplayedSection} />
+      <div className='flex-auto flex flex-row bg-neutral-100'>
+        <div className='flex-none m-6 flex flex-col'>
+          <CommercialNavbar
+            displayedSection={displayedSection}
+            setDisplayedSection={setDisplayedSection}
+          />
         </div>
-        <hr className='border-none' />
-        {(displayedSection === SECTION.CAMPAIGNS)
-          ? <CommercialCampaigns
-              safeplace={safeplace}
-              campaigns={campaigns}
-              setCampaigns={setCampaigns}
-              targets={targets}
-              setTargets={setTargets}
-            />
-          : <CommercialStatistics campaigns={campaigns} />
-        }
+        <div className='flex-auto mr-6 my-6 flex flex-col'>
+          {getSectionComponent()}
+        </div>
       </div>
     </div>
   );

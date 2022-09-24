@@ -205,7 +205,7 @@ const CommercialCampaigns: React.FC<{
   };
 
   return (
-    <div className='my-3'>
+    <div className='flex-auto bg-white p-5 rounded-lg shadow-xl'>
 
       <CampaignModal
         title='Créer une nouvelle campagne'
