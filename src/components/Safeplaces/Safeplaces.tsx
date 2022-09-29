@@ -200,7 +200,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
                   <p className="font-bold text-lg mt-2">{safeplace.name}</p>
                   <p>{safeplace.type}</p>
                 </div>
-                <FaEdit data-testid={"safeplace-update-" + safeplace.id} className="mt-2" onClick={() => {
+                <FaEdit className='h-6 w-6 mr-4 mt-2' data-testid={"safeplace-update-" + safeplace.id} onClick={() => {
                   setFocusSafeplace(true);
                   setSafeplace(safeplace);
                 }} />
