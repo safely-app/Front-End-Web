@@ -155,3 +155,11 @@
     border-radius: 8px;
     text-align: center;
 }
+
+.burger:hover span {
+	background-color: #8b8686;
+}
+
+.burger span {
+	background-color: #141414;
+}

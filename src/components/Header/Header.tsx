@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../redux';
-import { canAccess, Role } from './utils';
+import { Role } from './utils';
 import { FaBell, FaCircle } from 'react-icons/fa';
 import INotification from '../interfaces/INotification';
 import { Notification } from '../../services';
 import log from 'loglevel';
 import './Header.css';
+import ProfileDropdown from '../common/ProfileDropdown';
 
 const useOutsideAlerter = (ref, func: () => void) => {
   useEffect(() => {
@@ -113,15 +114,9 @@ export const Header: React.FC<{
 }> = ({
   links
 }) => {
-  const user = useAppSelector(state => state.user);
-  const currentPath = window.location.pathname;
-
-  const isAuthenticated = () => {
-    return !!user.credentials._id && !!user.credentials.token;
-  };
 
   return (
-    <div className='bg-white font-bold text-xl flex border-b-2 border-neutral-300'>
+    <div className='bg-white font-bold text-xl flex border-b-2 border-neutral-300 z-10'>
       <div className='flex pl-4'>
         <div className='px-2 py-6 cursor-pointer hover:opacity-70 mx-2'>
           <a href='/'>Dashboard</a>
@@ -131,19 +126,7 @@ export const Header: React.FC<{
         </div>
       </div>
       <div className='w-full'>
-        <ul className='float-right'>
-          {links
-            .filter(link => link.onAuth === undefined || link.onAuth === isAuthenticated())
-            .filter(link => link.role === undefined || canAccess(user.userInfo.role, link.role))
-            .map((link, index) =>
-              <li key={index} className='float-left'>
-                <a href={link.link} className={'inline-block px-2 py-6 font-bold cursor-pointer hover:opacity-70 mx-2 ' + (currentPath === link.link ? 'border-b-2 border-solid border-neutral-800' : '')}>
-                  {link.name}
-                </a>
-              </li>
-            )
-          }
-        </ul>
+		<ProfileDropdown links={links}/>
       </div>
     </div>
   );
@@ -152,12 +135,11 @@ export const Header: React.FC<{
 export const AppHeader: React.FC = () => {
   const links = [
     { link: "/login", name: "Connexion", onAuth: false },
-    { link: "/profile", name: "Profil", onAuth: true, role: Role.USER },
-    { link: "/shops", name: "Commerces", onAuth: true, role: Role.USER },
-    { link: "/commercial", name: "Commercial", onAuth: true, role: Role.TRADER },
+	{ link: "/", name: "Accueil", onAuth: true },
+    { link: "/commercial", name: "Mes campagnes", onAuth: true, role: Role.TRADER },
     { link: "/admin", name: "Administration", onAuth: true, role: Role.ADMIN },
-    { link: "/bugreport", name: "Beta", onAuth: true },
-    { link: "/logout", name: "Déconnexion", onAuth: true }
+	{ link: "/profile", name: "Mon profil", onAuth: true, role: Role.USER },
+    { link: "/bugreport", name: "Contact", onAuth: true }
   ];
 
   return (

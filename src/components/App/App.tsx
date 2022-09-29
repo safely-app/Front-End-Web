@@ -30,9 +30,9 @@ const Map: React.FC<{
   safeplaces
 }) => {
   return (
-    <div>
+    <div className='z-0'>
       <MapContainer
-        style={{ height: "92vh" }}
+        style={{ height: "92vh", zIndex: 0 }}
         center={[48.58193415814247, 7.751016938855309]}
         scrollWheelZoom={true}
         zoom={14}
