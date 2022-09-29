@@ -12,7 +12,10 @@ module.exports = {
       }),
       colors: {
         blue: {
-          'safely-dark': '#1a3752'
+          'safely-dark': '#1d3655'
+        },
+        yellow: {
+          'safely-light': '#fff3aa'
         },
       },
       borderWidth: {
