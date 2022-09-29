@@ -145,7 +145,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
   }
 
   return (
-    <div className='px-4 pt-[165px]'>
+    <div className='px-6 pt-[165px]'>
       {getSafeplaceDetail ? (
         <div className='overflow-y-auto' style={{ height: "80vh" }}>
           <FaChevronLeft onClick={() => setGetSafeplaceDetail(false)} className="w-8 h-8 cursor-pointer mb-4" style={{ color: "black" }} />
@@ -185,8 +185,8 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
 
             })}
             <div className="flex flex-row items-center mt-10">
-              <FaArrowLeft className="mr-2" onClick={() => { currentPage > 0 ? setCurrentPage(currentPage => currentPage - 1) : setCurrentPage(currentPage) }} />
-              <FaArrowRight onClick={() => { currentPage >= 0 ? setCurrentPage(currentPage => currentPage + 1) : setCurrentPage(currentPage) }} />
+              <FaArrowLeft className="mr-2 cursor-pointer" onClick={() => { currentPage > 0 ? setCurrentPage(currentPage => currentPage - 1) : setCurrentPage(currentPage) }} />
+              <FaArrowRight className='cursor-pointer' onClick={() => { currentPage >= 0 ? setCurrentPage(currentPage => currentPage + 1) : setCurrentPage(currentPage) }} />
             </div>
           </div>
         </div>
@@ -205,7 +205,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
                   <p className="font-bold text-lg mt-2">{safeplace.name}</p>
                   <p>{safeplace.type}</p>
                 </div>
-                <FaEdit data-testid={"safeplace-update-" + safeplace.id} className="mt-2" onClick={() => {
+                <FaEdit className='h-6 w-6 mr-4 mt-2' data-testid={"safeplace-update-" + safeplace.id} onClick={() => {
                   setFocusSafeplace(true);
                   setSafeplace(safeplace);
                 }} />
