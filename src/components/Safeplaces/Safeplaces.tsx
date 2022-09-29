@@ -28,8 +28,13 @@ import {
   FaStar,
   FaArrowRight,
   FaArrowLeft,
-  FaChevronLeft
+  FaChevronLeft,
 } from 'react-icons/fa';
+import {BsShop} from 'react-icons/bs';
+import {GiKnifeFork} from 'react-icons/gi';
+import {AiOutlineShoppingCart} from 'react-icons/ai';
+import {BsScissors} from 'react-icons/bs';
+import {HiOutlineCake} from 'react-icons/hi';
 import { ModalBtn } from '../common/Modal';
 import { SafeplaceModal } from '../Monitors/SafeplaceMonitor/SafeplaceMonitorModal';
 import IComment from '../interfaces/IComment';
@@ -153,7 +158,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
               <p>{safeplace.type}</p>
               <p className="text-blue-600">{comments.length} commentaires</p>
             </div>
-            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold text-white bg-blue-safely-dark' onClick={() => claimSafeplace(safeplace)}>
+            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold text-white customGradient' onClick={() => claimSafeplace(safeplace)}>
               RÉCLAMER CE COMMERCE
             </button>
           </div>
@@ -170,8 +175,8 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
               return (
                 <div key={index}>
                   <div className="flex flex-row items-center mb-3">
-                    <p>Anonyme</p>
-                    {[...Array(tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: '#f7e249' }} />)}
+                    <p className="font-bold">Anonyme</p>
+                    {[...Array(tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: '#FCC153' }} />)}
                     {[...Array(5 - tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: 'lightgray' }} />)}
                   </div>
                   <p className="mb-3">{tmpValue[index].comment}</p>
@@ -244,27 +249,27 @@ const SafeplacesSearchBar: React.FC<{
       <div className="flex border-b-2 border-white">
         <div onClick={() => setStateFilterType(stateFilterType === "restaurant" ? "" : "restaurant")}
              className={"flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "restaurant" ? " border-b-2 border-black" : '')}>
-          <FaUtensils className="w-10 h-10" />
+          <GiKnifeFork className="w-10 h-10 text-gray-500"/>
           <p className="text-xs">Restaurant</p>
         </div>
         <div onClick={() => setStateFilterType(stateFilterType === "Market" ? "" : "Market")}
              className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "Market" ? " border-b-2 border-black" : '')}>
-          <FaStore className="w-10 h-10" />
+          <BsShop className="w-10 h-10 text-gray-500"/>
           <p className="text-xs">Marché</p>
         </div>
         <div onClick={() => setStateFilterType(stateFilterType === "bakery" ? "" : "bakery")}
              className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "bakery" ? " border-b-2 border-black" : '')}>
-          <FaBreadSlice className="w-10 h-10" />
+          <HiOutlineCake className="w-10 h-10 text-gray-500" />
           <p className="text-xs">Boulangerie</p>
         </div>
         <div onClick={() => setStateFilterType(stateFilterType === "supermarket" ? "" : "supermarket")}
              className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "supermarket" ? " border-b-2 border-black" : '')}>
-          <FaShoppingBasket className="w-10 h-10" />
+          <AiOutlineShoppingCart className="w-10 h-10 text-gray-500" />
           <p className="text-xs">Supermarché</p>
         </div>
         <div onClick={() => setStateFilterType(stateFilterType === "hairdresser" ? "" : "hairdresser")}
              className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "hairdresser" ? " border-b-2 border-black" : '')}>
-          <FaHandScissors className="w-10 h-10" />
+          <BsScissors className="w-10 h-10 text-gray-500" />
           <p className="text-xs">Coiffeur</p>
         </div>
         <div className="pl-8 mt-2 mr-4">
