@@ -33,6 +33,7 @@ import {
 import { ModalBtn } from '../common/Modal';
 import { SafeplaceModal } from '../Monitors/SafeplaceMonitor/SafeplaceMonitorModal';
 import IComment from '../interfaces/IComment';
+import './Safeplaces.css';
 
 interface IMapProps {
   safeplaces: { setter: (val: ISafeplace[]) => void, value: ISafeplace[] };
@@ -152,7 +153,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
               <p>{safeplace.type}</p>
               <p className="text-blue-600">{comments.length} commentaires</p>
             </div>
-            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold text-white bg-gradient-to-b from-blue-safely-dark-800 to-yellow-safely-light-100' onClick={() => claimSafeplace(safeplace)}>
+            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold text-white bg-blue-safely-dark' onClick={() => claimSafeplace(safeplace)}>
               RÉCLAMER CE COMMERCE
             </button>
           </div>
