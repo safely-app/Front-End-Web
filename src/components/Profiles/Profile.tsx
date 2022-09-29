@@ -292,6 +292,16 @@ const Profile: React.FC = () => {
     }
   };
 
+  const setCardAsDefault = async (card: IStripeCard) => {
+    try {
+      await Stripe.setDefaultCard(card.id, card.customerId, userCredentials.token);
+      notifySuccess("Solution de paiement définit comme principale.");
+    } catch (err) {
+      log.error(err);
+      notifyError(err);
+    }
+  };
+
   const deleteCard = async (card: IStripeCard) => {
     try {
         await Stripe.deleteCard(card.id, userCredentials.token);
@@ -438,8 +448,8 @@ const Profile: React.FC = () => {
                       <div key={'paymentSolutions-key-' + index} className=''>
                         <BankCard stripeCard={paymentSolution} name={user.username} />
                         <div className='grid grid-cols-2 mt-1 text-xs text-white gap-2'>
-                          <button className='block p-1 rounded-lg w-full mx-auto bg-blue-400 hover:bg-blue-300'>Définir comme carte principale</button>
-                          <button className='block p-1 rounded-lg w-full mx-auto bg-red-400 hover:bg-red-300' onClick={() => {deleteCard(paymentSolution)}}>Supprimer</button>
+                          <button className='block p-1 rounded-lg w-full mx-auto bg-blue-400 hover:bg-blue-300' onClick={() => setCardAsDefault(paymentSolution)}>Définir comme carte principale</button>
+                          <button className='block p-1 rounded-lg w-full mx-auto bg-red-400 hover:bg-red-300' onClick={() => deleteCard(paymentSolution)}>Supprimer</button>
                         </div>
                       </div>
                     )}
