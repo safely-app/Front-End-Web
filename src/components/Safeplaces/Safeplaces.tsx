@@ -140,7 +140,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
   }
 
   return (
-    <div className='px-4 pt-[165px]'>
+    <div className='px-6 pt-[165px]'>
       {getSafeplaceDetail ? (
         <div className='overflow-y-auto' style={{ height: "80vh" }}>
           <FaChevronLeft onClick={() => setGetSafeplaceDetail(false)} className="w-8 h-8 cursor-pointer mb-4" style={{ color: "black" }} />
@@ -153,7 +153,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
               <p>{safeplace.type}</p>
               <p className="text-blue-600">{comments.length} commentaires</p>
             </div>
-            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold text-white bg-blue-safely-dark' onClick={() => claimSafeplace(safeplace)}>
+            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 mr-4 px-2 font-bold text-white bg-blue-safely-dark' onClick={() => claimSafeplace(safeplace)}>
               RÉCLAMER CE COMMERCE
             </button>
           </div>
@@ -180,8 +180,8 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
 
             })}
             <div className="flex flex-row items-center mt-10">
-              <FaArrowLeft className="mr-2" onClick={() => { currentPage > 0 ? setCurrentPage(currentPage => currentPage - 1) : setCurrentPage(currentPage) }} />
-              <FaArrowRight onClick={() => { currentPage >= 0 ? setCurrentPage(currentPage => currentPage + 1) : setCurrentPage(currentPage) }} />
+              <FaArrowLeft className="mr-2 cursor-pointer" onClick={() => { currentPage > 0 ? setCurrentPage(currentPage => currentPage - 1) : setCurrentPage(currentPage) }} />
+              <FaArrowRight className='cursor-pointer' onClick={() => { currentPage >= 0 ? setCurrentPage(currentPage => currentPage + 1) : setCurrentPage(currentPage) }} />
             </div>
           </div>
         </div>
