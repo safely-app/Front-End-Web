@@ -88,7 +88,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
 
   const validateRequestClaimSafeplace = async (requestClaimSafeplace: IRequestClaimSafeplace) => {
     try {
-      const responseSafeplace = await Safeplace.get(requestClaimSafeplace.id, userCredentials.token);
+      const responseSafeplace = await Safeplace.get(requestClaimSafeplace.safeplaceId, userCredentials.token);
       const gotSafeplace: ISafeplace = {
         id: responseSafeplace.data.id,
         name: responseSafeplace.data.name,

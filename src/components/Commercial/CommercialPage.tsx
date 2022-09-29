@@ -8,6 +8,9 @@ import CommercialCampaigns from './CommercialCampaigns';
 import CommercialStatistics from './CommercialStatistics';
 import ISafeplace from '../interfaces/ISafeplace';
 import imgOnboarding from '../../assets/image/mec_allongé.png';
+import {
+  CommercialCampaignCreation
+} from './CommercialCreation';
 import { RiAdvertisementLine } from 'react-icons/ri';
 import { MdOutlinePlace } from 'react-icons/md';
 import { BsMegaphone } from 'react-icons/bs';
@@ -249,7 +252,8 @@ const CommercialPage: React.FC = () => {
           />
         </div>
         <div className='flex-auto mr-6 my-6 flex flex-col'>
-          {getSectionComponent()}
+          {/* {getSectionComponent()} */}
+          <CommercialCampaignCreation />
         </div>
       </div>
     </div>
