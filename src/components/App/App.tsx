@@ -32,7 +32,7 @@ const Map: React.FC<{
   return (
     <div className='z-0'>
       <MapContainer
-        style={{ height: "92vh", zIndex: 0 }}
+        style={{ height: "100vh", zIndex: 0 }}
         center={[48.58193415814247, 7.751016938855309]}
         scrollWheelZoom={true}
         zoom={14}
