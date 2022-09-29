@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
 import { ImCross } from "react-icons/im";
 import { useAppSelector } from "../../../redux";
-import { RequestClaimSafeplace } from "../../../services";
+import { RequestClaimSafeplace, Safeplace } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IRequestClaimSafeplace from "../../interfaces/IRequestClaimSafeplace";
 import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
 import { RequestClaimSafeplaceModal } from "./RequestClaimSafeplaceMonitorModal";
+import ISafeplace from "../../interfaces/ISafeplace";
 import { CustomDiv } from "../../common/Table";
 import { ModalBtn } from "../../common/Modal";
 import { ModalType } from "../ModalType";
@@ -76,9 +77,35 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
       const result = await RequestClaimSafeplace.create(newRequestClaimSafeplace, userCredentials.token);
 
       setRequestClaimSafeplaces([ ...requestClaimSafeplaces, { ...newRequestClaimSafeplace, id: result.data._id } ]);
-      notifySuccess("Nouvelle cible créée");
+      notifySuccess("Nouvelle requête créée.");
       setModal(ModalType.OFF);
       resetRequestClaimSafeplace();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const validateRequestClaimSafeplace = async (requestClaimSafeplace: IRequestClaimSafeplace) => {
+    try {
+      const responseSafeplace = await Safeplace.get(requestClaimSafeplace.id, userCredentials.token);
+      const gotSafeplace: ISafeplace = {
+        id: responseSafeplace.data.id,
+        name: responseSafeplace.data.name,
+        city: responseSafeplace.data.city,
+        type: responseSafeplace.data.type,
+        address: responseSafeplace.data.address,
+        description: responseSafeplace.data.description,
+        dayTimetable: responseSafeplace.data.dayTimetable,
+        coordinate: responseSafeplace.data.coordinate,
+        ownerId: requestClaimSafeplace.userId
+      };
+
+      await Safeplace.update(requestClaimSafeplace.safeplaceId, gotSafeplace, userCredentials.token);
+      await RequestClaimSafeplace.delete(requestClaimSafeplace.id, userCredentials.token);
+      setRequestClaimSafeplaces(requestClaimSafeplaces.filter(rcs => rcs.id !== requestClaimSafeplace.id));
+      notifySuccess("Requête validée.");
+      setModal(ModalType.OFF);
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -89,7 +116,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     try {
       await RequestClaimSafeplace.update(requestClaimSafeplace.id, requestClaimSafeplace, userCredentials.token);
       setRequestClaimSafeplaces(requestClaimSafeplaces.map(t => (t.id === requestClaimSafeplace.id) ? requestClaimSafeplace : t));
-      notifySuccess("Modifications enregistrées");
+      notifySuccess("Modifications enregistrées.");
       setModal(ModalType.OFF);
       resetRequestClaimSafeplace();
     } catch (err) {
@@ -102,7 +129,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     try {
       await RequestClaimSafeplace.delete(requestClaimSafeplace.id, userCredentials.token);
       setRequestClaimSafeplaces(requestClaimSafeplaces.filter(t => t.id !== requestClaimSafeplace.id));
-      notifySuccess("Cible supprimée");
+      notifySuccess("Requête supprimée.");
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -168,8 +195,9 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         request={requestClaimSafeplace}
         setRequest={setRequestClaimSafeplace}
         buttons={[
-          <ModalBtn key='srum-btn-0' content='Modifier la requête' onClick={() => updateRequestClaimSafeplace(requestClaimSafeplace)} />,
-          <ModalBtn key='srum-btn-1' content='Annuler' onClick={() => {
+          <ModalBtn key="srum-btn-0" content="Valider la requête" onClick={() => validateRequestClaimSafeplace(requestClaimSafeplace)} />,
+          <ModalBtn key='srum-btn-1' content='Modifier la requête' onClick={() => updateRequestClaimSafeplace(requestClaimSafeplace)} />,
+          <ModalBtn key='srum-btn-2' content='Annuler' onClick={() => {
             setModal(ModalType.OFF);
             resetRequestClaimSafeplace();
           }} />

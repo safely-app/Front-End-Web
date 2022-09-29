@@ -6,7 +6,7 @@ import CampaignModal from './CommercialCampaignModal';
 import MultipleTargetsModal from './CommercialMultipleTargetsModal';
 import { BsPencilSquare } from 'react-icons/bs';
 import { ImCross } from 'react-icons/im';
-import { convertStringToRegex } from '../utils';
+import { convertStringToRegex, notifyError, notifyInfo } from '../utils';
 import { SearchBar, Table } from '../common';
 import { Commercial } from '../../services';
 import { useAppSelector } from '../../redux';
@@ -14,6 +14,7 @@ import { ModalType } from './CommercialModalType';
 import { CustomDiv } from '../common/Table';
 import { ModalBtn } from '../common/Modal';
 import ISafeplace from '../interfaces/ISafeplace';
+import log from "loglevel";
 
 const CommercialCampaigns: React.FC<{
   safeplace: ISafeplace;
@@ -96,49 +97,83 @@ const CommercialCampaigns: React.FC<{
   };
 
   const createTarget = async () => {
-    const newTarget = { ...target, ownerId: userCredentials._id };
-    const result = await Commercial.createTarget(newTarget, userCredentials.token);
+    try {
+      const newTarget = { ...target, ownerId: userCredentials._id };
+      const result = await Commercial.createTarget(newTarget, userCredentials.token);
 
-    setTargets([ ...targets, { ...newTarget, id: result.data._id } ]);
-    setCampaign({ ...campaign, targets: [ ...campaign.targets, result.data._id ] });
-    setModal(modalTypes[modalTypes.length - 2]);
-    resetTarget();
+      setTargets([ ...targets, { ...newTarget, id: result.data._id } ]);
+      setCampaign({ ...campaign, targets: [ ...campaign.targets, result.data._id ] });
+      setModal(modalTypes[modalTypes.length - 2]);
+      resetTarget();
+    } catch (error) {
+      notifyError("Échec de création de cible.");
+      log.error(error);
+    }
   };
 
   const updateTarget = async (target: ITarget) => {
-    await Commercial.updateTarget(target.id, target, userCredentials.token);
-    setTargets(targets.map(t => (t.id === target.id) ? target : t));
-    setModal(modalTypes[modalTypes.length - 2]);
-    resetTarget();
+    try {
+      await Commercial.updateTarget(target.id, target, userCredentials.token);
+      setTargets(targets.map(t => (t.id === target.id) ? target : t));
+      setModal(modalTypes[modalTypes.length - 2]);
+      resetTarget();
+    } catch (error) {
+      notifyError("Échec de modification de cible.");
+      log.error(error);
+    }
   };
 
   const deleteTarget = async (target: ITarget) => {
-    deleteCampaign({ ...campaign, targets: campaign.targets.filter(tId => tId !== target.id) });
-
-    await Commercial.deleteTarget(target.id, userCredentials.token);
-    setTargets(targets.filter(t => t.id !== target.id));
-    setModal(modalTypes[modalTypes.length - 2]);
+    try {
+      updateCampaign({ ...campaign, targets: campaign.targets.filter(tId => tId !== target.id) });
+      await Commercial.deleteTarget(target.id, userCredentials.token);
+      setTargets(targets.filter(t => t.id !== target.id));
+      setModal(modalTypes[modalTypes.length - 2]);
+    } catch (error) {
+      notifyError("Échec de suppression de cible.");
+      log.error(error);
+    }
   };
 
   const createCampaign = async (status: string) => {
-    const newCampaign = { ...campaign, status: status, ownerId: userCredentials._id, safeplaceId: safeplace.id };
-    const result = await Commercial.createCampaign(newCampaign, userCredentials.token);
+    if (safeplace.id === "") {
+      notifyInfo("Réclamez votre commerce avant de créer une campagne.");
+      return;
+    }
 
-    setCampaigns([ ...campaigns, { ...newCampaign, id: result.data._id } ]);
-    setModal(ModalType.OFF);
-    resetCampaign();
+    try {
+      const newCampaign = { ...campaign, status: status, ownerId: userCredentials._id, safeplaceId: safeplace.id };
+      const result = await Commercial.createCampaign(newCampaign, userCredentials.token);
+
+      setCampaigns([ ...campaigns, { ...newCampaign, id: result.data._id } ]);
+      setModal(ModalType.OFF);
+      resetCampaign();
+    } catch (error) {
+      notifyError("Échec de création de campagne.");
+      log.error(error);
+    }
   };
 
   const updateCampaign = async (campaign: ICampaign) => {
-    await Commercial.updateCampaign(campaign.id, campaign, userCredentials.token);
-    setCampaigns(campaigns.map(c => (c.id === campaign.id) ? campaign : c));
-    setModal(ModalType.OFF);
-    resetCampaign();
+    try {
+      await Commercial.updateCampaign(campaign.id, campaign, userCredentials.token);
+      setCampaigns(campaigns.map(c => (c.id === campaign.id) ? campaign : c));
+      setModal(ModalType.OFF);
+      resetCampaign();
+    } catch (error) {
+      notifyError("Échec de modification de campagne.");
+      log.error(error);
+    }
   };
 
   const deleteCampaign = async (campaign: ICampaign) => {
-    await Commercial.deleteCampaign(campaign.id, userCredentials.token);
-    setCampaigns(campaigns.filter(c => c.id !== campaign.id));
+    try {
+      await Commercial.deleteCampaign(campaign.id, userCredentials.token);
+      setCampaigns(campaigns.filter(c => c.id !== campaign.id));
+    } catch (error) {
+      notifyError("Échec de suppression de campagne.");
+      log.error(error);
+    }
   };
 
   const updateModal = (campaign: ICampaign, modalType: ModalType) => {
@@ -254,6 +289,7 @@ const CommercialCampaigns: React.FC<{
         setTextSearch={setCampaignSearch}
         placeholder='Rechercher une campagne...'
         openCreateModal={() => setModal(ModalType.CREATE)}
+        noCreate={safeplace.id === ""}
       />
       <div className='mt-3'>
         <Table content={filterCampaigns()} keys={keys} />
