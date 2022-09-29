@@ -27,7 +27,8 @@ import {
   FaMapPin,
   FaStar,
   FaArrowRight,
-  FaArrowLeft
+  FaArrowLeft,
+  FaChevronLeft
 } from 'react-icons/fa';
 import { ModalBtn } from '../common/Modal';
 import { SafeplaceModal } from '../Monitors/SafeplaceMonitor/SafeplaceMonitorModal';
@@ -138,12 +139,12 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
   }
 
   return (
-    <div className='px-4 pt-44'>
+    <div className='px-4 pt-[165px]'>
       {getSafeplaceDetail ? (
         <div className='overflow-y-auto' style={{ height: "80vh" }}>
+          <FaChevronLeft onClick={() => setGetSafeplaceDetail(false)} className="w-8 h-8 cursor-pointer mb-4" style={{ color: "black" }} />
           <div className="bg-safeplace-placeholder h-96 rounded-3xl">
             <img className="object-cover" alt="" />
-            <FaArrowLeft onClick={() => setGetSafeplaceDetail(false)} className="w-10 h-10 cursor-pointer" style={{ color: "white" }} />
           </div>
           <div className="flex flex-row justify-between">
             <div>
@@ -151,8 +152,8 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
               <p>{safeplace.type}</p>
               <p className="text-blue-600">{comments.length} commentaires</p>
             </div>
-            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold hover:bg-neutral-200' onClick={() => claimSafeplace(safeplace)}>
-              Réclamer ce commerce
+            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold text-white bg-gradient-to-b from-blue-safely-dark-800 to-yellow-safely-light-100' onClick={() => claimSafeplace(safeplace)}>
+              RÉCLAMER CE COMMERCE
             </button>
           </div>
           <div className="border-t-2 border-gray border-b-2 pt-3 pb-3 mt-3">
