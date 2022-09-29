@@ -25,6 +25,7 @@ const CampaignMonitor: React.FC = () => {
     id: "",
     name: "",
     budget: "",
+	budgetSpent: "",
     status: "",
     ownerId: "",
     startingDate: "",
@@ -33,7 +34,7 @@ const CampaignMonitor: React.FC = () => {
 
   const keys = [
     { displayedName: 'NOM', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.name} /> },
-    { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.budget} /> },
+    { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.budgetSpent + "/" + campaign.budget} /> },
     { displayedName: 'STATUT', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.status} /> },
     { displayedName: 'ID DE PROPRIÉTAIRE', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.ownerId} /> },
     { displayedName: 'DATE DE DÉPART', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.startingDate} /> },
@@ -115,6 +116,7 @@ const CampaignMonitor: React.FC = () => {
       id: "",
       name: "",
       budget: "",
+	  budgetSpent: "",
       status: "",
       ownerId: "",
       startingDate: "",
@@ -130,6 +132,7 @@ const CampaignMonitor: React.FC = () => {
           ownerId: campaign.ownerId,
           name: campaign.name,
           budget: campaign.budget,
+		  budgetSpent: campaign.budgetSpent,
           status: campaign.status,
           startingDate: campaign.startingDate,
           safeplaceId: campaign.safeplaceId,
