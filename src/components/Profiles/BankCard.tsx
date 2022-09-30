@@ -118,30 +118,35 @@ const BankCard: React.FC<{
       : (stripeCard.expMonth < 10 ? '0' + stripeCard.expMonth : stripeCard.expMonth.toString());
 
   return (
-    <div className='relative w-full h-52 rounded-lg flex flex-col justify-between p-6 overflow-hidden' style={{
-      boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
-      backgroundImage: `linear-gradient(125deg, ${rgbToHex(r1, g1, b1)} 0%, ${rgbToHex(r2, g2, b2)} 100%)`
-    }}>
+    <div className='relative'>
       <div
-        className='absolute z-10 bg-green-600 top-8 left-8 -rotate-45 py-1 px-5 text-xs text-white -translate-x-1/2 -translate-y-1/2'
+        className='absolute z-10 rounded-lg border-2 border-solid border-green-600 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+        style={{ width: '102%', height: '13.35rem' }}
         hidden={!isDefault}
-      >Carte principal</div>
-      <Line>
-        <div className='relative rounded-md h-9' style={{ background: "#c1c2c4", width: "3.125rem" }} />
-        <Logo brand={stripeCard.brand} />
-      </Line>
-      <Line>
-        <NumberField>
-          {spacedNumber}
-        </NumberField>
-      </Line>
-      <Line>
-        <Field>{name}</Field>
-        <Expiry>
-          <Field>{expMonth}</Field>
-          <Field>{expYear}</Field>
-        </Expiry>
-      </Line>
+      >
+        <div className='absolute z-10 bg-green-600 py-0.5 px-1 text-xs text-white rounded-b-md left-4'>Carte principal</div>
+      </div>
+      <div className='relative w-full h-52 rounded-lg flex flex-col justify-between p-6' style={{
+        boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
+        backgroundImage: `linear-gradient(125deg, ${rgbToHex(r1, g1, b1)} 0%, ${rgbToHex(r2, g2, b2)} 100%)`
+      }}>
+        <Line>
+          <div className='relative rounded-md h-9' style={{ background: "#c1c2c4", width: "3.125rem" }} />
+          <Logo brand={stripeCard.brand} />
+        </Line>
+        <Line>
+          <NumberField>
+            {spacedNumber}
+          </NumberField>
+        </Line>
+        <Line>
+          <Field>{name}</Field>
+          <Expiry>
+            <Field>{expMonth}</Field>
+            <Field>{expYear}</Field>
+          </Expiry>
+        </Line>
+      </div>
     </div>
   );
 };
