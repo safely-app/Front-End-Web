@@ -36,7 +36,7 @@ const ProfileDropdown: React.FC<{
         <ul className="py-1 text-sm text-gray-700" aria-labelledby="dropdownDefault">
           <li>
             <small className='pt-2 px-4 italic'>Connecté en tant que</small>
-            <p className='pb-2 px-4 italic'>John Doe</p>
+            <p className='pb-2 px-4 italic'>{user.userInfo.username}</p>
           </li>
           <hr className="border-neutral-400" style={{ borderTopWidth: '1px' }} />
           {links
