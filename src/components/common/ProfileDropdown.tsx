@@ -23,10 +23,13 @@ const ProfileDropdown: React.FC<{
 
   return (
     <div
-      className="float-right mt-5 mr-10 relative"
+      className="flex float-right mt-5 mr-10 relative"
     >
+		<div className='mt-1 mr-3'>
+			<a href="/commercial" className='text-sm hover:bg-neutral-200 p-2 rounded-2xl cursor-pointer font-normal'>Gérer mes campagnes</a>
+		</div>
       <div
-        className='burger flex flex-row border border-solid border-neutral-300 py-2 px-3 rounded-2xl cursor-pointer space-x-2'
+        className='burger flex-auto flex flex-row border border-solid border-neutral-300 py-2 px-3 rounded-2xl cursor-pointer space-x-3'
         onClick={() => setMenuOpen(!isMenuOpen)}
       >
 
@@ -46,7 +49,7 @@ const ProfileDropdown: React.FC<{
 
       </div>
 
-      <div className="absolute -right-8 z-50 mt-4 w-44 bg-white rounded-lg border border-solid border-neutral-200  divide-y divide-gray-100 shadow" hidden={!isMenuOpen}>
+      <div className="absolute -right-8 z-50 mt-12 w-44 bg-white rounded-lg border border-solid border-neutral-200  divide-y divide-gray-100 shadow" hidden={!isMenuOpen}>
         <ul className="py-1 text-sm text-gray-700" aria-labelledby="dropdownDefault">
           <li>
             <small className='pt-2 px-4 italic'>Connecté en tant que</small>

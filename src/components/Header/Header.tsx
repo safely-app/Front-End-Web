@@ -125,8 +125,10 @@ export const Header: React.FC<{
           <HeaderNotif />
         </div>
       </div>
-      <div className='w-full'>
-		<ProfileDropdown links={links}/>
+      <div className='flex w-full'>
+		<div className="flex-auto">
+			<ProfileDropdown links={links}/>
+		</div>
       </div>
     </div>
   );
