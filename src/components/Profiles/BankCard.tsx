@@ -89,9 +89,11 @@ const Logo: React.FC<{
 const BankCard: React.FC<{
   stripeCard: IStripeCard;
   name: string;
+  isDefault?: boolean;
 }> = ({
   stripeCard,
-  name
+  name,
+  isDefault
 }) => {
   const spacedNumber = ('••••••••••••' + stripeCard.last4).replace(/(.{4})/g, "$1 ");
   const cardColorId = stripeCard.id.split('').reduce((counter, c) => counter + c.charCodeAt(0), 0);
@@ -116,10 +118,14 @@ const BankCard: React.FC<{
       : (stripeCard.expMonth < 10 ? '0' + stripeCard.expMonth : stripeCard.expMonth.toString());
 
   return (
-    <div className='relative w-full h-52 rounded-lg flex flex-col justify-between p-6' style={{
+    <div className='relative w-full h-52 rounded-lg flex flex-col justify-between p-6 overflow-hidden' style={{
       boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
       backgroundImage: `linear-gradient(125deg, ${rgbToHex(r1, g1, b1)} 0%, ${rgbToHex(r2, g2, b2)} 100%)`
     }}>
+      <div
+        className='absolute z-10 bg-green-600 top-8 left-8 -rotate-45 py-1 px-5 text-xs text-white -translate-x-1/2 -translate-y-1/2'
+        hidden={!isDefault}
+      >Carte principal</div>
       <Line>
         <div className='relative rounded-md h-9' style={{ background: "#c1c2c4", width: "3.125rem" }} />
         <Logo brand={stripeCard.brand} />

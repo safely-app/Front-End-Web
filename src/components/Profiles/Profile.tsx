@@ -220,7 +220,10 @@ const Profile: React.FC = () => {
   }, [userCredentials, dispatch]);
 
   useEffect(() => {
-	getCardAsDefault(userUserInfo.stripeId as string);
+    Stripe.get(userUserInfo.stripeId as string, userCredentials.token)
+      .then(result => setDefaultCard(result.data.invoice_settings.default_payment_method))
+      .catch(err => log.error(err));
+
     Stripe.getCards(userUserInfo.stripeId as string, userCredentials.token)
       .then(result => {
         const gotPaymentSolutions = result.data.data.map(paymentSolution => ({
@@ -294,19 +297,11 @@ const Profile: React.FC = () => {
     }
   };
 
-  const getCardAsDefault = async (stripeId : string) => {
-    try {
-      const user = await Stripe.get(stripeId, userCredentials.token);
-      setDefaultCard(user.data.invoice_settings.default_payment_method);
-    } catch (err) {
-      log.error(err);
-    }
-  };
-
   const setCardAsDefault = async (card: IStripeCard) => {
     try {
       await Stripe.setDefaultCard(card.id, card.customerId, userCredentials.token);
       notifySuccess("Solution de paiement définit comme principale.");
+      setDefaultCard(card.id);
     } catch (err) {
       log.error(err);
       notifyError(err);
@@ -457,7 +452,7 @@ const Profile: React.FC = () => {
                   <div className='grid grid-cols-2 gap-x-4 gap-y-2'>
                     {paymentSolutions.slice(4 * paymentSolutionsIndex, (4 * paymentSolutionsIndex) + 4).map((paymentSolution, index) =>
                       <div key={'paymentSolutions-key-' + index} className=''>
-                        <BankCard stripeCard={paymentSolution} name={user.username} />
+                        <BankCard stripeCard={paymentSolution} name={user.username} isDefault={paymentSolution.id === defaultCard} />
                         <div className={`grid ${paymentSolution.id === defaultCard ? 'grid-cols-1' : 'grid-cols-2'} mt-1 text-xs text-white gap-2 h-10`}>
                           <button className='p-1 rounded-lg w-full mx-auto bg-blue-400 hover:bg-blue-300' onClick={() => setCardAsDefault(paymentSolution)} hidden={paymentSolution.id === defaultCard}>Définir comme carte principale</button>
                           <button className='p-1 rounded-lg w-full mx-auto bg-red-400 hover:bg-red-300' onClick={() => deleteCard(paymentSolution)}>Supprimer</button>
