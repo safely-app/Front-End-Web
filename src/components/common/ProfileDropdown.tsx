@@ -51,19 +51,13 @@ const ProfileDropdown: React.FC<{
 
       <div className="absolute -right-8 z-50 mt-12 w-44 bg-white rounded-lg border border-solid border-neutral-200  divide-y divide-gray-100 shadow" hidden={!isMenuOpen}>
         <ul className="py-1 text-sm text-gray-700" aria-labelledby="dropdownDefault">
-          <li>
-            <small className='pt-2 px-4 italic'>Connecté en tant que</small>
-            <p className='pb-2 px-4 italic'>{user.userInfo.username}</p>
-          </li>
-          <hr className="border-neutral-400" style={{ borderTopWidth: '1px' }} />
           {links
             .filter(link => link.onAuth === undefined || link.onAuth === isAuthenticated())
             .filter(link => isNotCurrentPath(link.link))
             .filter(link => link.role === undefined || canAccess(user.userInfo.role, link.role))
             .map((link, index) => {
-              console.log(link)
               return (
-                <li>
+                <li key={`profile-dropdown-link-${index}`}>
                   <a href={link.link} className="block py-2 px-4 hover:bg-gray-100">{link.name}</a>
                 </li>
               );
