@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAppSelector } from '../../redux';
 import { canAccess } from '../Header/utils';
+import userImg from '../../assets/image/user.png';
 import './index.css';
 
 const ProfileDropdown: React.FC<{
@@ -22,17 +23,30 @@ const ProfileDropdown: React.FC<{
 
   return (
     <div
-      className="float-right mt-7 mr-10 relative"
+      className="float-right mt-5 mr-10 relative"
     >
       <div
-        className="burger space-y-2 cursor-pointer"
+        className='burger flex flex-row border border-solid border-neutral-300 py-2 px-3 rounded-2xl cursor-pointer space-x-2'
         onClick={() => setMenuOpen(!isMenuOpen)}
       >
-        <span className="block h-0.5 w-8"></span>
-        <span className="block h-0.5 w-8"></span>
-        <span className="block h-0.5 w-8"></span>
+
+        <div className="w-5 h-5">
+          <img src={userImg} alt="" />
+        </div>
+
+        <div className='text-sm'>
+          {user.userInfo.username}
+        </div>
+
+        <div className="space-y-0.5 flex-auto my-auto">
+          <span className="block h-0.5 w-4"></span>
+          <span className="block h-0.5 w-4"></span>
+          <span className="block h-0.5 w-4"></span>
+        </div>
+
       </div>
-      <div id="dropdown" className="absolute -right-8 z-50 mt-4 w-44 bg-white rounded-lg border border-solid border-neutral-200  divide-y divide-gray-100 shadow" hidden={!isMenuOpen}>
+
+      <div className="absolute -right-8 z-50 mt-4 w-44 bg-white rounded-lg border border-solid border-neutral-200  divide-y divide-gray-100 shadow" hidden={!isMenuOpen}>
         <ul className="py-1 text-sm text-gray-700" aria-labelledby="dropdownDefault">
           <li>
             <small className='pt-2 px-4 italic'>Connecté en tant que</small>
