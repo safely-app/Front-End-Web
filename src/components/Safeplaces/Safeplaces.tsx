@@ -16,6 +16,7 @@ import {
   TileLayer,
   Marker,
   Popup,
+  useMap,
 } from 'react-leaflet'
 import {
   FaEdit,
@@ -39,14 +40,30 @@ import { ModalBtn } from '../common/Modal';
 import { SafeplaceModal } from '../Monitors/SafeplaceMonitor/SafeplaceMonitorModal';
 import IComment from '../interfaces/IComment';
 import './Safeplaces.css';
+import { latLng } from 'leaflet';
 
 interface IMapProps {
   safeplaces: { setter: (val: ISafeplace[]) => void, value: ISafeplace[] };
+  safeplace: { setter: (val: ISafeplace) => void, value: ISafeplace };
+  safeplaceDetail: { setter: (val: boolean) => void, value: boolean };
 }
 
 const SafeplacesMap: React.FC<IMapProps> = ({
-  safeplaces
+  safeplaces,
+  safeplace,
+  safeplaceDetail,
 }) => {
+
+  function MyMapRef() {
+    const MapRef = useMap();
+
+    if (safeplaceDetail.value === true && safeplace.value !== null) {
+      console.log(safeplace)
+      MapRef.flyTo([Number(safeplace.value.coordinate[0]), Number(safeplace.value.coordinate[1])], 18);
+    }
+    return null;
+  }
+
   return (
     <div className='z-0'>
       <MapContainer
@@ -55,18 +72,29 @@ const SafeplacesMap: React.FC<IMapProps> = ({
         scrollWheelZoom={true}
         zoom={14}
       >
+        <MyMapRef />
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
 
         <MarkerClusterGroup showCoverageOnHover={false}>
-          {safeplaces.value.map((safeplace, index) => (
-            <Marker key={index} position={[
-              Number(safeplace.coordinate[0]),
-              Number(safeplace.coordinate[1])
-            ]}>
-              <Popup>{safeplace.name}</Popup>
+          {safeplaces.value.map((item, index) => (
+            <Marker
+              key={index} 
+              eventHandlers={{
+                click: (e) => {
+                  safeplace.setter(item);
+                  safeplaceDetail.setter(true);
+                  
+                },
+              }}
+              position={[
+                Number(item.coordinate[0]),
+                Number(item.coordinate[1])
+              ]}
+            >
+              <Popup>{item.name}</Popup>
             </Marker>
           ))}
         </MarkerClusterGroup>
@@ -77,22 +105,14 @@ const SafeplacesMap: React.FC<IMapProps> = ({
 
 interface ISafeplacesListProps {
   safeplaces: { setter: (val: ISafeplace[]) => void, value: ISafeplace[] };
-  comments: []
+  comments: [];
+  safeplace: { setter: (val: ISafeplace) => void, value: ISafeplace };
+  safeplaceDetail: { setter: (val: boolean) => void, value: boolean };
 }
 
-export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, comments }) => {
+export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, comments, safeplace, safeplaceDetail }) => {
   const [focusSafeplace, setFocusSafeplace] = useState<boolean>(false);
-  const [getSafeplaceDetail, setGetSafeplaceDetail] = useState<boolean>(false);
   const userCredentials = useAppSelector(state => state.user.credentials);
-  const [safeplace, setSafeplace] = useState<ISafeplace>({
-    id: "",
-    name: "",
-    city: "",
-    address: "",
-    type: "",
-    dayTimetable: [null, null, null, null, null, null, null],
-    coordinate: ["1", "1"]
-  });
   const [currentPage, setCurrentPage] = useState<number>(0)
 
   const createSafeplaceUpdateRequest = async (safeplace: ISafeplace) => {
@@ -146,26 +166,26 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
 
   return (
     <div className='px-6 pt-[165px]'>
-      {getSafeplaceDetail ? (
+      {safeplaceDetail.value ? (
         <div className='overflow-y-auto' style={{ height: "80vh" }}>
-          <FaChevronLeft onClick={() => setGetSafeplaceDetail(false)} className="w-8 h-8 cursor-pointer mb-4" style={{ color: "black" }} />
+          <FaChevronLeft onClick={() => safeplaceDetail.setter(false)} className="w-8 h-8 cursor-pointer mb-4" style={{ color: "black" }} />
           <div className="bg-safeplace-placeholder h-96 rounded-3xl">
             <img className="object-cover" alt="" />
           </div>
           <div className="flex flex-row justify-between">
             <div>
-              <p className="font-bold text-2xl mt-2">{safeplace.name}</p>
-              <p>{safeplace.type}</p>
+              <p className="font-bold text-2xl mt-2">{safeplace.value.name}</p>
+              <p>{safeplace.value.type}</p>
               <p className="text-blue-600">{comments.length} commentaires</p>
             </div>
-            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold text-white customGradient' onClick={() => claimSafeplace(safeplace)}>
+            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold text-white customGradient' onClick={() => claimSafeplace(safeplace.value)}>
               RÉCLAMER CE COMMERCE
             </button>
           </div>
           <div className="border-t-2 border-gray border-b-2 pt-3 pb-3 mt-3">
             <div className="flex flex-row items-center">
               <FaMapPin className="h-8 w-8" />
-              <p>{safeplace.address + ', ' + safeplace.city}</p>
+              <p>{safeplace.value.address + ', ' + safeplace.value.city}</p>
             </div>
           </div>
           <div className="h-6 w-full mt-5">
@@ -192,34 +212,34 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-10 overflow-y-auto px-30" style={{ height: "80vh" }}>
-          {safeplaces.value && safeplaces.value.length > 0 ? safeplaces.value.map(safeplace => (
-            <div className='cursor-pointer' key={safeplace.id}>
-              <div data-testid={"safeplace-get-detail-" + safeplace.id} className="bg-safeplace-placeholder w-90 h-80 rounded-3xl" onClick={() => {
-                setSafeplace(safeplace);
-                setGetSafeplaceDetail(true);
+          {safeplaces.value && safeplaces.value.length > 0 ? safeplaces.value.map(item => (
+            <div className='cursor-pointer' key={item.id}>
+              <div data-testid={"safeplace-get-detail-" + item.id} className="bg-safeplace-placeholder w-90 h-80 rounded-3xl" onClick={() => {
+                safeplace.setter(item);
+                safeplaceDetail.setter(true);
               }}>
                 <img className="object-cover" alt="" />
               </div>
               <div className="flex justify-between">
                 <div>
-                  <p className="font-bold text-lg mt-2">{safeplace.name}</p>
-                  <p>{safeplace.type}</p>
+                  <p className="font-bold text-lg mt-2">{item.name}</p>
+                  <p>{item.type}</p>
                 </div>
-                <FaEdit className='h-6 w-6 mr-4 mt-2' data-testid={"safeplace-update-" + safeplace.id} onClick={() => {
+                <FaEdit className='h-6 w-6 mr-4 mt-2' data-testid={"safeplace-update-" + item.id} onClick={() => {
                   setFocusSafeplace(true);
-                  setSafeplace(safeplace);
+                  safeplace.setter(safeplace.value);
                 }} />
               </div>
             </div>
           )) : null}
           <SafeplaceModal
-            title={safeplace.name}
+            title={safeplace.value.name}
             modalOn={focusSafeplace}
-            safeplace={safeplace}
-            setSafeplace={setSafeplace}
+            safeplace={safeplace.value}
+            setSafeplace={safeplace.setter}
             buttons={[
-              <ModalBtn key='sum-btn-0' content="Modifier le commerce" onClick={() => createSafeplaceUpdateRequest(safeplace)} />,
-              <ModalBtn key='sum-btn-1' content="Supprimer" onClick={() => deleteSafeplace(safeplace)} warning />,
+              <ModalBtn key='sum-btn-0' content="Modifier le commerce" onClick={() => createSafeplaceUpdateRequest(safeplace.value)} />,
+              <ModalBtn key='sum-btn-1' content="Supprimer" onClick={() => deleteSafeplace(safeplace.value)} warning />,
               <ModalBtn key='sum-btn-2' content="Annuler" onClick={() => setFocusSafeplace(false)} />
             ]}
           />
@@ -296,6 +316,17 @@ const Safeplaces: React.FC = () => {
   const [stateFilterType, setStateFilterType] = useState<string>("");
   const [allComments, setAllComments] = useState<[]>([]);
 
+  const [safeplace, setSafeplace] = useState<ISafeplace>({
+    id: "",
+    name: "",
+    city: "",
+    address: "",
+    type: "",
+    dayTimetable: [null, null, null, null, null, null, null],
+    coordinate: ["1", "1"]
+  });
+  const [getSafeplaceDetail, setGetSafeplaceDetail] = useState<boolean>(false);
+
   useEffect(() => {
     console.log(stateFilterType)
   }, [stateFilterType]);
@@ -364,8 +395,8 @@ const Safeplaces: React.FC = () => {
         />
       </div>
       <div className="grid grid-cols-2">
-        <SafeplacesList safeplaces={{ setter: setSafeplaces, value: filterSafeplaces() }} comments={allComments} />
-        <SafeplacesMap safeplaces={{ setter: setSafeplaces, value: safeplaces }} />
+        <SafeplacesList safeplace={{ setter: setSafeplace, value: safeplace }} safeplaceDetail={{ setter: setGetSafeplaceDetail, value: getSafeplaceDetail }} safeplaces={{ setter: setSafeplaces, value: filterSafeplaces() }} comments={allComments} />
+        <SafeplacesMap safeplace={{ setter: setSafeplace, value: safeplace }} safeplaceDetail={{ setter: setGetSafeplaceDetail, value: getSafeplaceDetail }} safeplaces={{ setter: setSafeplaces, value: safeplaces }} />
       </div>
 
     </div>

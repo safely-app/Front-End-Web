@@ -23,10 +23,24 @@ test('renders SafeplacesList', () => {
     }
   ];
 
+  const safeplace = {
+    id: "",
+    name: "",
+    city: "",
+    address: "",
+    type: "",
+    dayTimetable: [null, null, null, null, null, null, null],
+    coordinate: ["1", "1"]
+  }
+
+  const getSafeplaceDetail = false;
+
   render(
     <Provider store={store}>
       <SafeplacesList
         safeplaces={{ setter: () => {}, value: safeplaces }}
+        safeplace={{ setter: () => {}, value: safeplace }}
+        safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
         comments={[]}
       />
     </Provider>
@@ -50,6 +64,18 @@ test('SafeplacesList claim safeplace', async () => {
     }
   ];
 
+  const safeplace = {
+    id: "",
+    name: "",
+    city: "",
+    address: "",
+    type: "",
+    dayTimetable: [null, null, null, null, null, null, null],
+    coordinate: ["1", "1"]
+  }
+
+  const getSafeplaceDetail = false;
+
   const scopeClaim = nock(testURL)
     .post('/safeplace/requestClaimSafeplace')
     .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
@@ -58,6 +84,8 @@ test('SafeplacesList claim safeplace', async () => {
     <Provider store={store}>
       <SafeplacesList
         safeplaces={{ setter: () => {}, value: safeplaces }}
+        safeplace={{ setter: () => {}, value: safeplace }}
+        safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
         comments={[]}
       />
     </Provider>
@@ -88,6 +116,18 @@ test('SafeplacesList update info', async () => {
     }
   ];
 
+  const safeplace = {
+    id: "",
+    name: "",
+    city: "",
+    address: "",
+    type: "",
+    dayTimetable: [null, null, null, null, null, null, null],
+    coordinate: ["1", "1"]
+  }
+
+  const getSafeplaceDetail = false;
+
   const scopeCreate = nock(testURL).post('/commercial/modif')
     .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
 
@@ -95,6 +135,8 @@ test('SafeplacesList update info', async () => {
     <Provider store={store}>
       <SafeplacesList
         safeplaces={{ setter: () => {}, value: safeplaces }}
+        safeplace={{ setter: () => {}, value: safeplace }}
+        safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
         comments={[]}
       />
     </Provider>
@@ -133,6 +175,18 @@ test('SafeplacesList remove safeplace', async () => {
     }
   ];
 
+  const safeplace = {
+    id: "",
+    name: "",
+    city: "",
+    address: "",
+    type: "",
+    dayTimetable: [null, null, null, null, null, null, null],
+    coordinate: ["1", "1"]
+  }
+
+  const getSafeplaceDetail = false;
+
   const scopeOptions = nock(testURL).options('/safeplace/safeplace/s1')
     .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeDelete = nock(testURL).delete('/safeplace/safeplace/s1')
@@ -142,6 +196,8 @@ test('SafeplacesList remove safeplace', async () => {
     <Provider store={store}>
       <SafeplacesList
         safeplaces={{ setter: () => {}, value: safeplaces }}
+        safeplace={{ setter: () => {}, value: safeplace }}
+        safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
         comments={[]}
       />
     </Provider>
