@@ -107,6 +107,7 @@ interface HeaderLink {
   name: string;
   role?: Role;
   onAuth?: boolean;
+  isMain?: boolean;
 }
 
 export const Header: React.FC<{
@@ -115,33 +116,32 @@ export const Header: React.FC<{
   links
 }) => {
 
-  return (
-    <div className='bg-white font-bold text-xl flex border-b-2 border-neutral-300 z-10'>
-      <div className='flex pl-4'>
-        <div className='px-2 py-6 cursor-pointer hover:opacity-70 mx-2'>
-          <a href='/'>Dashboard</a>
+    return (
+      <div className='bg-white font-bold text-xl flex border-b-2 border-neutral-300 z-10'>
+        <div className='flex pl-4'>
+          <div className='px-2 py-6 cursor-pointer hover:opacity-70 mx-2'>
+            <a href='/'>Dashboard</a>
+          </div>
+          <div className='px-2'>
+            <HeaderNotif />
+          </div>
         </div>
-        <div className='px-2'>
-          <HeaderNotif />
+        <div className='flex w-full'>
+          <div className="flex-auto">
+            <ProfileDropdown links={links} />
+          </div>
         </div>
       </div>
-      <div className='flex w-full'>
-		<div className="flex-auto">
-			<ProfileDropdown links={links}/>
-		</div>
-      </div>
-    </div>
-  );
-};
+    );
+  };
 
 export const AppHeader: React.FC = () => {
   const links = [
-    { link: "/login", name: "Connexion", onAuth: false },
-	{ link: "/", name: "Accueil", onAuth: true },
-    { link: "/commercial", name: "Mes campagnes", onAuth: true, role: Role.TRADER },
-    { link: "/admin", name: "Administration", onAuth: true, role: Role.ADMIN },
-	{ link: "/profile", name: "Mon profil", onAuth: true, role: Role.USER },
-    { link: "/bugreport", name: "Contact", onAuth: true }
+    { link: "/login", name: "Connexion", onAuth: false, isMain: true },
+    { link: "/", name: "Accueil", onAuth: true, isMain: false },
+    { link: "/commercial", name: "Gérer mes campagnes", onAuth: true, role: Role.TRADER, isMain: true },
+    { link: "/admin", name: "Administration", onAuth: true, role: Role.ADMIN, isMain: false },
+    { link: "/bugreport", name: "Contact", onAuth: true, isMain: false },
   ];
 
   return (

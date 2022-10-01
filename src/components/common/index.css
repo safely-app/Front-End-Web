@@ -156,10 +156,11 @@
     text-align: center;
 }
 
-.burger:hover span {
-	background-color: #8b8686;
+.dot-menu span {
+    border-color: #525252;
 }
 
-.burger span {
-	background-color: #141414;
+.dot-menu:hover span {
+    border-color: #737373;
+    box-shadow: 0px 0px 1px #999;
 }
