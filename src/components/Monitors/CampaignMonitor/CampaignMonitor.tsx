@@ -25,7 +25,7 @@ const CampaignMonitor: React.FC = () => {
     id: "",
     name: "",
     budget: "",
-	budgetSpent: "",
+	  budgetSpent: "",
     status: "",
     ownerId: "",
     startingDate: "",
@@ -75,7 +75,7 @@ const CampaignMonitor: React.FC = () => {
     try {
       const finalCampaign = { ...campaign, status: status };
       const response = await Commercial.createCampaign(finalCampaign, userCredentials.token);
-      const newCampaign = { ...campaign, id: response.data._id };
+      const newCampaign = { ...campaign, budgetSpent: "0", id: response.data._id };
 
       setCampaigns([ ...campaigns, newCampaign ]);
       notifySuccess("Nouvelle facture créée");
@@ -116,7 +116,7 @@ const CampaignMonitor: React.FC = () => {
       id: "",
       name: "",
       budget: "",
-	  budgetSpent: "",
+	    budgetSpent: "",
       status: "",
       ownerId: "",
       startingDate: "",
@@ -132,7 +132,7 @@ const CampaignMonitor: React.FC = () => {
           ownerId: campaign.ownerId,
           name: campaign.name,
           budget: campaign.budget,
-		  budgetSpent: campaign.budgetSpent,
+		      budgetSpent: campaign.budgetSpent,
           status: campaign.status,
           startingDate: campaign.startingDate,
           safeplaceId: campaign.safeplaceId,
