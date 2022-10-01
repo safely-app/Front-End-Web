@@ -381,6 +381,7 @@ test('render BankCard', () => {
   render(
     <BankCard
       name="Billy"
+      deleteCard={() => {}}
       stripeCard={stripeCard}
     />
   );
@@ -401,6 +402,7 @@ test('render BankCard visa', () => {
   render(
     <BankCard
       name="Billy"
+      deleteCard={() => {}}
       stripeCard={stripeCard}
     />
   );
@@ -421,6 +423,7 @@ test('render BankCard mastercard', () => {
   render(
     <BankCard
       name="Billy"
+      deleteCard={() => {}}
       stripeCard={stripeCard}
     />
   );
@@ -441,6 +444,7 @@ test('render BankCard cartes_bancaires', () => {
   render(
     <BankCard
       name="Billy"
+      deleteCard={() => {}}
       stripeCard={stripeCard}
     />
   );

@@ -117,7 +117,7 @@ const LinkCardModal: React.FC<{
   linkCardToUser
 }) => {
   return (
-    <div className='absolute bg-white z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6 text-center' hidden={!modalOn}>
+    <div className='absolute bg-white z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6 text-center' hidden={!modalOn}>
       <StripeCard onSubmit={linkCardToUser} />
       <button className='bg-blue-400 text-white font-bold rounded-lg shadow-lg m-2 py-2 px-2 w-52'
               onClick={() => setModalOn(false)}>Annuler</button>
@@ -243,11 +243,9 @@ const Profile: React.FC = () => {
   }, [userCredentials, userUserInfo]);
 
   useEffect(() => {
-    const defaultPaymentSolution = paymentSolutions.find(paymentSolution => paymentSolution.id === defaultCard);
-
-    if (defaultPaymentSolution) {
-      setPaymentSolutions([
-        defaultPaymentSolution,
+    if (defaultCard !== "") {
+      setPaymentSolutions(paymentSolutions => [
+        paymentSolutions.find(paymentSolution => paymentSolution.id === defaultCard) as IStripeCard,
         ...paymentSolutions.filter(paymentSolution => paymentSolution.id !== defaultCard)
       ]);
     }
@@ -293,7 +291,7 @@ const Profile: React.FC = () => {
 
   const disconnectUser = () => {
     dispatch(disconnect());
-    window.location.href = "/";
+    window.location.href = "/login";
   };
 
   const deleteAccount = async () => {
@@ -464,10 +462,18 @@ const Profile: React.FC = () => {
                   <div className='grid grid-cols-2 gap-x-4 gap-y-2'>
                     {paymentSolutions.slice(4 * paymentSolutionsIndex, (4 * paymentSolutionsIndex) + 4).map((paymentSolution, index) =>
                       <div key={'paymentSolutions-key-' + index} className=''>
-                        <BankCard stripeCard={paymentSolution} name={user.username} isDefault={paymentSolution.id === defaultCard} />
-                        <div className={`grid ${paymentSolution.id === defaultCard ? 'grid-cols-1' : 'grid-cols-2'} mt-1 text-xs text-white gap-2 h-10`}>
-                          <button className='p-1 rounded-lg w-full mx-auto bg-blue-400 hover:bg-blue-300' onClick={() => setCardAsDefault(paymentSolution)} hidden={paymentSolution.id === defaultCard}>Définir comme carte principale</button>
-                          <button className='p-1 rounded-lg w-full mx-auto bg-red-400 hover:bg-red-300' onClick={() => deleteCard(paymentSolution)}>Supprimer</button>
+                        <BankCard
+                          name={user.username}
+                          stripeCard={paymentSolution}
+                          isDefault={paymentSolution.id === defaultCard}
+                          deleteCard={deleteCard}
+                        />
+                        <div className='text-center'>
+                          <button
+                            className="underline text-sm text-gray-500"
+                            onClick={() => setCardAsDefault(paymentSolution)}
+                            hidden={paymentSolution.id === defaultCard}
+                          >Définir comme carte principale</button>
                         </div>
                       </div>
                     )}
