@@ -220,10 +220,6 @@ const Profile: React.FC = () => {
   }, [userCredentials, dispatch]);
 
   useEffect(() => {
-    Stripe.get(userUserInfo.stripeId as string, userCredentials.token)
-      .then(result => setDefaultCard(result.data.invoice_settings.default_payment_method))
-      .catch(err => log.error(err));
-
     Stripe.getCards(userUserInfo.stripeId as string, userCredentials.token)
       .then(result => {
         const gotPaymentSolutions = result.data.data.map(paymentSolution => ({
@@ -238,8 +234,24 @@ const Profile: React.FC = () => {
         }));
 
         setPaymentSolutions(gotPaymentSolutions);
+
+        Stripe.get(userUserInfo.stripeId as string, userCredentials.token)
+          .then(result => setDefaultCard(result.data.invoice_settings.default_payment_method))
+          .catch(err => log.error(err));
+
       }).catch(err => log.error(err));
   }, [userCredentials, userUserInfo]);
+
+  useEffect(() => {
+    const defaultPaymentSolution = paymentSolutions.find(paymentSolution => paymentSolution.id === defaultCard);
+
+    if (defaultPaymentSolution) {
+      setPaymentSolutions([
+        defaultPaymentSolution,
+        ...paymentSolutions.filter(paymentSolution => paymentSolution.id !== defaultCard)
+      ]);
+    }
+  }, [defaultCard]);
 
   const updatePaymentSolutionsIndex = (offset: number) => {
     if (paymentSolutionsIndex + offset >= 0 && 4 * (paymentSolutionsIndex + offset) <= paymentSolutions.length) {
