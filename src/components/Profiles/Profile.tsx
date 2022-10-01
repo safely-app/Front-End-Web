@@ -95,11 +95,11 @@ const ProfileInputSection: React.FC<{
               <label className='block text-neutral-400 font-bold'>{property.label}</label>
               <div className='my-2'>
                 <input className='border border-solid border-neutral-300 rounded-l-lg w-1/2 xl:w-full max-w-md py-1 px-2 focus:outline-none'
-                       type='text' placeholder={property.label} value={property.value} onChange={(event) => handleChange(event, property)}/>
+                  type='text' placeholder={property.label} value={property.value} onChange={(event) => handleChange(event, property)} />
                 <button className='border border-l-0 border-solid border-neutral-300 rounded-r-lg py-1 px-2 hover:bg-neutral-200'
-                        data-testid={`section-btn-${title}-${index}`} onClick={updateProperties}>Modifier</button>
+                  data-testid={`section-btn-${title}-${index}`} onClick={updateProperties}>Modifier</button>
               </div>
-            </div>
+              </div>
           )}
         </div>
       }
@@ -109,18 +109,39 @@ const ProfileInputSection: React.FC<{
 
 const LinkCardModal: React.FC<{
   modalOn: boolean;
-  setModalOn: (modalOn: boolean) => void;
+  setModalType: (modalType: ModalType) => void;
   linkCardToUser: (value: PaymentMethod) => void;
 }> = ({
   modalOn,
-  setModalOn,
+  setModalType,
   linkCardToUser
 }) => {
   return (
     <div className='absolute bg-white z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6 text-center' hidden={!modalOn}>
       <StripeCard onSubmit={linkCardToUser} />
       <button className='bg-blue-400 text-white font-bold rounded-lg shadow-lg m-2 py-2 px-2 w-52'
-              onClick={() => setModalOn(false)}>Annuler</button>
+        onClick={() => setModalType(ModalType.OFF)}>Annuler</button>
+    </div>
+  );
+};
+
+const DeleteAccountModal: React.FC<{
+  modalOn: boolean;
+  setModalType: (modalType: ModalType) => void;
+  deleteAccount: () => void;
+}> = ({
+  modalOn,
+  setModalType,
+  deleteAccount
+}) => {
+  return (
+    <div className='absolute bg-white z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl px-6 pt-8 pb-2 text-center' hidden={!modalOn}>
+      <p className=''>Êtes-vous sûr de vouloir supprimer votre compte ?</p>
+      <p className='mt-2 font-bold'>Cette action est irréversible.</p>
+      <div className='my-6 space-y-3'>
+        <button className='block text-xs text-neutral-600 underline mx-auto' onClick={deleteAccount}>Supprimer mon compte</button>
+        <button className='block text-sm text-neutral-600 border border-solid border-neutral-300 rounded-lg hover:bg-neutral-100 px-5 py-1 mx-auto' onClick={() => setModalType(ModalType.OFF)}>Annuler</button>
+      </div>
     </div>
   );
 };
@@ -130,6 +151,12 @@ enum SectionState {
   PERSO,
   COMPANY,
   PAYMENT
+}
+
+enum ModalType {
+  OFF,
+  CARD,
+  DELETE
 }
 
 const Profile: React.FC = () => {
@@ -143,7 +170,7 @@ const Profile: React.FC = () => {
   const [paymentSolutionsIndex, setPaymentSolutionsIndex] = useState(0);
   const [defaultCard, setDefaultCard] = useState("");
 
-  const [cardModalOn, setCardModalOn] = useState(false);
+  const [modalType, setModalType] = useState(ModalType.OFF);
 
   const [savedUser, setSavedUser] = useState<IUser | undefined>(undefined);
   const [savedProfessional, setSavedProfessional] = useState<IProfessional | undefined>(undefined);
@@ -320,11 +347,11 @@ const Profile: React.FC = () => {
 
   const deleteCard = async (card: IStripeCard) => {
     try {
-        await Stripe.deleteCard(card.id, userCredentials.token);
-        notifySuccess("Solution de paiement supprimée.");
-        setPaymentSolutions(
-          paymentSolutions.filter(paymentSolution => paymentSolution.id !== card.id)
-        );
+      await Stripe.deleteCard(card.id, userCredentials.token);
+      notifySuccess("Solution de paiement supprimée.");
+      setPaymentSolutions(
+        paymentSolutions.filter(paymentSolution => paymentSolution.id !== card.id)
+      );
     } catch (err) {
       log.error(err)
       notifyError(err)
@@ -365,7 +392,7 @@ const Profile: React.FC = () => {
         const response = await Stripe.linkCard(value.id, userCredentials.token);
         const paymentSolution = response.data;
 
-        setPaymentSolutions([ ...paymentSolutions, {
+        setPaymentSolutions([...paymentSolutions, {
           id: paymentSolution.id,
           customerId: paymentSolution.customer,
           brand: paymentSolution.card.brand,
@@ -374,9 +401,9 @@ const Profile: React.FC = () => {
           expYear: paymentSolution.card.exp_year,
           last4: paymentSolution.card.last4,
           created: String(paymentSolution.created * 1000)
-        } ]);
+        }]);
         notifySuccess("Votre carte a été enregistré !");
-        setCardModalOn(false);
+        setModalType(ModalType.OFF);
       }
     } catch (err) {
       log.error(err);
@@ -385,113 +412,114 @@ const Profile: React.FC = () => {
   };
 
   return (
-      <div className='w-full h-full bg-neutral-100'>
-        <AppHeader />
+    <div className='w-full h-full bg-neutral-100'>
+      <AppHeader />
 
-        <LinkCardModal modalOn={cardModalOn} setModalOn={setCardModalOn} linkCardToUser={linkCardToUser} />
+      <LinkCardModal modalOn={modalType === ModalType.CARD} setModalType={setModalType} linkCardToUser={linkCardToUser} />
+      <DeleteAccountModal modalOn={modalType === ModalType.DELETE} setModalType={setModalType} deleteAccount={deleteAccount} />
 
-        <div className='grid grid-cols-5 w-5/6 2xl:w-4/6 h-5/6 bg-white m-auto mt-6 rounded shadow-lg'>
-          <div className='col-span-2 border-r-2 border-solid border-neutral-300 px-4'>
-            <div className='font-bold mt-8'>
-              <img className='block object-center h-20 w-20 mx-auto' src={userProfilePicture} alt='' />
-              <p className='text-2xl text-center my-4'>{savedUser?.username}</p>
-              <p className='text-sm text-center mb-6'>{savedUser?.email}</p>
-            </div>
-
-            <hr className='border-t-2 border-solid border-neutral-300' />
-
-            <div className='font-light'>
-              <ProfileField leftText="Nom d'utilisateur" rightText={savedUser?.username || ""} />
-              <ProfileField leftText="Adresse électronique" rightText={savedUser?.email || ""} />
-            </div>
-
-            <hr />
-
-            <div className='font-light'>
-              <ProfileField leftText="Nom de l'entreprise" rightText={savedProfessional?.companyName || ""} />
-              <ProfileField leftText="Adresse de l'entreprise" rightText={savedProfessional?.companyAddress || ""} />
-              <ProfileField leftText="Adresse de l'entreprise 2" rightText={savedProfessional?.companyAddress2 || ""} />
-              <ProfileField leftText="Adresse de facturation" rightText={savedProfessional?.billingAddress || ""} />
-              <ProfileField leftText="Numéro de client TVA" rightText={savedProfessional?.clientNumberTVA || ""} />
-              <ProfileField leftText="Numéro de téléphone personnel" rightText={savedProfessional?.personalPhone || ""} />
-              <ProfileField leftText="Numéro de téléphone professionel" rightText={savedProfessional?.companyPhone || ""} />
-              <ProfileField leftText="Type d'entreprise" rightText={savedProfessional?.type || ""} />
-
-              <div className='grid grid-cols-1 xl:grid-cols-2 mt-4 lg:mt-8'>
-                <button className='block p-2 text-white text-sm rounded-lg w-48 mx-auto my-2 bg-blue-400 hover:bg-blue-300' onClick={disconnectUser}>Se déconnecter</button>
-                <button className='block p-2 text-white text-sm rounded-lg w-48 mx-auto my-2 bg-red-400 hover:bg-red-300' onClick={deleteAccount}>Supprimer mon compte</button>
-              </div>
-            </div>
+      <div className='grid grid-cols-5 w-5/6 2xl:w-4/6 h-5/6 bg-white m-auto mt-6 rounded shadow-lg'>
+        <div className='col-span-2 border-r-2 border-solid border-neutral-300 px-4'>
+          <div className='font-bold mt-8'>
+            <img className='block object-center h-20 w-20 mx-auto' src={userProfilePicture} alt='' />
+            <p className='text-2xl text-center my-4'>{savedUser?.username}</p>
+            <p className='text-sm text-center mb-6'>{savedUser?.email}</p>
           </div>
-          <div className='relative col-span-3 py-4'>
 
-            <ProfileInputSection
-              title='Informations personnelles'
-              active={sectionState === SectionState.PERSO}
-              setActive={(active) => setSectionState(active ? SectionState.PERSO : SectionState.OFF)}
-              updateProperties={updateUser}
-              properties={[
-                { label: "Nom d'utilisateur", value: user.username, setValue: (value) => setUserField("username", value) },
-                { label: "Adresse électronique", value: user.email, setValue: (value) => setUserField("email", value) },
-              ]}
-            />
+          <hr className='border-t-2 border-solid border-neutral-300' />
 
-            <ProfileInputSection
-              title='Informations de votre entreprise'
-              active={sectionState === SectionState.COMPANY}
-              setActive={(active) => setSectionState(active ? SectionState.COMPANY : SectionState.OFF)}
-              updateProperties={updateProfessional}
-              properties={[
-                { label: "Nom de l'entreprise", value: professional.companyName, setValue: (value) => setProfessionalField("companyName", value) },
-                { label: "Adresse de l'entreprise", value: professional.companyAddress, setValue: (value) => setProfessionalField("companyAddress", value) },
-                { label: "Adresse de l'entreprise 2", value: professional.companyAddress2, setValue: (value) => setProfessionalField("companyAddress2", value) },
-                { label: "Adresse de facturation", value: professional.billingAddress, setValue: (value) => setProfessionalField("billingAddress", value) },
-                { label: "Numéro de client TVA", value: professional.clientNumberTVA, setValue: (value) => setProfessionalField("clientNumberTVA", value) },
-                { label: "Numéro de télephone personnel", value: professional.personalPhone, setValue: (value) => setProfessionalField("personalPhone", value) },
-                { label: "Numéro de télephone professionel", value: professional.companyPhone, setValue: (value) => setProfessionalField("companyPhone", value) },
-                { label: "Type d'entreprise", value: professional.type, setValue: (value) => setProfessionalField("type", value) },
-              ]}
-            />
+          <div className='font-light'>
+            <ProfileField leftText="Nom d'utilisateur" rightText={savedUser?.username || ""} />
+            <ProfileField leftText="Adresse électronique" rightText={savedUser?.email || ""} />
+          </div>
 
-            <ProfileSection
-              title='Solutions de paiement'
-              active={sectionState === SectionState.PAYMENT}
-              setActive={(active) => setSectionState(active ? SectionState.PAYMENT : SectionState.OFF)}
-              content={
-                <div className='mt-2'>
-                  <div className='grid grid-cols-2 gap-x-4 gap-y-2'>
-                    {paymentSolutions.slice(4 * paymentSolutionsIndex, (4 * paymentSolutionsIndex) + 4).map((paymentSolution, index) =>
-                      <div key={'paymentSolutions-key-' + index} className=''>
-                        <BankCard
-                          name={user.username}
-                          stripeCard={paymentSolution}
-                          isDefault={paymentSolution.id === defaultCard}
-                          deleteCard={deleteCard}
-                        />
-                        <div className='text-center'>
-                          <button
-                            className="underline text-sm text-gray-500"
-                            onClick={() => setCardAsDefault(paymentSolution)}
-                            hidden={paymentSolution.id === defaultCard}
-                          >Définir comme carte principale</button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <button className='absolute p-1 text-sm font-bold w-5/6 rounded-lg bg-white drop-shadow-lg bottom-16 left-1/2 -translate-x-1/2' onClick={() => setCardModalOn(true)}>Ajouter une carte</button>
-                  <div className={`absolute w-5/6 bg-white rounded-lg drop-shadow-lg grid grid-cols-12 text-center bottom-0 left-1/2 -translate-x-1/2 mb-8 font-bold ${paymentSolutions.length < 4 && 'hidden'}`}>
-                    <div className='col-span-1 cursor-pointer rounded-l-lg' onClick={() => updatePaymentSolutionsIndex(-1)}>{'<'}</div>
-                    <div className='col-span-10'>{(paymentSolutionsIndex + 1) + '/' + Math.ceil(paymentSolutions.length / 4)}</div>
-                    <div className='col-span-1 cursor-pointer rounded-r-lg' onClick={() => updatePaymentSolutionsIndex(1)}>{'>'}</div>
-                  </div>
-                </div>
-              }
-            />
+          <hr />
 
+          <div className='font-light'>
+            <ProfileField leftText="Nom de l'entreprise" rightText={savedProfessional?.companyName || ""} />
+            <ProfileField leftText="Adresse de l'entreprise" rightText={savedProfessional?.companyAddress || ""} />
+            <ProfileField leftText="Adresse de l'entreprise 2" rightText={savedProfessional?.companyAddress2 || ""} />
+            <ProfileField leftText="Adresse de facturation" rightText={savedProfessional?.billingAddress || ""} />
+            <ProfileField leftText="Numéro de client TVA" rightText={savedProfessional?.clientNumberTVA || ""} />
+            <ProfileField leftText="Numéro de téléphone personnel" rightText={savedProfessional?.personalPhone || ""} />
+            <ProfileField leftText="Numéro de téléphone professionel" rightText={savedProfessional?.companyPhone || ""} />
+            <ProfileField leftText="Type d'entreprise" rightText={savedProfessional?.type || ""} />
+
+            <div className='my-8 space-y-2'>
+              <button className='block text-sm text-neutral-600 border border-solid border-neutral-300 rounded-lg hover:bg-neutral-100 px-3 py-1 mx-auto' onClick={disconnectUser}>Se déconnecter</button>
+              <button className='block text-xs text-neutral-600 underline mx-auto' onClick={() => setModalType(ModalType.DELETE)}>Supprimer mon compte</button>
+            </div>
           </div>
         </div>
+        <div className='relative col-span-3 py-4'>
 
+          <ProfileInputSection
+            title='Informations personnelles'
+            active={sectionState === SectionState.PERSO}
+            setActive={(active) => setSectionState(active ? SectionState.PERSO : SectionState.OFF)}
+            updateProperties={updateUser}
+            properties={[
+              { label: "Nom d'utilisateur", value: user.username, setValue: (value) => setUserField("username", value) },
+              { label: "Adresse électronique", value: user.email, setValue: (value) => setUserField("email", value) },
+            ]}
+          />
+
+          <ProfileInputSection
+            title='Informations de votre entreprise'
+            active={sectionState === SectionState.COMPANY}
+            setActive={(active) => setSectionState(active ? SectionState.COMPANY : SectionState.OFF)}
+            updateProperties={updateProfessional}
+            properties={[
+              { label: "Nom de l'entreprise", value: professional.companyName, setValue: (value) => setProfessionalField("companyName", value) },
+              { label: "Adresse de l'entreprise", value: professional.companyAddress, setValue: (value) => setProfessionalField("companyAddress", value) },
+              { label: "Adresse de l'entreprise 2", value: professional.companyAddress2, setValue: (value) => setProfessionalField("companyAddress2", value) },
+              { label: "Adresse de facturation", value: professional.billingAddress, setValue: (value) => setProfessionalField("billingAddress", value) },
+              { label: "Numéro de client TVA", value: professional.clientNumberTVA, setValue: (value) => setProfessionalField("clientNumberTVA", value) },
+              { label: "Numéro de télephone personnel", value: professional.personalPhone, setValue: (value) => setProfessionalField("personalPhone", value) },
+              { label: "Numéro de télephone professionel", value: professional.companyPhone, setValue: (value) => setProfessionalField("companyPhone", value) },
+              { label: "Type d'entreprise", value: professional.type, setValue: (value) => setProfessionalField("type", value) },
+            ]}
+          />
+
+          <ProfileSection
+            title='Solutions de paiement'
+            active={sectionState === SectionState.PAYMENT}
+            setActive={(active) => setSectionState(active ? SectionState.PAYMENT : SectionState.OFF)}
+            content={
+              <div className='mt-2'>
+                <div className='grid grid-cols-2 gap-x-4 gap-y-2'>
+                  {paymentSolutions.slice(4 * paymentSolutionsIndex, (4 * paymentSolutionsIndex) + 4).map((paymentSolution, index) =>
+                    <div key={'paymentSolutions-key-' + index} className=''>
+                      <BankCard
+                        name={user.username}
+                        stripeCard={paymentSolution}
+                        isDefault={paymentSolution.id === defaultCard}
+                        deleteCard={deleteCard}
+                      />
+                      <div className='text-center'>
+                        <button
+                          className="underline text-sm text-gray-500"
+                          onClick={() => setCardAsDefault(paymentSolution)}
+                          hidden={paymentSolution.id === defaultCard}
+                        >Définir comme carte principale</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <button className='absolute p-1 text-sm font-bold w-5/6 rounded-lg bg-white drop-shadow-lg bottom-16 left-1/2 -translate-x-1/2' onClick={() => setModalType(ModalType.CARD)}>Ajouter une carte</button>
+                <div className={`absolute w-5/6 bg-white rounded-lg drop-shadow-lg grid grid-cols-12 text-center bottom-0 left-1/2 -translate-x-1/2 mb-8 font-bold ${paymentSolutions.length < 4 && 'hidden'}`}>
+                  <div className='col-span-1 cursor-pointer rounded-l-lg' onClick={() => updatePaymentSolutionsIndex(-1)}>{'<'}</div>
+                  <div className='col-span-10'>{(paymentSolutionsIndex + 1) + '/' + Math.ceil(paymentSolutions.length / 4)}</div>
+                  <div className='col-span-1 cursor-pointer rounded-r-lg' onClick={() => updatePaymentSolutionsIndex(1)}>{'>'}</div>
+                </div>
+              </div>
+            }
+          />
+
+        </div>
       </div>
+
+    </div>
   );
 };
 
