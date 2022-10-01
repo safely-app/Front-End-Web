@@ -107,6 +107,12 @@ const ProfileInputSection: React.FC<{
   );
 };
 
+enum ModalType {
+  OFF,
+  CARD,
+  DELETE
+}
+
 const LinkCardModal: React.FC<{
   modalOn: boolean;
   setModalType: (modalType: ModalType) => void;
@@ -151,12 +157,6 @@ enum SectionState {
   PERSO,
   COMPANY,
   PAYMENT
-}
-
-enum ModalType {
-  OFF,
-  CARD,
-  DELETE
 }
 
 const Profile: React.FC = () => {
