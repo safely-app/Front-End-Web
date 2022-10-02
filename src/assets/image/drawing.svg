@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="124.22094mm"
+   height="47.64867mm"
+   viewBox="0 0 124.22094 47.64867"
+   version="1.1"
+   id="svg1188"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1185">
+    <linearGradient
+       id="linearGradient2734">
+      <stop
+         style="stop-color:#1d3655;stop-opacity:1;"
+         offset="0.15363881"
+         id="stop2730" />
+      <stop
+         style="stop-color:#4179b5;stop-opacity:0;"
+         offset="1"
+         id="stop2732" />
+    </linearGradient>
+    <linearGradient
+       xlink:href="#linearGradient2734"
+       id="linearGradient2736"
+       x1="96.991013"
+       y1="62.101345"
+       x2="97.555573"
+       y2="188.67519"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     id="layer1"
+     transform="translate(-73.505417,-62.214254)">
+    <text
+       xml:space="preserve"
+       style="font-variant:normal;font-weight:normal;font-stretch:normal;font-size:22.5778px;font-family:Comfortaa;-inkscape-font-specification:Comfortaa-Regular;writing-mode:lr-tb;fill:#1d3655;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.352778"
+       id="text260"
+       x="130.85919"
+       y="92.121109"><tspan
+         id="tspan258"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.5778px;font-family:'Work Sans';-inkscape-font-specification:'Work Sans Bold';fill:#1d3655;fill-opacity:1;stroke-width:0.352778"
+         x="130.85919"
+         y="92.121109">safely</tspan></text>
+    <ellipse
+       style="fill:url(#linearGradient2736);fill-opacity:1;stroke-width:0.264583"
+       id="path1077"
+       cx="97.103928"
+       cy="86.038589"
+       rx="23.598511"
+       ry="23.824335" />
+    <g
+       id="g270"
+       transform="matrix(0.23203785,0,0,-0.23203785,106.35078,95.839279)">
+      <path
+         d="m 0,0 c -36.984,0 -66.966,29.981 -66.966,66.966 0,21.894 10.508,41.332 26.754,53.551 -37.147,-4.09 -66.046,-35.572 -66.046,-73.809 0,-41.014 33.249,-74.263 74.264,-74.263 26.708,0 50.119,14.102 63.205,35.263 C 21.891,2.789 11.271,0 0,0"
+         style="fill:#fef3aa;fill-opacity:1;fill-rule:nonzero;stroke:none"
+         id="path272" />
+    </g>
+  </g>
+</svg>

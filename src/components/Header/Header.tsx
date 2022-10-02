@@ -6,6 +6,7 @@ import INotification from '../interfaces/INotification';
 import { Notification } from '../../services';
 import log from 'loglevel';
 import './Header.css';
+import LogoSafely from './logo';
 
 const useOutsideAlerter = (ref, func: () => void) => {
   useEffect(() => {
@@ -123,14 +124,18 @@ export const Header: React.FC<{
   return (
     <div className='bg-white font-bold text-xl flex border-b-2 border-neutral-300'>
       <div className='flex pl-4'>
-        <div className='px-2 py-6 cursor-pointer hover:opacity-70 mx-2'>
-          <a href='/'>Dashboard</a>
+        <div className='py-6 cursor-pointer hover:opacity-70 ml-0'>
+          {/* <a href='/'>Dashboard</a> */}
+          <div className="w-[150] h-min">
+            <LogoSafely />            
+          </div>
+
         </div>
-        <div className='px-2'>
+        <div className='px-2 pt-1'>
           <HeaderNotif />
         </div>
       </div>
-      <div className='w-full'>
+      <div className='w-full pt-2'>
         <ul className='float-right'>
           {links
             .filter(link => link.onAuth === undefined || link.onAuth === isAuthenticated())

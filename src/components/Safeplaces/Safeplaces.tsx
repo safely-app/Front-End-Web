@@ -165,7 +165,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
   }
 
   return (
-    <div className='px-6 pt-[165px]'>
+    <div className='px-6 pt-[200px]'>
       {safeplaceDetail.value ? (
         <div className='overflow-y-auto' style={{ height: "80vh" }}>
           <FaChevronLeft onClick={() => safeplaceDetail.setter(false)} className="w-8 h-8 cursor-pointer mb-4" style={{ color: "black" }} />
@@ -184,7 +184,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
           </div>
           <div className="border-t-2 border-gray border-b-2 pt-3 pb-3 mt-3">
             <div className="flex flex-row items-center">
-              <FaMapPin className="h-8 w-8" />
+              <FaMapPin className="h-8 w-8 mr-2" />
               <p>{safeplace.value.address + ', ' + safeplace.value.city}</p>
             </div>
           </div>
@@ -195,7 +195,7 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
               return (
                 <div key={index}>
                   <div className="flex flex-row items-center mb-3">
-                    <p className="font-bold">Anonyme</p>
+                    <p className="font-bold mr-2 mt-1">Anonyme</p>
                     {[...Array(tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: '#FCC153' }} />)}
                     {[...Array(5 - tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: 'lightgray' }} />)}
                   </div>
@@ -222,10 +222,10 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
               </div>
               <div className="flex justify-between">
                 <div>
-                  <p className="font-bold text-lg mt-2">{item.name}</p>
+                  <p className="font-custom font-bold text-lg mt-2">{item.name}</p>
                   <p>{item.type}</p>
                 </div>
-                <FaEdit className='h-6 w-6 mr-4 mt-2' data-testid={"safeplace-update-" + item.id} onClick={() => {
+                <FaEdit className='font-custom h-6 w-6 mr-4 mt-2' data-testid={"safeplace-update-" + item.id} onClick={() => {
                   setFocusSafeplace(true);
                   safeplace.setter(safeplace.value);
                 }} />
@@ -264,7 +264,7 @@ const SafeplacesSearchBar: React.FC<{
 }) => {
   return (
     <div className="w-1/2 h-12 mt-8 flex justify-between bg-white">
-      <p className="font-bold text-2xl ml-5 mt-3">{safeplaces.length} commerces</p>
+      <p className="font-bold text-2xl m-10 mt-1">{safeplaces.length} commerces</p>
 
       <div className="flex border-b-2 border-white">
         <div onClick={() => setStateFilterType(stateFilterType === "restaurant" ? "" : "restaurant")}
