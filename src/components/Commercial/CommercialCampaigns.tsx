@@ -6,7 +6,7 @@ import CampaignModal from './CommercialCampaignModal';
 import MultipleTargetsModal from './CommercialMultipleTargetsModal';
 import { BsPencilSquare } from 'react-icons/bs';
 import { ImCross } from 'react-icons/im';
-import { convertStringToRegex, notifyError, notifyInfo } from '../utils';
+import { convertStringToRegex, notifyError, notifyInfo, notifySuccess } from '../utils';
 import { SearchBar, Table } from '../common';
 import { Commercial } from '../../services';
 import { useAppSelector } from '../../redux';
@@ -34,6 +34,7 @@ const CommercialCampaigns: React.FC<{
   const [modalOn, setModalOn] = useState(ModalType.OFF);
   const [campaignSearch, setCampaignSearch] = useState("");
   const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
 
   const [campaign, setCampaign] = useState<ICampaign>({
     id: "",
@@ -168,8 +169,24 @@ const CommercialCampaigns: React.FC<{
 
   const deleteCampaign = async (campaign: ICampaign) => {
     try {
-      await Commercial.deleteCampaign(campaign.id, userCredentials.token);
-      setCampaigns(campaigns.filter(c => c.id !== campaign.id));
+      const checkedCampaignIds = checkedBoxes.map(checkedIndex => campaigns[checkedIndex].id);
+
+      if (!checkedCampaignIds.includes(campaign.id))
+        checkedCampaignIds.push(campaign.id);
+
+      for (const campaignId of checkedCampaignIds) {
+        Commercial.deleteCampaign(campaignId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
+      setCampaigns(campaigns.filter(c => !checkedCampaignIds.includes(c.id)));
+      notifySuccess(
+        (checkedCampaignIds.length > 1)
+          ? "Campagnes supprimées"
+          : "Campagne supprimée"
+      );
+
     } catch (error) {
       notifyError("Échec de suppression de campagne.");
       log.error(error);
@@ -292,7 +309,12 @@ const CommercialCampaigns: React.FC<{
         noCreate={safeplace.id === ""}
       />
       <div className='mt-3'>
-        <Table content={filterCampaigns()} keys={keys} />
+        <Table
+          content={filterCampaigns()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );
