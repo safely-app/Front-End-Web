@@ -8,17 +8,22 @@ import {
   CommercialCampaignCreationStepFive
 } from './CreationSteps';
 import './../Commercial.css';
+import { useAppSelector } from "../../../redux";
+import { Commercial } from "../../../services";
+import log from "loglevel";
 
 const CommercialCampaignCreation: React.FC = () => {
+  const userCredentials = useAppSelector(state => state.user.credentials);
+
   const maxStep = useMemo(() => 4, []);
 
   const [currentStep, setCurrentStep] = useState(0);
   const [newCampaign, setNewCampaign] = useState<ICampaign>({
     id: "",
-    ownerId: "",
+    ownerId: userCredentials._id,
     name: "",
-    budget: "",
-    status: "",
+    budget: "25",
+    status: "active",
     safeplaceId: "",
     startingDate: "",
     targets: [],
@@ -36,6 +41,39 @@ const CommercialCampaignCreation: React.FC = () => {
     }
   };
 
+  const createOrUpdateCampaign = async () => {
+    try {
+      const campaign = {
+        ...newCampaign,
+        startingDate: (new Date()).toDateString()
+      };
+
+      if (newCampaign.id === "") {
+        const result = await Commercial.createCampaign(
+          campaign,
+          userCredentials.token
+        );
+
+        setNewCampaign({ ...campaign, id: result.data._id });
+      } else {
+        await Commercial.updateCampaign(
+          newCampaign.id,
+          campaign,
+          userCredentials.token
+        );
+      }
+    } catch (err) {
+      log.error(err);
+    }
+  };
+
+  const setCampaignValue = (field: string, value: any) => {
+    setNewCampaign(campaign => ({
+      ...campaign,
+      [field]: value
+    }));
+  };
+
   const getCurrentView = () => {
     switch (currentStep) {
       case 4:
@@ -47,21 +85,29 @@ const CommercialCampaignCreation: React.FC = () => {
         return <CommercialCampaignCreationStepFour
           prevStepClick={subCurrentStep}
           nextStepClick={addCurrentStep}
+          targetIds={newCampaign.targets}
         />;
       case 2:
         return <CommercialCampaignCreationStepThree
+          setCampaignValue={setCampaignValue}
+          targetIds={newCampaign.targets}
           prevStepClick={subCurrentStep}
-          nextStepClick={addCurrentStep}
+          nextStepClick={() => {
+            createOrUpdateCampaign();
+            addCurrentStep();
+          }}
         />;
       case 1:
         return <CommercialCampaignCreationStepTwo
           prevStepClick={subCurrentStep}
           nextStepClick={addCurrentStep}
+          setCampaignValue={setCampaignValue}
         />;
       case 0:
       default:
         return <CommercialCampaignCreationStepOne
           onClick={addCurrentStep}
+          setCampaignValue={setCampaignValue}
         />;
     }
   };

@@ -1,6 +1,10 @@
 import { useState, useMemo, useRef } from "react";
 import { AiFillInfoCircle } from 'react-icons/ai';
+import { useAppSelector } from "../../../../redux";
+import { Advertising } from "../../../../services";
+import { notifyError } from "../../../utils";
 import safeplaceImg from './../../../../assets/image/safeplace.jpeg';
+import log from "loglevel";
 
 const DragDropFile: React.FC<{
   handleFile: (file: File) => void;
@@ -69,16 +73,38 @@ const DragDropFile: React.FC<{
 const CommercialCampaignCreationStepFour: React.FC<{
   prevStepClick: () => void;
   nextStepClick: () => void;
+  targetIds: string[];
 }> = ({
   prevStepClick,
   nextStepClick,
+  targetIds,
 }) => {
+  const userCredentials = useAppSelector(state => state.user.credentials);
+
   const placeholderTitle = useMemo(() => "Le titre de votre publicité", []);
   const placeholderDescription = useMemo(() => "Une description de votre établissement ou de l'évènement que vous souhaitez promouvoir.", []);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [uploadImage, setUploadImage] = useState("");
+
+  const handleClick = async () => {
+    try {
+      await Advertising.create({
+        id: "",
+        title: title,
+        ownerId: userCredentials._id,
+        targets: targetIds,
+        imageUrl: uploadImage,
+        description: description,
+      }, userCredentials.token);
+
+      nextStepClick();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
 
   return (
     <div className="flex-auto bg-white rounded-lg shadow-xl border border-solid border-neutral-100">
@@ -140,7 +166,7 @@ const CommercialCampaignCreationStepFour: React.FC<{
             <button className="text-lg font-bold text-blue-500 bg-white hover:text-blue-400 px-6 py-2 rounded-lg float-left" onClick={prevStepClick}>
               RETOUR
             </button>
-            <button className="text-lg font-bold text-white bg-blue-500 hover:bg-blue-400 px-6 py-2 rounded-lg float-right" onClick={nextStepClick}>
+            <button className="text-lg font-bold text-white bg-blue-500 hover:bg-blue-400 px-6 py-2 rounded-lg float-right" onClick={handleClick}>
               CONTINUER
             </button>
           </div>

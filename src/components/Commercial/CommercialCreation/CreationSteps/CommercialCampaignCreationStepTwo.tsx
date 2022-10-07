@@ -4,9 +4,11 @@ import { AiFillCheckCircle } from 'react-icons/ai';
 const CommercialCampaignCreationStepTwo: React.FC<{
   prevStepClick: () => void;
   nextStepClick: () => void;
+  setCampaignValue: (field: string, value: any) => void;
 }> = ({
   prevStepClick,
   nextStepClick,
+  setCampaignValue,
 }) => {
   const minPrice = 10;
   const maxPrice = 1000;
@@ -23,6 +25,11 @@ const CommercialCampaignCreationStepTwo: React.FC<{
     } else {
       setSelectedPrice(parsedValue);
     }
+  };
+
+  const handleClick = () => {
+    setCampaignValue("budget", selectedPrice.toString());
+    nextStepClick();
   };
 
   return (
@@ -98,7 +105,7 @@ const CommercialCampaignCreationStepTwo: React.FC<{
               <button className="text-lg font-bold text-blue-500 bg-white hover:text-blue-400 px-6 py-2 rounded-lg float-left" onClick={prevStepClick}>
                 RETOUR
               </button>
-              <button className="text-lg font-bold text-white bg-blue-500 hover:bg-blue-400 px-6 py-2 rounded-lg float-right" onClick={nextStepClick}>
+              <button className="text-lg font-bold text-white bg-blue-500 hover:bg-blue-400 px-6 py-2 rounded-lg float-right" onClick={handleClick}>
                 CONTINUER
               </button>
             </div>

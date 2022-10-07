@@ -23,6 +23,10 @@ class Commercial {
         return createHttpConfig(this.baseURL, token).get(`/commercial/target/owner/${id}`);
     }
 
+    getTarget(id: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/commercial/target/${id}`);
+    }
+
     createCampaign(data: ICampaign, token: string) {
         const { id, ...validCampaign } = data;
         const validateCampaign = isCampaignValid(data);
