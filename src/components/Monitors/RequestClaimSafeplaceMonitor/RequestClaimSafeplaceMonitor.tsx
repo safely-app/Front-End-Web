@@ -153,10 +153,6 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("TEXT SEARCH", textSearch);
-  }, [textSearch]);
-
-  useEffect(() => {
     RequestClaimSafeplace.getAll(userCredentials.token).then(response => {
       const gotRequestClaimSafeplaces = response.data.map(requestClaimSafeplace => ({
         id: requestClaimSafeplace._id,
