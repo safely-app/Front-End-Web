@@ -56,14 +56,16 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     }
 
     return requestClaimSafeplaces
-      .filter(requestClaimSafeplace => textSearch !== ''
-        ? requestClaimSafeplace.safeplaceName.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.safeplaceId.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.safeplaceDescription.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.status.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.userId.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.adminId?.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.id.toLowerCase().match(lowerSearchText) !== null : true);
+      .filter(request =>
+        request.safeplaceName.toLowerCase().match(lowerSearchText) !== null
+        || request.safeplaceId.toLowerCase().match(lowerSearchText) !== null
+        || request.safeplaceDescription.toLowerCase().match(lowerSearchText) !== null
+        || request.status.toLowerCase().match(lowerSearchText) !== null
+        || request.userId.toLowerCase().match(lowerSearchText) !== null
+        || request.id.toLowerCase().match(lowerSearchText) !== null
+      ).filter(request =>
+        request.adminId === undefined || request.adminId.toLowerCase().match(lowerSearchText) !== null
+      );
   };
 
   const updateModal = (requestClaimSafeplace: IRequestClaimSafeplace, modalType: ModalType) => {
@@ -149,6 +151,10 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
       adminId: ""
     });
   };
+
+  useEffect(() => {
+    console.log("TEXT SEARCH", textSearch);
+  }, [textSearch]);
 
   useEffect(() => {
     RequestClaimSafeplace.getAll(userCredentials.token).then(response => {

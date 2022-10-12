@@ -55,6 +55,7 @@ const TargetMonitor: React.FC = () => {
       .filter(target => textSearch !== ''
         ? target.name.toLowerCase().match(lowerSearchText) !== null
         || target.csp.toLowerCase().match(lowerSearchText) !== null
+        || target.ownerId.toLowerCase().match(lowerSearchText) !== null
         || target.ageRange.toLowerCase().match(lowerSearchText) !== null
         || target.id.toLowerCase().match(lowerSearchText) !== null : true);
   };

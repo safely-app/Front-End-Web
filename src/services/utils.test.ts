@@ -210,7 +210,7 @@ test('ensure that isCampaignValid occurs as expected', () => {
         id: "1",
         ownerId: "1",
         name: "test",
-        budget: "100",
+        budget: 100,
         status: "active",
         startingDate: "2022-05-12",
         targets: []
@@ -218,7 +218,7 @@ test('ensure that isCampaignValid occurs as expected', () => {
 
     expect(isCampaignValid(campaign).isValid).toBeTruthy();
     expect(isCampaignValid({ ...campaign, name: "" }).isValid).toBeFalsy();
-    expect(isCampaignValid({ ...campaign, budget: "" }).isValid).toBeFalsy();
+    expect(isCampaignValid({ ...campaign, budget: 0 }).isValid).toBeFalsy();
     expect(isCampaignValid({ ...campaign, status: "" }).isValid).toBeFalsy();
     expect(isCampaignValid({ ...campaign, startingDate: "" }).isValid).toBeFalsy();
 });

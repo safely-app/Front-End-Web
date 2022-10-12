@@ -38,7 +38,7 @@ const CommercialCampaigns: React.FC<{
   const [campaign, setCampaign] = useState<ICampaign>({
     id: "",
     name: "",
-    budget: "",
+    budget: 0,
     status: "",
     ownerId: "",
     startingDate: "",
@@ -185,7 +185,7 @@ const CommercialCampaigns: React.FC<{
     setCampaign({
       id: "",
       name: "",
-      budget: "",
+      budget: 0,
       status: "",
       ownerId: "",
       startingDate: "",
