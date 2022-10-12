@@ -3,6 +3,7 @@ export default interface IAdvertising {
   ownerId: string;
   title: string;
   description: string;
+  campaignId?: string;
   imageUrl: string;
   targets: string[];
 }

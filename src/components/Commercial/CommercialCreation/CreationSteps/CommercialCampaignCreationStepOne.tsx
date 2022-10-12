@@ -3,18 +3,20 @@ import { useState } from "react";
 const CommercialCampaignCreationStepOne: React.FC<{
   onClick: () => void;
   setCampaignValue: (field: string, value: any) => void;
+  campaignTitle: string;
 }> = ({
   onClick,
   setCampaignValue,
+  campaignTitle,
 }) => {
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(campaignTitle);
   const [isInitState, setIsInitState] = useState(true);
 
   const handleClick = () => {
     if (title === "")
       return;
 
-    setCampaignValue("title", title);
+    setCampaignValue("name", title);
     onClick();
   };
 
@@ -39,6 +41,7 @@ const CommercialCampaignCreationStepOne: React.FC<{
               placeholder="Nom de campagne"
               value={title}
               onChange={handleChange}
+              maxLength={50}
             />
             <p className="text-xs">Pour vous permettre d'indentifier votre nouvelle campagne au sein de Safely</p>
             <hr className="my-6" />

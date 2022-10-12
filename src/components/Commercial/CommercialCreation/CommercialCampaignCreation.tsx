@@ -8,11 +8,18 @@ import {
   CommercialCampaignCreationStepFive
 } from './CreationSteps';
 import './../Commercial.css';
+import ISafeplace from "../../interfaces/ISafeplace";
 import { useAppSelector } from "../../../redux";
 import { Commercial } from "../../../services";
 import log from "loglevel";
 
-const CommercialCampaignCreation: React.FC = () => {
+const CommercialCampaignCreation: React.FC<{
+  safeplace: ISafeplace;
+  onEnd: () => void;
+}> = ({
+  safeplace,
+  onEnd
+}) => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const maxStep = useMemo(() => 4, []);
@@ -22,9 +29,9 @@ const CommercialCampaignCreation: React.FC = () => {
     id: "",
     ownerId: userCredentials._id,
     name: "",
-    budget: "25",
+    budget: 25,
     status: "active",
-    safeplaceId: "",
+    safeplaceId: safeplace.id,
     startingDate: "",
     targets: [],
   });
@@ -79,13 +86,14 @@ const CommercialCampaignCreation: React.FC = () => {
       case 4:
         return <CommercialCampaignCreationStepFive
           prevStepClick={subCurrentStep}
-          nextStepClick={addCurrentStep}
+          nextStepClick={onEnd}
         />;
       case 3:
         return <CommercialCampaignCreationStepFour
           prevStepClick={subCurrentStep}
           nextStepClick={addCurrentStep}
           targetIds={newCampaign.targets}
+          campaignId={newCampaign.id}
         />;
       case 2:
         return <CommercialCampaignCreationStepThree
@@ -108,6 +116,7 @@ const CommercialCampaignCreation: React.FC = () => {
         return <CommercialCampaignCreationStepOne
           onClick={addCurrentStep}
           setCampaignValue={setCampaignValue}
+          campaignTitle={newCampaign.name}
         />;
     }
   };

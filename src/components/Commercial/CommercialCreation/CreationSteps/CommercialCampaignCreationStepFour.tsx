@@ -73,10 +73,12 @@ const DragDropFile: React.FC<{
 const CommercialCampaignCreationStepFour: React.FC<{
   prevStepClick: () => void;
   nextStepClick: () => void;
+  campaignId: string;
   targetIds: string[];
 }> = ({
   prevStepClick,
   nextStepClick,
+  campaignId,
   targetIds,
 }) => {
   const userCredentials = useAppSelector(state => state.user.credentials);
@@ -97,6 +99,7 @@ const CommercialCampaignCreationStepFour: React.FC<{
         targets: targetIds,
         imageUrl: uploadImage,
         description: description,
+        campaignId: campaignId,
       }, userCredentials.token);
 
       nextStepClick();
@@ -122,6 +125,7 @@ const CommercialCampaignCreationStepFour: React.FC<{
                 placeholder="Titre"
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
+                maxLength={25}
               />
               <p className="text-sm mb-3">Le titre de la publicité</p>
 

@@ -196,6 +196,7 @@ const CommercialCampaignCreationStepThree: React.FC<{
               placeholder="Nom de la cible"
               value={name}
               onChange={(event) => setName(event.target.value)}
+              maxLength={50}
             />
             <p className="text-xs">Pour vous permettre d'indentifier votre nouvelle cible au sein de Safely</p>
 

@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import ITarget from '../interfaces/ITarget';
 import ICampaign from '../interfaces/ICampaign';
 import TargetModal from './CommercialTargetModal';
+import ISafeplace from '../interfaces/ISafeplace';
 import CampaignModal from './CommercialCampaignModal';
 import MultipleTargetsModal from './CommercialMultipleTargetsModal';
+import { CommercialCampaignCreation } from './CommercialCreation';
 import { BsPencilSquare } from 'react-icons/bs';
+import { AiOutlinePlus } from 'react-icons/ai';
 import { ImCross } from 'react-icons/im';
 import { convertStringToRegex, notifyError, notifyInfo } from '../utils';
 import { SearchBar, Table } from '../common';
@@ -13,10 +16,9 @@ import { useAppSelector } from '../../redux';
 import { ModalType } from './CommercialModalType';
 import { CustomDiv } from '../common/Table';
 import { ModalBtn } from '../common/Modal';
-import ISafeplace from '../interfaces/ISafeplace';
 import log from "loglevel";
 
-const CommercialCampaigns: React.FC<{
+const CommercialCampaignsTable: React.FC<{
   safeplace: ISafeplace;
   campaigns: ICampaign[];
   setCampaigns: (campaigns: ICampaign[]) => void;
@@ -294,6 +296,48 @@ const CommercialCampaigns: React.FC<{
       <div className='mt-3'>
         <Table content={filterCampaigns()} keys={keys} />
       </div>
+    </div>
+  );
+};
+
+const CommercialCampaigns: React.FC<{
+  safeplace: ISafeplace;
+  campaigns: ICampaign[];
+  setCampaigns: (campaigns: ICampaign[]) => void;
+  targets: ITarget[];
+  setTargets: (target: ITarget[]) => void;
+}> = ({
+  safeplace,
+  campaigns,
+  setCampaigns,
+  targets,
+  setTargets
+}) => {
+  const [isViewCreate, setIsViewCreate] = useState(false);
+
+  if (isViewCreate) {
+    return (
+      <CommercialCampaignCreation
+        safeplace={safeplace}
+        onEnd={() => setIsViewCreate(false)}
+      />
+    );
+  }
+
+  return (
+    <div className='relative h-full w-full flex-auto flex flex-col'>
+      <CommercialCampaignsTable
+        safeplace={safeplace}
+        campaigns={campaigns}
+        setCampaigns={setCampaigns}
+        targets={targets}
+        setTargets={setTargets}
+      />
+
+      <button className='absolute bottom-0 right-0 w-10 h-10 rounded-full bg-blue-500 m-4 z-50'
+              onClick={() => setIsViewCreate(true)}>
+        <AiOutlinePlus className='m-auto text-white w-6 h-6' />
+      </button>
     </div>
   );
 };

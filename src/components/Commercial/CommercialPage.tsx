@@ -8,9 +8,6 @@ import CommercialCampaigns from './CommercialCampaigns';
 import CommercialStatistics from './CommercialStatistics';
 import ISafeplace from '../interfaces/ISafeplace';
 import imgOnboarding from '../../assets/image/mec_allongé.png';
-import {
-  CommercialCampaignCreation
-} from './CommercialCreation';
 import { RiAdvertisementLine } from 'react-icons/ri';
 import { MdOutlinePlace } from 'react-icons/md';
 import { BsMegaphone } from 'react-icons/bs';
@@ -40,7 +37,7 @@ const CommercialNavbarButton: React.FC<{
 }) => {
   return (
     <li
-      className={`font-bold px-2 h-10 grid grid-cols-6 rounded-2xl cursor-pointer ${(displayedSection === sectionType) ? 'bg-neutral-200 text-black' : 'bg-white text-neutral-500'}`}
+      className={`font-bold px-2 h-10 grid grid-cols-6 rounded-2xl cursor-pointer select-none ${(displayedSection === sectionType) ? 'bg-neutral-200 text-black' : 'bg-white text-neutral-500'}`}
       onClick={() => onClick(sectionType)}
     >
       {icon} <div className='col-span-5 my-auto pl-4 pr-2'>{title}</div>
@@ -208,7 +205,7 @@ const CommercialPage: React.FC = () => {
       }).catch(err => log.error(err));
 
     Safeplace.getByOwnerId(userCredentials._id, userCredentials.token)
-      .then(result =>
+      .then(result => {
         setSafeplace({
           id: result.data._id,
           name: result.data.name,
@@ -219,8 +216,8 @@ const CommercialPage: React.FC = () => {
           dayTimetable: result.data.dayTimetable,
           coordinate: result.data.coordinate,
           ownerId: result.data.ownerId,
-        })
-      ).catch(err => log.error(err));
+        });
+      }).catch(err => log.error(err));
   }, [userCredentials]);
 
   const getSectionComponent = (): JSX.Element => {
@@ -252,8 +249,7 @@ const CommercialPage: React.FC = () => {
           />
         </div>
         <div className='flex-auto mr-6 my-6 flex flex-col'>
-          {/* {getSectionComponent()} */}
-          <CommercialCampaignCreation />
+          {getSectionComponent()}
         </div>
       </div>
     </div>
