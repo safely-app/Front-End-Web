@@ -15,7 +15,7 @@ test('render CampaignMonitor', async () => {
     {
       id: "c1",
       name: "Campagne 1",
-      budget: "100",
+      budget: 100,
       status: "active",
       startingDate: "2022-08-08",
       targets: [ 't1' ],
@@ -109,7 +109,7 @@ test('render CampaignMonitor update modal', async () => {
     {
       id: "c1",
       name: "Campagne 1",
-      budget: "100",
+      budget: 100,
       status: "active",
       startingDate: "2022-08-08",
       targets: [ 't1' ],
@@ -165,7 +165,7 @@ test('render CampaignMonitor delete campaign', async () => {
     {
       id: "c1",
       name: "Campagne 1",
-      budget: "100",
+      budget: 100,
       status: "active",
       startingDate: "2022-08-08",
       targets: [ 't1' ],
@@ -211,7 +211,7 @@ test('render CampaignMonitorModal', () => {
   const campaign: ICampaign = {
     id: "c1",
     name: "Campagne 1",
-    budget: "100",
+    budget: 100,
     status: "active",
     startingDate: "2022-08-08",
     targets: [ 't1' ],

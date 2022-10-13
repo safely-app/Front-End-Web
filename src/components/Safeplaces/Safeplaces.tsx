@@ -289,10 +289,6 @@ const Safeplaces: React.FC = () => {
   const [stateFilterType, setStateFilterType] = useState<string>("");
   const [allComments, setAllComments] = useState<[]>([]);
 
-  useEffect(() => {
-    console.log(stateFilterType)
-  }, [stateFilterType]);
-
   const filterSafeplaces = (): ISafeplace[] => {
     const lowerSearchText = convertStringToRegex(searchBarValue.toLocaleLowerCase());
 

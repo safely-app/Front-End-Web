@@ -24,7 +24,7 @@ const CampaignMonitor: React.FC = () => {
   const [campaign, setCampaign] = useState<ICampaign>({
     id: "",
     name: "",
-    budget: "",
+    budget: 0,
     status: "",
     ownerId: "",
     startingDate: "",
@@ -33,7 +33,7 @@ const CampaignMonitor: React.FC = () => {
 
   const keys = [
     { displayedName: 'NOM', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.name} /> },
-    { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.budget} /> },
+    { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.budget.toString()} /> },
     { displayedName: 'STATUT', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.status} /> },
     { displayedName: 'ID DE PROPRIÉTAIRE', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.ownerId} /> },
     { displayedName: 'DATE DE DÉPART', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.startingDate} /> },
@@ -60,8 +60,9 @@ const CampaignMonitor: React.FC = () => {
       .filter(campaign => textSearch !== ''
         ? campaign.name.toLowerCase().match(lowerSearchText) !== null
         || campaign.id.toLowerCase().match(lowerSearchText) !== null
+        || campaign.ownerId.toLowerCase().match(lowerSearchText) !== null
         || campaign.startingDate.toLowerCase().match(lowerSearchText) !== null
-        || campaign.budget.toLowerCase().match(lowerSearchText) !== null
+        || campaign.budget.toString().toLowerCase().match(lowerSearchText) !== null
         || campaign.status.toLowerCase().match(lowerSearchText) !== null : true);
   };
 
@@ -114,7 +115,7 @@ const CampaignMonitor: React.FC = () => {
     setCampaign({
       id: "",
       name: "",
-      budget: "",
+      budget: 0,
       status: "",
       ownerId: "",
       startingDate: "",
