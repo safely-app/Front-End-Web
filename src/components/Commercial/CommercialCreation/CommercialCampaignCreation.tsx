@@ -48,24 +48,24 @@ const CommercialCampaignCreation: React.FC<{
     }
   };
 
-  const createOrUpdateCampaign = async () => {
+  const createOrUpdateCampaign = async (campaign: ICampaign) => {
     try {
-      const campaign = {
-        ...newCampaign,
+      const createdCampaign = {
+        ...campaign,
         startingDate: (new Date()).toDateString()
       };
 
-      if (newCampaign.id === "") {
+      if (createdCampaign.id === "") {
         const result = await Commercial.createCampaign(
-          campaign,
+          createdCampaign,
           userCredentials.token
         );
 
-        setNewCampaign({ ...campaign, id: result.data._id });
+        setNewCampaign({ ...createdCampaign, id: result.data._id });
       } else {
         await Commercial.updateCampaign(
-          newCampaign.id,
-          campaign,
+          createdCampaign.id,
+          createdCampaign,
           userCredentials.token
         );
       }
@@ -97,11 +97,10 @@ const CommercialCampaignCreation: React.FC<{
         />;
       case 2:
         return <CommercialCampaignCreationStepThree
-          setCampaignValue={setCampaignValue}
           targetIds={newCampaign.targets}
           prevStepClick={subCurrentStep}
-          nextStepClick={() => {
-            createOrUpdateCampaign();
+          nextStepClick={(targets) => {
+            createOrUpdateCampaign({ ...newCampaign, targets: targets });
             addCurrentStep();
           }}
         />;

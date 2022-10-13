@@ -47,13 +47,11 @@ const Card: React.FC<{
 
 const CommercialCampaignCreationStepThree: React.FC<{
   prevStepClick: () => void;
-  nextStepClick: () => void;
-  setCampaignValue: (field: string, value: any) => void;
+  nextStepClick: (targets: string[]) => void;
   targetIds: string[];
 }> = ({
   prevStepClick,
   nextStepClick,
-  setCampaignValue,
   targetIds,
 }) => {
   const userCredentials = useAppSelector(state => state.user.credentials);
@@ -93,38 +91,83 @@ const CommercialCampaignCreationStepThree: React.FC<{
 
   const [targets, setTargets] = useState<ITarget[]>([]);
 
+  const sortAges = (selectedAges: string[]): string[] => {
+    return selectedAges.sort((age1, age2) => parseInt(age1.slice(0, 2)) - parseInt(age2.slice(0, 2)));
+  };
+
+  const formatAges = (selectedAges: string[]): string[] => {
+    const lastAvailableAge = ages[ages.length - 1];
+    const lastSortedAge = selectedAges[selectedAges.length - 1];
+
+    return selectedAges.slice(0, selectedAges.length - 1).concat([
+      ((lastSortedAge === lastAvailableAge) ? `${lastAvailableAge.slice(0, 2)}-99` : lastSortedAge)
+    ]);
+  };
+
+  const combineAges = (selectedAges: string[]): string[] => {
+    const combinedAges: string[] = [];
+
+    for (const age of selectedAges) {
+      if (combinedAges.length === 0) {
+        combinedAges.push(age);
+        continue;
+      }
+
+      const lastAge = combinedAges[combinedAges.length - 1];
+      const lastAgeParts = lastAge.split('-');
+
+      if (parseInt(lastAgeParts[1]) + 1 === parseInt(age.slice(0, 2))) {
+        combinedAges.pop();
+        combinedAges.push(`${lastAgeParts[0]}-${age.slice(3, 5)}`);
+      } else {
+        combinedAges.push(age);
+      }
+    }
+
+    return combinedAges;
+  };
+
+  const deletePreviousTargets = () => {
+    for (const target of targets) {
+      Commercial.deleteTarget(target.id, userCredentials.token)
+        .catch(err => log.error(err));
+    }
+  };
+
+  const createNewTargets = (csps: string[], ages: string[]): Promise<AxiosResponse<any>>[] => {
+    const targetsPromise: Promise<AxiosResponse<any>>[] = [];
+
+    for (const csp of csps) {
+      for (const age of ages) {
+        targetsPromise.push(
+          Commercial.createTarget({
+            id: "",
+            csp: csp,
+            name: name,
+            ownerId: userCredentials._id,
+            ageRange: age,
+            interests: interests
+          }, userCredentials.token)
+        );
+      }
+    }
+
+    return targetsPromise;
+  };
+
   const handleClick = async () => {
     try {
-      // delete previous targets
-      for (const target of targets) {
-        Commercial.deleteTarget(target.id, userCredentials.token)
-          .catch(err => log.error(err));
-      }
+      const sortedAges = sortAges(selectedAges);
+      const formatedAges = formatAges(sortedAges);
+      const combinedAges = combineAges(formatedAges);
 
-      let targetsPromise: Promise<AxiosResponse<any>>[] = [];
-
-      // add create target promise to array
-      for (const csp of selectedCsps) {
-        for (const age of selectedAges) {
-          targetsPromise.push(
-            Commercial.createTarget({
-              id: "",
-              csp: csp,
-              name: name,
-              ownerId: userCredentials._id,
-              ageRange: age === ages[ages.length - 1] ? `${age.slice(0, 2)}-99` : age,
-              interests: interests
-            }, userCredentials.token)
-          );
-        }
-      }
+      deletePreviousTargets();
 
       // wait for all promise to succeed and get results
-      const createdTargets = await Promise.all(targetsPromise);
+      const createdTargets = await Promise.all(createNewTargets(selectedCsps, combinedAges));
       const targetsId = createdTargets.map(target => target.data._id as string);
 
-      setCampaignValue("targets", targetsId);
-      nextStepClick();
+      nextStepClick(targetsId);
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -140,6 +183,15 @@ const CommercialCampaignCreationStepThree: React.FC<{
   };
 
   useEffect(() => {
+    const getAgeBoundaries = (age: string): number[] => {
+      const ageBoundaries = age.split('-');
+
+      return [
+        parseInt(ageBoundaries[0]),
+        parseInt(ageBoundaries[1])
+      ];
+    };
+
     const getSetValues = (set: Set<string>): string[] => {
       const values: string[] = [];
       const valueIterator = set.values();
@@ -155,12 +207,24 @@ const CommercialCampaignCreationStepThree: React.FC<{
       const gotAges = targets.map(target => target.ageRange);
       const gotInterests = targets.flatMap(target => target.interests);
 
-      const uniqueAges = getSetValues(new Set(gotAges))
-        .map(age => (age === `${ages[ages.length - 1].slice(0, 2)}-99`) ? ages[ages.length - 1] : age);
+      const uniqueAges: string[] = [];
 
+      for (const age of gotAges) {
+        const ageBoundaries = getAgeBoundaries(age);
+
+        for (const availableAge of ages) {
+          const availableAgeBoundaries =
+            (availableAge !== ages[ages.length - 1])
+              ? getAgeBoundaries(availableAge) : [ 70, 99 ];
+
+          if (availableAgeBoundaries[0] >= ageBoundaries[0] && availableAgeBoundaries[1] <= ageBoundaries[1]) {
+            uniqueAges.push(availableAge);
+          }
+        }
+      }
 
       setName(targets[0].name);
-      setSelectedAges(uniqueAges);
+      setSelectedAges(getSetValues(new Set(uniqueAges)));
       setSelectedCsps(getSetValues(new Set(gotCsps)));
       setInterests(getSetValues(new Set(gotInterests)));
     }

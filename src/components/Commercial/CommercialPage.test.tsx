@@ -1,16 +1,31 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { store } from '../../redux';
 import { Provider } from 'react-redux';
+import {
+  CommercialCampaignCreationStepThree
+} from './CommercialCreation/CreationSteps';
 import CommercialCampaigns from './CommercialCampaigns';
 import CampaignModal from './CommercialCampaignModal';
 import ICampaign from '../interfaces/ICampaign';
 import TargetModal from './CommercialTargetModal';
 import ITarget from '../interfaces/ITarget';
 import MultipleTargetsModal from './CommercialMultipleTargetsModal';
+import nock from "nock";
+import { act } from 'react-dom/test-utils';
 
-test('render CommercialCampaigns', () => {
+const testURL: string = process.env.REACT_APP_SERVER_URL as string;
+
+const testDelay = (ms: number): Promise<void> =>
+  new Promise(resolve => setTimeout(resolve, ms));
+
+test('render CommercialCampaigns', async () => {
   const setCampaigns = jest.fn();
   const setTargets = jest.fn();
+
+  const scopecCampaignOptions = nock(testURL).options('/commercial/campaign/a1')
+    .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+  const scopeCampaignDelete = nock(testURL).delete('/commercial/campaign/a1')
+    .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
 
   const campaigns = [
     {
@@ -94,6 +109,11 @@ test('render CommercialCampaigns', () => {
   screen.getAllByText('Annuler').forEach(button => {
     fireEvent.click(button);
   });
+
+  await act(async () => await testDelay(1000));
+
+  scopecCampaignOptions.done();
+  scopeCampaignDelete.done();
 });
 
 test('render CommercialCampaignModal', () => {
@@ -278,4 +298,96 @@ test('render CommercialMultipleTargetsModal', () => {
   fireEvent.click(screen.getByTestId('ct-0'));
 
   expect(setTarget).toBeCalled();
+});
+
+test('render CommercialCampaignCreationStepThree', async () => {
+  const prevStepClick = jest.fn();
+  const nextStepClick = jest.fn(targets => targets);
+  const targets = [
+    {
+      _id: "t1",
+      ownerId: "b1",
+      name: "Target 1",
+      csp: "csp",
+      interests: [ 'shoes' ],
+      ageRange: "18-24",
+    },
+    {
+      _id: "t2",
+      ownerId: "b1",
+      name: "Target 2",
+      csp: "csp--",
+      interests: [ 'shoes' ],
+      ageRange: "18-24",
+    }
+  ];
+
+  const createdTargetId = "ntID1";
+  const createdTarget = {
+    ownerId: "",
+    name: "New target name",
+    csp: "csp",
+    interests: [ 'shoes' ],
+    ageRange: "25-44",
+  };
+
+  const scopeGetOwnerAll = nock(testURL).get('/commercial/target/owner/')
+    .reply(200, targets, { 'Access-Control-Allow-Origin': '*' });
+
+  const scopeOptions1 = nock(testURL).options('/commercial/target/t1')
+    .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+  const scopeDelete1 = nock(testURL).delete('/commercial/target/t1')
+    .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+
+  const scopeOptions2 = nock(testURL).options('/commercial/target/t2')
+    .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+  const scopeDelete2 = nock(testURL).delete('/commercial/target/t2')
+    .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+
+  const scopeCreate = nock(testURL).post('/commercial/target', createdTarget)
+    .reply(200, { _id: createdTargetId }, { 'Access-Control-Allow-Origin': '*' });
+
+  render(
+    <Provider store={store}>
+      <CommercialCampaignCreationStepThree
+        prevStepClick={prevStepClick}
+        nextStepClick={nextStepClick}
+        targetIds={targets.map(target => target._id)}
+      />
+    </Provider>
+  );
+
+  await act(async () => await testDelay(500));
+
+  scopeGetOwnerAll.done();
+
+  expect(screen.getByPlaceholderText("Nom de la cible")).toBeInTheDocument();
+  expect(screen.getByText(/18-24/i)).toBeInTheDocument();
+  expect(screen.getByText(/25-34/i)).toBeInTheDocument();
+  expect(screen.getByText(/35-44/i)).toBeInTheDocument();
+  expect(screen.getByText(/csp--/i)).toBeInTheDocument();
+  expect(screen.getByText("CONTINUER")).toBeInTheDocument();
+
+  fireEvent.change(screen.getByPlaceholderText("Nom de la cible"), {
+    target: { value: createdTarget.name }
+  });
+
+  fireEvent.click(screen.getByText(/18-24/i));
+  fireEvent.click(screen.getByText(/25-34/i));
+  fireEvent.click(screen.getByText(/35-44/i));
+  fireEvent.click(screen.getByText(/csp--/i));
+
+  fireEvent.click(screen.getByText("CONTINUER"));
+
+  await act(async () => await testDelay(500));
+
+  scopeOptions1.done();
+  scopeDelete1.done();
+  scopeOptions2.done();
+  scopeDelete2.done();
+
+  scopeCreate.done();
+
+  expect(nextStepClick).toBeCalled();
+  expect(nextStepClick.mock.results[0].value).toStrictEqual([ createdTargetId ]);
 });
