@@ -1,6 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-const CommercialCampaignCreationStepOne: React.FC<{
+const CampaignName: React.FC<{
   onClick: () => void;
   setCampaignValue: (field: string, value: any) => void;
   campaignTitle: string;
@@ -31,7 +31,7 @@ const CommercialCampaignCreationStepOne: React.FC<{
     <div className="flex-auto bg-white rounded-lg shadow-xl border border-solid border-neutral-100">
       <div className="mx-auto w-1/2 my-12" style={{ minWidth: "38rem" }}>
         <div className="relative">
-          <div className="absolute grid grid-cols-5 bg-neutral-200 rounded-lg h-3 w-1/3 left-1/2 -translate-x-1/2">
+          <div className="absolute grid grid-cols-6 bg-neutral-200 rounded-lg h-3 w-1/3 left-1/2 -translate-x-1/2">
             <div className="col-span-1 bg-blue-500 rounded-lg"></div>
           </div>
           <p className="text-center font-bold text-3xl pt-6">Quelle est le nom de votre nouvelle campagne ?</p>
@@ -62,4 +62,4 @@ const CommercialCampaignCreationStepOne: React.FC<{
   );
 };
 
-export default CommercialCampaignCreationStepOne;
+export default CampaignName;

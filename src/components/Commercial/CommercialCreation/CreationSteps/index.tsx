@@ -1,13 +1,15 @@
-import CommercialCampaignCreationStepOne from './CommercialCampaignCreationStepOne';
-import CommercialCampaignCreationStepTwo from './CommercialCampaignCreationStepTwo';
-import CommercialCampaignCreationStepThree from './CommercialCampaignCreationStepThree';
-import CommercialCampaignCreationStepFour from './CommercialCampaignCreationStepFour';
-import CommercialCampaignCreationStepFive from './CommercialCampaignCreationStepFive';
+import CampaignName from './CampaignName';
+import CampaignBudget from './CampaignBudget';
+import CampaignTarget from './CampaignTarget';
+import CampaignAdvertisingRadius from './CampaignAdvertisingRadius';
+import CampaignAdvertising from './CampaignAdvertising';
+import CampaignFinal from './CampaignFinal';
 
 export {
-  CommercialCampaignCreationStepOne,
-  CommercialCampaignCreationStepTwo,
-  CommercialCampaignCreationStepThree,
-  CommercialCampaignCreationStepFour,
-  CommercialCampaignCreationStepFive
+  CampaignName,
+  CampaignBudget,
+  CampaignTarget,
+  CampaignAdvertisingRadius,
+  CampaignAdvertising,
+  CampaignFinal,
 };

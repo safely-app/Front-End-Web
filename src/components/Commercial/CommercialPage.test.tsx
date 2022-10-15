@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { store } from '../../redux';
 import { Provider } from 'react-redux';
 import {
-  CommercialCampaignCreationStepThree
+  CampaignTarget
 } from './CommercialCreation/CreationSteps';
 import CommercialCampaigns from './CommercialCampaigns';
 import CampaignModal from './CommercialCampaignModal';
@@ -300,7 +300,7 @@ test('render CommercialMultipleTargetsModal', () => {
   expect(setTarget).toBeCalled();
 });
 
-test('render CommercialCampaignCreationStepThree', async () => {
+test('render CampaignTarget', async () => {
   const prevStepClick = jest.fn();
   const nextStepClick = jest.fn(targets => targets);
   const targets = [
@@ -349,7 +349,7 @@ test('render CommercialCampaignCreationStepThree', async () => {
 
   render(
     <Provider store={store}>
-      <CommercialCampaignCreationStepThree
+      <CampaignTarget
         prevStepClick={prevStepClick}
         nextStepClick={nextStepClick}
         targetIds={targets.map(target => target._id)}

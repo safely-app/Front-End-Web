@@ -1,11 +1,12 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import ICampaign from "../../interfaces/ICampaign";
 import {
-  CommercialCampaignCreationStepOne,
-  CommercialCampaignCreationStepTwo,
-  CommercialCampaignCreationStepThree,
-  CommercialCampaignCreationStepFour,
-  CommercialCampaignCreationStepFive
+  CampaignName,
+  CampaignBudget,
+  CampaignTarget,
+  CampaignAdvertisingRadius,
+  CampaignAdvertising,
+  CampaignFinal,
 } from './CreationSteps';
 import './../Commercial.css';
 import ISafeplace from "../../interfaces/ISafeplace";
@@ -22,7 +23,7 @@ const CommercialCampaignCreation: React.FC<{
 }) => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
-  const maxStep = useMemo(() => 4, []);
+  const maxStep = useMemo(() => 5, []);
 
   const [currentStep, setCurrentStep] = useState(0);
   const [newCampaign, setNewCampaign] = useState<ICampaign>({
@@ -83,36 +84,43 @@ const CommercialCampaignCreation: React.FC<{
 
   const getCurrentView = () => {
     switch (currentStep) {
-      case 4:
-        return <CommercialCampaignCreationStepFive
+      case 5:
+        return <CampaignFinal
           prevStepClick={subCurrentStep}
           nextStepClick={onEnd}
         />;
+      case 4:
+        return <CampaignAdvertisingRadius
+          prevStepClick={subCurrentStep}
+          nextStepClick={addCurrentStep}
+          safeplace={safeplace}
+        />;
       case 3:
-        return <CommercialCampaignCreationStepFour
+        return <CampaignAdvertising
           prevStepClick={subCurrentStep}
           nextStepClick={addCurrentStep}
           targetIds={newCampaign.targets}
           campaignId={newCampaign.id}
         />;
       case 2:
-        return <CommercialCampaignCreationStepThree
+        return <CampaignTarget
           targetIds={newCampaign.targets}
           prevStepClick={subCurrentStep}
-          nextStepClick={(targets) => {
-            createOrUpdateCampaign({ ...newCampaign, targets: targets });
+          nextStepClick={async (targets) => {
+            await createOrUpdateCampaign({ ...newCampaign, targets: targets });
             addCurrentStep();
           }}
         />;
       case 1:
-        return <CommercialCampaignCreationStepTwo
+        return <CampaignBudget
           prevStepClick={subCurrentStep}
           nextStepClick={addCurrentStep}
           setCampaignValue={setCampaignValue}
+          campaignPrice={newCampaign.budget}
         />;
       case 0:
       default:
-        return <CommercialCampaignCreationStepOne
+        return <CampaignName
           onClick={addCurrentStep}
           setCampaignValue={setCampaignValue}
           campaignTitle={newCampaign.name}

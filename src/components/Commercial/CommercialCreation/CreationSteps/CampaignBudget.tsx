@@ -1,21 +1,23 @@
-import { useState, useMemo } from "react";
+import React, {useState, useMemo} from "react";
 import { AiFillCheckCircle } from 'react-icons/ai';
 
-const CommercialCampaignCreationStepTwo: React.FC<{
+const CampaignBudget: React.FC<{
   prevStepClick: () => void;
   nextStepClick: () => void;
   setCampaignValue: (field: string, value: any) => void;
+  campaignPrice: number;
 }> = ({
   prevStepClick,
   nextStepClick,
   setCampaignValue,
+  campaignPrice
 }) => {
-  const minPrice = 10;
-  const maxPrice = 1000;
+  const minPrice = useMemo(() => 10, []);
+  const maxPrice = useMemo(() => 1000, []);
   const prices = useMemo(() => [ 10, 25, 100 ], []);
 
-  const [isPredefined, setIsPredefined] = useState(true);
-  const [selectedPrice, setSelectedPrice] = useState(prices[1]);
+  const [isPredefined, setIsPredefined] = useState(prices.includes(campaignPrice));
+  const [selectedPrice, setSelectedPrice] = useState(campaignPrice);
 
   const setSelectedPriceFromInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     const parsedValue = parseInt(event.target.value);
@@ -28,7 +30,7 @@ const CommercialCampaignCreationStepTwo: React.FC<{
   };
 
   const handleClick = () => {
-    setCampaignValue("budget", selectedPrice.toString());
+    setCampaignValue("budget", selectedPrice);
     nextStepClick();
   };
 
@@ -36,7 +38,7 @@ const CommercialCampaignCreationStepTwo: React.FC<{
     <div className="flex-auto bg-white rounded-lg shadow-xl border border-solid border-neutral-100">
       <div className="mx-auto w-1/2 my-12" style={{ minWidth: "38rem" }}>
         <div className="relative">
-          <div className="absolute grid grid-cols-5 bg-neutral-200 rounded-lg h-3 w-1/3 left-1/2 -translate-x-1/2">
+          <div className="absolute grid grid-cols-6 bg-neutral-200 rounded-lg h-3 w-1/3 left-1/2 -translate-x-1/2">
             <div className="col-span-2 bg-blue-500 rounded-lg"></div>
           </div>
           <p className="text-center font-bold text-3xl pt-6">Déterminez le budget de votre campagne</p>
@@ -116,4 +118,4 @@ const CommercialCampaignCreationStepTwo: React.FC<{
   );
 };
 
-export default CommercialCampaignCreationStepTwo;
+export default CampaignBudget;
