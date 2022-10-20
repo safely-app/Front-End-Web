@@ -46,7 +46,9 @@ const CampaignBudget: React.FC<{
 
             <div>
               <input type="radio" checked={isPredefined} onChange={(_e) => setIsPredefined(true)} />
-              <label className="font-bold pl-4">Sélectionner un budget</label>
+              <label className="font-bold pl-4 cursor-pointer" onClick={() => setIsPredefined(true)}>
+                Sélectionner un budget
+              </label>
               <div hidden={!isPredefined}>
                 <ul className="p-4 space-y-3">
                   {prices.map((price, index) => {
@@ -70,7 +72,9 @@ const CampaignBudget: React.FC<{
 
             <div>
               <input type="radio" checked={!isPredefined} onChange={(_e) => setIsPredefined(false)} />
-              <label className="font-bold pl-4">Définir un budget personnalisé</label>
+              <label className="font-bold pl-4 cursor-pointer" onClick={() => setIsPredefined(false)}>
+                Définir un budget personnalisé
+              </label>
               <div hidden={isPredefined}>
                 <div className="p-6 flex">
                   <div className="flex-0 relative border border-solid border-neutral-400 rounded-lg w-20 h-10">
