@@ -319,6 +319,8 @@ const CommercialCampaigns: React.FC<{
     return (
       <CommercialCampaignCreation
         safeplace={safeplace}
+        campaigns={campaigns}
+        setCampaigns={setCampaigns}
         onEnd={() => setIsViewCreate(false)}
       />
     );

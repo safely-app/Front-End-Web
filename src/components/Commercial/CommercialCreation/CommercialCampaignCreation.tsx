@@ -16,9 +16,13 @@ import log from "loglevel";
 
 const CommercialCampaignCreation: React.FC<{
   safeplace: ISafeplace;
+  campaigns: ICampaign[];
+  setCampaigns: (campaigns: ICampaign[]) => void;
   onEnd: () => void;
 }> = ({
   safeplace,
+  campaigns,
+  setCampaigns,
   onEnd
 }) => {
   const userCredentials = useAppSelector(state => state.user.credentials);
@@ -57,18 +61,17 @@ const CommercialCampaignCreation: React.FC<{
       };
 
       if (createdCampaign.id === "") {
-        const result = await Commercial.createCampaign(
-          createdCampaign,
-          userCredentials.token
-        );
+        const result = await Commercial.createCampaign(createdCampaign, userCredentials.token);
+        const finalCampaign = { ...createdCampaign, id: result.data._id };
 
-        setNewCampaign({ ...createdCampaign, id: result.data._id });
+        setNewCampaign(finalCampaign);
+        setCampaigns([ ...campaigns, finalCampaign ]);
       } else {
-        await Commercial.updateCampaign(
-          createdCampaign.id,
-          createdCampaign,
-          userCredentials.token
-        );
+        await Commercial.updateCampaign(createdCampaign.id, createdCampaign, userCredentials.token);
+        setCampaigns([
+          ...campaigns.filter(campaign => campaign.id !== createdCampaign.id),
+          createdCampaign
+        ]);
       }
     } catch (err) {
       log.error(err);
