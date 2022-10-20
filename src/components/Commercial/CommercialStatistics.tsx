@@ -57,42 +57,6 @@ const Area: React.FC<{
   );
 };
 
-const Graph: React.FC<{
-  data: GraphData[];
-}> = ({
-  data
-}) => {
-  const primaryAxis = useMemo<AxisOptions<GraphDataElement>>(
-    () => ({
-      getValue: datum => datum.date,
-    }),
-    []
-  );
-
-  const secondaryAxes = useMemo<AxisOptions<GraphDataElement>[]>(
-    () => [
-      {
-        getValue: datum => datum.value,
-      }
-    ],
-    []
-  );
-
-  return (
-    <div className='mx-8'>
-      <div className="h-80">
-        <Chart
-          options={{
-            data,
-            primaryAxis,
-            secondaryAxes
-          }}
-        />
-      </div>
-    </div>
-  );
-};
-
 const StatisticsCard: React.FC<{
   title: string;
   amount: string;
@@ -135,30 +99,30 @@ const CommercialStatistics: React.FC<{
     [campaigns]
   );
 
-  const initialGraphData = useMemo(() => ({
-    label: `Data`,
-    data: [
-      {
-        date: new Date(Date.now()),
-        value: 0
-      }
-    ]
-  }), []);
+  const getNumberOfEventBetweenDates = (events: IPricingHistory[], date1: Date, date2: Date) => {
+    return events.filter(event => {
+      const eventDate = new Date(event.createdAt);
+      return date1 <= eventDate && date2 >= eventDate;
+    }).length;
+  }
 
   const getGraphData = (
     campaign: ICampaign,
     campaignPricingHistories: IPricingHistory[]
   ): GraphData => {
-    if (campaignPricingHistories.length === 0)
-      return initialGraphData;
+    const millisecondsInDay = 86400000;
+    const numberOfDaysDisplayed = 7;
 
     return {
-      label: `Data ${campaign.name}`,
-      data: campaignPricingHistories
-        .map(pricingHistory => ({
-          date: pricingHistory.createdAt,
-          value: pricingHistory.totalCost
-        }))
+      label: `Data ${campaign?.name || ""}`,
+      data: (new Array(numberOfDaysDisplayed).fill(0)).map((_value, index) => {
+        const date = new Date(Date.now() - (millisecondsInDay * (numberOfDaysDisplayed - (index + 1))));
+        return ({
+          date: date,
+          value: getNumberOfEventBetweenDates(
+            campaignPricingHistories, new Date(date.getTime() - millisecondsInDay), date)
+        });
+      })
     };
   };
 
@@ -179,6 +143,9 @@ const CommercialStatistics: React.FC<{
   };
 
   useEffect(() => {
+    if (campaigns.length === 0)
+      return;
+
     const campaignPricingHistories = pricingHistories
       .filter(pricingHistory => pricingHistory.campaignId === campaigns[dropdownIndex].id)
 
@@ -221,7 +188,10 @@ const CommercialStatistics: React.FC<{
 
   return (
     <div className='flex-auto bg-white p-5 rounded-lg shadow-xl'>
-      <div className='relative cursor-pointer select-none font-bold text-3xl w-fit rounded-t-lg bg-neutral-50' style={{ minWidth: '15em' }}>
+      <div
+        className='relative cursor-pointer select-none font-bold text-3xl w-fit rounded-t-lg bg-neutral-50'
+        style={{ minWidth: '15em' }} hidden={campaigns.length === 0}
+      >
         <div className='p-3' onClick={() => setDropdownOn(!dropdownOn)}>
           <span>{campaigns[dropdownIndex]?.name || ""}</span>
           {(dropdownOn)
@@ -241,7 +211,15 @@ const CommercialStatistics: React.FC<{
         </div>
       </div>
 
-      <div className='grid grid-cols-2'>
+      <div className="relative w-full h-full" hidden={campaigns.length > 0}>
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <span className="text-2xl font-light select-none text-center">
+            Commencez par créer une campagne !
+          </span>
+        </div>
+      </div>
+
+      <div className={`${campaigns.length === 0 ? 'hidden' : 'grid grid-cols-2'}`}>
         <div>
           <p className='font-bold text-2xl mt-10 mb-6 ml-12'>Impressions</p>
           <Area data={[ getGraphData(campaigns[dropdownIndex], campaignViewPricingHistories) ]} />
@@ -262,7 +240,7 @@ const CommercialStatistics: React.FC<{
 
         <div>
           <p className='font-bold text-2xl mt-10 mb-6 ml-12'>Conversions</p>
-          <Graph data={[ getGraphData(campaigns[dropdownIndex], campaignClickPricingHistories) ]} />
+          <Area data={[ getGraphData(campaigns[dropdownIndex], campaignClickPricingHistories) ]} />
           <div className='grid grid-cols-2 my-6'>
             <StatisticsCard
               title='Conversions'
