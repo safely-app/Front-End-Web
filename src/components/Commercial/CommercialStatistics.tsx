@@ -221,15 +221,15 @@ const CommercialStatistics: React.FC<{
 
   return (
     <div className='flex-auto bg-white p-5 rounded-lg shadow-xl'>
-      <div className='relative cursor-pointer select-none font-bold text-3xl w-fit rounded-t-lg'>
+      <div className='relative cursor-pointer select-none font-bold text-3xl w-fit rounded-t-lg bg-neutral-50' style={{ minWidth: '15em' }}>
         <div className='p-3' onClick={() => setDropdownOn(!dropdownOn)}>
           <span>{campaigns[dropdownIndex]?.name || ""}</span>
           {(dropdownOn)
-            ? <MdOutlineKeyboardArrowUp className='inline ml-2' />
-            : <MdOutlineKeyboardArrowDown className='inline ml-2' />}
+            ? <MdOutlineKeyboardArrowUp className='inline ml-2 mt-1 float-right' />
+            : <MdOutlineKeyboardArrowDown className='inline ml-2 mt-1 float-right' />}
         </div>
         <div className='absolute z-10 w-full' hidden={!dropdownOn}>
-          <ul className='w-full rounded-b-lg bg-white shadow-lg'>
+          <ul className='w-full rounded-b-lg bg-neutral-100 shadow-lg'>
             {campaigns.map((campaign, index) =>
               <li key={'dropdown-option-' + index}
                   className='text-3xl p-3 border-t-2 border-solid border-neutral-300'
