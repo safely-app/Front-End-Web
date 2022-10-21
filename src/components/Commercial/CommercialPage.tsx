@@ -8,7 +8,6 @@ import CommercialCampaigns from './CommercialCampaigns/CommercialCampaigns';
 import CommercialStatistics from './CommercialStatistics';
 import ISafeplace from '../interfaces/ISafeplace';
 import imgOnboarding from '../../assets/image/mec_allongé.png';
-import { RiAdvertisementLine } from 'react-icons/ri';
 import { MdOutlinePlace } from 'react-icons/md';
 import { BsMegaphone } from 'react-icons/bs';
 import { FiPieChart } from 'react-icons/fi';

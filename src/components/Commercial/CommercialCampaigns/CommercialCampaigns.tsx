@@ -407,7 +407,7 @@ const CommercialCampaigns: React.FC<{
                   }}
                 />
               </div>
-              <div className='flex flex-col bg-white rounded-lg shadow-xl h-full mt-6'>
+              <div className='flex flex-col bg-white rounded-lg shadow-xl h-full mt-4'>
                 <p className="px-6 py-8 font-bold text-xl text-2xl">Apercu</p>
                 <div className='flex flex-row items-center justify-around'>
                   <div className="relative w-5/12 h-24 bg-neutral-200 rounded-2xl pt-3 pb-6 px-4 drop-shadow-lg">

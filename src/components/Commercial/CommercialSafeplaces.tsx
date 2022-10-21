@@ -164,7 +164,7 @@ const CommercialSafeplaces: React.FC<{
         }
       })
     }
-  }, [campaignAds]);
+  }, [campaignAds, userCredentials]);
 
     useEffect(() => {
         if (campaignTab) {
@@ -174,7 +174,7 @@ const CommercialSafeplaces: React.FC<{
                 console.log(res.data);
             })
         }
-    }, [campaignTab])
+    }, [campaignTab, userCredentials, safeplace])
 
 
     return (

@@ -13,7 +13,6 @@ import ISafeplace from "../../interfaces/ISafeplace";
 import { useAppSelector } from "../../../redux";
 import { Commercial } from "../../../services";
 import log from "loglevel";
-import { SECTION } from "../CommercialPage";
 
 const CommercialCampaignCreation: React.FC<{
   safeplace: ISafeplace;
