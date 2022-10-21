@@ -4,7 +4,7 @@ import ITarget from '../interfaces/ITarget';
 import ICampaign from '../interfaces/ICampaign';
 import { useAppSelector } from '../../redux';
 import { Commercial, Safeplace } from '../../services';
-import CommercialCampaigns from './CommercialCampaigns';
+import CommercialCampaigns from './CommercialCampaigns/CommercialCampaigns';
 import CommercialStatistics from './CommercialStatistics';
 import ISafeplace from '../interfaces/ISafeplace';
 import imgOnboarding from '../../assets/image/mec_allongé.png';
@@ -13,9 +13,12 @@ import { MdOutlinePlace } from 'react-icons/md';
 import { BsMegaphone } from 'react-icons/bs';
 import { FiPieChart } from 'react-icons/fi';
 import log from 'loglevel';
+import { CommercialCampaignCreation } from './CommercialCreation';
+import CommercialSafeplaces from './CommercialSafeplaces';
 
-enum SECTION {
+export enum SECTION {
   CAMPAIGNS,
+  CAMPAIGNCREATION,
   STATISTICS,
   ADVERTISING,
   SAFEPLACES,
@@ -68,14 +71,6 @@ const CommercialNavbar: React.FC<{
             title="Dashboard"
             icon={<FiPieChart className='col-span-1 w-7 h-7 my-auto' />}
             sectionType={SECTION.STATISTICS}
-            displayedSection={displayedSection}
-            onClick={setDisplayedSection}
-          />
-
-          <CommercialNavbarButton
-            title="Mes publicités"
-            icon={<RiAdvertisementLine className='col-span-1 w-7 h-7 my-auto' />}
-            sectionType={SECTION.ADVERTISING}
             displayedSection={displayedSection}
             onClick={setDisplayedSection}
           />
@@ -184,7 +179,8 @@ const CommercialPage: React.FC = () => {
           budget: campaign.budget,
           status: campaign.status,
           startingDate: startingDateToString(campaign.startingDate),
-          targets: campaign.targets
+          targets: campaign.targets,
+          safeplaceId: campaign.safeplaceId,
         }));
 
         setCampaigns(gotCampaigns);
@@ -227,6 +223,30 @@ const CommercialPage: React.FC = () => {
           campaigns={campaigns}
         />;
       case SECTION.CAMPAIGNS:
+        return <CommercialCampaigns
+          safeplace={safeplace}
+          campaigns={campaigns}
+          setCampaigns={setCampaigns}
+          targets={targets}
+          setTargets={setTargets}
+          section={{ value: displayedSection, setter: setDisplayedSection }}
+        />;
+      case SECTION.CAMPAIGNCREATION:
+        return <CommercialCampaignCreation 
+          safeplace={safeplace}
+          campaigns={campaigns}
+          setCampaigns={setCampaigns}
+          onEnd={() => {setDisplayedSection(SECTION.CAMPAIGNS)}}
+        />
+      case SECTION.SAFEPLACES:
+        return <CommercialSafeplaces 
+          safeplace={safeplace}
+          campaigns={campaigns}
+          setCampaigns={setCampaigns}
+          targets={targets}
+          setTargets={setTargets}
+          section={{ value: displayedSection, setter: setDisplayedSection }}
+        />
       default:
         return <CommercialCampaigns
           safeplace={safeplace}
@@ -234,6 +254,7 @@ const CommercialPage: React.FC = () => {
           setCampaigns={setCampaigns}
           targets={targets}
           setTargets={setTargets}
+          section={{ value: displayedSection, setter: setDisplayedSection }}
         />;
     }
   };

@@ -27,7 +27,7 @@ const MapCircleZone: React.FC<{
   );
 };
 
-const Map: React.FC<{
+export const Map: React.FC<{
   safeplaces: ISafeplace[];
   coordinate: ICoordinate;
   radius: number;

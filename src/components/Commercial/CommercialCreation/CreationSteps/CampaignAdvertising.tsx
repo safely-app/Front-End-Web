@@ -6,7 +6,7 @@ import { notifyError } from "../../../utils";
 import safeplaceImg from './../../../../assets/image/safeplace.jpeg';
 import log from "loglevel";
 
-const DragDropFile: React.FC<{
+export const DragDropFile: React.FC<{
   handleFile: (file: File) => void;
 }> = ({
   handleFile
