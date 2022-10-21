@@ -110,9 +110,8 @@ const CommercialSafeplaces: React.FC<{
               ? ad.title.toLowerCase().match(lowerSearchText) !== null
               || ad.description.toLowerCase().match(lowerSearchText) !== null : true);
         }
-    
+
         return [];
-    
       };
 
     const updateCampaign = async (campaign: ICampaign) => {
@@ -134,9 +133,8 @@ const CommercialSafeplaces: React.FC<{
       ad.description = description;
       ad.imageUrl = imageUrl && imageUrl !== '' ? imageUrl : ad.imageUrl;
 
-      console.log(ad)
       await Advertising.update(ad._id, ad, userCredentials.token);
-  
+
       if (campaignAds) {
         const res = await Advertising.getByCampaign(campaignAds.id, userCredentials.token)
 
@@ -153,12 +151,10 @@ const CommercialSafeplaces: React.FC<{
     if (campaignAds && campaignAds.safeplaceId && campaignAds.id !== '') {
         Advertising.getByCampaign(campaignAds.id, userCredentials.token)
         .then((res) => {
-        console.log(res);
         setAds(res.data);
         if (campaignAds.safeplaceId) {
           Safeplace.get(campaignAds.safeplaceId, userCredentials.token)
           .then((res) => {
-            console.log(res.data)
             setSafeplaceCampaign(res.data);
           })
         }
@@ -170,8 +166,7 @@ const CommercialSafeplaces: React.FC<{
         if (campaignTab) {
             Commercial.getAllCampaignBySafeplace(safeplace.id, userCredentials.token)
             .then((res) => {
-                setCampaignOfSafeplace(res.data);
-                console.log(res.data);
+              setCampaignOfSafeplace(res.data);
             })
         }
     }, [campaignTab, userCredentials, safeplace])
@@ -222,15 +217,15 @@ const CommercialSafeplaces: React.FC<{
                         <div className="bg-safeplace-placeholder flex-initial w-48 h-36 rounded-xl">
                         <img className="object-cover" alt="" />
                         </div>
-                        <div className="flex flex-auto flex-col pl-6">                                                                      
+                        <div className="flex flex-auto flex-col pl-6">
                         <p className='font-bold text-xl mb-1'>{safeplace.name}</p>
                         <CampaignLabelStatus status="active" />
                         <div className='flex justify-end mb-1'>
                             <div className='shadow-[0_05px_09px_rgba(0,0,0,0.25)]'>
-                            <button 
+                            <button
                                 className='text-gray-400 border border-solid border-neutral-400 rounded-md h-8 w-20 text-sm font-bold bg-white hover:bg-neutral-200'
                                 onClick={() => {
-                                    setCampaignTab(true);
+                                  setCampaignTab(true);
                                 }}
                             >
                                 Campagnes

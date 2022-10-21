@@ -162,9 +162,8 @@ const CommercialCampaigns: React.FC<{
       ad.description = description;
       ad.imageUrl = imageUrl && imageUrl !== '' ? imageUrl : ad.imageUrl;
 
-      console.log(ad)
       await Advertising.update(ad._id, ad, userCredentials.token);
-  
+
       if (campaignAds) {
         const res = await Advertising.getByCampaign(campaignAds.id, userCredentials.token)
 
@@ -181,12 +180,10 @@ const CommercialCampaigns: React.FC<{
     if (campaignAds && campaignAds.safeplaceId && campaignAds.id !== '') {
       Advertising.getByCampaign(campaignAds.id, userCredentials.token)
       .then((res) => {
-        console.log(res);
         setAds(res.data);
         if (campaignAds.safeplaceId) {
           Safeplace.get(campaignAds.safeplaceId, userCredentials.token)
           .then((res) => {
-            console.log(res.data)
             setSafeplaceCampaign(res.data);
           })
         }

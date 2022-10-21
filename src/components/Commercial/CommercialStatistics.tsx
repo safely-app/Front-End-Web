@@ -180,8 +180,6 @@ const CommercialStatistics: React.FC<{
           .filter(pricingHistory => campaignIds.includes(pricingHistory.campaignId));
 
         setPricingHistories(campaignsPricingHistories);
-
-        console.log("USE EFFECT", campaignsPricingHistories);
       })
       .catch(err => log.error(err));
   }, [userCredentials, campaignIds]);
@@ -232,7 +230,7 @@ const CommercialStatistics: React.FC<{
 
             <StatisticsCard
               title='Coût'
-              amount={`${getTotalCost([ ...campaignViewPricingHistories, ...campaignClickPricingHistories ])}€`}
+              amount={`${getTotalCost([ ...campaignViewPricingHistories, ...campaignClickPricingHistories ]).toFixed(2)}€`}
               description="La somme totale dépensée pour cette campagne publicitaire."
             />
           </div>
