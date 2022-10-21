@@ -213,7 +213,7 @@ const CommercialSafeplaces: React.FC<{
                 </div>
 
                 <AiFillPlusCircle className='mx-6 my-8 w-11 h-11' onClick={() => {
-                    section.setter(SECTION.CAMPAIGNCREATION);
+                  window.location.href = `${process.env.PUBLIC_URL}/shops`;
                 }} />
             </div>
             <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl'>
@@ -492,8 +492,8 @@ const CommercialSafeplaces: React.FC<{
                             </div>
 
                             <AiFillPlusCircle className='mx-6 my-8 w-11 h-11' onClick={() => {
-                                section.setter(SECTION.CAMPAIGNCREATION);
-                            }} />
+                                window.location.href = `${process.env.PUBLIC_URL}/shops`;
+                              }} />
                         </div>
 
                         <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl mb-6'>
