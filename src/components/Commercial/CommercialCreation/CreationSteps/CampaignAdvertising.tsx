@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { AiFillInfoCircle } from 'react-icons/ai';
 import { useAppSelector } from "../../../../redux";
 import { Advertising } from "../../../../services";
@@ -53,7 +53,7 @@ export const DragDropFile: React.FC<{
 
   return (
     <form className="relative h-12 w-56 text-center border border-solid rounded-lg border-neutral-400" onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
-      <input ref={inputRef} type="file" accept="image/*" hidden onChange={handleChange} />
+      <input ref={inputRef} type="file" accept="image/*" hidden onChange={handleChange} data-testid="ad-upload-image" />
       <button className={`w-full h-full rounded-lg truncate ${dragActive ? 'bg-white' : 'bg-neutral-200'}`} onClick={onButtonClick}>
         {selectedFile !== undefined ? selectedFile.name : 'Choisir une image...'}
       </button>
@@ -92,6 +92,9 @@ const CampaignAdvertising: React.FC<{
 
   const handleClick = async () => {
     try {
+      if (title === "" || description === "" || uploadImage === "")
+        return;
+
       await Advertising.create({
         id: "",
         title: title,
