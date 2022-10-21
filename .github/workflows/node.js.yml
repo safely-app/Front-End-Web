@@ -49,12 +49,12 @@ jobs:
           uses: jakejarvis/wait-action@master
           with:
             time: '120s'
-        - name: Audit live URL
-          uses: jakejarvis/lighthouse-action@master
-          with:
-            url: 'https://front.safely-app.fr/'
-        - name: Upload results as an artifact
-          uses: actions/upload-artifact@master
-          with:
-            name: LightHouse report
-            path: './report'
+#        - name: Audit live URL
+#          uses: jakejarvis/lighthouse-action@master
+#          with:
+#            url: 'https://front.safely-app.fr/'
+#        - name: Upload results as an artifact
+#          uses: actions/upload-artifact@master
+#          with:
+#            name: LightHouse report
+#            path: './report'

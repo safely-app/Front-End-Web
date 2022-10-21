@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ImCross } from "react-icons/im";
 import ICampaign from "../../interfaces/ICampaign";
 import ITarget from "../../interfaces/ITarget";
@@ -20,11 +20,26 @@ export const CampaignModal: React.FC<{
   buttons
 }) => {
   const [targetField, setTargetField] = useState("");
+  const [modifiedStartingDate, setModifiedStartingDate] = useState<string>(
+    campaign.startingDate.split('T')[0]
+  );
 
-  const setField = (field: string, event: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    setModifiedStartingDate(campaign.startingDate.split('T')[0]);
+  }, [campaign]);
+
+  const setField = (field: string, event: React.ChangeEvent<any>) => {
     setCampaign({
       ...campaign,
       [field]: event.target.value
+    });
+  };
+
+  const setStartingDate = (event: React.ChangeEvent<any>) => {
+    setModifiedStartingDate(event.target.value);
+    setCampaign({
+      ...campaign,
+      startingDate: event.target.value
     });
   };
 
@@ -60,8 +75,12 @@ export const CampaignModal: React.FC<{
       <p className='font-bold'>{title}</p>
       <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={campaign.name || ''} onChange={(event) => setField('name', event)} />
       <input type='number' placeholder='Budget' className='block m-2 w-60 text-sm' value={campaign.budget || ''} onChange={(event) => setField('budget', event)} />
-      <input type='date' placeholder='Date de départ' className='block m-2 w-60 text-sm' value={campaign.startingDate || ''} onChange={(event) => setField('startingDate', event)} />
+      <select value={campaign.status || ''} className='block m-2 text-sm' onChange={(event) => setField('status', event)}>
+        {[ "active", "pause", "template" ].map((status, index) => <option key={index}>{status}</option>)}
+      </select>
+      <input type='date' placeholder='Date de départ' className='block m-2 w-60 text-sm' value={modifiedStartingDate} onChange={(event) => setStartingDate(event)} />
       <input type='text' placeholder='ID de safeplace' className='block m-2 w-60 text-sm' value={campaign.safeplaceId || ''} onChange={(event) => setField('safeplaceId', event)} />
+      <input type='text' placeholder='ID de propriétaire' className='block m-2 w-60 text-sm' value={campaign.ownerId || ''} onChange={(event) => setField('ownerId', event)} />
       <div className='relative'>
         <input type='text' placeholder='Rechercher une cible...' className='block m-2 w-52 text-sm' value={targetField} onChange={(event) => setTargetField(event.target.value)} />
         <ul className='absolute bg-white z-20 mx-2 w-52 shadow-lg rounded-b-lg' hidden={targetField === ""}>

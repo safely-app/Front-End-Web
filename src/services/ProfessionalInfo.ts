@@ -4,45 +4,52 @@ import { isProfessionalValid } from './utils';
 
 class ProfessionalInfo {
 
-    private readonly baseURL = process.env.REACT_APP_SERVER_URL as string;
+  private readonly baseURL = process.env.REACT_APP_SERVER_URL as string;
 
-    getAll(token: string) {
-        return createHttpConfig(this.baseURL, token).get("/professionalinfo");
-    }
+  getAll(token: string) {
+    return createHttpConfig(this.baseURL, token).get("/professionalinfo");
+  }
 
-    getOwner(id: string, token: string) {
-        return createHttpConfig(this.baseURL, token).get(`/professionalinfo/owner/${id}`);
-    }
+  getOwner(id: string, token: string) {
+    return createHttpConfig(this.baseURL, token).get(`/professionalinfo/owner/${id}`);
+  }
 
-    get(id: string, token: string) {
-        return createHttpConfig(this.baseURL, token).get(`/professionalinfo/${id}`);
-    }
+  get(id: string, token: string) {
+    return createHttpConfig(this.baseURL, token).get(`/professionalinfo/${id}`);
+  }
 
-    create(data: IProfessional) {
-        const { id, ...tmpData } = data;
-        const validateProfessional = isProfessionalValid(data);
+  create(data: IProfessional) {
+    const { id, ...tmpData } = data;
+    const validateProfessional = isProfessionalValid(data);
 
-        if (validateProfessional.isValid === false)
-            throw new Error(validateProfessional.error);
-        return createHttpConfig(this.baseURL).post("/professionalinfo", {
-            ...tmpData,
-            companyAddress2: (tmpData.companyAddress2 === "")
-                ? " " : tmpData.companyAddress2
-        });
-    }
+    Object.keys(tmpData).forEach(key => {
+      if (tmpData[key] === "")
+        delete tmpData[key];
+    });
 
-    update(_id: string, data: IProfessional, token: string) {
-        const { id, ...tmpData } = data;
-        const validateProfessional = isProfessionalValid(data);
+    if (validateProfessional.isValid === false)
+      throw new Error(validateProfessional.error);
+    return createHttpConfig(this.baseURL).post("/professionalinfo", tmpData);
+  }
 
-        if (validateProfessional.isValid === false)
-            throw new Error(validateProfessional.error);
-        return createHttpConfig(this.baseURL, token).put(`/professionalinfo/${_id}`, tmpData);
-    }
+  // TODO: remove empty fields
+  update(_id: string, data: IProfessional, token: string) {
+    const { id, userId, ...tmpData } = data;
+    const validateProfessional = isProfessionalValid(data);
 
-    delete(id: string, token: string) {
-        return createHttpConfig(this.baseURL, token).delete(`/professionalinfo/${id}`);
-    }
+    Object.keys(tmpData).forEach(key => {
+      if (tmpData[key] === "")
+        delete tmpData[key];
+    });
+
+    if (validateProfessional.isValid === false)
+      throw new Error(validateProfessional.error);
+    return createHttpConfig(this.baseURL, token).put(`/professionalinfo/${_id}`, tmpData);
+  }
+
+  delete(id: string, token: string) {
+    return createHttpConfig(this.baseURL, token).delete(`/professionalinfo/${id}`);
+  }
 }
 
 export default new ProfessionalInfo();

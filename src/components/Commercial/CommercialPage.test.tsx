@@ -7,17 +7,29 @@ import ICampaign from '../interfaces/ICampaign';
 import TargetModal from './CommercialTargetModal';
 import ITarget from '../interfaces/ITarget';
 import MultipleTargetsModal from './CommercialMultipleTargetsModal';
+import nock from "nock";
+import { act } from 'react-dom/test-utils';
 
-test('render CommercialCampaigns', () => {
+const testURL: string = process.env.REACT_APP_SERVER_URL as string;
+
+const testDelay = (ms: number): Promise<void> =>
+  new Promise(resolve => setTimeout(resolve, ms));
+
+test('render CommercialCampaigns', async () => {
   const setCampaigns = jest.fn();
   const setTargets = jest.fn();
+
+  const scopecCampaignOptions = nock(testURL).options('/commercial/campaign/a1')
+    .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
+  const scopeCampaignDelete = nock(testURL).delete('/commercial/campaign/a1')
+    .reply(200, {}, { 'Access-Control-Allow-Origin': '*' });
 
   const campaigns = [
     {
       id: "a1",
       ownerId: "b1",
       name: "Campagne 1",
-      budget: "50",
+      budget: 50,
       status: "active",
       startingDate: "2022-08-08",
       targets: [ 't1', 't2', 't3' ],
@@ -94,6 +106,11 @@ test('render CommercialCampaigns', () => {
   screen.getAllByText('Annuler').forEach(button => {
     fireEvent.click(button);
   });
+
+  await act(async () => await testDelay(1000));
+
+  scopecCampaignOptions.done();
+  scopeCampaignDelete.done();
 });
 
 test('render CommercialCampaignModal', () => {
@@ -104,7 +121,7 @@ test('render CommercialCampaignModal', () => {
     id: "a1",
     ownerId: "b1",
     name: "Campagne 1",
-    budget: "50",
+    budget: 50,
     status: "active",
     startingDate: "2022-08-08",
     targets: [ 't1', 't2', 't3' ],
@@ -224,7 +241,7 @@ test('render CommercialMultipleTargetsModal', () => {
     id: "a1",
     ownerId: "b1",
     name: "Campagne 1",
-    budget: "50",
+    budget: 50,
     status: "active",
     startingDate: "2022-08-08",
     targets: [ 't1', 't2', 't3' ],

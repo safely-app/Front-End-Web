@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import { BsPencilSquare } from "react-icons/bs";
 import { ImCross } from "react-icons/im";
 import { useAppSelector } from "../../../redux";
-import { SafeplaceUpdate } from "../../../services";
+import { Safeplace, SafeplaceUpdate } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import ISafeplaceUpdate from "../../interfaces/ISafeplaceUpdate";
 import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
 import { SafeplaceUpdateModal } from "./SafeplaceUpdateMonitorModal";
+import ISafeplace from "../../interfaces/ISafeplace";
 import { CustomDiv } from "../../common/Table";
 import { ModalBtn } from "../../common/Modal";
 import { ModalType } from "../ModalType";
@@ -79,6 +80,31 @@ const SafeplaceUpdateMonitor: React.FC = () => {
       notifySuccess("Nouvelle modification créée");
       setModal(ModalType.OFF);
       resetSafeplaceUpdate();
+    } catch (err) {
+      notifyError(err);
+      log.error(err);
+    }
+  };
+
+  const validateSafeplaceUpdate = async (safeplaceUpdate: ISafeplaceUpdate) => {
+    try {
+      const safeplace: ISafeplace = {
+        id: safeplaceUpdate.safeplaceId,
+        name: safeplaceUpdate.name,
+        city: safeplaceUpdate.city,
+        type: safeplaceUpdate.type,
+        address: safeplaceUpdate.address,
+        description: safeplaceUpdate.description,
+        dayTimetable: safeplaceUpdate.dayTimetable,
+        coordinate: safeplaceUpdate.coordinate,
+        ownerId: safeplaceUpdate.ownerId,
+      };
+
+      await Safeplace.update(safeplaceUpdate.id, safeplace, userCredentials.token);
+      await SafeplaceUpdate.delete(safeplaceUpdate.id, userCredentials.token);
+      setSafeplaceUpdates(safeplaceUpdates.filter(su => su.id !== safeplaceUpdate.id));
+      notifySuccess("Modification validée.");
+      setModal(ModalType.OFF);
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -170,8 +196,9 @@ const SafeplaceUpdateMonitor: React.FC = () => {
         safeplaceUpdate={safeplaceUpdate}
         setSafeplaceUpdate={setSafeplaceUpdate}
         buttons={[
-          <ModalBtn key='suum-btn-0' content="Modifier la modification" onClick={() => updateSafeplaceUpdate(safeplaceUpdate)} />,
-          <ModalBtn key='suum-btn-1' content="Annuler" onClick={() => {
+          <ModalBtn key='suum-btn-0' content="Valider la modification" onClick={() => validateSafeplaceUpdate(safeplaceUpdate)} />,
+          <ModalBtn key='suum-btn-1' content="Modifier la modification" onClick={() => updateSafeplaceUpdate(safeplaceUpdate)} />,
+          <ModalBtn key='suum-btn-2' content="Annuler" onClick={() => {
             setModal(ModalType.OFF);
             resetSafeplaceUpdate();
           }} />

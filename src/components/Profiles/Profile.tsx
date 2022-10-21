@@ -253,6 +253,7 @@ const Profile: React.FC = () => {
   const updateUser = async () => {
     try {
       await User.update(user.id, user, userCredentials.token);
+      notifySuccess("Modifications enregistrées.");
       dispatch(setInfo(user));
       setSavedUser(user);
     } catch (err) {
@@ -264,6 +265,7 @@ const Profile: React.FC = () => {
   const updateProfessional = async () => {
     try {
       await ProfessionalInfo.update(professional.id, professional, userCredentials.token);
+      notifySuccess("Modifications enregistrées.");
       dispatch(setProfessionalInfo(professional));
       setSavedProfessional(professional);
     } catch (err) {
@@ -293,22 +295,10 @@ const Profile: React.FC = () => {
   const deleteCard = async (card: IStripeCard) => {
     try {
         await Stripe.deleteCard(card.id, userCredentials.token);
-
-        Stripe.getCards(userUserInfo.stripeId as string, userCredentials.token)
-        .then(result => {
-          const gotPaymentSolutions = result.data.data.map(paymentSolution => ({
-            id: paymentSolution.id,
-            customerId: paymentSolution.customer,
-            brand: paymentSolution.card.brand,
-            country: paymentSolution.card.country,
-            expMonth: paymentSolution.card.exp_month,
-            expYear: paymentSolution.card.exp_year,
-            last4: paymentSolution.card.last4,
-            created: paymentSolution.created * 1000
-          }));
-
-          setPaymentSolutions(gotPaymentSolutions);
-        }).catch(err => log.error(err));
+        notifySuccess("Solution de paiement supprimée.");
+        setPaymentSolutions(
+          paymentSolutions.filter(paymentSolution => paymentSolution.id !== card.id)
+        );
     } catch (err) {
       log.error(err)
       notifyError(err)

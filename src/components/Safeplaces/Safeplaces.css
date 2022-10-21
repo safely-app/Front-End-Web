@@ -1,11 +1,11 @@
 .app {
-    width: 350px;
-    margin: 0 auto;
-  }
-  
-  .scroller {
-    margin: 0 auto;
-    height: 300px;
-    width: 300px;
-    overflow: auto;
+  width: 350px;
+  margin: 0 auto;
+}
+
+.scroller {
+  margin: 0 auto;
+  height: 300px;
+  width: 300px;
+  overflow: auto;
 }

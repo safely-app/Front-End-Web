@@ -56,12 +56,15 @@ const SafeplaceMonitor: React.FC = () => {
     }
 
     return safeplaces
-      .filter(safeplace => textSearch !== ''
-        ? safeplace.name.toLowerCase().match(lowerSearchText) !== null
+      .filter(safeplace =>
+        safeplace.name.toLowerCase().match(lowerSearchText) !== null
         || safeplace.id.toLowerCase().match(lowerSearchText) !== null
         || safeplace.city.toLowerCase().match(lowerSearchText) !== null
         || safeplace.address.toLowerCase().match(lowerSearchText) !== null
-        || safeplace.type.toLowerCase().match(lowerSearchText) !== null : true);
+        || safeplace.type.toLowerCase().match(lowerSearchText) !== null
+      ).filter(safeplace =>
+        safeplace.ownerId === undefined || safeplace.ownerId.toLowerCase().match(lowerSearchText) !== null
+      );
   };
 
   const updateModal = (safeplace: ISafeplace, modalType: ModalType) => {

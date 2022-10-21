@@ -17,6 +17,10 @@ class Advertising {
     return createHttpConfig(this.baseURL, token).get(`/commercial/advertising/owner/${userId}`);
   }
 
+  getByCampaign(campaignId: string, token: string) {
+    return createHttpConfig(this.baseURL, token).get(`/commercial/advertising/campaign/${campaignId}`);
+  }
+
   create(data: IAdvertising, token: string) {
     const { id, targets, ...ad } = data;
 
@@ -26,10 +30,10 @@ class Advertising {
     });
   }
 
-  update(_id: string, data: IAdvertising, token: string) {
-    const { id, targets, ...ad } = data;
+  update(idAd: string, data, token: string) {
+    const { _id, targets, ...ad } = data;
 
-    return createHttpConfig(this.baseURL, token).put(`/commercial/advertising/${_id}`, {
+    return createHttpConfig(this.baseURL, token).put(`/commercial/advertising/${idAd}`, {
       ...ad,
       targetType: targets
     });
