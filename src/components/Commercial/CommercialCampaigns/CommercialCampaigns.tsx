@@ -2,21 +2,15 @@ import React, { useState, useEffect } from 'react';
 import ITarget from '../../interfaces/ITarget';
 import ICampaign from '../../interfaces/ICampaign';
 import IAdvertising from '../../interfaces/IAdvertising';
-import { BsPencilSquare } from 'react-icons/bs';
-import { ImCross } from 'react-icons/im';
 import { convertStringToRegex, notifyError, notifyInfo } from '../../utils';
-import { SearchBar, Table } from '../../common';
 import { Advertising, Commercial, Safeplace } from '../../../services';
 import { useAppSelector } from '../../../redux';
 import { ModalType } from '../CommercialModalType';
-import { CustomDiv } from '../../common/Table';
 import { ModalBtn } from '../../common/Modal';
 import ISafeplace from '../../interfaces/ISafeplace';
 import log from "loglevel";
 import CampaignLabel from './CampaignLabelStatus';
 import CampaignModal from '../CommercialCampaignModal';
-import TargetModal from '../CommercialTargetModal';
-import MultipleTargetsModal from '../CommercialMultipleTargetsModal';
 import { FaEdit, FaSearch, FaChevronLeft } from 'react-icons/fa';
 import { GrMoney } from 'react-icons/gr';
 import { GiClick } from 'react-icons/gi';
@@ -60,14 +54,14 @@ const CommercialCampaigns: React.FC<{
     targets: []
   });
 
-  const [target, setTarget] = useState<ITarget>({
-    id: "",
-    csp: "csp",
-    name: "",
-    ownerId: "",
-    ageRange: "",
-    interests: []
-  });
+  // const [target, setTarget] = useState<ITarget>({
+  //   id: "",
+  //   csp: "csp",
+  //   name: "",
+  //   ownerId: "",
+  //   ageRange: "",
+  //   interests: []
+  // });
 
   const placeholderTitle = "Lorem Ipsum";
   const placeholderDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
@@ -91,43 +85,6 @@ const CommercialCampaigns: React.FC<{
     ownerId: ''
   });
 
-  const keys = [
-    { displayedName: 'NOM', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.name} /> },
-    { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.budget + '€'} /> },
-    { displayedName: 'STATUS', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.status} /> },
-    { displayedName: 'DATE DE DÉPART', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.startingDate} /> },
-    { displayedName: 'REACH', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={"21 023"} /> },
-    { displayedName: 'IMPRESSIONS', displayFunction: (_campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={"100 234"} /> },
-    { displayedName: 'CIBLES', displayFunction: (campaign: ICampaign, index: number) =>
-      <CustomDiv key={'tbl-val-' + index} content={
-        <div key={`tbl-val-${index}`} className='ml-3'>
-          <button onClick={() => updateModal(campaign, ModalType.UPDATE_TARGETS)} data-testid={'utmb-' + index}><BsPencilSquare /></button>
-        </div>
-      } />
-    },
-    {displayedName: 'ACTIONS', displayFunction: (campaign: ICampaign, index: number) =>
-      <CustomDiv key={'tbl-val-' + index} content={
-        <div key={`tbl-val-${index}`} className='ml-3 flex space-x-2'>
-          <button onClick={() => updateModal(campaign, ModalType.UPDATE)} data-testid={'ucmb-' + index}><BsPencilSquare /></button>
-          <button onClick={() => deleteCampaign(campaign)} data-testid={'dcmb-' + index}><ImCross /></button>
-        </div>
-      } />
-    }
-  ];
-
-  const filterCampaigns = (): ICampaign[] => {
-    const lowerSearchText = convertStringToRegex(campaignSearch.toLocaleLowerCase());
-
-    if (campaignSearch === '') {
-      return campaigns;
-    }
-
-    return campaigns
-      .filter(campaign => campaignSearch !== ''
-        ? campaign.name.toLowerCase().match(lowerSearchText) !== null
-        || campaign.startingDate.toLowerCase().match(lowerSearchText) !== null : true);
-  };
-
   const filterAds = (): IAdvertising[] => {
     const lowerSearchText = convertStringToRegex(adSearch.toLocaleLowerCase());
 
@@ -149,45 +106,6 @@ const CommercialCampaigns: React.FC<{
   const setModal = (modalType: ModalType) => {
     setModalTypes([ ...modalTypes, modalType ]);
     setModalOn(modalType);
-  };
-
-  const createTarget = async () => {
-    try {
-      const newTarget = { ...target, ownerId: userCredentials._id };
-      const result = await Commercial.createTarget(newTarget, userCredentials.token);
-
-      setTargets([ ...targets, { ...newTarget, id: result.data._id } ]);
-      setCampaign({ ...campaign, targets: [ ...campaign.targets, result.data._id ] });
-      setModal(modalTypes[modalTypes.length - 2]);
-      resetTarget();
-    } catch (error) {
-      notifyError("Échec de création de cible.");
-      log.error(error);
-    }
-  };
-
-  const updateTarget = async (target: ITarget) => {
-    try {
-      await Commercial.updateTarget(target.id, target, userCredentials.token);
-      setTargets(targets.map(t => (t.id === target.id) ? target : t));
-      setModal(modalTypes[modalTypes.length - 2]);
-      resetTarget();
-    } catch (error) {
-      notifyError("Échec de modification de cible.");
-      log.error(error);
-    }
-  };
-
-  const deleteTarget = async (target: ITarget) => {
-    try {
-      updateCampaign({ ...campaign, targets: campaign.targets.filter(tId => tId !== target.id) });
-      await Commercial.deleteTarget(target.id, userCredentials.token);
-      setTargets(targets.filter(t => t.id !== target.id));
-      setModal(modalTypes[modalTypes.length - 2]);
-    } catch (error) {
-      notifyError("Échec de suppression de cible.");
-      log.error(error);
-    }
   };
 
   const createCampaign = async (status: string) => {
@@ -221,16 +139,6 @@ const CommercialCampaigns: React.FC<{
     }
   };
 
-  const deleteCampaign = async (campaign: ICampaign) => {
-    try {
-      await Commercial.deleteCampaign(campaign.id, userCredentials.token);
-      setCampaigns(campaigns.filter(c => c.id !== campaign.id));
-    } catch (error) {
-      notifyError("Échec de suppression de campagne.");
-      log.error(error);
-    }
-  };
-
   const updateModal = (campaign: ICampaign, modalType: ModalType) => {
     setModal(modalType);
     setCampaign(campaign);
@@ -247,18 +155,6 @@ const CommercialCampaigns: React.FC<{
       targets: []
     });
   };
-
-  const resetTarget = () => {
-    setTarget({
-      id: "",
-      name: "",
-      csp: "csp",
-      ownerId: "",
-      ageRange: "",
-      interests: []
-    });
-  };
-
 
   const updateAd = async (ad) => {
     try {
@@ -296,7 +192,7 @@ const CommercialCampaigns: React.FC<{
         }
       })
     }
-  }, [campaignAds]);
+  }, [campaignAds, userCredentials]);
 
   return (
     <>
