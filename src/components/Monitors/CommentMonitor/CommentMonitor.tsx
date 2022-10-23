@@ -16,6 +16,7 @@ const CommentMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [comments, setComments] = useState<IComment[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
 
@@ -96,9 +97,23 @@ const CommentMonitor: React.FC = () => {
 
   const deleteComment = async (comment: IComment) => {
     try {
-      await Comment.delete(comment.id, userCredentials.token);
-      setComments(comments.filter(c => c.id !== comment.id));
-      notifySuccess("Cible supprimée");
+      const checkedCommentIds = checkedBoxes.map(checkedIndex => comments[checkedIndex].id);
+
+      if (!checkedCommentIds.includes(comment.id))
+        checkedCommentIds.push(comment.id);
+
+      for (const commentId of checkedCommentIds) {
+        Comment.delete(commentId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
+      setComments(comments.filter(c => !checkedCommentIds.includes(c.id)));
+      notifySuccess(
+        (checkedCommentIds.length > 1)
+          ? "Commentaires supprimées"
+          : "Commentaire supprimée"
+      );
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -173,7 +188,12 @@ const CommentMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={filterComments()} keys={keys} />
+        <Table
+          content={filterComments()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

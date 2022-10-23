@@ -16,6 +16,7 @@ const SafeplaceMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
 
@@ -86,10 +87,24 @@ const SafeplaceMonitor: React.FC = () => {
 
   const deleteSafeplace = async (safeplace: ISafeplace) => {
     try {
-      await Safeplace.delete(safeplace.id, userCredentials.token);
-      setSafeplaces(safeplaces.filter(s => s.id !== safeplace.id));
-      notifySuccess("Safeplace supprimée");
+      const checkedSafeplaceIds = checkedBoxes.map(checkedIndex => safeplaces[checkedIndex].id);
+
+      if (!checkedSafeplaceIds.includes(safeplace.id))
+        checkedSafeplaceIds.push(safeplace.id);
+
+      for (const safeplaceId of checkedSafeplaceIds) {
+        Safeplace.delete(safeplaceId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
       setModal(ModalType.OFF);
+      setSafeplaces(safeplaces.filter(s => !checkedSafeplaceIds.includes(s.id)));
+      notifySuccess(
+        (checkedSafeplaceIds.length > 1)
+          ? "Safeplaces supprimées"
+          : "Safeplace supprimée"
+      );
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -140,7 +155,12 @@ const SafeplaceMonitor: React.FC = () => {
         noCreate
       />
       <div className='mt-3'>
-        <Table content={filterSafeplaces()} keys={keys} />
+        <Table
+          content={filterSafeplaces()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

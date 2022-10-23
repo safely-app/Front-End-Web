@@ -16,6 +16,7 @@ const SupportMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [supports, setSupports] = useState<IReport[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
 
@@ -79,9 +80,24 @@ const SupportMonitor: React.FC = () => {
 
   const deleteSupport = async (support: IReport) => {
     try {
-      await BugReportManager.delete(support.id, userCredentials.token);
-      setSupports(supports.filter(c => c.id !== support.id));
-      notifySuccess("Rapport supprimé");
+      const checkedSupportIds = checkedBoxes.map(checkedIndex => support[checkedIndex].id);
+
+      if (!checkedSupportIds.includes(support.id))
+        checkedSupportIds.push(support.id);
+
+      for (const supportId of checkedSupportIds) {
+        BugReportManager.delete(supportId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
+      setSupports(supports.filter(s => !checkedSupportIds.includes(s.id)));
+      notifySuccess(
+        (checkedSupportIds.length > 1)
+          ? "Rapports supprimées"
+          : "Rapport supprimée"
+      );
+
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -141,7 +157,12 @@ const SupportMonitor: React.FC = () => {
         noCreate
       />
       <div className='mt-3'>
-        <Table content={filterSupports()} keys={keys} />
+        <Table
+          content={filterSupports()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ const LogsMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [logss, setLogss] = useState<ILogs[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
 
   const keys = [
@@ -62,7 +63,12 @@ const LogsMonitor: React.FC = () => {
         openCreateModal={() => {}}
       />
       <div className='mt-3'>
-        <Table content={filterLogss()} keys={keys} />
+        <Table
+          content={filterLogss()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

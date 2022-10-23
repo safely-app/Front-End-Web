@@ -18,6 +18,7 @@ const AdvertisingMonitor: React.FC = () => {
 
   const [targets, setTargets] = useState<ITarget[]>([]);
   const [advertisings, setAdvertisings] = useState<IAdvertising[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
 
@@ -95,9 +96,23 @@ const AdvertisingMonitor: React.FC = () => {
 
   const deleteAdvertising = async (advertising: IAdvertising) => {
     try {
-      await Advertising.delete(advertising.id, userCredentials.token);
-      setAdvertisings(advertisings.filter(c => c.id !== advertising.id));
-      notifySuccess("Cible supprimée");
+      const checkedAdvertisingIds = checkedBoxes.map(checkedIndex => advertisings[checkedIndex].id);
+
+      if (!checkedAdvertisingIds.includes(advertising.id))
+        checkedAdvertisingIds.push(advertising.id);
+
+      for (const advertisingId of checkedAdvertisingIds) {
+        Advertising.delete(advertisingId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
+      setAdvertisings(advertisings.filter(a => !checkedAdvertisingIds.includes(a.id)));
+      notifySuccess(
+        (checkedAdvertisingIds.length > 1)
+          ? "Publicités supprimées"
+          : "Publicité supprimée"
+      );
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -193,7 +208,12 @@ const AdvertisingMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={filterAdvertisings()} keys={keys} />
+        <Table
+          content={filterAdvertisings()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );
