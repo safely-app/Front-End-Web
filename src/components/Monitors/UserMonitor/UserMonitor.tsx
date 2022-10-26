@@ -16,6 +16,7 @@ const UserMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [users, setUsers] = useState<IUser[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
 
@@ -87,10 +88,24 @@ const UserMonitor: React.FC = () => {
 
   const deleteUser = async (user: IUser) => {
     try {
-      await User.delete(user.id, userCredentials.token);
-      setUsers(users.filter(u => u.id !== user.id));
-      notifySuccess("Utilisateur supprimé");
+      const checkedUserIds = checkedBoxes.map(checkedIndex => users[checkedIndex].id);
+
+      if (!checkedUserIds.includes(user.id))
+        checkedUserIds.push(user.id);
+
+      for (const userId of checkedUserIds) {
+        User.delete(userId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
       setModal(ModalType.OFF);
+      setUsers(users.filter(t => !checkedUserIds.includes(t.id)));
+      notifySuccess(
+        (checkedUserIds.length > 1)
+          ? "Utilisateurs supprimés"
+          : "Utilisateur supprimé"
+      );
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -137,7 +152,12 @@ const UserMonitor: React.FC = () => {
         noCreate
       />
       <div className='mt-3'>
-        <Table content={filterUsers()} keys={keys} />
+        <Table
+          content={filterUsers()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

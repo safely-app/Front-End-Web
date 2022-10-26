@@ -10,6 +10,7 @@ import Notification from './Notification';
 import Comment from './Comment';
 import BugReportManager from './BugReport';
 import Advertising from './Advertising';
+import PricingHistory from "./PricingHistory";
 import Logs from './Logs';
 
 export {
@@ -25,5 +26,6 @@ export {
     Notification,
     Comment,
     BugReportManager,
-    Advertising
+    Advertising,
+    PricingHistory
 };

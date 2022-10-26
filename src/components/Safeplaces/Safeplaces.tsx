@@ -37,9 +37,10 @@ import IComment from '../interfaces/IComment';
 import './Safeplaces.css';
 
 interface IMapProps {
-  safeplaces: { setter: (val: ISafeplace[]) => void, value: ISafeplace[] };
-  safeplace: { setter: (val: ISafeplace) => void, value: ISafeplace };
-  safeplaceDetail: { setter: (val: boolean) => void, value: boolean };
+//   safeplaces: { setter: (val: ISafeplace[]) => void, value: ISafeplace[] };
+//   safeplace: { setter: (val: ISafeplace) => void, value: ISafeplace };
+//   safeplaceDetail: { setter: (val: boolean) => void, value: boolean };
+  safeplaces: ISafeplace[];
 }
 
 const SafeplacesMap: React.FC<IMapProps> = ({
@@ -73,22 +74,28 @@ const SafeplacesMap: React.FC<IMapProps> = ({
         />
 
         <MarkerClusterGroup showCoverageOnHover={false}>
-          {safeplaces.value.map((item, index) => (
-            <Marker
-              key={index} 
-              eventHandlers={{
-                click: (e) => {
-                  safeplace.setter(item);
-                  safeplaceDetail.setter(true);
-                  
-                },
-              }}
-              position={[
-                Number(item.coordinate[0]),
-                Number(item.coordinate[1])
-              ]}
-            >
-              <Popup>{item.name}</Popup>
+          // {safeplaces.value.map((item, index) => (
+          //   <Marker
+          //     key={index} 
+          //     eventHandlers={{
+          //       click: (e) => {
+          //         safeplace.setter(item);
+          //         safeplaceDetail.setter(true);
+          //         
+          //       },
+          //     }}
+          //     position={[
+          //       Number(item.coordinate[0]),
+          //       Number(item.coordinate[1])
+          //     ]}
+          //   >
+          //     <Popup>{item.name}</Popup>
+          {safeplaces.map((safeplace, index) => (
+            <Marker key={index} position={[
+              Number(safeplace.coordinate[0]),
+              Number(safeplace.coordinate[1])
+            ]}>
+              <Popup>{safeplace.name}</Popup>
             </Marker>
           ))}
         </MarkerClusterGroup>
@@ -97,40 +104,25 @@ const SafeplacesMap: React.FC<IMapProps> = ({
   );
 };
 
-interface ISafeplacesListProps {
-  safeplaces: { setter: (val: ISafeplace[]) => void, value: ISafeplace[] };
-  comments: [];
-  safeplace: { setter: (val: ISafeplace) => void, value: ISafeplace };
-  safeplaceDetail: { setter: (val: boolean) => void, value: boolean };
-}
+// interface ISafeplacesListProps {
+//   safeplaces: { setter: (val: ISafeplace[]) => void, value: ISafeplace[] };
+//   comments: [];
+//   safeplace: { setter: (val: ISafeplace) => void, value: ISafeplace };
+//   safeplaceDetail: { setter: (val: boolean) => void, value: boolean };
+// }
 
-export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, comments, safeplace, safeplaceDetail }) => {
-  const [focusSafeplace, setFocusSafeplace] = useState<boolean>(false);
+// export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, comments, safeplace, safeplaceDetail }) => {
+const SafeplaceDetails: React.FC<{
+  safeplace: ISafeplace;
+  comments: IComment[];
+  setGetSafeplaceDetail: (value: boolean) => void;
+}> = ({
+  safeplace,
+  comments,
+  setGetSafeplaceDetail,
+}) => {
   const userCredentials = useAppSelector(state => state.user.credentials);
   const [currentPage, setCurrentPage] = useState<number>(0)
-
-  const createSafeplaceUpdateRequest = async (safeplace: ISafeplace) => {
-    try {
-      await SafeplaceUpdate.create({ ...safeplace, safeplaceId: safeplace.id }, userCredentials.token);
-      notifySuccess("Votre demande de modification a été enregistrée.");
-      setFocusSafeplace(false);
-    } catch (error) {
-      notifyError(error);
-      log.error(error);
-    }
-  };
-
-  const deleteSafeplace = async (safeplace: ISafeplace) => {
-    try {
-      await Safeplace.delete(safeplace.id, userCredentials.token);
-      safeplaces.setter(safeplaces.value.filter(s => s.id !== safeplace.id));
-      notifySuccess("Safeplace supprimée");
-      setFocusSafeplace(false);
-    } catch (error) {
-      notifyError(error);
-      log.error(error);
-    }
-  };
 
   const claimSafeplace = async (safeplace: ISafeplace) => {
     try {
@@ -152,93 +144,237 @@ export const SafeplacesList: React.FC<ISafeplacesListProps> = ({ safeplaces, com
     }
   };
 
-  function paginate(comments: IComment[], pageIndex: number, pageSize: number): IComment[] {
+  const updateCurrentPageByValue = (value: number) => {
+    if (currentPage + value >= 0 && currentPage + value <= comments.length / 5)
+      setCurrentPage(currentPage => currentPage + value)
+    else
+      setCurrentPage(currentPage)
+  };
+
+  const paginate = (comments: IComment[], pageIndex: number, pageSize: number): IComment[] => {
     const endIndex = Math.min((pageIndex + 1) * pageSize, comments.length);
 
     return comments.slice(Math.max(endIndex - pageSize, 0), endIndex);
   }
 
   return (
-    <div className='px-6 pt-[200px]'>
-      {safeplaceDetail.value ? (
-        <div className='overflow-y-auto' style={{ height: "80vh" }}>
-          <FaChevronLeft onClick={() => safeplaceDetail.setter(false)} className="w-8 h-8 cursor-pointer mb-4" style={{ color: "black" }} />
-          <div className="bg-safeplace-placeholder h-96 rounded-3xl">
-            <img className="object-cover" alt="" />
-          </div>
-          <div className="flex flex-row justify-between">
-            <div>
-              <p className="font-bold text-2xl mt-2">{safeplace.value.name}</p>
-              <p>{safeplace.value.type}</p>
-              <p className="text-blue-600">{comments.length} commentaires</p>
+    <div>
+      <div className="bg-safeplace-placeholder h-96 rounded-3xl">
+        <img className="object-cover" alt="" />
+        <FaArrowLeft onClick={() => setGetSafeplaceDetail(false)} className="w-10 h-10 cursor-pointer" style={{ color: "white" }} />
+      </div>
+      <div className="flex flex-row justify-between">
+        <div>
+          <p className="font-bold text-2xl mt-2">{safeplace.name}</p>
+          <p>{safeplace.type}</p>
+          <p className="text-blue-600">{comments.length} commentaires</p>
+        </div>
+        <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold hover:bg-neutral-200' onClick={() => claimSafeplace(safeplace)}>
+          Réclamer ce commerce
+        </button>
+      </div>
+      <div className="border-t-2 border-gray border-b-2 pt-3 pb-3 mt-3">
+        <div className="flex flex-row items-center">
+          <FaMapPin className="h-8 w-8" />
+          <p>{safeplace.address + ', ' + safeplace.city}</p>
+        </div>
+      </div>
+      <div className="h-6 w-full mt-5">
+        {Object.keys(paginate(comments, currentPage, 5)).map(index => {
+          // TODO: rename variable with understandable name (et const si possible) + paginate is called 2 times
+          var tmpValue = paginate(comments, currentPage, 5);
+          return (
+            <div key={index}>
+              <div className="flex flex-row items-center mb-3">
+                <p>Anonyme</p>
+                {[...Array(tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: '#f7e249' }} />)}
+                {[...Array(5 - tmpValue[index].grade)].map((_value, index) =>
+                  <FaStar key={index} className="ml-1 h-6 w-6" style={{ color: 'lightgray' }} />
+                )}
+              </div>
+              <p className="mb-3">{tmpValue[index].comment}</p>
             </div>
-            <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold text-white customGradient' onClick={() => claimSafeplace(safeplace.value)}>
-              RÉCLAMER CE COMMERCE
-            </button>
-          </div>
-          <div className="border-t-2 border-gray border-b-2 pt-3 pb-3 mt-3">
-            <div className="flex flex-row items-center">
-              <FaMapPin className="h-8 w-8 mr-2" />
-              <p>{safeplace.value.address + ', ' + safeplace.value.city}</p>
-            </div>
-          </div>
-          <div className="h-6 w-full mt-5">
-            {Object.keys(paginate(comments, currentPage, 5)).map(index => {
-              // TODO: rename variable with understandable name (et const si possible) + paginate is called 2 times
-              var tmpValue = paginate(comments, currentPage, 5);
-              return (
-                <div key={index}>
-                  <div className="flex flex-row items-center mb-3">
-                    <p className="font-bold mr-2 mt-1">Anonyme</p>
-                    {[...Array(tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: '#FCC153' }} />)}
-                    {[...Array(5 - tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: 'lightgray' }} />)}
-                  </div>
-                  <p className="mb-3">{tmpValue[index].comment}</p>
-                </div>
-              )
+          )
+        })}
+        <div className="flex flex-row items-center mt-10 mb-2">
+          <FaArrowLeft className="cursor-pointer mr-2" onClick={() => updateCurrentPageByValue(-1)} />
+          <FaArrowRight className="cursor-pointer" onClick={() => { updateCurrentPageByValue(1) }} />
+        </div>
+      </div>
+    </div>
+  );
+};
 
-            })}
-            <div className="flex flex-row items-center mt-10">
-              <FaArrowLeft className="mr-2 cursor-pointer" onClick={() => { currentPage > 0 ? setCurrentPage(currentPage => currentPage - 1) : setCurrentPage(currentPage) }} />
-              <FaArrowRight className='cursor-pointer' onClick={() => { currentPage >= 0 ? setCurrentPage(currentPage => currentPage + 1) : setCurrentPage(currentPage) }} />
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-10 overflow-y-auto px-30" style={{ height: "80vh" }}>
-          {safeplaces.value && safeplaces.value.length > 0 ? safeplaces.value.map(item => (
-            <div className='cursor-pointer' key={item.id}>
-              <div data-testid={"safeplace-get-detail-" + item.id} className="bg-safeplace-placeholder w-90 h-80 rounded-3xl" onClick={() => {
-                safeplace.setter(item);
-                safeplaceDetail.setter(true);
-              }}>
-                <img className="object-cover" alt="" />
-              </div>
-              <div className="flex justify-between">
-                <div>
-                  <p className="font-custom font-bold text-lg mt-2">{item.name}</p>
-                  <p>{item.type}</p>
-                </div>
-                <FaEdit className='font-custom h-6 w-6 mr-4 mt-2' data-testid={"safeplace-update-" + item.id} onClick={() => {
-                  setFocusSafeplace(true);
-                  safeplace.setter(safeplace.value);
-                }} />
-              </div>
-            </div>
-          )) : null}
-          <SafeplaceModal
-            title={safeplace.value.name}
-            modalOn={focusSafeplace}
-            safeplace={safeplace.value}
-            setSafeplace={safeplace.setter}
-            buttons={[
-              <ModalBtn key='sum-btn-0' content="Modifier le commerce" onClick={() => createSafeplaceUpdateRequest(safeplace.value)} />,
-              <ModalBtn key='sum-btn-1' content="Supprimer" onClick={() => deleteSafeplace(safeplace.value)} warning />,
-              <ModalBtn key='sum-btn-2' content="Annuler" onClick={() => setFocusSafeplace(false)} />
-            ]}
+export const SafeplacesList: React.FC<{
+  safeplaces: ISafeplace[];
+  setSafeplaces: (value: ISafeplace[]) => void;
+  comments: []
+}> = ({
+  safeplaces,
+  setSafeplaces,
+  comments
+}) => {
+  const [focusSafeplace, setFocusSafeplace] = useState<boolean>(false);
+  const userCredentials = useAppSelector(state => state.user.credentials);
+//   const [currentPage, setCurrentPage] = useState<number>(0)
+  const [safeplace, setSafeplace] = useState<ISafeplace>({
+    id: "",
+    name: "",
+    city: "",
+    address: "",
+    type: "",
+    dayTimetable: [null, null, null, null, null, null, null],
+    coordinate: ["1", "1"]
+  });
+
+  const createSafeplaceUpdateRequest = async (safeplace: ISafeplace) => {
+    try {
+      await SafeplaceUpdate.create({ ...safeplace, safeplaceId: safeplace.id }, userCredentials.token);
+      notifySuccess("Votre demande de modification a été enregistrée.");
+      setFocusSafeplace(false);
+    } catch (error) {
+      notifyError(error);
+      log.error(error);
+    }
+  };
+
+  const deleteSafeplace = async (safeplace: ISafeplace) => {
+    try {
+      await Safeplace.delete(safeplace.id, userCredentials.token);
+      setSafeplaces(safeplaces.filter(s => s.id !== safeplace.id));
+      notifySuccess("Safeplace supprimée");
+      setFocusSafeplace(false);
+    } catch (error) {
+      notifyError(error);
+      log.error(error);
+    }
+  };
+
+  return (
+//     <div className='px-6 pt-[200px]'>
+//       {safeplaceDetail.value ? (
+//         <div className='overflow-y-auto' style={{ height: "80vh" }}>
+//           <FaChevronLeft onClick={() => safeplaceDetail.setter(false)} className="w-8 h-8 cursor-pointer mb-4" style={{ color: "black" }} />
+//           <div className="bg-safeplace-placeholder h-96 rounded-3xl">
+//             <img className="object-cover" alt="" />
+//           </div>
+//           <div className="flex flex-row justify-between">
+//             <div>
+//               <p className="font-bold text-2xl mt-2">{safeplace.value.name}</p>
+//               <p>{safeplace.value.type}</p>
+//               <p className="text-blue-600">{comments.length} commentaires</p>
+//             </div>
+//             <button className='border border-solid border-neutral-500 rounded-lg h-12 mt-4 px-2 font-bold text-white customGradient' onClick={() => claimSafeplace(safeplace.value)}>
+//               RÉCLAMER CE COMMERCE
+//             </button>
+//           </div>
+//           <div className="border-t-2 border-gray border-b-2 pt-3 pb-3 mt-3">
+//             <div className="flex flex-row items-center">
+//               <FaMapPin className="h-8 w-8 mr-2" />
+//               <p>{safeplace.value.address + ', ' + safeplace.value.city}</p>
+//             </div>
+//           </div>
+//           <div className="h-6 w-full mt-5">
+//             {Object.keys(paginate(comments, currentPage, 5)).map(index => {
+//               // TODO: rename variable with understandable name (et const si possible) + paginate is called 2 times
+//               var tmpValue = paginate(comments, currentPage, 5);
+//               return (
+//                 <div key={index}>
+//                   <div className="flex flex-row items-center mb-3">
+//                     <p className="font-bold mr-2 mt-1">Anonyme</p>
+//                     {[...Array(tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: '#FCC153' }} />)}
+//                     {[...Array(5 - tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: 'lightgray' }} />)}
+//                   </div>
+//                   <p className="mb-3">{tmpValue[index].comment}</p>
+//                 </div>
+//               )
+// 
+//             })}
+//             <div className="flex flex-row items-center mt-10">
+//               <FaArrowLeft className="mr-2 cursor-pointer" onClick={() => { currentPage > 0 ? setCurrentPage(currentPage => currentPage - 1) : setCurrentPage(currentPage) }} />
+//               <FaArrowRight className='cursor-pointer' onClick={() => { currentPage >= 0 ? setCurrentPage(currentPage => currentPage + 1) : setCurrentPage(currentPage) }} />
+//             </div>
+//           </div>
+//         </div>
+//       ) : (
+//         <div className="grid grid-cols-2 gap-10 overflow-y-auto px-30" style={{ height: "80vh" }}>
+//           {safeplaces.value && safeplaces.value.length > 0 ? safeplaces.value.map(item => (
+//             <div className='cursor-pointer' key={item.id}>
+//               <div data-testid={"safeplace-get-detail-" + item.id} className="bg-safeplace-placeholder w-90 h-80 rounded-3xl" onClick={() => {
+//                 safeplace.setter(item);
+//                 safeplaceDetail.setter(true);
+//               }}>
+//                 <img className="object-cover" alt="" />
+//               </div>
+//               <div className="flex justify-between">
+//                 <div>
+//                   <p className="font-custom font-bold text-lg mt-2">{item.name}</p>
+//                   <p>{item.type}</p>
+//                 </div>
+//                 <FaEdit className='font-custom h-6 w-6 mr-4 mt-2' data-testid={"safeplace-update-" + item.id} onClick={() => {
+//                   setFocusSafeplace(true);
+//                   safeplace.setter(safeplace.value);
+//                 }} />
+//               </div>
+//             </div>
+//           )) : null}
+//           <SafeplaceModal
+//             title={safeplace.value.name}
+//             modalOn={focusSafeplace}
+//             safeplace={safeplace.value}
+//             setSafeplace={safeplace.setter}
+//             buttons={[
+//               <ModalBtn key='sum-btn-0' content="Modifier le commerce" onClick={() => createSafeplaceUpdateRequest(safeplace.value)} />,
+//               <ModalBtn key='sum-btn-1' content="Supprimer" onClick={() => deleteSafeplace(safeplace.value)} warning />,
+//               <ModalBtn key='sum-btn-2' content="Annuler" onClick={() => setFocusSafeplace(false)} />
+//             ]}
+//           />
+//         </div>
+//       )}
+    <div className="overflow-y-auto" style={{ height: '100vh' }}>
+      <div className="px-4 pt-40">
+        {getSafeplaceDetail ? (
+          <SafeplaceDetails
+            safeplace={safeplace}
+            comments={comments}
+            setGetSafeplaceDetail={setGetSafeplaceDetail}
           />
-        </div>
-      )}
+        ) : (
+          <div className="grid grid-cols-2 gap-10 px-30">
+            {safeplaces && safeplaces.length > 0 ? safeplaces.map(safeplace => (
+              <div className='cursor-pointer' key={safeplace.id}>
+                <div data-testid={"safeplace-get-detail-" + safeplace.id} className="bg-safeplace-placeholder w-90 h-80 rounded-3xl" onClick={() => {
+                  setSafeplace(safeplace);
+                  setGetSafeplaceDetail(true);
+                }}>
+                  <img className="object-cover" alt="" />
+                </div>
+                <div className="flex justify-between">
+                  <div>
+                    <p className="font-bold text-lg mt-2">{safeplace.name}</p>
+                    <p>{safeplace.type}</p>
+                  </div>
+                  <FaEdit data-testid={"safeplace-update-" + safeplace.id} className="mt-2" onClick={() => {
+                    setFocusSafeplace(true);
+                    setSafeplace(safeplace);
+                  }} />
+                </div>
+              </div>
+            )) : null}
+            <SafeplaceModal
+              title={safeplace.name}
+              modalOn={focusSafeplace}
+              safeplace={safeplace}
+              setSafeplace={setSafeplace}
+              buttons={[
+                <ModalBtn key='sum-btn-0' content="Modifier le commerce" onClick={() => createSafeplaceUpdateRequest(safeplace)} />,
+                <ModalBtn key='sum-btn-1' content="Supprimer" onClick={() => deleteSafeplace(safeplace)} warning />,
+                <ModalBtn key='sum-btn-2' content="Annuler" onClick={() => setFocusSafeplace(false)} />
+              ]}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -257,43 +393,82 @@ const SafeplacesSearchBar: React.FC<{
   setSearchBarValue
 }) => {
   return (
-    <div className="w-1/2 h-12 mt-8 flex justify-between bg-white">
-      <p className="font-bold text-2xl m-10 mt-1">{safeplaces.length} commerces</p>
+//     <div className="w-1/2 h-12 mt-8 flex justify-between bg-white">
+//       <p className="font-bold text-2xl m-10 mt-1">{safeplaces.length} commerces</p>
+// 
+//       <div className="flex border-b-2 border-white">
+//         <div onClick={() => setStateFilterType(stateFilterType === "restaurant" ? "" : "restaurant")}
+//              className={"flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "restaurant" ? " border-b-2 border-black" : '')}>
+//           <GiKnifeFork className="w-10 h-10 text-gray-500"/>
+//           <p className="text-xs">Restaurant</p>
+//         </div>
+//         <div onClick={() => setStateFilterType(stateFilterType === "Market" ? "" : "Market")}
+//              className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "Market" ? " border-b-2 border-black" : '')}>
+//           <BsShop className="w-10 h-10 text-gray-500"/>
+//           <p className="text-xs">Marché</p>
+//         </div>
+//         <div onClick={() => setStateFilterType(stateFilterType === "bakery" ? "" : "bakery")}
+//              className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "bakery" ? " border-b-2 border-black" : '')}>
+//           <HiOutlineCake className="w-10 h-10 text-gray-500" />
+//           <p className="text-xs">Boulangerie</p>
+//         </div>
+//         <div onClick={() => setStateFilterType(stateFilterType === "supermarket" ? "" : "supermarket")}
+//              className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "supermarket" ? " border-b-2 border-black" : '')}>
+//           <AiOutlineShoppingCart className="w-10 h-10 text-gray-500" />
+//           <p className="text-xs">Supermarché</p>
+//         </div>
+//         <div onClick={() => setStateFilterType(stateFilterType === "hairdresser" ? "" : "hairdresser")}
+//              className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "hairdresser" ? " border-b-2 border-black" : '')}>
+//           <BsScissors className="w-10 h-10 text-gray-500" />
+//           <p className="text-xs">Coiffeur</p>
+//         </div>
+//         <div className="pl-8 mt-2 mr-4">
+//           <SearchBar
+//             placeholder="Rechercher"
+//             textSearch={searchBarValue}
+//             setTextSearch={setSearchBarValue}
+//             openCreateModal={() => {}}
+//             noCreate
+//           />
+    <div className="w-1/2 bg-white pt-4">
+      <div className="h-12 flex justify-between">
+        <p className="font-bold text-2xl ml-5 mt-3 truncate">{safeplaces.length} commerces</p>
 
-      <div className="flex border-b-2 border-white">
-        <div onClick={() => setStateFilterType(stateFilterType === "restaurant" ? "" : "restaurant")}
-             className={"flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "restaurant" ? " border-b-2 border-black" : '')}>
-          <GiKnifeFork className="w-10 h-10 text-gray-500"/>
-          <p className="text-xs">Restaurant</p>
-        </div>
-        <div onClick={() => setStateFilterType(stateFilterType === "Market" ? "" : "Market")}
-             className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "Market" ? " border-b-2 border-black" : '')}>
-          <BsShop className="w-10 h-10 text-gray-500"/>
-          <p className="text-xs">Marché</p>
-        </div>
-        <div onClick={() => setStateFilterType(stateFilterType === "bakery" ? "" : "bakery")}
-             className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "bakery" ? " border-b-2 border-black" : '')}>
-          <HiOutlineCake className="w-10 h-10 text-gray-500" />
-          <p className="text-xs">Boulangerie</p>
-        </div>
-        <div onClick={() => setStateFilterType(stateFilterType === "supermarket" ? "" : "supermarket")}
-             className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "supermarket" ? " border-b-2 border-black" : '')}>
-          <AiOutlineShoppingCart className="w-10 h-10 text-gray-500" />
-          <p className="text-xs">Supermarché</p>
-        </div>
-        <div onClick={() => setStateFilterType(stateFilterType === "hairdresser" ? "" : "hairdresser")}
-             className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "hairdresser" ? " border-b-2 border-black" : '')}>
-          <BsScissors className="w-10 h-10 text-gray-500" />
-          <p className="text-xs">Coiffeur</p>
-        </div>
-        <div className="pl-8 mt-2 mr-4">
-          <SearchBar
-            placeholder="Rechercher"
-            textSearch={searchBarValue}
-            setTextSearch={setSearchBarValue}
-            openCreateModal={() => {}}
-            noCreate
-          />
+        <div className="flex border-b-2 border-white">
+          <div onClick={() => setStateFilterType(stateFilterType === "restaurant" ? "" : "restaurant")}
+               className={"flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "restaurant" ? " border-b-2 border-black" : '')}>
+            <FaUtensils className="w-10 h-10" />
+            <p className="text-xs">Restaurant</p>
+          </div>
+          <div onClick={() => setStateFilterType(stateFilterType === "Market" ? "" : "Market")}
+               className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "Market" ? " border-b-2 border-black" : '')}>
+            <FaStore className="w-10 h-10" />
+            <p className="text-xs">Marché</p>
+          </div>
+          <div onClick={() => setStateFilterType(stateFilterType === "bakery" ? "" : "bakery")}
+               className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "bakery" ? " border-b-2 border-black" : '')}>
+            <FaBreadSlice className="w-10 h-10" />
+            <p className="text-xs">Boulangerie</p>
+          </div>
+          <div onClick={() => setStateFilterType(stateFilterType === "supermarket" ? "" : "supermarket")}
+               className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "supermarket" ? " border-b-2 border-black" : '')}>
+            <FaShoppingBasket className="w-10 h-10" />
+            <p className="text-xs">Supermarché</p>
+          </div>
+          <div onClick={() => setStateFilterType(stateFilterType === "hairdresser" ? "" : "hairdresser")}
+               className={"ml-6 flex flex-col justify-center items-center cursor-pointer" + (stateFilterType === "hairdresser" ? " border-b-2 border-black" : '')}>
+            <FaHandScissors className="w-10 h-10" />
+            <p className="text-xs">Coiffeur</p>
+          </div>
+          <div className="pl-8 mt-2 mr-4">
+            <SearchBar
+              placeholder="Rechercher"
+              textSearch={searchBarValue}
+              setTextSearch={setSearchBarValue}
+              openCreateModal={() => {}}
+              noCreate
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -310,21 +485,21 @@ const Safeplaces: React.FC = () => {
   const [stateFilterType, setStateFilterType] = useState<string>("");
   const [allComments, setAllComments] = useState<[]>([]);
 
-  const [safeplace, setSafeplace] = useState<ISafeplace>({
-    id: "",
-    name: "",
-    city: "",
-    address: "",
-    type: "",
-    dayTimetable: [null, null, null, null, null, null, null],
-    coordinate: ["1", "1"]
-  });
-  const [getSafeplaceDetail, setGetSafeplaceDetail] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log(stateFilterType)
-  }, [stateFilterType]);
-
+//   const [safeplace, setSafeplace] = useState<ISafeplace>({
+//     id: "",
+//     name: "",
+//     city: "",
+//     address: "",
+//     type: "",
+//     dayTimetable: [null, null, null, null, null, null, null],
+//     coordinate: ["1", "1"]
+//   });
+//   const [getSafeplaceDetail, setGetSafeplaceDetail] = useState<boolean>(false);
+// 
+//   useEffect(() => {
+//     console.log(stateFilterType)
+//   }, [stateFilterType]);
+// 
   const filterSafeplaces = (): ISafeplace[] => {
     const lowerSearchText = convertStringToRegex(searchBarValue.toLocaleLowerCase());
 
@@ -389,8 +564,10 @@ const Safeplaces: React.FC = () => {
         />
       </div>
       <div className="grid grid-cols-2">
-        <SafeplacesList safeplace={{ setter: setSafeplace, value: safeplace }} safeplaceDetail={{ setter: setGetSafeplaceDetail, value: getSafeplaceDetail }} safeplaces={{ setter: setSafeplaces, value: filterSafeplaces() }} comments={allComments} />
-        <SafeplacesMap safeplace={{ setter: setSafeplace, value: safeplace }} safeplaceDetail={{ setter: setGetSafeplaceDetail, value: getSafeplaceDetail }} safeplaces={{ setter: setSafeplaces, value: safeplaces }} />
+//         <SafeplacesList safeplace={{ setter: setSafeplace, value: safeplace }} safeplaceDetail={{ setter: setGetSafeplaceDetail, value: getSafeplaceDetail }} safeplaces={{ setter: setSafeplaces, value: filterSafeplaces() }} comments={allComments} />
+//         <SafeplacesMap safeplace={{ setter: setSafeplace, value: safeplace }} safeplaceDetail={{ setter: setGetSafeplaceDetail, value: getSafeplaceDetail }} safeplaces={{ setter: setSafeplaces, value: safeplaces }} />
+        <SafeplacesList safeplaces={filterSafeplaces()} setSafeplaces={setSafeplaces} comments={allComments} />
+        <SafeplacesMap safeplaces={safeplaces} />
       </div>
 
     </div>

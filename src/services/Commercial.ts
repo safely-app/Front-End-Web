@@ -15,12 +15,20 @@ class Commercial {
         return createHttpConfig(this.baseURL, token).get(`/commercial/campaign/owner/${id}`);
     }
 
+    getAllCampaignBySafeplace(safeplaceId: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/commercial/campaign/safeplace/${safeplaceId}`)
+    }
+
     getAllTarget(token: string) {
         return createHttpConfig(this.baseURL, token).get("/commercial/target");
     }
 
     getAllTargetByOwner(id: string, token: string) {
         return createHttpConfig(this.baseURL, token).get(`/commercial/target/owner/${id}`);
+    }
+
+    getTarget(id: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/commercial/target/${id}`);
     }
 
     createCampaign(data: ICampaign, token: string) {

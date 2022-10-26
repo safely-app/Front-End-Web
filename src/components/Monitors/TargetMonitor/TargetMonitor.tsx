@@ -16,6 +16,7 @@ const TargetMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [targets, setTargets] = useState<ITarget[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
 
@@ -55,6 +56,7 @@ const TargetMonitor: React.FC = () => {
       .filter(target => textSearch !== ''
         ? target.name.toLowerCase().match(lowerSearchText) !== null
         || target.csp.toLowerCase().match(lowerSearchText) !== null
+        || target.ownerId.toLowerCase().match(lowerSearchText) !== null
         || target.ageRange.toLowerCase().match(lowerSearchText) !== null
         || target.id.toLowerCase().match(lowerSearchText) !== null : true);
   };
@@ -94,9 +96,23 @@ const TargetMonitor: React.FC = () => {
 
   const deleteTarget = async (target: ITarget) => {
     try {
-      await Commercial.deleteTarget(target.id, userCredentials.token);
-      setTargets(targets.filter(t => t.id !== target.id));
-      notifySuccess("Cible supprimée");
+      const checkedTargetIds = checkedBoxes.map(checkedIndex => targets[checkedIndex].id);
+
+      if (!checkedTargetIds.includes(target.id))
+        checkedTargetIds.push(target.id);
+
+      for (const targetId of checkedTargetIds) {
+        Commercial.deleteTarget(targetId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
+      setTargets(targets.filter(t => !checkedTargetIds.includes(t.id)));
+      notifySuccess(
+        (checkedTargetIds.length > 1)
+          ? "Cibles supprimées"
+          : "Cible supprimée"
+      );
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -170,7 +186,12 @@ const TargetMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={filterTargets()} keys={keys} />
+        <Table
+          content={filterTargets()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

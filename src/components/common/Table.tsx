@@ -24,12 +24,15 @@ export const CustomDiv: React.FC<{
 const Table: React.FC<{
   content: any[];
   keys: ListObjKey[];
+  checkedBoxes: number[];
+  setCheckedBoxes: (value: number[]) => void;
 }> = ({
   content,
-  keys
+  keys,
+  checkedBoxes,
+  setCheckedBoxes
 }) => {
   const [allChecked, setAllChecked] = useState(false);
-  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
 
   const updateCheckedBoxes = (index: number) => {
     if (checkedBoxes.includes(index)) {

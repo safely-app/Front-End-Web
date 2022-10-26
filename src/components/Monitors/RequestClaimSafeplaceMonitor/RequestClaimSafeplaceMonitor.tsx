@@ -17,6 +17,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [requestClaimSafeplaces, setRequestClaimSafeplaces] = useState<IRequestClaimSafeplace[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
 
@@ -56,14 +57,16 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
     }
 
     return requestClaimSafeplaces
-      .filter(requestClaimSafeplace => textSearch !== ''
-        ? requestClaimSafeplace.safeplaceName.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.safeplaceId.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.safeplaceDescription.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.status.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.userId.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.adminId?.toLowerCase().match(lowerSearchText) !== null
-        || requestClaimSafeplace.id.toLowerCase().match(lowerSearchText) !== null : true);
+      .filter(request =>
+        request.safeplaceName.toLowerCase().match(lowerSearchText) !== null
+        || request.safeplaceId.toLowerCase().match(lowerSearchText) !== null
+        || request.safeplaceDescription.toLowerCase().match(lowerSearchText) !== null
+        || request.status.toLowerCase().match(lowerSearchText) !== null
+        || request.userId.toLowerCase().match(lowerSearchText) !== null
+        || request.id.toLowerCase().match(lowerSearchText) !== null
+      ).filter(request =>
+        request.adminId === undefined || request.adminId.toLowerCase().match(lowerSearchText) !== null
+      );
   };
 
   const updateModal = (requestClaimSafeplace: IRequestClaimSafeplace, modalType: ModalType) => {
@@ -88,7 +91,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
 
   const validateRequestClaimSafeplace = async (requestClaimSafeplace: IRequestClaimSafeplace) => {
     try {
-      const responseSafeplace = await Safeplace.get(requestClaimSafeplace.id, userCredentials.token);
+      const responseSafeplace = await Safeplace.get(requestClaimSafeplace.safeplaceId, userCredentials.token);
       const gotSafeplace: ISafeplace = {
         id: responseSafeplace.data.id,
         name: responseSafeplace.data.name,
@@ -127,9 +130,23 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
 
   const deleteRequestClaimSafeplace = async (requestClaimSafeplace: IRequestClaimSafeplace) => {
     try {
-      await RequestClaimSafeplace.delete(requestClaimSafeplace.id, userCredentials.token);
-      setRequestClaimSafeplaces(requestClaimSafeplaces.filter(t => t.id !== requestClaimSafeplace.id));
-      notifySuccess("Requête supprimée.");
+      const checkedRequestIds = checkedBoxes.map(checkedIndex => requestClaimSafeplaces[checkedIndex].id);
+
+      if (!checkedRequestIds.includes(requestClaimSafeplace.id))
+        checkedRequestIds.push(requestClaimSafeplace.id);
+
+      for (const requestId of checkedRequestIds) {
+        RequestClaimSafeplace.delete(requestId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
+      setRequestClaimSafeplaces(requestClaimSafeplaces.filter(r => !checkedRequestIds.includes(r.id)));
+      notifySuccess(
+        (checkedRequestIds.length > 1)
+          ? "Requêtes supprimées"
+          : "Requête supprimée"
+      );
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -211,7 +228,12 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={filterRequestClaimSafeplaces()} keys={keys} />
+        <Table
+          content={filterRequestClaimSafeplaces()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

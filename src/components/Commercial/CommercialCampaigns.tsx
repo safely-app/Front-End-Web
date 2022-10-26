@@ -2,21 +2,24 @@ import React, { useState } from 'react';
 import ITarget from '../interfaces/ITarget';
 import ICampaign from '../interfaces/ICampaign';
 import TargetModal from './CommercialTargetModal';
+import ISafeplace from '../interfaces/ISafeplace';
 import CampaignModal from './CommercialCampaignModal';
 import MultipleTargetsModal from './CommercialMultipleTargetsModal';
+import { CommercialCampaignCreation } from './CommercialCreation';
 import { BsPencilSquare } from 'react-icons/bs';
+import { AiOutlinePlus } from 'react-icons/ai';
 import { ImCross } from 'react-icons/im';
-import { convertStringToRegex, notifyError, notifyInfo } from '../utils';
+import { convertStringToRegex, notifyError, notifyInfo, notifySuccess } from '../utils';
 import { SearchBar, Table } from '../common';
 import { Commercial } from '../../services';
 import { useAppSelector } from '../../redux';
 import { ModalType } from './CommercialModalType';
 import { CustomDiv } from '../common/Table';
 import { ModalBtn } from '../common/Modal';
-import ISafeplace from '../interfaces/ISafeplace';
 import log from "loglevel";
+import { SECTION } from './CommercialPage';
 
-const CommercialCampaigns: React.FC<{
+const CommercialCampaignsTable: React.FC<{
   safeplace: ISafeplace;
   campaigns: ICampaign[];
   setCampaigns: (campaigns: ICampaign[]) => void;
@@ -34,12 +37,13 @@ const CommercialCampaigns: React.FC<{
   const [modalOn, setModalOn] = useState(ModalType.OFF);
   const [campaignSearch, setCampaignSearch] = useState("");
   const [modalTypes, setModalTypes] = useState<ModalType[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
 
   const [campaign, setCampaign] = useState<ICampaign>({
     id: "",
     name: "",
-    budget: "",
-	  budgetSpent: "",
+    budget: 0,
+    budgetSpent: 0,
     status: "",
     ownerId: "",
     startingDate: "",
@@ -169,8 +173,24 @@ const CommercialCampaigns: React.FC<{
 
   const deleteCampaign = async (campaign: ICampaign) => {
     try {
-      await Commercial.deleteCampaign(campaign.id, userCredentials.token);
-      setCampaigns(campaigns.filter(c => c.id !== campaign.id));
+      const checkedCampaignIds = checkedBoxes.map(checkedIndex => campaigns[checkedIndex].id);
+
+      if (!checkedCampaignIds.includes(campaign.id))
+        checkedCampaignIds.push(campaign.id);
+
+      for (const campaignId of checkedCampaignIds) {
+        Commercial.deleteCampaign(campaignId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
+      setCampaigns(campaigns.filter(c => !checkedCampaignIds.includes(c.id)));
+      notifySuccess(
+        (checkedCampaignIds.length > 1)
+          ? "Campagnes supprimées"
+          : "Campagne supprimée"
+      );
+
     } catch (error) {
       notifyError("Échec de suppression de campagne.");
       log.error(error);
@@ -186,8 +206,8 @@ const CommercialCampaigns: React.FC<{
     setCampaign({
       id: "",
       name: "",
-      budget: "",
-	    budgetSpent: "",
+      budget: 0,
+      budgetSpent: 0,
       status: "",
       ownerId: "",
       startingDate: "",
@@ -207,7 +227,7 @@ const CommercialCampaigns: React.FC<{
   };
 
   return (
-    <div className='my-3'>
+    <div className='flex-auto bg-white p-5 rounded-lg shadow-xl'>
 
       <CampaignModal
         title='Créer une nouvelle campagne'
@@ -294,8 +314,57 @@ const CommercialCampaigns: React.FC<{
         noCreate={safeplace.id === ""}
       />
       <div className='mt-3'>
-        <Table content={filterCampaigns()} keys={keys} />
+        <Table
+          content={filterCampaigns()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
+    </div>
+  );
+};
+
+const CommercialCampaigns: React.FC<{
+  safeplace: ISafeplace;
+  campaigns: ICampaign[];
+  setCampaigns: (campaigns: ICampaign[]) => void;
+  targets: ITarget[];
+  setTargets: (target: ITarget[]) => void;
+}> = ({
+  safeplace,
+  campaigns,
+  setCampaigns,
+  targets,
+  setTargets
+}) => {
+  const [isViewCreate, setIsViewCreate] = useState(false);
+
+  if (isViewCreate) {
+    return (
+      <CommercialCampaignCreation
+        safeplace={safeplace}
+        campaigns={campaigns}
+        setCampaigns={setCampaigns}
+        onEnd={() => setIsViewCreate(false)}
+      />
+    );
+  }
+
+  return (
+    <div className='relative h-full w-full flex-auto flex flex-col'>
+      <CommercialCampaignsTable
+        safeplace={safeplace}
+        campaigns={campaigns}
+        setCampaigns={setCampaigns}
+        targets={targets}
+        setTargets={setTargets}
+      />
+
+      <button className='absolute bottom-0 right-0 w-10 h-10 rounded-full bg-blue-500 m-4 z-50'
+              onClick={() => setIsViewCreate(true)}>
+        <AiOutlinePlus className='m-auto text-white w-6 h-6' />
+      </button>
     </div>
   );
 };

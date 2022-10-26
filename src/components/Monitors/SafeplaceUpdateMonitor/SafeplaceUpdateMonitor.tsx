@@ -17,6 +17,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [safeplaceUpdates, setSafeplaceUpdates] = useState<ISafeplaceUpdate[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
 
@@ -124,11 +125,26 @@ const SafeplaceUpdateMonitor: React.FC = () => {
     }
   };
 
-  const deleteSafeplaceUpdate = async (safeplace: ISafeplaceUpdate) => {
+  const deleteSafeplaceUpdate = async (safeplaceUpdate: ISafeplaceUpdate) => {
     try {
-      await SafeplaceUpdate.delete(safeplace.id, userCredentials.token);
-      setSafeplaceUpdates(safeplaceUpdates.filter(s => s.id !== safeplace.id));
-      notifySuccess("Modification supprimée");
+      const checkedSafeplaceUpdateIds = checkedBoxes.map(checkedIndex => safeplaceUpdates[checkedIndex].id);
+
+      if (!checkedSafeplaceUpdateIds.includes(safeplaceUpdate.id))
+        checkedSafeplaceUpdateIds.push(safeplaceUpdate.id);
+
+      for (const safeplaceUpdateId of checkedSafeplaceUpdateIds) {
+        SafeplaceUpdate.delete(safeplaceUpdateId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
+      setSafeplaceUpdates(safeplaceUpdates.filter(s => !checkedSafeplaceUpdateIds.includes(s.id)));
+      notifySuccess(
+        (checkedSafeplaceUpdateIds.length > 1)
+          ? "Modifications supprimées"
+          : "Modification supprimée"
+      );
+
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -212,7 +228,12 @@ const SafeplaceUpdateMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={filterSafeplaceUpdates()} keys={keys} />
+        <Table
+          content={filterSafeplaceUpdates()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

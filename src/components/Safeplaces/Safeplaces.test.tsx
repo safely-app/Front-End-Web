@@ -38,9 +38,11 @@ test('renders SafeplacesList', () => {
   render(
     <Provider store={store}>
       <SafeplacesList
-        safeplaces={{ setter: () => {}, value: safeplaces }}
-        safeplace={{ setter: () => {}, value: safeplace }}
-        safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
+//         safeplaces={{ setter: () => {}, value: safeplaces }}
+//         safeplace={{ setter: () => {}, value: safeplace }}
+//         safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
+        safeplaces={safeplaces}
+        setSafeplaces={() => {}}
         comments={[]}
       />
     </Provider>
@@ -83,9 +85,11 @@ test('SafeplacesList claim safeplace', async () => {
   render(
     <Provider store={store}>
       <SafeplacesList
-        safeplaces={{ setter: () => {}, value: safeplaces }}
-        safeplace={{ setter: () => {}, value: safeplace }}
-        safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
+//         safeplaces={{ setter: () => {}, value: safeplaces }}
+//         safeplace={{ setter: () => {}, value: safeplace }}
+//         safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
+        safeplaces={safeplaces}
+        setSafeplaces={() => {}}
         comments={[]}
       />
     </Provider>
@@ -134,9 +138,11 @@ test('SafeplacesList update info', async () => {
   render(
     <Provider store={store}>
       <SafeplacesList
-        safeplaces={{ setter: () => {}, value: safeplaces }}
-        safeplace={{ setter: () => {}, value: safeplace }}
-        safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
+//         safeplaces={{ setter: () => {}, value: safeplaces }}
+//         safeplace={{ setter: () => {}, value: safeplace }}
+//         safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
+        safeplaces={safeplaces}
+        setSafeplaces={() => {}}
         comments={[]}
       />
     </Provider>
@@ -195,9 +201,11 @@ test('SafeplacesList remove safeplace', async () => {
   render(
     <Provider store={store}>
       <SafeplacesList
-        safeplaces={{ setter: () => {}, value: safeplaces }}
-        safeplace={{ setter: () => {}, value: safeplace }}
-        safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
+//         safeplaces={{ setter: () => {}, value: safeplaces }}
+//         safeplace={{ setter: () => {}, value: safeplace }}
+//         safeplaceDetail={{ setter: () => {}, value: getSafeplaceDetail }}
+        safeplaces={safeplaces}
+        setSafeplaces={() => {}}
         comments={[]}
       />
     </Provider>
@@ -237,7 +245,8 @@ test('SafeplacesList remove safeplace', async () => {
 //   render(
 //     <Provider store={store}>
 //       <SafeplacesList
-//         safeplaces={{ setter: () => {}, value: safeplaces }}
+//         safeplaces={safeplaces}
+//         setSafeplaces={() => {}}
 //         comments={[]}
 //       />
 //     </Provider>
