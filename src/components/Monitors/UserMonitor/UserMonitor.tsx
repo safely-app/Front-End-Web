@@ -3,7 +3,7 @@ import { useAppSelector } from "../../../redux";
 import { User } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IUser from "../../interfaces/IUser";
-import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { convertStringToRegex, notifyError, notifySuccess, notifyInfo } from "../../utils";
 import { ImCross } from "react-icons/im";
 import { BsPencilSquare } from "react-icons/bs";
 import { UserModal } from "./UserMonitorModal";
@@ -28,7 +28,19 @@ const UserMonitor: React.FC = () => {
 
   const keys = [
     { displayedName: 'NOM', displayFunction: (user: IUser, index: number) => <CustomDiv key={'tbl-val-' + index} content={user.username} /> },
-    { displayedName: 'ADRESSE E-MAIL', displayFunction: (user: IUser, index: number) => <CustomDiv key={'tbl-val-' + index} content={user.email} /> },
+    {
+      displayedName: 'ADRESSE E-MAIL',
+      displayFunction: (user: IUser, index: number) =>
+        <CustomDiv
+          key={'tbl-val-' + index}
+          content={user.email}
+          className="cursor-pointer"
+          onClick={() => {
+            notifyInfo(`${user.email} copié !`);
+            navigator.clipboard.writeText(user.email);
+          }}
+        />
+    },
     { displayedName: 'ROLE', displayFunction: (user: IUser, index: number) => <CustomDiv key={'tbl-val-' + index} content={user.role} /> },
     { displayedName: 'ID', displayFunction: (user: IUser, index: number) => <CustomDiv key={'tbl-val-' + index} content={user.id} /> },
     { displayedName: 'ACTION', displayFunction: (user: IUser, index: number) =>

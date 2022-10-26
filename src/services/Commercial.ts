@@ -24,7 +24,7 @@ class Commercial {
     }
 
     createCampaign(data: ICampaign, token: string) {
-        const { id, ...validCampaign } = data;
+        const { id, budgetSpent, ...validCampaign } = data;
         const validateCampaign = isCampaignValid(data);
 
         if (validateCampaign.isValid === false)
@@ -42,7 +42,7 @@ class Commercial {
     }
 
     updateCampaign(_id: string, data: ICampaign, token: string) {
-        const { id, ...validCampaign } = data;
+        const { id, budgetSpent, ...validCampaign } = data;
         const validateCampaign = isCampaignValid(data);
 
         if (validateCampaign.isValid === false)

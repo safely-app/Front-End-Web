@@ -34,6 +34,13 @@ class Stripe {
         });
     }
 
+    setDefaultCard(cardId: string, customerId: string, token: string) {
+        return createHttpConfig(this.baseURL, token).post('/stripe/stripe/defaultcard', {
+            customer: customerId,
+            id: cardId,
+        });
+    }
+
     getCard(cardId: string, token: string) {
         return createHttpConfig(this.baseURL, token).get(`/stripe/stripe/user/card/${cardId}`);
     }

@@ -1,0 +1,12 @@
+.bank-card-container:hover .bank-card {
+  filter: blur(2px) contrast(75%) brightness(0.75);
+}
+
+.bank-card-container .remove-card-btn {
+  visibility: hidden;
+}
+
+.bank-card-container:hover .remove-card-btn {
+  visibility: visible;
+  background-color: transparent;
+}

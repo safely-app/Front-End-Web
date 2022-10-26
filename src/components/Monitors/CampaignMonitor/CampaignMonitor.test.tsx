@@ -16,6 +16,7 @@ test('render CampaignMonitor', async () => {
       id: "c1",
       name: "Campagne 1",
       budget: "100",
+	    budgetSpent: "10",
       status: "active",
       startingDate: "2022-08-08",
       targets: [ 't1' ],
@@ -110,6 +111,7 @@ test('render CampaignMonitor update modal', async () => {
       id: "c1",
       name: "Campagne 1",
       budget: "100",
+	    budgetSpent: "50",
       status: "active",
       startingDate: "2022-08-08",
       targets: [ 't1' ],
@@ -143,7 +145,7 @@ test('render CampaignMonitor update modal', async () => {
 
   expect(screen.getByText('Campagne 1')).toBeInTheDocument();
   expect(screen.getByText('2022-08-08')).toBeInTheDocument();
-  expect(screen.getByText('100')).toBeInTheDocument();
+  expect(screen.getByText('50/100')).toBeInTheDocument();
 
   fireEvent.change(screen.getAllByPlaceholderText('Nom')[1], { target: { value: "Campagne 1" } });
   fireEvent.change(screen.getAllByPlaceholderText('Budget')[1], { target: { value: "50" } });
@@ -166,6 +168,7 @@ test('render CampaignMonitor delete campaign', async () => {
       id: "c1",
       name: "Campagne 1",
       budget: "100",
+	    budgetSpent: "0",
       status: "active",
       startingDate: "2022-08-08",
       targets: [ 't1' ],
@@ -212,6 +215,7 @@ test('render CampaignMonitorModal', () => {
     id: "c1",
     name: "Campagne 1",
     budget: "100",
+	  budgetSpent: "15",
     status: "active",
     startingDate: "2022-08-08",
     targets: [ 't1' ],

@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../redux';
-import { canAccess, Role } from './utils';
+import { Role } from './utils';
 import { FaBell, FaCircle } from 'react-icons/fa';
 import INotification from '../interfaces/INotification';
 import { Notification } from '../../services';
 import log from 'loglevel';
 import './Header.css';
 import LogoSafely from './logo';
+import ProfileDropdown from '../common/ProfileDropdown';
 
 const useOutsideAlerter = (ref, func: () => void) => {
   useEffect(() => {
@@ -107,6 +108,7 @@ interface HeaderLink {
   name: string;
   role?: Role;
   onAuth?: boolean;
+  isMain?: boolean;
 }
 
 export const Header: React.FC<{
@@ -114,41 +116,24 @@ export const Header: React.FC<{
 }> = ({
   links
 }) => {
-  const user = useAppSelector(state => state.user);
-  const currentPath = window.location.pathname;
-
-  const isAuthenticated = () => {
-    return !!user.credentials._id && !!user.credentials.token;
-  };
-
   return (
-    <div className='bg-white font-bold text-xl flex border-b-2 border-neutral-300'>
+    <div className='bg-white font-bold text-xl flex border-b-2 border-neutral-300 z-10'>
       <div className='flex pl-4'>
         <div className='py-6 cursor-pointer hover:opacity-70 ml-0'>
-          {/* <a href='/'>Dashboard</a> */}
-          <div className="w-[150] h-min">
-            <LogoSafely />            
-          </div>
-
+        {/* <a href='/'>Dashboard</a> */}
+        <div className="w-[150] h-min">
+          <LogoSafely />            
         </div>
-        <div className='px-2 pt-1'>
+
+      </div>
+        <div className='px-2'>
           <HeaderNotif />
         </div>
       </div>
-      <div className='w-full pt-2'>
-        <ul className='float-right'>
-          {links
-            .filter(link => link.onAuth === undefined || link.onAuth === isAuthenticated())
-            .filter(link => link.role === undefined || canAccess(user.userInfo.role, link.role))
-            .map((link, index) =>
-              <li key={index} className='float-left'>
-                <a href={link.link} className={'inline-block px-2 py-6 font-bold cursor-pointer hover:opacity-70 mx-2 ' + (currentPath === link.link ? 'border-b-2 border-solid border-neutral-800' : '')}>
-                  {link.name}
-                </a>
-              </li>
-            )
-          }
-        </ul>
+      <div className='flex w-full'>
+        <div className="flex-auto">
+          <ProfileDropdown links={links} />
+        </div>
       </div>
     </div>
   );
@@ -156,13 +141,11 @@ export const Header: React.FC<{
 
 export const AppHeader: React.FC = () => {
   const links = [
-    { link: "/login", name: "Connexion", onAuth: false },
-    { link: "/profile", name: "Profil", onAuth: true, role: Role.USER },
-    { link: "/shops", name: "Commerces", onAuth: true, role: Role.USER },
-    { link: "/commercial", name: "Commercial", onAuth: true, role: Role.TRADER },
-    { link: "/admin", name: "Administration", onAuth: true, role: Role.ADMIN },
-    { link: "/bugreport", name: "Beta", onAuth: true },
-    { link: "/logout", name: "Déconnexion", onAuth: true }
+    { link: "/login", name: "Connexion", onAuth: false, isMain: true },
+    { link: "/", name: "Accueil", onAuth: true, isMain: false },
+    { link: "/commercial", name: "Gérer mes campagnes", onAuth: true, role: Role.TRADER, isMain: true },
+    { link: "/admin", name: "Administration", onAuth: true, role: Role.ADMIN, isMain: false },
+    { link: "/bugreport", name: "Contact", onAuth: true, isMain: false },
   ];
 
   return (
