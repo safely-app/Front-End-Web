@@ -20,11 +20,6 @@ import {
 } from 'react-leaflet'
 import {
   FaEdit,
-  FaShoppingBasket,
-  FaBreadSlice,
-  FaUtensils,
-  FaStore,
-  FaHandScissors,
   FaMapPin,
   FaStar,
   FaArrowRight,
@@ -40,7 +35,6 @@ import { ModalBtn } from '../common/Modal';
 import { SafeplaceModal } from '../Monitors/SafeplaceMonitor/SafeplaceMonitorModal';
 import IComment from '../interfaces/IComment';
 import './Safeplaces.css';
-import { latLng } from 'leaflet';
 
 interface IMapProps {
   safeplaces: { setter: (val: ISafeplace[]) => void, value: ISafeplace[] };
