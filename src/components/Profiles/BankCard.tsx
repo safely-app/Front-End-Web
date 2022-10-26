@@ -1,5 +1,6 @@
 import React from 'react';
 import { IStripeCard } from '../interfaces/IStripe';
+import './BankCard.css';
 
 const Expiry: React.FC = (props) => {
   return (
@@ -89,9 +90,13 @@ const Logo: React.FC<{
 const BankCard: React.FC<{
   stripeCard: IStripeCard;
   name: string;
+  isDefault?: boolean;
+  deleteCard: (card: IStripeCard) => void;
 }> = ({
   stripeCard,
-  name
+  name,
+  isDefault,
+  deleteCard
 }) => {
   const spacedNumber = ('••••••••••••' + stripeCard.last4).replace(/(.{4})/g, "$1 ");
   const cardColorId = stripeCard.id.split('').reduce((counter, c) => counter + c.charCodeAt(0), 0);
@@ -116,26 +121,48 @@ const BankCard: React.FC<{
       : (stripeCard.expMonth < 10 ? '0' + stripeCard.expMonth : stripeCard.expMonth.toString());
 
   return (
-    <div className='relative w-full h-52 rounded-lg flex flex-col justify-between p-6' style={{
-      boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
-      backgroundImage: `linear-gradient(125deg, ${rgbToHex(r1, g1, b1)} 0%, ${rgbToHex(r2, g2, b2)} 100%)`
-    }}>
-      <Line>
-        <div className='relative rounded-md h-9' style={{ background: "#c1c2c4", width: "3.125rem" }} />
-        <Logo brand={stripeCard.brand} />
-      </Line>
-      <Line>
-        <NumberField>
-          {spacedNumber}
-        </NumberField>
-      </Line>
-      <Line>
-        <Field>{name}</Field>
-        <Expiry>
-          <Field>{expMonth}</Field>
-          <Field>{expYear}</Field>
-        </Expiry>
-      </Line>
+    <div className='bank-card-container relative'>
+
+      <div className='remove-card-btn absolute z-20 top-2 right-2 cursor-pointer' onClick={() => deleteCard(stripeCard)}>
+        <div className='relative rounded-full w-5 h-5 border border-solid border-neutral-100'>
+          <div className='absolute rotate-45' style={{ bottom: "-5px", left: "5px" }}>
+            <span className='font-bold text-lg text-neutral-100 p-auto'>+</span>
+          </div>
+        </div>
+        {/* <div className='relative w-6 h-6 text-neutral-100 border border-solid border-neutral-100 rounded-full'>
+          <span className='absolute font-bold text-lg left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45'>+</span>
+        </div> */}
+      </div>
+
+      <div
+        className='absolute z-10 rounded-lg border-2 border-solid border-green-600 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
+        style={{ width: '102%', height: '13.35rem' }}
+        hidden={!isDefault}
+      >
+        <div className='absolute z-10 bg-green-600 py-0.5 px-1 text-xs text-white rounded-b-md left-4'>Carte principal</div>
+      </div>
+
+      <div className='bank-card relative w-full h-52 rounded-lg flex flex-col justify-between p-6' style={{
+        boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)",
+        backgroundImage: `linear-gradient(125deg, ${rgbToHex(r1, g1, b1)} 0%, ${rgbToHex(r2, g2, b2)} 100%)`
+      }}>
+        <Line>
+          <div className='relative rounded-md h-9' style={{ background: "#c1c2c4", width: "3.125rem" }} />
+          <Logo brand={stripeCard.brand} />
+        </Line>
+        <Line>
+          <NumberField>
+            {spacedNumber}
+          </NumberField>
+        </Line>
+        <Line>
+          <Field>{name}</Field>
+          <Expiry>
+            <Field>{expMonth}</Field>
+            <Field>{expYear}</Field>
+          </Expiry>
+        </Line>
+      </div>
     </div>
   );
 };

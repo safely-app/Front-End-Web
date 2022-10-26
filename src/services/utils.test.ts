@@ -211,6 +211,7 @@ test('ensure that isCampaignValid occurs as expected', () => {
         ownerId: "1",
         name: "test",
         budget: 100,
+        budgetSpent: 15,
         status: "active",
         startingDate: "2022-05-12",
         targets: []

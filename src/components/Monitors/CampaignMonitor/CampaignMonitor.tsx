@@ -26,6 +26,7 @@ const CampaignMonitor: React.FC = () => {
     id: "",
     name: "",
     budget: 0,
+    budgetSpent: 0,
     status: "",
     ownerId: "",
     startingDate: "",
@@ -34,7 +35,7 @@ const CampaignMonitor: React.FC = () => {
 
   const keys = [
     { displayedName: 'NOM', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.name} /> },
-    { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.budget.toString()} /> },
+    { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={`${campaign?.budgetSpent || 0}/${campaign.budget}`} /> },
     { displayedName: 'STATUT', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.status} /> },
     { displayedName: 'ID DE PROPRIÉTAIRE', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.ownerId} /> },
     { displayedName: 'DATE DE DÉPART', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.startingDate} /> },
@@ -76,7 +77,7 @@ const CampaignMonitor: React.FC = () => {
     try {
       const finalCampaign = { ...campaign, status: status };
       const response = await Commercial.createCampaign(finalCampaign, userCredentials.token);
-      const newCampaign = { ...campaign, id: response.data._id };
+      const newCampaign = { ...campaign, budgetSpent: 0, id: response.data._id };
 
       setCampaigns([ ...campaigns, newCampaign ]);
       notifySuccess("Nouvelle facture créée");
@@ -110,7 +111,7 @@ const CampaignMonitor: React.FC = () => {
 
       for (const campaignId of checkedCampaignIds) {
         Commercial.deleteCampaign(campaignId, userCredentials.token)
-          .then(err => log.error(err));
+          .catch(err => log.error(err));
       }
 
       setCheckedBoxes([]);
@@ -131,6 +132,7 @@ const CampaignMonitor: React.FC = () => {
       id: "",
       name: "",
       budget: 0,
+      budgetSpent: 0,
       status: "",
       ownerId: "",
       startingDate: "",
@@ -146,6 +148,7 @@ const CampaignMonitor: React.FC = () => {
           ownerId: campaign.ownerId,
           name: campaign.name,
           budget: campaign.budget,
+		      budgetSpent: campaign.budgetSpent,
           status: campaign.status,
           startingDate: campaign.startingDate,
           safeplaceId: campaign.safeplaceId,

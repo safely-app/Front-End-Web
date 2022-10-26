@@ -23,6 +23,9 @@ const OnboardingPageOne: React.FC = () => {
   );
 };
 
+let createdProfessional = false;
+let createdProfessionalInfo;
+
 const OnboardingPageTwo: React.FC<{
   professional: IProfessional;
   setProfessional: (professional: IProfessional) => void;
@@ -110,6 +113,7 @@ const OnboardingPageFifth: React.FC = () => {
   );
 };
 
+
 const Onboarding: React.FC = () => {
   const dispatch = useAppDispatch();
   const userCredentials = useAppSelector(state => state.user.credentials);
@@ -128,15 +132,36 @@ const Onboarding: React.FC = () => {
     clientNumberTVA: "",
   });
 
+  const ArrowButton: React.FC = () => {
+    return (
+      <button type='button' className='rotate-180 text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-blue-300 font-medium rounded-lg text-sm p-2.5 text-center inline-flex items-center mr-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800' onClick={removeStep}>
+        <svg aria-hidden="true" className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+      </button>
+    );
+  };
+
   const addStep = () => (step + 1 <= 4) && setStep(step + 1);
+  const removeStep = () => (step - 1 >= 0) && setStep(step - 1);
 
   const leavePage = () => window.location.href = "/";
 
+
   const createProfessional = async () => {
     try {
-      await ProfessionalInfo.create(professional);
-      dispatch(setProfessionalInfo(professional));
-      addStep();
+      if (createdProfessional === false) {
+        createdProfessionalInfo = await ProfessionalInfo.create(professional);
+        createdProfessionalInfo.data.id = createdProfessionalInfo.data._id;
+        delete createdProfessionalInfo.data._id;
+        delete createdProfessionalInfo.data.createdAt;
+        delete createdProfessionalInfo.data.updatedAt;
+        delete createdProfessionalInfo.data.__v;
+        dispatch(setProfessionalInfo(professional));
+        createdProfessional = true;
+        addStep();
+      } else {
+        await ProfessionalInfo.update(createdProfessionalInfo.data.id, createdProfessionalInfo.data, userCredentials.token);
+        addStep();
+      }
     } catch (error) {
       notifyError(error);
       log.error(error);
@@ -174,6 +199,9 @@ const Onboarding: React.FC = () => {
       </div>
       <div className='absolute top-3/4 left-1/2 -translate-x-1/2'>
         <div className='space-x-6 text-center'>
+        </div>
+        <div className='space-x-6 text-center'>
+        { step > 0 ? <ArrowButton /> : null }
           <button
             className='bg-blue-500 hover:bg-blue-400 text-white rounded-md p-2 w-40 font-bold'
             onClick={() => steps[step].onClick()}

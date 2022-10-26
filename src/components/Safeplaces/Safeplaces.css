@@ -9,3 +9,11 @@
   width: 300px;
   overflow: auto;
 }
+
+.customGradient {
+  background: linear-gradient(to bottom, rgba(29,54,85,0) 0%, rgba(255,243,170,0.30) 100%), rgb(29,54,85);
+}
+
+.titleCard {
+  font-family: 
+}

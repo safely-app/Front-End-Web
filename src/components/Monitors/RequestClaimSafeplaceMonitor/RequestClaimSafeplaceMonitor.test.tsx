@@ -96,9 +96,9 @@ test('ensure that new request creation occurs without technical errors', async (
 
 test('ensure that request update occurs without technical errors', async () => {
   const scopeUpdate = nock(baseURL).put('/safeplace/requestClaimSafeplace/r1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(baseURL).options('/safeplace/requestClaimSafeplace/r1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeGet = nock(baseURL).get('/safeplace/requestClaimSafeplace')
     .reply(200, [
       {
@@ -147,9 +147,9 @@ test('ensure that request update occurs without technical errors', async () => {
 
 test('ensure that request delete occurs without technical errors', async () => {
   const scopeUpdate = nock(baseURL).delete('/safeplace/requestClaimSafeplace/r1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(baseURL).options('/safeplace/requestClaimSafeplace/r1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeGet = nock(baseURL).get('/safeplace/requestClaimSafeplace')
     .reply(200, [
       {

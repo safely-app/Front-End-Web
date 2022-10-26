@@ -154,7 +154,7 @@ const SignInView: React.FC<IAuthProps> = ({
         </button>
       </div>
       <div className="flex flex-col">
-        <div className="w-96 border-b-2 h-2" />
+        <div className="border-b-2 h-2" />
         <div className="flex flex-row">
           <p className="underline text-sm text-gray-500">Téléchargez l'application</p>
           <FaCircle style={{ color: 'lightgray' }} className="ml-2 mt-2" size={7} />
@@ -307,7 +307,7 @@ const SignUpView: React.FC<IAuthProps> = ({
         </button>
       </div>
       <div className="flex flex-col">
-        <div className="w-96 border-b-2 h-2" />
+        <div className="border-b-2 h-2" />
         <div className="flex flex-row">
           <p className="underline text-sm text-gray-500">Téléchargez l'application</p>
           <FaCircle style={{ color: 'lightgray' }} className="ml-2 mt-2" size={7} />

@@ -72,9 +72,9 @@ test('ensure that invalid input does not crash the safeplace filtering', async (
 
 test('ensure that safeplace update occurs without technical errors', async () => {
   const scopeUpdate = nock(testUrl).put('/safeplace/safeplace/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(testUrl).options('/safeplace/safeplace/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeGet = nock(testUrl).get('/safeplace/safeplace')
     .reply(200, [
       {
@@ -120,9 +120,9 @@ test('ensure that safeplace update occurs without technical errors', async () =>
 
 test('ensure that safeplace delete occurs without technical errors', async () => {
   const scopeDelete = nock(testUrl).delete('/safeplace/safeplace/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(testUrl).options('/safeplace/safeplace/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeGet = nock(testUrl).get('/safeplace/safeplace')
     .reply(200, [
       {

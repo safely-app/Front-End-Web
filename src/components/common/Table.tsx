@@ -7,11 +7,15 @@ interface ListObjKey {
 
 export const CustomDiv: React.FC<{
   content: JSX.Element | string;
+  className?: string;
+  onClick?: () => void;
 }> = ({
-  content
+  content,
+  className,
+  onClick
 }) => {
   return (
-    <div className='table-cell border-t-2 border-solid border-neutral-300'>
+    <div className={`table-cell border-t-2 border-solid border-neutral-300 ${(className !== undefined) ? className : ""}`} onClick={onClick}>
       {content}
     </div>
   );
