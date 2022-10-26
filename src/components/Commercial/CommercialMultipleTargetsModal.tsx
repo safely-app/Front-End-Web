@@ -29,7 +29,7 @@ const MultipleTargetsModal: React.FC<{
     }
   };
 
-  return (
+  return ( 
     <div className='absolute bg-white z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6' hidden={!modalOn}>
       <p className='font-bold'>{title}</p>
       <ul className='m-2 w-60'>
