@@ -72,9 +72,9 @@ test('ensure that invalid input does not crash the user filtering', async () => 
 
 test('render UserMonitor update modal', async () => {
   const scopeUpdate = nock(baseURL).put('/user/u1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(baseURL).options('/user/u1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeGet = nock(baseURL).get('/user')
     .reply(200, [
       {
@@ -118,9 +118,9 @@ test('render UserMonitor update modal', async () => {
 
 test('render UserMonitor delete user', async () => {
   const scopeDelete = nock(baseURL).delete('/user/u1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(baseURL).options('/user/u1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeGet = nock(baseURL).get('/user')
     .reply(200, [
       {

@@ -68,7 +68,7 @@ const HeaderNotif: React.FC = () => {
 
   return (
     <div ref={notifListRef} className="text-2xl relative">
-      <button style={{ marginTop: "1.65rem" }} onClick={() => setHidden(!hidden)}>
+      <button style={{ marginTop: "1.5rem" }} onClick={() => setHidden(!hidden)}>
         <FaBell style={{ color: '#f7e249' }} />
         <div style={{
           marginTop: "-1.95em",
@@ -119,14 +119,13 @@ export const Header: React.FC<{
   return (
     <div className='bg-white font-bold text-xl flex border-b-2 border-neutral-300 z-10'>
       <div className='flex pl-4'>
-        <div className='py-6 cursor-pointer hover:opacity-70 ml-0'>
-        <div className="w-[150] h-min" onClick={() => {
-          window.location.href = '/';
-        }}>
-          <LogoSafely />
+        <div className='py-4 cursor-pointer hover:opacity-70 ml-0'>
+          <div className="w-[150] h-min" onClick={() => {
+            window.location.href = '/';
+          }}>
+            <LogoSafely />
+          </div>
         </div>
-
-      </div>
         <div className='px-2'>
           <HeaderNotif />
         </div>

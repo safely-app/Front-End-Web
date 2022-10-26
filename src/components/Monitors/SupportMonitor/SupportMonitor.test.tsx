@@ -61,9 +61,9 @@ test('render SupportMonitor update modal', async () => {
   const scopeGet = nock(testUrl).get('/support/support')
     .reply(200, finalSupports, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(testUrl).options('/support/support/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeUpdate = nock(testUrl).put('/support/support/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   render(
     <Provider store={store}>
@@ -111,9 +111,9 @@ test('render SupportMonitor delete support', async () => {
   const scopeGet = nock(testUrl).get('/support/support')
     .reply(200, finalSupports, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(testUrl).options('/support/support/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeDelete = nock(testUrl).delete('/support/support/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   render(
     <Provider store={store}>

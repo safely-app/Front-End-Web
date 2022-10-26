@@ -51,9 +51,9 @@ test('ensure that create occurs without technical errors', async () => {
 
 test('ensure that update occurs without technical errors', async () => {
   const scopeUpdate = nock(baseURL).put('/commercial/advertising/a1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(baseURL).options('/commercial/advertising/a1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   const data: IAdvertising = {
     id: "a1",
@@ -65,19 +65,19 @@ test('ensure that update occurs without technical errors', async () => {
   };
 
   const response = await Advertising.update("a1", data, "");
-  expect(response.status).toEqual(201);
+  expect(response.status).toEqual(204);
   scopeOptions.done();
   scopeUpdate.done();
 });
 
 test('ensure that delete occurs without technical errors', async () => {
   const scopeDelete = nock(baseURL).delete('/commercial/advertising/a1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(baseURL).options('/commercial/advertising/a1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   const response = await Advertising.delete("a1", "");
-  expect(response.status).toEqual(201);
+  expect(response.status).toEqual(204);
   scopeOptions.done();
   scopeDelete.done();
 });

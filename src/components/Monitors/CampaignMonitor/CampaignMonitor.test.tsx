@@ -128,9 +128,9 @@ test('render CampaignMonitor update modal', async () => {
   const scopeCampaign = nock(process.env.REACT_APP_SERVER_URL as string)
     .get('/commercial/campaign').reply(200, finalCampaigns, { 'Access-Control-Allow-Origin': '*' });
   const scopeCampaignOptions = nock(process.env.REACT_APP_SERVER_URL as string)
-    .options('/commercial/campaign/c1').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .options('/commercial/campaign/c1').reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeCampaignUpdate = nock(process.env.REACT_APP_SERVER_URL as string)
-    .put('/commercial/campaign/c1').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .put('/commercial/campaign/c1').reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   render(
     <Provider store={store}>
@@ -185,9 +185,9 @@ test('render CampaignMonitor delete campaign', async () => {
   const scopeCampaign = nock(process.env.REACT_APP_SERVER_URL as string)
     .get('/commercial/campaign').reply(200, finalCampaigns, { 'Access-Control-Allow-Origin': '*' });
   const scopeCampaignOptions = nock(process.env.REACT_APP_SERVER_URL as string)
-    .options('/commercial/campaign/c1').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .options('/commercial/campaign/c1').reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeCampaignDelete = nock(process.env.REACT_APP_SERVER_URL as string)
-    .delete('/commercial/campaign/c1').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .delete('/commercial/campaign/c1').reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   render(
     <Provider store={store}>
