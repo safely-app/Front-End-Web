@@ -120,9 +120,10 @@ export const Header: React.FC<{
     <div className='bg-white font-bold text-xl flex border-b-2 border-neutral-300 z-10'>
       <div className='flex pl-4'>
         <div className='py-6 cursor-pointer hover:opacity-70 ml-0'>
-        {/* <a href='/'>Dashboard</a> */}
-        <div className="w-[150] h-min">
-          <LogoSafely />            
+        <div className="w-[150] h-min" onClick={() => {
+          window.location.href = '/';
+        }}>
+          <LogoSafely />
         </div>
 
       </div>
