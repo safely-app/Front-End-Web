@@ -32,9 +32,9 @@ test('ensure that get all occurs without technical errors', async () => {
 
 test('ensure that update occurs without technical errors', async () => {
   const scopeOptions = nock(testURL).options('/support/support/r1')
-      .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+      .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeUpdate = nock(testURL).put('/support/support/r1')
-      .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+      .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   const data: IReport = {
     id: "r1",
@@ -45,19 +45,19 @@ test('ensure that update occurs without technical errors', async () => {
   };
 
   const response = await BugReport.update("r1", data, "");
-  expect(response.status).toEqual(201);
+  expect(response.status).toEqual(204);
   scopeOptions.done();
   scopeUpdate.done();
 });
 
 test('ensure that delete occurs without technical errors', async () => {
   const scopeOptions = nock(testURL).options('/support/support/r1')
-      .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+      .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeDelete = nock(testURL).delete('/support/support/r1')
-      .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+      .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   const response = await BugReport.delete("r1", "");
-  expect(response.status).toEqual(201);
+  expect(response.status).toEqual(204);
   scopeOptions.done();
   scopeDelete.done();
 });

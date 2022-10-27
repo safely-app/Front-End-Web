@@ -91,9 +91,9 @@ test('render CommentMonitor update modal', async () => {
   const scopeGet = nock(testUrl).get('/safeplace/comment')
     .reply(200, finalComments, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(testUrl).options('/safeplace/comment/c1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeUpdate = nock(testUrl).put('/safeplace/comment/c1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   render(
     <Provider store={store}>
@@ -143,9 +143,9 @@ test('render CommentMonitor delete comment', async () => {
   const scopeGet = nock(testUrl).get('/safeplace/comment')
     .reply(200, finalComments, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(testUrl).options('/safeplace/comment/c1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeDelete = nock(testUrl).delete('/safeplace/comment/c1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   render(
     <Provider store={store}>

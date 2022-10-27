@@ -28,6 +28,8 @@ test('renders SafeplacesList', () => {
       <SafeplacesList
         safeplaces={safeplaces}
         setSafeplaces={() => {}}
+        safeplace={undefined}
+        setSafeplace={() => {}}
         comments={[]}
       />
     </Provider>
@@ -42,11 +44,10 @@ test('SafeplacesList claim safeplace', async () => {
     {
       id: "s1",
       name: "Safeplace name",
-      description: "test",
-      city: "test",
-      address: "test address",
-      type: "test",
-      dayTimetable: [ null, null, null, null, null, null, null ],
+      city: "Metz",
+      address: "1st Hadoken Street",
+      type: "nulachier",
+      dayTimetable: [null, null, null, null, null, null, null],
       coordinate: [ "48", "-56" ],
     }
   ];
@@ -60,16 +61,17 @@ test('SafeplacesList claim safeplace', async () => {
       <SafeplacesList
         safeplaces={safeplaces}
         setSafeplaces={() => {}}
+        safeplace={safeplaces[0]}
+        setSafeplace={() => {}}
         comments={[]}
       />
     </Provider>
   );
 
-  expect(screen.getByTestId("safeplace-get-detail-s1")).toBeInTheDocument();
-  fireEvent.click(screen.getByTestId("safeplace-get-detail-s1"));
+  expect(screen.getByText(`${safeplaces[0].address}, ${safeplaces[0].city}`)).toBeInTheDocument();
 
-  expect(screen.getByText('Réclamer ce commerce')).toBeInTheDocument();
-  fireEvent.click(screen.getByText('Réclamer ce commerce'));
+  expect(screen.getByText('RÉCLAMER CE COMMERCE')).toBeInTheDocument();
+  fireEvent.click(screen.getByText('RÉCLAMER CE COMMERCE'));
 
   await act(async () => await testDelay(1000));
 
@@ -90,14 +92,16 @@ test('SafeplacesList update info', async () => {
     }
   ];
 
-  const scopeCreate = nock(testURL).post('/commercial/modif')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+  const scopeUpdate = nock(testURL).post('/commercial/modif')
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   render(
     <Provider store={store}>
       <SafeplacesList
         safeplaces={safeplaces}
         setSafeplaces={() => {}}
+        safeplace={undefined}
+        setSafeplace={() => {}}
         comments={[]}
       />
     </Provider>
@@ -119,7 +123,7 @@ test('SafeplacesList update info', async () => {
 
   await act(async () => await testDelay(1000));
 
-  scopeCreate.done();
+  scopeUpdate.done();
 });
 
 test('SafeplacesList remove safeplace', async () => {
@@ -137,15 +141,17 @@ test('SafeplacesList remove safeplace', async () => {
   ];
 
   const scopeOptions = nock(testURL).options('/safeplace/safeplace/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeDelete = nock(testURL).delete('/safeplace/safeplace/s1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   render(
     <Provider store={store}>
       <SafeplacesList
         safeplaces={safeplaces}
         setSafeplaces={() => {}}
+        safeplace={undefined}
+        setSafeplace={() => {}}
         comments={[]}
       />
     </Provider>
@@ -178,9 +184,9 @@ test('SafeplacesList remove safeplace', async () => {
 //   ];
 
 //   const scopeOptions = nock(testURL).options('/safeplace/safeplace/s1')
-//     .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+//     .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 //   const scopeDelete = nock(testURL).delete('/safeplace/safeplace/s1')
-//     .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+//     .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
 //   render(
 //     <Provider store={store}>

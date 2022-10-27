@@ -84,9 +84,9 @@ test('render Profile', async () => {
 
 test('render Profile update user', async () => {
   const scopeUserOptions = nock(baseURL).options('/user/u1')
-  .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+  .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeUserUpdate = nock(baseURL).put('/user/u1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeUser = nock(baseURL).get('/user/')
     .reply(200, {
       _id: "u1",
@@ -157,9 +157,9 @@ test('render Profile update professional info', async () => {
     }, { 'Access-Control-Allow-Origin': '*' });
 
   const scopeProfessionalOptions = nock(baseURL).options('/professionalinfo/p1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeProfessionalUpdate = nock(baseURL).put('/professionalinfo/p1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeProfessional = nock(baseURL).get('/professionalinfo/owner/')
     .reply(200, {
       _id: "p1",
@@ -221,9 +221,9 @@ test('render Profile update professional info', async () => {
 
 // test('render Profile delete user', async () => {
 //   const scopeUserOptions = nock(baseURL).options('/user/u1')
-//   .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+//   .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 //   const scopeUserDelete = nock(baseURL).delete('/user/u1')
-//     .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+//     .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 //   const scopeUser = nock(baseURL).get('/user/')
 //     .reply(200, {
 //       _id: "u1",
@@ -234,9 +234,9 @@ test('render Profile update professional info', async () => {
 //     }, { 'Access-Control-Allow-Origin': '*' });
 
 //   const scopeProfessionalOptions = nock(baseURL).options('/professionalinfo/p1')
-//     .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+//     .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 //   const scopeProfessionalDelete = nock(baseURL).delete('/professionalinfo/p1')
-//     .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+//     .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 //   const scopeProfessional = nock(baseURL).get('/professionalinfo/owner/')
 //     .reply(200, {
 //       _id: "p1",
@@ -283,9 +283,9 @@ test('render Profile update professional info', async () => {
 
 // test('render Profile link card', async () => {
 //   const scopeUserOptions = nock(baseURL).options('/user/u1')
-//    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+//    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 //   const scopeUserUpdate = nock(baseURL).put('/user/u1')
-//     .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+//     .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 //   const scopeUser = nock(baseURL).get('/user/')
 //     .reply(200, {
 //       _id: "u1",
@@ -381,6 +381,7 @@ test('render BankCard', () => {
   render(
     <BankCard
       name="Billy"
+      deleteCard={() => {}}
       stripeCard={stripeCard}
     />
   );
@@ -401,6 +402,7 @@ test('render BankCard visa', () => {
   render(
     <BankCard
       name="Billy"
+      deleteCard={() => {}}
       stripeCard={stripeCard}
     />
   );
@@ -421,6 +423,7 @@ test('render BankCard mastercard', () => {
   render(
     <BankCard
       name="Billy"
+      deleteCard={() => {}}
       stripeCard={stripeCard}
     />
   );
@@ -441,6 +444,7 @@ test('render BankCard cartes_bancaires', () => {
   render(
     <BankCard
       name="Billy"
+      deleteCard={() => {}}
       stripeCard={stripeCard}
     />
   );

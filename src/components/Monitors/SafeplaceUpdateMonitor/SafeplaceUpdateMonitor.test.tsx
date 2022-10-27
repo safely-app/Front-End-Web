@@ -100,9 +100,9 @@ test('ensure that new update creation occurs without technical errors', async ()
 
 test('ensure that update of safeplace modif occurs without technical errors', async () => {
   const scopeUpdate = nock(testUrl).put('/commercial/modif/su1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(testUrl).options('/commercial/modif/su1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeGet = nock(testUrl).get('/commercial/modif')
     .reply(200, [
       {
@@ -153,9 +153,9 @@ test('ensure that update of safeplace modif occurs without technical errors', as
 
 test('ensure that delete of safeplace modif occurs without technical errors', async () => {
   const scopeDelete = nock(testUrl).delete('/commercial/modif/su1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(testUrl).options('/commercial/modif/su1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeGet = nock(testUrl).get('/commercial/modif')
     .reply(200, [
       {

@@ -16,6 +16,7 @@ const BillingMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [billings, setBillings] = useState<IBilling[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
 
@@ -165,7 +166,12 @@ const BillingMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={filterBillings()} keys={keys} />
+        <Table
+          content={filterBillings()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

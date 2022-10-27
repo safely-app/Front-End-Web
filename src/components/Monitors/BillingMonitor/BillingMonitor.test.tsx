@@ -75,9 +75,9 @@ test('renders BillingMonitor update button', async () => {
   const scopeGet = nock(process.env.REACT_APP_SERVER_URL as string)
     .get('/stripe/stripe/billing').reply(200, { data: billings }, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(process.env.REACT_APP_SERVER_URL as string)
-    .options('/stripe/stripe/billing/1').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .options('/stripe/stripe/billing/1').reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeUpdate = nock(process.env.REACT_APP_SERVER_URL as string)
-    .put('/stripe/stripe/billing/1').reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .put('/stripe/stripe/billing/1').reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
 
   render(
     <Provider store={store}>

@@ -73,9 +73,9 @@ test('render TargetMonitor create modal', async () => {
 
 test('render TargetMonitor update modal', async () => {
   const scopeOptions = nock(baseURL).options('/commercial/target/t1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeUpdate = nock(baseURL).put('/commercial/target/t1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeGet = nock(baseURL)
     .get('/commercial/target').reply(200, [
       {
@@ -118,9 +118,9 @@ test('render TargetMonitor update modal', async () => {
 
 test('render TargetMonitor delete target', async () => {
   const scopeOptions = nock(baseURL).options('/commercial/target/t1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeDelete = nock(baseURL).delete('/commercial/target/t1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeGet = nock(baseURL)
     .get('/commercial/target').reply(200, [
       {

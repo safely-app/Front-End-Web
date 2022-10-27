@@ -32,7 +32,7 @@ const Map: React.FC<{
   return (
     <div className='z-0'>
       <MapContainer
-        style={{ height: "100vh" }}
+        style={{ height: "100vh", zIndex: 0 }}
         center={[48.58193415814247, 7.751016938855309]}
         scrollWheelZoom={true}
         zoom={14}
@@ -60,13 +60,16 @@ const Map: React.FC<{
 const AppWelcomePage: React.FC = () => {
   return (
     <div className='w-full px-12 pt-20'>
-      <p className='font-extrabold text-3xl mt-20 mb-16 w-1/2 mx-auto'>Bienvenue sur Safely !</p>
+      <p className='font-extrabold text-2xl xl:text-3xl w-full max-w-md mx-auto' style={{
+        marginTop: '7%',
+        marginBottom: '5%',
+      }}>Bienvenue sur Safely !</p>
 
-      <div className='space-y-12'>
+      <div className='space-y-6 xl:space-y-12'>
 
-        <div className='w-1/2 mx-auto'>
-          <p className='font-bold text-xl'>Réclamez votre commerce</p>
-          <p className='mt-2'>
+        <div className='w-full max-w-md mx-auto'>
+          <p className='font-bold text-lg xl:text-xl'>Réclamez votre commerce</p>
+          <p className='mt-2 text-sm xl:text-base'>
             Réclamez votre commerce pour lancer votre première campagne publicitaire
           </p>
 
@@ -83,9 +86,9 @@ const AppWelcomePage: React.FC = () => {
           </div>
         </div>
 
-        <div className='w-1/2 mx-auto'>
-          <p className='font-bold text-xl'>Gérez votre campagne publicitare</p>
-          <p className='mt-2'>
+        <div className='w-full max-w-md mx-auto'>
+          <p className='font-bold text-lg xl:text-xl'>Gérez votre campagne publicitare</p>
+          <p className='mt-2 text-sm xl:text-base'>
             Lancez votre première campagne publicitaire et suivez son impact depuis votre tableau de bord
           </p>
 

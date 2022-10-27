@@ -17,6 +17,7 @@ const CampaignMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [targets, setTargets] = useState<ITarget[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
@@ -25,6 +26,7 @@ const CampaignMonitor: React.FC = () => {
     id: "",
     name: "",
     budget: 0,
+    budgetSpent: 0,
     status: "",
     ownerId: "",
     startingDate: "",
@@ -33,7 +35,7 @@ const CampaignMonitor: React.FC = () => {
 
   const keys = [
     { displayedName: 'NOM', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.name} /> },
-    { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.budget.toString()} /> },
+    { displayedName: 'BUDGET', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={`${campaign?.budgetSpent || 0}/${campaign.budget}`} /> },
     { displayedName: 'STATUT', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.status} /> },
     { displayedName: 'ID DE PROPRIÉTAIRE', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.ownerId} /> },
     { displayedName: 'DATE DE DÉPART', displayFunction: (campaign: ICampaign, index: number) => <CustomDiv key={'tbl-val-' + index} content={campaign.startingDate} /> },
@@ -75,7 +77,7 @@ const CampaignMonitor: React.FC = () => {
     try {
       const finalCampaign = { ...campaign, status: status };
       const response = await Commercial.createCampaign(finalCampaign, userCredentials.token);
-      const newCampaign = { ...campaign, id: response.data._id };
+      const newCampaign = { ...campaign, budgetSpent: 0, id: response.data._id };
 
       setCampaigns([ ...campaigns, newCampaign ]);
       notifySuccess("Nouvelle facture créée");
@@ -102,9 +104,23 @@ const CampaignMonitor: React.FC = () => {
 
   const deleteCampaign = async (campaign: ICampaign) => {
     try {
-      await Commercial.deleteCampaign(campaign.id, userCredentials.token);
-      setCampaigns(campaigns.filter(c => c.id !== campaign.id));
-      notifySuccess("Campagne supprimée");
+      const checkedCampaignIds = checkedBoxes.map(checkedIndex => campaigns[checkedIndex].id);
+
+      if (!checkedCampaignIds.includes(campaign.id))
+        checkedCampaignIds.push(campaign.id);
+
+      for (const campaignId of checkedCampaignIds) {
+        Commercial.deleteCampaign(campaignId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
+      setCampaigns(campaigns.filter(c => !checkedCampaignIds.includes(c.id)));
+      notifySuccess(
+        (checkedCampaignIds.length > 1)
+          ? "Campagnes supprimées"
+          : "Campagne supprimée"
+      );
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -116,6 +132,7 @@ const CampaignMonitor: React.FC = () => {
       id: "",
       name: "",
       budget: 0,
+      budgetSpent: 0,
       status: "",
       ownerId: "",
       startingDate: "",
@@ -131,6 +148,7 @@ const CampaignMonitor: React.FC = () => {
           ownerId: campaign.ownerId,
           name: campaign.name,
           budget: campaign.budget,
+		      budgetSpent: campaign.budgetSpent,
           status: campaign.status,
           startingDate: campaign.startingDate,
           safeplaceId: campaign.safeplaceId,
@@ -202,7 +220,12 @@ const CampaignMonitor: React.FC = () => {
         openCreateModal={() => setModal(ModalType.CREATE)}
       />
       <div className='mt-3'>
-        <Table content={filterCampaigns()} keys={keys} />
+        <Table
+          content={filterCampaigns()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

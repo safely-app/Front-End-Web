@@ -111,9 +111,9 @@ test('render AdvertisingMonitor update modal', async () => {
   const scopeGet = nock(testUrl).get('/commercial/advertising')
     .reply(200, finalAdvertisings, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(testUrl).options('/commercial/advertising/a1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeUpdate = nock(testUrl).put('/commercial/advertising/a1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeTargets = nock(testUrl).get('/commercial/target')
     .reply(200, [
       {
@@ -177,9 +177,9 @@ test('render AdvertisingMonitor delete advertising', async () => {
   const scopeGet = nock(testUrl).get('/commercial/advertising')
     .reply(200, finalAdvertisings, { 'Access-Control-Allow-Origin': '*' });
   const scopeOptions = nock(testUrl).options('/commercial/advertising/a1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeDelete = nock(testUrl).delete('/commercial/advertising/a1')
-    .reply(201, {}, { 'Access-Control-Allow-Origin': '*' });
+    .reply(204, {}, { 'Access-Control-Allow-Origin': '*' });
   const scopeTargets = nock(testUrl).get('/commercial/target')
     .reply(200, [
       {

@@ -55,6 +55,7 @@ test('ensure that createCampaign occurs without technical errors', async () => {
         ownerId: "",
         name: "test",
         budget: 100,
+        budgetSpent: 15,
         status: "active",
         startingDate: "2022-05-26",
         targets: []
@@ -97,6 +98,7 @@ test('ensure that updateCampaign occurs without technical occurs', async () => {
         ownerId: "",
         name: "test",
         budget: 100,
+        budgetSpent: 10,
         status: "active",
         startingDate: "2022-05-26",
         targets: []

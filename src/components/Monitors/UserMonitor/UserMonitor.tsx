@@ -3,7 +3,7 @@ import { useAppSelector } from "../../../redux";
 import { User } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IUser from "../../interfaces/IUser";
-import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { convertStringToRegex, notifyError, notifySuccess, notifyInfo } from "../../utils";
 import { ImCross } from "react-icons/im";
 import { BsPencilSquare } from "react-icons/bs";
 import { UserModal } from "./UserMonitorModal";
@@ -16,6 +16,7 @@ const UserMonitor: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
 
   const [users, setUsers] = useState<IUser[]>([]);
+  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
   const [textSearch, setTextSearch] = useState("");
   const [modalOn, setModal] = useState(ModalType.OFF);
 
@@ -28,7 +29,19 @@ const UserMonitor: React.FC = () => {
 
   const keys = [
     { displayedName: 'NOM', displayFunction: (user: IUser, index: number) => <CustomDiv key={'tbl-val-' + index} content={user.username} /> },
-    { displayedName: 'ADRESSE E-MAIL', displayFunction: (user: IUser, index: number) => <CustomDiv key={'tbl-val-' + index} content={user.email} /> },
+    {
+      displayedName: 'ADRESSE E-MAIL',
+      displayFunction: (user: IUser, index: number) =>
+        <CustomDiv
+          key={'tbl-val-' + index}
+          content={user.email}
+          className="cursor-pointer"
+          onClick={() => {
+            notifyInfo(`${user.email} copié !`);
+            navigator.clipboard.writeText(user.email);
+          }}
+        />
+    },
     { displayedName: 'ROLE', displayFunction: (user: IUser, index: number) => <CustomDiv key={'tbl-val-' + index} content={user.role} /> },
     { displayedName: 'ID', displayFunction: (user: IUser, index: number) => <CustomDiv key={'tbl-val-' + index} content={user.id} /> },
     { displayedName: 'ACTION', displayFunction: (user: IUser, index: number) =>
@@ -75,10 +88,24 @@ const UserMonitor: React.FC = () => {
 
   const deleteUser = async (user: IUser) => {
     try {
-      await User.delete(user.id, userCredentials.token);
-      setUsers(users.filter(u => u.id !== user.id));
-      notifySuccess("Utilisateur supprimé");
+      const checkedUserIds = checkedBoxes.map(checkedIndex => users[checkedIndex].id);
+
+      if (!checkedUserIds.includes(user.id))
+        checkedUserIds.push(user.id);
+
+      for (const userId of checkedUserIds) {
+        User.delete(userId, userCredentials.token)
+          .catch(err => log.error(err));
+      }
+
+      setCheckedBoxes([]);
       setModal(ModalType.OFF);
+      setUsers(users.filter(t => !checkedUserIds.includes(t.id)));
+      notifySuccess(
+        (checkedUserIds.length > 1)
+          ? "Utilisateurs supprimés"
+          : "Utilisateur supprimé"
+      );
     } catch (err) {
       notifyError(err);
       log.error(err);
@@ -125,7 +152,12 @@ const UserMonitor: React.FC = () => {
         noCreate
       />
       <div className='mt-3'>
-        <Table content={filterUsers()} keys={keys} />
+        <Table
+          content={filterUsers()}
+          keys={keys}
+          checkedBoxes={checkedBoxes}
+          setCheckedBoxes={setCheckedBoxes}
+        />
       </div>
     </div>
   );

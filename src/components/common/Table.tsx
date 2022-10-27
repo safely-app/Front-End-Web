@@ -7,11 +7,15 @@ interface ListObjKey {
 
 export const CustomDiv: React.FC<{
   content: JSX.Element | string;
+  className?: string;
+  onClick?: () => void;
 }> = ({
-  content
+  content,
+  className,
+  onClick
 }) => {
   return (
-    <div className='table-cell border-t-2 border-solid border-neutral-300'>
+    <div className={`table-cell border-t-2 border-solid border-neutral-300 ${(className !== undefined) ? className : ""}`} onClick={onClick}>
       {content}
     </div>
   );
@@ -20,12 +24,15 @@ export const CustomDiv: React.FC<{
 const Table: React.FC<{
   content: any[];
   keys: ListObjKey[];
+  checkedBoxes: number[];
+  setCheckedBoxes: (value: number[]) => void;
 }> = ({
   content,
-  keys
+  keys,
+  checkedBoxes,
+  setCheckedBoxes
 }) => {
   const [allChecked, setAllChecked] = useState(false);
-  const [checkedBoxes, setCheckedBoxes] = useState<number[]>([]);
 
   const updateCheckedBoxes = (index: number) => {
     if (checkedBoxes.includes(index)) {
