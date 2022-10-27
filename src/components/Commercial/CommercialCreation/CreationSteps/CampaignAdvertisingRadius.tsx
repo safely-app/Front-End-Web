@@ -129,6 +129,7 @@ const CampaignAdvertisingRadius: React.FC<{
                   onChange={(event) => setRadius(parseInt(event.target.value))}
                 />
               </div>
+              <p>Précision d'intérêt des cliques et augmentation de la visibilité sur votre commerce {(radius <= 200 ? radius / 12 : (200 - (radius - 200) * 0.1) / 12).toFixed(2)} %</p>
             </div>
 
             <div className="col-span-5 rounded-lg overflow-hidden">
