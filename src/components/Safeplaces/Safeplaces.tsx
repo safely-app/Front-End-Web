@@ -168,21 +168,21 @@ const SafeplaceDetails: React.FC<{
         </div>
       </div>
       <div className="h-6 w-full mt-5">
-        {Object.keys(paginate(comments, currentPage, 5)).map(index => {
-          // TODO: rename variable with understandable name (et const si possible) + paginate is called 2 times
-          var tmpValue = paginate(comments, currentPage, 5);
+        {paginate(comments, currentPage, 5).map((comment, index) => {
           return (
             <div key={index}>
-              <div className="flex flex-row safeplaces-center mb-3">
+              <div className='flex flex-row safeplaces-center mb-3'>
                 <p>Anonyme</p>
-                {[...Array(tmpValue[index].grade)].map(() => <FaStar className="ml-1 h-6 w-6" style={{ color: '#f7e249' }} />)}
-                {[...Array(5 - tmpValue[index].grade)].map((_value, index) =>
-                  <FaStar key={index} className="ml-1 h-6 w-6" style={{ color: 'lightgray' }} />
+                {[...Array(comment.grade)].map((value, index) =>
+                  <FaStar key={`${comment.id}-goldstar-${index}-${value}`} className="ml-1 h-6 w-6" style={{ color: '#f7e249' }} />
+                )}
+                {[...Array(5 - comment.grade)].map((value, index) =>
+                  <FaStar key={`${comment.id}-graystar-${index}-${value}`} className="ml-1 h-6 w-6" style={{ color: 'lightgray' }} />
                 )}
               </div>
-              <p className="mb-3">{tmpValue[index].comment}</p>
+              <p className='mb-3'>{comment.comment}</p>
             </div>
-          )
+          );
         })}
         <div className="flex flex-row safeplaces-center mt-10 mb-2">
           <FaArrowLeft className="cursor-pointer mr-2" onClick={() => updateCurrentPageByValue(-1)} />
