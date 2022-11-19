@@ -93,16 +93,18 @@ const CommercialNavbar: React.FC<{
             icon={<BsMegaphone className='col-span-1 w-6 h-6 -rotate-45 my-auto mb-2' />}
             sectionType={SECTION.NONE}
             displayedSection={displayedSection}
-            onClick={() => { }}
+            onClick={() => {
+              window.location.href = "/bugreport";
+            }}
           />
 
-          <CommercialNavbarButton
+          {/* <CommercialNavbarButton
             title="Foire aux questions"
             icon={<FiPieChart className='col-span-1 w-7 h-7 my-auto' />}
             sectionType={SECTION.NONE}
             displayedSection={displayedSection}
             onClick={() => { }}
-          />
+          /> */}
         </ul>
       </div>
 
