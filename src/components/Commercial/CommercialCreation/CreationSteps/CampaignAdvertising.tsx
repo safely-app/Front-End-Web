@@ -88,19 +88,30 @@ const CampaignAdvertising: React.FC<{
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [uploadImage, setUploadImage] = useState("");
+  const [uploadImageUrl, setUploadImageUrl] = useState("");
+  const [uploadImage, setUploadImage] = useState<File | undefined>(undefined);
+
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, _) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(blob);
+    });
+  };
 
   const handleClick = async () => {
     try {
-      if (title === "" || description === "" || uploadImage === "")
+      if (title === "" || description === "" || uploadImage === undefined)
         return;
+
+      const base64Image = await blobToBase64(uploadImage);
 
       await Advertising.create({
         id: "",
         title: title,
         ownerId: userCredentials._id,
         targets: targetIds,
-        imageUrl: uploadImage,
+        imageUrl: base64Image,
         description: description,
         campaignId: campaignId,
       }, userCredentials.token);
@@ -109,6 +120,15 @@ const CampaignAdvertising: React.FC<{
     } catch (err) {
       notifyError(err);
       log.error(err);
+    }
+  };
+
+  const setUploadedImage = (file: File) => {
+    if (file.size <= 1000000) {
+      setUploadImage(file);
+      setUploadImageUrl(URL.createObjectURL(file));
+    } else {
+      notifyError("L'image ne peut pas dépasser 1MB.");
     }
   };
 
@@ -140,7 +160,7 @@ const CampaignAdvertising: React.FC<{
               />
               <p className="text-sm mb-3">La description de la publicité</p>
 
-              <DragDropFile handleFile={(file) => setUploadImage(URL.createObjectURL(file))} />
+              <DragDropFile handleFile={setUploadedImage} />
               <p className="text-sm mb-3">Formats acceptées: .png, .jpeg, .jpg</p>
 
             </div>
@@ -148,7 +168,7 @@ const CampaignAdvertising: React.FC<{
 
               <div className="relative w-full h-24 bg-neutral-200 rounded-2xl pt-3 pb-6 px-4 drop-shadow-lg">
                 <div className="w-full h-full rounded-lg overflow-hidden">
-                  <img src={uploadImage !== "" ? uploadImage : safeplaceImg} alt="" className="-translate-y-1/2 w-full" />
+                  <img src={uploadImageUrl !== "" ? uploadImageUrl : safeplaceImg} alt="" className="-translate-y-1/2 w-full" />
                 </div>
                 <AiFillInfoCircle className="absolute bottom-0 left-10 translate-y-1/2 w-7 h-7 text-neutral-300" />
                 <button className="absolute bottom-0 right-10 translate-y-1/2 bg-neutral-300 text-neutral-600 text-sm font-bold p-1 rounded-xl">

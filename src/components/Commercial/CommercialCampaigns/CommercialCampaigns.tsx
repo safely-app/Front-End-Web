@@ -54,24 +54,16 @@ const CommercialCampaigns: React.FC<{
     targets: []
   });
 
-  // const [target, setTarget] = useState<ITarget>({
-  //   id: "",
-  //   csp: "csp",
-  //   name: "",
-  //   ownerId: "",
-  //   ageRange: "",
-  //   interests: []
-  // });
-
   const placeholderTitle = "Lorem Ipsum";
   const placeholderDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [image, setImage] = useState<File | undefined>(undefined);
   const [imageUrl, setImageUrl] = useState("");
 
   const [ads, setAds] = useState<IAdvertising[]>();
-  const [ad , setAd] = useState<IAdvertising>();
+  const [ad, setAd] = useState<IAdvertising>();
   const [campaignAds, setCampaignAds] = useState<ICampaign>();
   const [safeplaceCampaign, setSafeplaceCampaign] = useState<ISafeplace>({
     id: '',
@@ -92,7 +84,7 @@ const CommercialCampaigns: React.FC<{
       if (adSearch === '') {
         return ads;
       }
-  
+
       return ads
         .filter(ad => adSearch !== ''
           ? ad.title.toLowerCase().match(lowerSearchText) !== null
@@ -156,18 +148,37 @@ const CommercialCampaigns: React.FC<{
     });
   };
 
-  const updateAd = async (ad) => {
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, _) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const updateAd = async (ad: IAdvertising) => {
     try {
+      const base64Image = image ? await blobToBase64(image) : ad.imageUrl;
+
       ad.title = title;
       ad.description = description;
-      ad.imageUrl = imageUrl && imageUrl !== '' ? imageUrl : ad.imageUrl;
+      ad.imageUrl = base64Image;
 
-      await Advertising.update(ad._id, ad, userCredentials.token);
+      await Advertising.update(ad.id, ad, userCredentials.token);
 
       if (campaignAds) {
         const res = await Advertising.getByCampaign(campaignAds.id, userCredentials.token)
+        const gotAds: IAdvertising[] = res.data.map(ad => ({
+          id: ad._id,
+          ownerId: ad.ownerId,
+          title: ad.title,
+          description: ad.description,
+          campaignId: ad.campaignId,
+          imageUrl: ad.imageUrl,
+          targets: ad.targets
+        }));
 
-        setAds(res.data);
+        setAds(gotAds);
         setAd(undefined);
       }
     } catch (err) {
@@ -175,12 +186,31 @@ const CommercialCampaigns: React.FC<{
     }
   }
 
+  const setUploadedImage = (file: File) => {
+    if (file.size <= 1000000) {
+      setImage(file);
+      setImageUrl(URL.createObjectURL(file));
+    } else {
+      notifyError("L'image ne peut pas dépasser 1MB.");
+    }
+  };
+
   useEffect(() => {
     // Get ads of campaign
     if (campaignAds && campaignAds.safeplaceId && campaignAds.id !== '') {
       Advertising.getByCampaign(campaignAds.id, userCredentials.token)
       .then((res) => {
-        setAds(res.data);
+        const gotAds: IAdvertising[] = res.data.map(ad => ({
+          id: ad._id,
+          ownerId: ad.ownerId,
+          title: ad.title,
+          description: ad.description,
+          campaignId: ad.campaignId,
+          imageUrl: ad.imageUrl,
+          targets: ad.targets
+        }));
+
+        setAds(gotAds);
         if (campaignAds.safeplaceId) {
           Safeplace.get(campaignAds.safeplaceId, userCredentials.token)
           .then((res) => {
@@ -230,7 +260,7 @@ const CommercialCampaigns: React.FC<{
         <>
           <div className="flex bg-white rounded-lg shadow-xl border border-solid border-neutral-100 mb-8 flex-row">
             <div className="flex justify-center items-center ml-2">
-              <FaChevronLeft 
+              <FaChevronLeft
                 className="w-8 h-8"
                 onClick={() => {
                   setCampaignAds(undefined);
@@ -340,7 +370,7 @@ const CommercialCampaigns: React.FC<{
                         />
                         <p className="text-sm mb-3">La description de la publicité</p>
 
-                        <DragDropFile handleFile={(file) => setImageUrl(URL.createObjectURL(file))} />
+                        <DragDropFile handleFile={setUploadedImage} />
                         <p className="text-sm mb-3">Formats acceptées: .png, .jpeg, .jpg</p>
 
                       </div>
@@ -348,13 +378,16 @@ const CommercialCampaigns: React.FC<{
 
                     <div>
                         <hr className="my-6" />
-                        <button 
+                        <button
                           className="text-lg font-bold text-blue-500 bg-white hover:text-blue-400 px-6 py-2 rounded-lg float-left"
-                          onClick={() => {setAd(undefined)}}
+                          onClick={() => {
+                            setAd(undefined);
+                            setImageUrl("");
+                          }}
                         >
                           RETOUR
                         </button>
-                        <button 
+                        <button
                           className="text-lg font-bold text-white bg-blue-500 hover:bg-blue-400 px-6 py-2 rounded-lg float-right"
                           onClick={() => {updateAd(ad)}}
                         >
@@ -372,7 +405,7 @@ const CommercialCampaigns: React.FC<{
                     <div className='flex flex-col'>
                       <div className='flex flex-row justify-between items-center'>
                         <p className='px-6 py-8 font-bold'>{item.title}</p>
-                        <button 
+                        <button
                           className='mr-6 text-gray-400 border border-solid border-neutral-400 rounded-md h-8 w-20 text-sm font-bold bg-white hover:bg-neutral-200'
                           onClick={() => {
                             setAd(item);
@@ -405,7 +438,7 @@ const CommercialCampaigns: React.FC<{
                 />
               </div>
               <div className='flex flex-col bg-white rounded-lg shadow-xl h-full mt-4'>
-                <p className="px-6 py-8 font-bold text-xl text-2xl">Apercu</p>
+                <p className="px-6 pt-8 pb-4 font-bold text-xl text-2xl">Apercu</p>
                 <div className='flex flex-row items-center justify-around'>
                   <div className="relative w-5/12 h-24 bg-neutral-200 rounded-2xl pt-3 pb-6 px-4 drop-shadow-lg">
                     <div className="w-full h-full rounded-lg overflow-hidden">
@@ -434,7 +467,7 @@ const CommercialCampaigns: React.FC<{
       ) : (
         <>
           <div className="flex bg-white rounded-lg shadow-xl border border-solid border-neutral-100 mb-8 flex-row">
-            
+
             <div className="flex flex-row justify-between w-full">
               <p className="px-6 py-8 font-bold text-xl text-2xl">Mes campagnes</p>
               <div className='inline-block flex px-6 py-8 w-5/12'>
@@ -471,7 +504,7 @@ const CommercialCampaigns: React.FC<{
                       }}/>
                       <div className='flex justify-end mb-1'>
                         <div className='shadow-[0_05px_09px_rgba(0,0,0,0.25)]'>
-                          <button 
+                          <button
                             className='text-gray-400 border border-solid border-neutral-400 rounded-md h-8 w-20 text-sm font-bold bg-white hover:bg-neutral-200'
                             onClick={() => {
                               setCampaignAds(item);
