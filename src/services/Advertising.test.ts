@@ -41,7 +41,8 @@ test('ensure that create occurs without technical errors', async () => {
     title: "Titre",
     imageUrl: "",
     description: "Description",
-    targets: [ "t1", "t2", "t3" ]
+    targets: [ "t1", "t2", "t3" ],
+    radius: 0,
   };
 
   const response = await Advertising.create(data, "");
@@ -61,7 +62,8 @@ test('ensure that update occurs without technical errors', async () => {
     title: "Titre",
     imageUrl: "",
     description: "Description",
-    targets: [ "t1", "t2", "t3" ]
+    targets: [ "t1", "t2", "t3" ],
+    radius: 0,
   };
 
   const response = await Advertising.update("a1", data, "");

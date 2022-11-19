@@ -99,6 +99,7 @@ test('render AdvertisingMonitor update modal', async () => {
       description: "Description",
       imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
       targets: [ 't1' ],
+      radius: 0,
     }
   ];
 
@@ -165,6 +166,7 @@ test('render AdvertisingMonitor delete advertising', async () => {
       description: "Description",
       imageUrl: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg",
       targets: [ 't1' ],
+      radius: 0,
     }
   ];
 
@@ -221,7 +223,8 @@ test('render AdvertisingMonitorModal', () => {
     description: "Nice",
     imageUrl: "https://image.url",
     targets: [ 't1' ],
-    ownerId: "u1"
+    ownerId: "u1",
+    radius: 0,
   };
 
   const targets: ITarget[] = [

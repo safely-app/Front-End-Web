@@ -28,7 +28,8 @@ const AdvertisingMonitor: React.FC = () => {
     ownerId: "",
     imageUrl: "",
     description: "",
-    targets: []
+    targets: [],
+    radius: 0,
   });
 
   const keys = [
@@ -126,7 +127,8 @@ const AdvertisingMonitor: React.FC = () => {
       ownerId: "",
       imageUrl: "",
       description: "",
-      targets: []
+      targets: [],
+      radius: 0,
     });
   };
 

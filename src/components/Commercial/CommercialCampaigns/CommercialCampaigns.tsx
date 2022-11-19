@@ -207,7 +207,8 @@ const CommercialCampaigns: React.FC<{
           description: ad.description,
           campaignId: ad.campaignId,
           imageUrl: ad.imageUrl,
-          targets: ad.targets
+          targets: ad.targets,
+          radius: ad.radius,
         }));
 
         setAds(gotAds);
@@ -429,7 +430,7 @@ const CommercialCampaigns: React.FC<{
             <div className='flex flex-col w-full w-6/12 h-full'>
               <div className='flex-none bg-white rounded-lg shadow-xl'>
                 <Map
-                  radius={120}
+                  radius={ad !== undefined && ad.radius !== undefined && ad.radius > 0 ? ad.radius : 120}
                   safeplaces={[ safeplaceCampaign ]}
                   coordinate={{
                     latitude: Number(safeplaceCampaign.coordinate[0]),

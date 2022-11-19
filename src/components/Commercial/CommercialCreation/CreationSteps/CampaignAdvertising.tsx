@@ -105,7 +105,6 @@ const CampaignAdvertising: React.FC<{
         return;
 
       const base64Image = await blobToBase64(uploadImage);
-
       await Advertising.create({
         id: "",
         title: title,
@@ -114,6 +113,7 @@ const CampaignAdvertising: React.FC<{
         imageUrl: base64Image,
         description: description,
         campaignId: campaignId,
+        radius: 0,
       }, userCredentials.token);
 
       nextStepClick();

@@ -6,4 +6,5 @@ export default interface IAdvertising {
   campaignId?: string;
   imageUrl: string;
   targets: string[];
+  radius: number;
 }

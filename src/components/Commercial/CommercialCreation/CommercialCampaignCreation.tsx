@@ -97,6 +97,7 @@ const CommercialCampaignCreation: React.FC<{
           prevStepClick={subCurrentStep}
           nextStepClick={addCurrentStep}
           safeplace={safeplace}
+          campaignId={newCampaign.id}
         />;
       case 3:
         return <CampaignAdvertising

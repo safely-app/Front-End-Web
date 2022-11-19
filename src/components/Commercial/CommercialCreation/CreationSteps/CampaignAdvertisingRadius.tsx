@@ -1,7 +1,11 @@
-import React, {useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import ISafeplace from "../../../interfaces/ISafeplace";
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import {MapContainer, Marker, Popup, TileLayer, Circle} from "react-leaflet";
+import { Advertising } from "../../../../services";
+import { useAppSelector } from "../../../../redux";
+import { notifyError } from "../../../utils";
+import IAdvertising from "../../../interfaces/IAdvertising";
 
 interface ICoordinate {
   latitude: number;
@@ -70,17 +74,29 @@ const CampaignAdvertisingRadius: React.FC<{
   prevStepClick: () => void;
   nextStepClick: () => void;
   safeplace: ISafeplace;
+  campaignId: string;
 }> = ({
   prevStepClick,
   nextStepClick,
   safeplace,
+  campaignId,
 }) => {
   const minRadius = useMemo(() => 100, []);
   const maxRadius = useMemo(() => 1000, []);
 
-  const [radius, setRadius] = useState(minRadius);
+  const userCredentials = useAppSelector(state => state.user.credentials);
 
-  const handleClick = () => {
+  const [radius, setRadius] = useState(minRadius);
+  const [advertising, setAdvertising] = useState<IAdvertising | undefined>(undefined);
+
+  const handleClick = async () => {
+    if (advertising !== undefined && !isNaN(radius)) {
+      await Advertising.update(advertising.id, {
+        ...advertising,
+        radius: radius,
+      }, userCredentials.token);
+    }
+
     nextStepClick();
   };
 
@@ -93,6 +109,30 @@ const CampaignAdvertisingRadius: React.FC<{
       setRadius(parsedValue);
     }
   };
+
+  useEffect(() => {
+    Advertising.getByCampaign(campaignId, userCredentials.token)
+      .then(response => {
+        const advertisings: IAdvertising[] = response.data.map(advertising => ({
+          id: advertising._id,
+          title: advertising.title,
+          ownerId: advertising.ownerId,
+          imageUrl: advertising.imageUrl,
+          description: advertising.description,
+          targets: advertising.targetType,
+          radius: advertising.radius,
+        }));
+
+        console.log("ADS OF CAMPAIGN", advertisings);
+        if (advertisings.length > 0) {
+          setAdvertising(advertisings[0]);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        notifyError(err);
+      });
+  }, [campaignId, userCredentials]);
 
   return (
     <div className="flex-auto bg-white rounded-lg shadow-xl border border-solid border-neutral-100">
