@@ -11,7 +11,7 @@ import CommentMonitor from './CommentMonitor/CommentMonitor';
 import SupportMonitor from './SupportMonitor/SupportMonitor';
 import './Monitor.css';
 import AdvertisingMonitor from './AdvertisingMonitor/AdvertisingMonitor';
-import LogsMonitor from './LogsMonitor/LogsMonitor';
+// import LogsMonitor from './LogsMonitor/LogsMonitor';
 
 enum MonitorView {
     USER,
@@ -54,8 +54,8 @@ const Monitor: React.FC = () => {
 
   const getView = (): JSX.Element => {
     switch (view) {
-      case MonitorView.LOGS:
-        return <LogsMonitor />;
+      // case MonitorView.LOGS:
+      //   return <LogsMonitor />;
       case MonitorView.ADVERTISING:
         return <AdvertisingMonitor />;
       case MonitorView.SUPPORT:
@@ -95,7 +95,7 @@ const Monitor: React.FC = () => {
           <MonitorBtn btnText='Commentaires' sectionType={MonitorView.COMMENT} displayedSection={view} setDisplayedSection={setView} />
           <MonitorBtn btnText='Rapports' sectionType={MonitorView.SUPPORT} displayedSection={view} setDisplayedSection={setView} />
           <MonitorBtn btnText='Publicités' sectionType={MonitorView.ADVERTISING} displayedSection={view} setDisplayedSection={setView} />
-          <MonitorBtn btnText='Logs' sectionType={MonitorView.LOGS} displayedSection={view} setDisplayedSection={setView} />
+          {/* <MonitorBtn btnText='Logs' sectionType={MonitorView.LOGS} displayedSection={view} setDisplayedSection={setView} /> */}
         </div>
         {getView()}
       </div>
