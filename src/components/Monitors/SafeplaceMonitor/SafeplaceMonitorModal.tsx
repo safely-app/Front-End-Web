@@ -214,7 +214,7 @@ export const SafeplaceModal: React.FC<{
   };
 
   return (
-    <div className='absolute bg-white z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6' hidden={!modalOn}>
+    <div className='absolute bg-white z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-xl p-6' hidden={!modalOn}>
       <p className='font-bold'>{title}</p>
       <input type='text' placeholder='Nom' className='block m-2 w-60 text-sm' value={safeplace.name || ''} onChange={(event) => setField('name', event)} />
       <input type='text' placeholder='Ville' className='block m-2 w-60 text-sm' value={safeplace.city || ''} onChange={(event) => setField('city', event)} />

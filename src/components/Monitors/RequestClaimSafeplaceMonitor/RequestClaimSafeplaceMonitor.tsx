@@ -5,7 +5,7 @@ import { useAppSelector } from "../../../redux";
 import { RequestClaimSafeplace, Safeplace } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import IRequestClaimSafeplace from "../../interfaces/IRequestClaimSafeplace";
-import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { convertStringToRegex, createNotification, notifyError, notifySuccess } from "../../utils";
 import { RequestClaimSafeplaceModal } from "./RequestClaimSafeplaceMonitorModal";
 import ISafeplace from "../../interfaces/ISafeplace";
 import { CustomDiv } from "../../common/Table";
@@ -64,8 +64,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         || request.status.toLowerCase().match(lowerSearchText) !== null
         || request.userId.toLowerCase().match(lowerSearchText) !== null
         || request.id.toLowerCase().match(lowerSearchText) !== null
-      ).filter(request =>
-        request.adminId === undefined || request.adminId.toLowerCase().match(lowerSearchText) !== null
+        || (request.adminId !== undefined && request.adminId.toLowerCase().match(lowerSearchText) !== null)
       );
   };
 
@@ -99,7 +98,7 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
         type: responseSafeplace.data.type,
         address: responseSafeplace.data.address,
         description: responseSafeplace.data.description,
-        dayTimetable: responseSafeplace.data.dayTimetable,
+        dayTimetable: responseSafeplace.data.dayTimetable.map(day => day === "" ? null : day),
         coordinate: responseSafeplace.data.coordinate,
         ownerId: requestClaimSafeplace.userId
       };
@@ -107,6 +106,10 @@ const RequestClaimSafeplaceMonitor: React.FC = () => {
       await Safeplace.update(requestClaimSafeplace.safeplaceId, gotSafeplace, userCredentials.token);
       await RequestClaimSafeplace.delete(requestClaimSafeplace.id, userCredentials.token);
       setRequestClaimSafeplaces(requestClaimSafeplaces.filter(rcs => rcs.id !== requestClaimSafeplace.id));
+      createNotification(requestClaimSafeplace.userId, {
+        title: "Requête validée",
+        description: `Votre requête du commerce ${requestClaimSafeplace.safeplaceName} a été validée.`
+      }, userCredentials.token);
       notifySuccess("Requête validée.");
       setModal(ModalType.OFF);
     } catch (err) {

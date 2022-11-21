@@ -63,8 +63,7 @@ const SafeplaceMonitor: React.FC = () => {
         || safeplace.city.toLowerCase().match(lowerSearchText) !== null
         || safeplace.address.toLowerCase().match(lowerSearchText) !== null
         || safeplace.type.toLowerCase().match(lowerSearchText) !== null
-      ).filter(safeplace =>
-        safeplace.ownerId === undefined || safeplace.ownerId.toLowerCase().match(lowerSearchText) !== null
+        || (safeplace.ownerId !== undefined && safeplace.ownerId.toLowerCase().match(lowerSearchText) !== null)
       );
   };
 
@@ -120,7 +119,7 @@ const SafeplaceMonitor: React.FC = () => {
         city: safeplace.city,
         address: safeplace.address,
         type: safeplace.type,
-        dayTimetable: safeplace.dayTimetable,
+        dayTimetable: safeplace.dayTimetable.map(day => day === "" ? null : day),
         coordinate: safeplace.coordinate,
         ownerId: safeplace.ownerId
       }) as ISafeplace);

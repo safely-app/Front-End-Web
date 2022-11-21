@@ -5,7 +5,7 @@ import { useAppSelector } from "../../../redux";
 import { Safeplace, SafeplaceUpdate } from "../../../services";
 import { SearchBar, Table } from "../../common";
 import ISafeplaceUpdate from "../../interfaces/ISafeplaceUpdate";
-import { convertStringToRegex, notifyError, notifySuccess } from "../../utils";
+import { convertStringToRegex, createNotification, notifyError, notifySuccess } from "../../utils";
 import { SafeplaceUpdateModal } from "./SafeplaceUpdateMonitorModal";
 import ISafeplace from "../../interfaces/ISafeplace";
 import { CustomDiv } from "../../common/Table";
@@ -104,6 +104,10 @@ const SafeplaceUpdateMonitor: React.FC = () => {
       await Safeplace.update(safeplaceUpdate.id, safeplace, userCredentials.token);
       await SafeplaceUpdate.delete(safeplaceUpdate.id, userCredentials.token);
       setSafeplaceUpdates(safeplaceUpdates.filter(su => su.id !== safeplaceUpdate.id));
+      createNotification(safeplaceUpdate.ownerId || "", {
+        title: "Modification validée",
+        description: `Votre modification du commerce ${safeplaceUpdate.name} a été validée.`
+      }, userCredentials.token);
       notifySuccess("Modification validée.");
       setModal(ModalType.OFF);
     } catch (err) {
@@ -176,7 +180,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
         city: safeplaceUpdate.city,
         address: safeplaceUpdate.address,
         type: safeplaceUpdate.type,
-        dayTimetable: safeplaceUpdate.dayTimetable,
+        dayTimetable: safeplaceUpdate.dayTimetable.map(day => day === "" ? null : day),
         coordinate: safeplaceUpdate.coordinate,
         ownerId: safeplaceUpdate.ownerId
       }) as ISafeplaceUpdate);
