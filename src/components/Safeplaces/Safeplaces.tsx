@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ISafeplace from '../interfaces/ISafeplace';
 import { AppHeader } from '../Header/Header';
-import { SearchBar } from '../common';
+import { CommonLoader, SearchBar } from '../common';
 import {
   convertStringToRegex,
   notifyError,
@@ -304,12 +304,16 @@ const SafeplacesSearchBar: React.FC<{
   setStateFilterType: (value: string) => void;
   searchBarValue: string;
   setSearchBarValue: (value: string) => void;
+  isInputFocused: boolean;
+  setIsInputFocused: (value: boolean) => void;
 }> = ({
   safeplaces,
   stateFilterType,
   setStateFilterType,
   searchBarValue,
-  setSearchBarValue
+  setSearchBarValue,
+  isInputFocused,
+  setIsInputFocused,
 }) => {
   return (
     <div className="w-1/2 bg-white pt-4 pb-1">
@@ -347,6 +351,14 @@ const SafeplacesSearchBar: React.FC<{
               placeholder="Rechercher"
               textSearch={searchBarValue}
               setTextSearch={setSearchBarValue}
+              onInputFocus={() => setIsInputFocused(true)}
+              onInputBlur={() => setIsInputFocused(false)}
+              onKeyDown={(event, ref) => {
+                if (event.key === "Enter" && isInputFocused) {
+                  setIsInputFocused(false);
+                  ref.current.blur();
+                }
+              }}
               openCreateModal={() => {}}
               noCreate
             />
@@ -362,6 +374,7 @@ const Safeplaces: React.FC = () => {
   const userCredentials = useAppSelector(state => state.user.credentials);
   const reduxSafeplace = useAppSelector(state => state.safeplace);
 
+  const [isInputFocused, setIsInputFocused] = useState(false);
   const [searchBarValue, setSearchBarValue] = useState<string>('');
   const [safeplaces, setSafeplaces] = useState<ISafeplace[]>(reduxSafeplace.safeplaces);
   const [stateFilterType, setStateFilterType] = useState<string>("");
@@ -391,33 +404,29 @@ const Safeplaces: React.FC = () => {
         notifyError(error);
       });
 
-    if (reduxSafeplace.safeplaces === undefined
-      || reduxSafeplace.safeplaces.length === 0
-      || reduxSafeplace.date + 86400000 < Date.now()
-    ) {
-      Safeplace.getAll(userCredentials.token).then(response => {
-        const gotSafeplaces = response.data.map(safeplace => ({
-          id: safeplace._id,
-          name: safeplace.name,
-          city: safeplace.city,
-          address: safeplace.address,
-          type: safeplace.type,
-          dayTimetable: safeplace.dayTimetable,
-          coordinate: safeplace.coordinate
-        }));
+    Safeplace.getAll(userCredentials.token).then(response => {
+      const gotSafeplaces = response.data.map(safeplace => ({
+        id: safeplace._id,
+        name: safeplace.name,
+        city: safeplace.city,
+        address: safeplace.address,
+        type: safeplace.type,
+        dayTimetable: safeplace.dayTimetable.map(day => day === "" ? null : day),
+        coordinate: safeplace.coordinate,
+        ownerId: safeplace.ownerId,
+      }));
 
-        log.log(response);
-        setSafeplaces(gotSafeplaces);
-        dispatch(setReduxSafeplaces({
-          date: Date.now(),
-          safeplaces: gotSafeplaces
-        }));
-      }).catch(error => {
-        log.error(error);
-        notifyError(error);
-      });
-    }
-  }, [userCredentials, dispatch, reduxSafeplace]);
+      log.log(response);
+      setSafeplaces(gotSafeplaces);
+      dispatch(setReduxSafeplaces({
+        date: Date.now(),
+        safeplaces: gotSafeplaces
+      }));
+    }).catch(error => {
+      log.error(error);
+      notifyError(error);
+    });
+  }, [userCredentials, dispatch]);
 
 
   return (
@@ -430,25 +439,37 @@ const Safeplaces: React.FC = () => {
           setStateFilterType={setStateFilterType}
           searchBarValue={searchBarValue}
           setSearchBarValue={setSearchBarValue}
+          isInputFocused={isInputFocused}
+          setIsInputFocused={setIsInputFocused}
         />
       </div>
-      <div className="grid grid-cols-2">
-        <SafeplacesList
-          safeplaces={filterSafeplaces()}
-          setSafeplaces={setSafeplaces}
-          safeplace={safeplace}
-          setSafeplace={setSafeplace}
-          comments={allComments}
-        />
-        <SafeplacesMap
-          safeplaces={safeplaces}
-          safeplaceTarget={safeplace}
-          onPinClick={(safeplace) => {
-            setSafeplace(safeplace);
-          }}
-        />
-      </div>
-
+      {isInputFocused ? (
+        <div>
+          <div className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-60 h-60'>
+            <p className='text-center text-xl font-light pt-8'>Recherche en cours...</p>
+            <div className=''>
+              <CommonLoader height={80} width={80} color='#a19b96' />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2">
+          <SafeplacesList
+            safeplaces={filterSafeplaces()}
+            setSafeplaces={setSafeplaces}
+            safeplace={safeplace}
+            setSafeplace={setSafeplace}
+            comments={allComments}
+          />
+          <SafeplacesMap
+            safeplaces={safeplaces}
+            safeplaceTarget={safeplace}
+            onPinClick={(safeplace) => {
+              setSafeplace(safeplace);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };

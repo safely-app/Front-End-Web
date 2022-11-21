@@ -1,4 +1,5 @@
 import { toast } from 'react-toastify';
+import { Notification } from '../services';
 import { getErrorMsgByStatusCode, getErrorMsgByErrorName } from './errorMessages';
 
 export const notifyError = (error: any) => {
@@ -43,3 +44,17 @@ export const notifyInfo = (msg: string) => {
 
 export const convertStringToRegex = (value: string): RegExp =>
   new RegExp(value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+
+export const createNotification = (
+  userTargetId: string,
+  notif: { title: string; description: string; },
+  token: string
+) => {
+  Notification.create({
+    id: "",
+    ownerId: userTargetId,
+    ...notif,
+  }, token)
+    .then(() => console.log("Notification sent"))
+    .catch((err) => console.error(err));
+};

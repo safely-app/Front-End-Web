@@ -36,30 +36,30 @@ const HeaderNotif: React.FC = () => {
   });
 
   // TODO: add notifications
-  // useEffect(() => {
-  //   const getNotifications = () => {
-  //     Notification.getAll(userCredentials.token)
-  //       .then(result => {
-  //         const gotNotifs = result.data.map(notif => ({
-  //           id: notif._id,
-  //           ownerId: notif.ownerId,
-  //           title: notif.title,
-  //           description: notif.description
-  //         }));
+  useEffect(() => {
+    const getNotifications = () => {
+      Notification.getAll(userCredentials.token)
+        .then(result => {
+          const gotNotifs = result.data.map(notif => ({
+            id: notif._id,
+            ownerId: notif.ownerId,
+            title: notif.title,
+            description: notif.description
+          }));
 
-  //         setNotifs(gotNotifs);
-  //       }).catch(err => log.error(err));
-  //   };
+          setNotifs(gotNotifs);
+        }).catch(err => log.error(err));
+    };
 
-  //   getNotifications();
+    getNotifications();
 
-  //   const interval = setInterval(() => {
-  //     getNotifications();
-  //   }, 300000);
+    const interval = setInterval(() => {
+      getNotifications();
+    }, 30000);
 
-  //   return () => clearInterval(interval);
-  // }, [userCredentials]);
-  log.log("Notifications removed.");
+    return () => clearInterval(interval);
+  }, [userCredentials]);
+  // log.log("Notifications removed.");
 
   const removeNotif = async (notif: INotification) => {
     setNotifs(notifs.filter(n => n.id !== notif.id));

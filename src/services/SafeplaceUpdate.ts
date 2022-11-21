@@ -14,7 +14,7 @@ class SafeplaceUpdate {
     }
 
     create(data: ISafeplaceUpdate, token: string) {
-        const { id, ownerId, ...fData } = data;
+        const { id, ...fData } = data;
         const validateSafeplaceUpdate = isSafeplaceUpdateValid(data);
 
         if (validateSafeplaceUpdate.isValid === false)
