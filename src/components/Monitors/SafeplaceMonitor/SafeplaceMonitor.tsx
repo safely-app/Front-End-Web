@@ -28,7 +28,11 @@ const SafeplaceMonitor: React.FC = () => {
     address: "",
     type: "",
     dayTimetable: [ null, null, null, null, null, null, null ],
-    coordinate: [ "1", "1" ]
+    coordinate: [ "1", "1" ],
+    description: "",
+    adminComment: "",
+    adminGrade: 0,
+    ownerId: "",
   });
 
   const keys = [
@@ -75,6 +79,7 @@ const SafeplaceMonitor: React.FC = () => {
 
   const updateSafeplace = async (safeplace: ISafeplace) => {
     try {
+      log.log(safeplace);
       await Safeplace.update(safeplace.id, safeplace, userCredentials.token);
       setSafeplaces(safeplaces.map(s => (s.id === safeplace.id) ? safeplace : s));
       notifySuccess("Modifications enregistrées");
@@ -124,7 +129,7 @@ const SafeplaceMonitor: React.FC = () => {
         coordinate: safeplace.coordinate,
         ownerId: safeplace.ownerId,
         adminComment: safeplace.adminComment,
-        adminGrade: safeplace.adminGrade,
+        adminGrade: safeplace.adminGrade || 0,
       }) as ISafeplace);
 
       setSafeplaces(gotSafeplaces);

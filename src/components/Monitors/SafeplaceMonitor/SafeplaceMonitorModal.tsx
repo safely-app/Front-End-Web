@@ -194,7 +194,10 @@ const SafeplaceModalAdminPanel: React.FC<{
              onChange={(event) => { setSafeplace({ ...safeplace, adminComment: event.target.value }); }} />
       <ul className="flex gap-1 ml-2 mb-4">
         {[1,2,3,4,5].map(value =>
-          <li className="cursor-pointer" key={value} onClick={() => setAdminGrade(value)}>
+          <li className="cursor-pointer" key={value} onClick={() => {
+            setSafeplace({ ...safeplace, adminGrade: value });
+            setAdminGrade(value);
+          }}>
             {value <= adminGrade ? (
               <FaStar style={{ color: '#f7e249' }} />
             ) : (
