@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput, Button } from '../common';
+import { TextInput } from '../common';
 import { Redirect } from 'react-router-dom';
 import {
   disconnect,
@@ -7,7 +7,7 @@ import {
   useAppSelector,
   useAppDispatch
 } from '../../redux';
-import { notifyError } from '../utils';
+import { notifyError, notifySuccess } from '../utils';
 import { User } from '../../services';
 import { GoogleLogin } from 'react-google-login';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,6 +22,7 @@ import {
   isUserValid
 } from '../../services/utils';
 import { FaCircle } from 'react-icons/fa';
+import safelyLogo from '../../assets/image/logo.png';
 
 enum View {
   SIGNIN,
@@ -326,18 +327,18 @@ const ForgottenPassword: React.FC = () => {
       const response = await User.forgotPassword(email);
 
       log.log(response);
+      notifySuccess("Un email vous a été envoyé.");
     } catch (e) {
       notifyError(e);
     }
   };
 
   return (
-    <div className="Authentication-container">
-      <div className="Authentication">
-        <h1>Mot de passe oublié ?</h1>
-        <TextInput type="email" role="email" label="Email" value={email} setValue={setEmail} />
-        <Button text="Réinitialiser le mot de passe" onClick={handleClick} />
-      </div>
+    <div className="mx-auto pt-20 w-80">
+      <img alt="" src={safelyLogo} className="my-8" />
+      <h1 className="text-xl font-bold text-center">Mot de passe oublié ?</h1>
+      <input className="block border border-solid border-neutral-700 rounded-lg text-lg w-full my-4 p-2" type="email" placeholder="Adresse e-mail" value={email} onChange={(event) => setEmail(event.target.value)} />
+      <button className="block border border-solid border-neutral-700 rounded-lg text-lg w-full my-4 p-2 hover:bg-neutral-200" onClick={handleClick}>Réinitialiser le mot de passe</button>
     </div>
   );
 }
@@ -425,11 +426,12 @@ export const ResetPassword: React.FC = () => {
   }, []);
 
   return (
-    <div className="Authentication">
-      <h1>Réinitialiser le mot de passe</h1>
-      <TextInput type="password" role="password" label="Mot de passe" value={password} setValue={setPassword} />
-      <TextInput type="password" role="password" label="Confirmer mot de passe" value={confirmedPassword} setValue={setConfirmedPassword} />
-      <Button text="Réinitialiser" onClick={handleClick} />
+    <div className="mx-auto pt-20 w-80">
+      <img alt="" src={safelyLogo} className="my-8" />
+      <h1 className="text-xl font-bold text-center">Réinitialiser le mot de passe</h1>
+      <input type="password" placeholder="Mot de passe" value={password} onChange={(event) => setPassword(event.target.value)} className="block border border-solid border-neutral-700 rounded-lg text-lg w-full my-4 p-2" />
+      <input type="password" placeholder="Confirmer mot de passe" value={confirmedPassword} onChange={(event) => setConfirmedPassword(event.target.value)} className="block border border-solid border-neutral-700 rounded-lg text-lg w-full my-4 p-2" />
+      <button className="block border border-solid border-neutral-700 rounded-lg text-lg w-full my-4 p-2 hover:bg-neutral-200" onClick={handleClick}>Réinitialiser</button>
       {redirect && <Redirect to="/login" />}
     </div>
   );

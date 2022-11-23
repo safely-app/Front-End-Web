@@ -23,6 +23,31 @@ import safeplaceImg from '../../../assets/image/safeplace.jpeg';
 import { DragDropFile } from '../CommercialCreation/CreationSteps/CampaignAdvertising';
 import IPricingHistory from '../../interfaces/IPricingHistory';
 
+const CommercialCampaignsMessage: React.FC<{
+  hasShop: boolean;
+}> = ({
+  hasShop
+}) => {
+
+  if (hasShop) {
+    return (
+      <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl justify-center content-center'>
+        <span className="text-2xl font-light select-none text-center">
+          Créer votre première campagne !
+        </span>
+      </div>
+    );
+  }
+
+  return (
+    <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl justify-center content-center'>
+      <span className="text-2xl font-light select-none text-center">
+        Commencez par réclamer un commerce !
+      </span>
+    </div>
+  );
+};
+
 const CommercialCampaigns: React.FC<{
   safeplace: ISafeplace;
   campaigns: ICampaign[];
@@ -83,7 +108,7 @@ const CommercialCampaigns: React.FC<{
     [campaigns]
   );
   const [pricingHistories, setPricingHistories] = useState<IPricingHistory[]>([]);
-  
+
   enum EventType {
     VIEW  = "view",
     CLICK = "click"
@@ -524,7 +549,7 @@ const CommercialCampaigns: React.FC<{
                 </div>
               </div>
             </div>
-            {campaigns && safeplace && safeplace.id !== "" && campaigns.length > 0 ? (
+            {campaigns && safeplace && safeplace.id !== "" ? (
               <AiFillPlusCircle className='mx-6 my-8 w-11 h-11' onClick={() => {
                 section.setter(SECTION.CAMPAIGNCREATION);
               }} />
@@ -614,11 +639,7 @@ const CommercialCampaigns: React.FC<{
                 </div>
               )}
               ) : (
-                <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl justify-center content-center'>
-                  <span className="text-2xl font-light select-none text-center">
-                    Commencez par réclamer un commerce !
-                  </span>
-                </div>
+                <CommercialCampaignsMessage hasShop={safeplace.id !== ""} />
               )}
         </>
       )}
