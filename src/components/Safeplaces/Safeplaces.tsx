@@ -210,7 +210,7 @@ export const SafeplacesList: React.FC<{
   setSafeplaces: (value: ISafeplace[]) => void;
   safeplace: ISafeplace | undefined;
   setSafeplace: (safeplace: ISafeplace | undefined) => void;
-  comments: []
+  comments: IComment[];
 }> = ({
   safeplaces,
   setSafeplaces,
@@ -267,7 +267,7 @@ export const SafeplacesList: React.FC<{
           <SafeplaceDetails
             safeplace={safeplace}
             setSafeplace={setSafeplace}
-            comments={comments}
+            comments={comments.filter(comment => comment.safeplaceId === safeplace.id)}
           />
         ) : (
           <div className="grid grid-cols-2 gap-10 px-30">
