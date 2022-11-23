@@ -55,41 +55,38 @@ const BugReport: React.FC = () => {
   return (
     <div className="min-h-screen bg-background bg-transparent space-y-2 bg-cover bg-center">
       <AppHeader />
-      <div className="antialiased text-gray-900 bg-transparent absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
 
-        <div className="mx-4 card bg-white max-w-md p-10 md:rounded-lg my-8 mx-auto">
-          <div className="title">
-            <h1 className="font-bold text-center">Rapporter un bug ou faire une requête d'une fonctionalité</h1>
-          </div>
-
-          <div className="options md:flex md:space-x-6 text-sm items-center text-gray-700 mt-4">
-            <p className="w-1/2 mb-2 md:mb-0">J'aimerais</p>
-            <select className="w-full border border-gray-200 p-2 focus:outline-none focus:border-gray-500" value={report.type} onChange={(event) => setField('type', event)}>
+      <section className="bg-white dark:bg-gray-900">
+  <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
+      <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">Contactez-nous</h2>
+      <p className="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">Avez-vous un problème technique ? Souhaitez vous nous faire part de vos commentaires sur une fonctionnalité ? Avez-vous besoin de détails sur nos abonnements ? Faites-le nous savoir.</p>
+      <form action="#" className="space-y-8">
+          <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">J'aimerais</label>
+              <select className="w-full border border-gray-200 p-2 focus:outline-none focus:border-gray-500" value={report.type} onChange={(event) => setField('type', event)}>
               <option value="Bug">Rapporter un bug</option>
               <option value="Feature">Requête d'une fonctionalité</option>
               <option value="Opinion">Commentaire</option>
             </select>
           </div>
-
-          <div className="form mt-4">
-            <div className="flex flex-col text-sm">
-              <label className="font-bold mb-2">Titre</label>
-              <input className=" appearance-none w-full border border-gray-200 p-2 h-10 focus:outline-none focus:border-gray-500" type="text" placeholder="Titre" value={report.title} onChange={(event) => setField('title', event)} />
-            </div>
-
-            <div className="text-sm flex flex-col">
-              <label className="font-bold mt-4 mb-2">Description</label>
-              <textarea className=" appearance-none w-full border border-gray-200 p-2 h-40 focus:outline-none focus:border-gray-500" placeholder="Votre commentaire..." value={report.comment} onChange={(event) => setField('comment', event)}></textarea>
-            </div>
+          <div>
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">Titre</label>
+              <input  value={report.title} onChange={(event) => setField('title', event)} type="text" id="subject" className="block p-3 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light" placeholder="Titre de votre requête" required/>
           </div>
-
-          <div className="submit">
-            <Button className=" w-full bg-blue-600 shadow-lg text-white px-4 py-2 hover:bg-blue-700 mt-8 text-center font-semibold focus:outline-none" text="Envoyer" onClick={sendReport} />
+          <div className="sm:col-span-2">
+              <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
+              <textarea  value={report.comment} onChange={(event) => setField('comment', event)} id="message" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Décrivez-nous votre avis"></textarea>
           </div>
-        </div>
-
-      </div>
-
+          <div className="flex justify-center submit">
+          <button className="text-lg font-bold text-white bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg float-right" onClick={sendReport}>
+              Envoyer
+            </button>
+          </div>
+      </form>
+  </div>
+</section>
+      
+      
     </div>
   );
 }
