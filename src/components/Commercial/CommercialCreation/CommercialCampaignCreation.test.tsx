@@ -1,8 +1,8 @@
 import nock from "nock";
-import {fireEvent, getByText, render, screen} from "@testing-library/react";
+import {fireEvent, render, screen} from "@testing-library/react";
 import {Provider} from "react-redux";
 import {store} from "../../../redux";
-import {CampaignAdvertising, CampaignBudget, CampaignName, CampaignTarget} from "./CreationSteps";
+import {CampaignBudget, CampaignName, CampaignTarget} from "./CreationSteps";
 import {act} from "react-dom/test-utils";
 import CommercialCampaignCreation from "./CommercialCampaignCreation";
 import ICampaign from "../../interfaces/ICampaign";

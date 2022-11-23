@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAppSelector } from '../../redux';
 import IReport from '../../components/interfaces/IReport';
 import { AppHeader } from "../Header/Header";
-import { Button } from '../common';
 import { BugReportManager } from '../../services';
 import { notifyError, notifySuccess } from '../utils';
 import log from "loglevel";
