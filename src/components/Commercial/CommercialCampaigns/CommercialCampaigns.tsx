@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import ITarget from '../../interfaces/ITarget';
 import ICampaign from '../../interfaces/ICampaign';
 import IAdvertising from '../../interfaces/IAdvertising';
 import { convertStringToRegex, notifyError, notifyInfo } from '../../utils';
-import { Advertising, Commercial, Safeplace } from '../../../services';
+import { Advertising, Commercial, PricingHistory, Safeplace } from '../../../services';
 import { useAppSelector } from '../../../redux';
 import { ModalType } from '../CommercialModalType';
 import { ModalBtn } from '../../common/Modal';
@@ -21,6 +21,7 @@ import { SECTION } from '../CommercialPage';
 import { Map } from '../CommercialCreation/CreationSteps/CampaignAdvertisingRadius';
 import safeplaceImg from '../../../assets/image/safeplace.jpeg';
 import { DragDropFile } from '../CommercialCreation/CreationSteps/CampaignAdvertising';
+import IPricingHistory from '../../interfaces/IPricingHistory';
 
 const CommercialCampaigns: React.FC<{
   safeplace: ISafeplace;
@@ -76,6 +77,17 @@ const CommercialCampaigns: React.FC<{
     coordinate: ['', ''],
     ownerId: ''
   });
+
+  const campaignIds = useMemo(
+    () => campaigns.map(campaign => campaign.id),
+    [campaigns]
+  );
+  const [pricingHistories, setPricingHistories] = useState<IPricingHistory[]>([]);
+  
+  enum EventType {
+    VIEW  = "view",
+    CLICK = "click"
+  }
 
   const filterAds = (): IAdvertising[] => {
     const lowerSearchText = convertStringToRegex(adSearch.toLocaleLowerCase());
@@ -221,6 +233,35 @@ const CommercialCampaigns: React.FC<{
       })
     }
   }, [campaignAds, userCredentials]);
+
+  useEffect(() => {
+    console.log(userCredentials.token)
+    PricingHistory.getAll(userCredentials.token)
+      .then(result => {
+        const gotPricingHistories = result.data.map(pricingHistory => ({
+          id: pricingHistory._id,
+          campaignId: pricingHistory.campaignId,
+          eventType: pricingHistory.eventType,
+          userAge: pricingHistory.userAge,
+          userCsp: pricingHistory.userCsp,
+          eventCost: pricingHistory.eventCost,
+          totalCost: pricingHistory.totalCost,
+          matchingOn: pricingHistory.matchingOn,
+          createdAt: new Date(pricingHistory.createdAt),
+        }));
+
+        const campaignsPricingHistories = gotPricingHistories
+          .filter(pricingHistory => campaignIds.includes(pricingHistory.campaignId));
+
+        setPricingHistories(campaignsPricingHistories);
+      })
+      .catch(err => log.error(err));
+  }, [userCredentials, campaignIds]);
+
+  const getTotalCost = (pricingHistories: IPricingHistory[]): number => {
+    return pricingHistories
+      .reduce((cost, pricingHistory) => cost + pricingHistory.totalCost, 0);
+  };
 
   return (
     <>
@@ -489,79 +530,90 @@ const CommercialCampaigns: React.FC<{
               }} />
             ) : null}
           </div>
-            {campaigns && safeplace && safeplace.id !== "" && campaigns.length > 0 ? campaigns.map(item => (
-              <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl'>
-                <div className='flex flex-col'>
-                  <div className='flex flex-row p-8'>
-                    <div className="bg-safeplace-placeholder flex-initial w-48 h-36 rounded-xl">
-                      <img className="object-cover" alt="" />
-                    </div>
-                    <div className="flex flex-auto flex-col pl-6">
-                      <p className='font-bold text-xl mb-1'>{item.name}</p>
-                      <CampaignLabel status={item.status} />
-                      <FaEdit className='mt-2 cursor-pointer' onClick={() => {
-                        updateModal(item, ModalType.UPDATE)
-                      }}/>
-                      <div className='flex justify-end mb-1'>
-                        <div className='shadow-[0_05px_09px_rgba(0,0,0,0.25)]'>
-                          <button
-                            className='text-gray-400 border border-solid border-neutral-400 rounded-md h-8 w-20 text-sm font-bold bg-white hover:bg-neutral-200'
-                            onClick={() => {
-                              setCampaignAds(item);
-                            }}
-                          >
-                            Publicités
-                          </button>
-                        </div>
+            {campaigns && safeplace && safeplace.id !== "" && campaigns.length > 0 ? campaigns.map(item => {
+              const campaignPricingHistories = pricingHistories
+              .filter(pricingHistory => pricingHistory.campaignId === item.id);
+
+              const campaignViewPricingHistories = campaignPricingHistories
+              .filter(pricingHistory => pricingHistory.eventType === EventType.VIEW)
+
+              const campaignClickPricingHistories = campaignPricingHistories
+              .filter(pricingHistory => pricingHistory.eventType === EventType.CLICK)
+
+              return (
+                <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl'>
+                  <div className='flex flex-col'>
+                    <div className='flex flex-row p-8'>
+                      <div className="bg-safeplace-placeholder flex-initial w-48 h-36 rounded-xl">
+                        <img className="object-cover" alt="" />
                       </div>
-                      <div className='h-0.5 w-full bg-gray-300' />
-                      <div className='flex flex-row mt-2'>
-                        <div className='flex flex-row items-center'>
-                          <GrMoney className='w-6 h-6' />
-                          <div className='ml-4 flex flex-col'>
-                            <p className='font-bold text-base'>{item.budget}</p>
-                            <p className='font-semibold text-xs text-gray-400'>Budget</p>
+                      <div className="flex flex-auto flex-col pl-6">
+                        <p className='font-bold text-xl mb-1'>{item.name}</p>
+                        <CampaignLabel status={item.status} />
+                        <FaEdit className='mt-2 cursor-pointer' onClick={() => {
+                          updateModal(item, ModalType.UPDATE)
+                        }}/>
+                        <div className='flex justify-end mb-1'>
+                          <div className='shadow-[0_05px_09px_rgba(0,0,0,0.25)]'>
+                            <button
+                              className='text-gray-400 border border-solid border-neutral-400 rounded-md h-8 w-20 text-sm font-bold bg-white hover:bg-neutral-200'
+                              onClick={() => {
+                                setCampaignAds(item);
+                              }}
+                            >
+                              Publicités
+                            </button>
                           </div>
                         </div>
-
-                        <div className='flex flex-row items-center ml-20'>
-                          <MdOutlineAdsClick className='w-6 h-6' />
-                          <div className='ml-4 flex flex-col'>
-                            <p className='font-bold text-base'>{"12"}</p>
-                            <p className='font-semibold text-xs text-gray-400'>Conversions</p>
+                        <div className='h-0.5 w-full bg-gray-300' />
+                        <div className='flex flex-row mt-2'>
+                          <div className='flex flex-row items-center'>
+                            <GrMoney className='w-6 h-6' />
+                            <div className='ml-4 flex flex-col'>
+                              <p className='font-bold text-base'>{`${getTotalCost([ ...campaignViewPricingHistories, ...campaignClickPricingHistories ]).toFixed(2)}€`}</p>
+                              <p className='font-semibold text-xs text-gray-400'>Budget</p>
+                            </div>
                           </div>
-                        </div>
 
-                        <div className='flex flex-row items-center ml-20'>
-                          <BsMegaphone className='w-6 h-6' />
-                          <div className='ml-4 flex flex-col'>
-                            <p className='font-bold text-base'>{"123"}</p>
-                            <p className='font-semibold text-xs text-gray-400'>Impressions</p>
+                          <div className='flex flex-row items-center ml-20'>
+                            <MdOutlineAdsClick className='w-6 h-6' />
+                            <div className='ml-4 flex flex-col'>
+                              <p className='font-bold text-base'>{campaignClickPricingHistories.length.toString()}</p>
+                              <p className='font-semibold text-xs text-gray-400'>Conversions</p>
+                            </div>
                           </div>
-                        </div>
 
-                        <div className='flex flex-row items-center ml-20'>
-                          <GiClick className='w-6 h-6' />
-                          <div className='ml-4 flex flex-col'>
-                            <p className='font-bold text-base'>{"0.05€"}</p>
-                            <p className='font-semibold text-xs text-gray-400'>Coût par clique</p>
+                          <div className='flex flex-row items-center ml-20'>
+                            <BsMegaphone className='w-6 h-6' />
+                            <div className='ml-4 flex flex-col'>
+                              <p className='font-bold text-base'>{campaignViewPricingHistories.length.toString()}</p>
+                              <p className='font-semibold text-xs text-gray-400'>Impressions</p>
+                            </div>
                           </div>
-                        </div>
 
-                        <div className='flex flex-row items-center ml-20'>
-                          <BsCalendar3 className='w-6 h-6' />
-                          <div className='ml-4 flex flex-col'>
-                            <p className='font-bold text-base'>{item.startingDate}</p>
-                            <p className='font-semibold text-xs text-gray-400'>Date de fin</p>
+                          <div className='flex flex-row items-center ml-20'>
+                            <GiClick className='w-6 h-6' />
+                            <div className='ml-4 flex flex-col'>
+                              <p className='font-bold text-base'>{getTotalCost(campaignClickPricingHistories) / campaignClickPricingHistories.length}</p>
+                              <p className='font-semibold text-xs text-gray-400'>Coût par clique</p>
+                            </div>
+                          </div>
+
+                          <div className='flex flex-row items-center ml-20'>
+                            <BsCalendar3 className='w-6 h-6' />
+                            <div className='ml-4 flex flex-col'>
+                              <p className='font-bold text-base'>{item.startingDate}</p>
+                              <p className='font-semibold text-xs text-gray-400'>Date de fin</p>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                  <div className='h-1.5 w-full bg-neutral-100' />
                 </div>
-                <div className='h-1.5 w-full bg-neutral-100' />
-              </div>
-              )) : (
+              )}
+              ) : (
                 <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl justify-center content-center'>
                   <span className="text-2xl font-light select-none text-center">
                     Commencez par réclamer un commerce !
