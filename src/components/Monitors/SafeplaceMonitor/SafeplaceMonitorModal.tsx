@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import ISafeplace from "../../interfaces/ISafeplace";
+import { FaStar } from 'react-icons/fa';
 
 interface VerifyHoursDayProps {
   name: string;
@@ -141,7 +142,7 @@ const VerifyHours: React.FC<{
                 <tbody>
                   <tr className="text-sm">
                     <th className="w-36">{day.name}</th>
-                    <td className="w-48">Je suis ouvert ce jour</td>
+                    <td className="w-48">Ouvert ce jour</td>
                     <td className="w-10 text-center">
                       <input type="checkbox" checked={day.isChecked} onChange={() => setDayTimetable({...day, isChecked: !day.isChecked})} />
                     </td>
@@ -149,13 +150,6 @@ const VerifyHours: React.FC<{
                 </tbody>
               </table>
               <table hidden={!day.isChecked}>
-                <thead>
-                  <tr className="text-xs">
-                    <th colSpan={3}>Matinée</th>
-                    <th></th>
-                    <th colSpan={3}>Après-Midi</th>
-                  </tr>
-                </thead>
                 <tbody>
                   <tr>
                     <td><input type="time" className="text-xs" value={day.timetable[0] || ''} onChange={(e) => setDayTimetableValue(day, 0, e.target.value)} /></td>
@@ -183,15 +177,50 @@ const VerifyHours: React.FC<{
   );
 };
 
+const SafeplaceModalAdminPanel: React.FC<{
+  safeplace: ISafeplace;
+  setSafeplace: (safeplace: ISafeplace) => void;
+}> = ({
+  safeplace,
+  setSafeplace,
+}) => {
+  const [adminGrade, setAdminGrade] = useState(safeplace.adminGrade || 0);
+
+  return (
+    <div>
+      <input type='text' placeholder='Propriétaire' className='block m-2 w-60 text-sm' value={safeplace.ownerId || ''}
+             onChange={(event) => { setSafeplace({ ...safeplace, ownerId: event.target.value }); }} />
+      <input type='text' placeholder='Commentaire administrateur' className='block m-2 w-60 text-sm' value={safeplace.adminComment || ''}
+             onChange={(event) => { setSafeplace({ ...safeplace, adminComment: event.target.value }); }} />
+      <ul className="flex gap-1 ml-2 mb-4">
+        {[1,2,3,4,5].map(value =>
+          <li className="cursor-pointer" key={value} onClick={() => {
+            setSafeplace({ ...safeplace, adminGrade: value });
+            setAdminGrade(value);
+          }}>
+            {value <= adminGrade ? (
+              <FaStar style={{ color: '#f7e249' }} />
+            ) : (
+              <FaStar style={{ color: 'lightgray' }} />
+            )}
+          </li>
+        )}
+      </ul>
+    </div>
+  )
+};
+
 export const SafeplaceModal: React.FC<{
   title: string;
   modalOn: boolean;
+  isAdmin?: boolean;
   safeplace: ISafeplace;
   setSafeplace: (safeplace: ISafeplace) => void;
   buttons: JSX.Element[];
 }> = ({
   title,
   modalOn,
+  isAdmin,
   safeplace,
   setSafeplace,
   buttons
@@ -223,7 +252,7 @@ export const SafeplaceModal: React.FC<{
       <input type='text' placeholder='Latitude' className='block m-2 w-60 text-sm' value={safeplace.coordinate[0] || ''} onChange={(event) => setCoordinate(0, event)} />
       <input type='text' placeholder='Longitude' className='block m-2 w-60 text-sm' value={safeplace.coordinate[1] || ''} onChange={(event) => setCoordinate(1, event)} />
       <input type='text' placeholder='Type' className='block m-2 w-60 text-sm' value={safeplace.type || ''} onChange={(event) => setField('type', event)} />
-      <input type='text' placeholder='Propriétaire' className='block m-2 w-60 text-sm' value={safeplace.ownerId || ''} onChange={(event) => setField('ownerId', event)} />
+      {isAdmin && <SafeplaceModalAdminPanel safeplace={safeplace} setSafeplace={setSafeplace} />}
       <VerifyHours safeplace={safeplace} setSafeplace={setSafeplace} />
       <div className='w-full mt-4'>
         {buttons}

@@ -10,6 +10,7 @@ import { SafeplaceModal } from "./SafeplaceMonitorModal";
 import { CustomDiv } from "../../common/Table";
 import { ModalBtn } from "../../common/Modal";
 import { ModalType } from "../ModalType";
+import { Freeze } from "react-freeze";
 import log from "loglevel";
 
 const SafeplaceMonitor: React.FC = () => {
@@ -27,7 +28,11 @@ const SafeplaceMonitor: React.FC = () => {
     address: "",
     type: "",
     dayTimetable: [ null, null, null, null, null, null, null ],
-    coordinate: [ "1", "1" ]
+    coordinate: [ "1", "1" ],
+    description: "",
+    adminComment: "",
+    adminGrade: 0,
+    ownerId: "",
   });
 
   const keys = [
@@ -74,6 +79,7 @@ const SafeplaceMonitor: React.FC = () => {
 
   const updateSafeplace = async (safeplace: ISafeplace) => {
     try {
+      log.log(safeplace);
       await Safeplace.update(safeplace.id, safeplace, userCredentials.token);
       setSafeplaces(safeplaces.map(s => (s.id === safeplace.id) ? safeplace : s));
       notifySuccess("Modifications enregistrées");
@@ -121,7 +127,9 @@ const SafeplaceMonitor: React.FC = () => {
         type: safeplace.type,
         dayTimetable: safeplace.dayTimetable.map(day => day === "" ? null : day),
         coordinate: safeplace.coordinate,
-        ownerId: safeplace.ownerId
+        ownerId: safeplace.ownerId,
+        adminComment: safeplace.adminComment,
+        adminGrade: safeplace.adminGrade || 0,
       }) as ISafeplace);
 
       setSafeplaces(gotSafeplaces);
@@ -136,6 +144,7 @@ const SafeplaceMonitor: React.FC = () => {
     <div className='my-3'>
 
       <SafeplaceModal
+        isAdmin
         title="Modifier une safeplace"
         modalOn={modalOn === ModalType.UPDATE}
         safeplace={safeplace}
@@ -154,12 +163,14 @@ const SafeplaceMonitor: React.FC = () => {
         noCreate
       />
       <div className='mt-3'>
-        <Table
-          content={filterSafeplaces()}
-          keys={keys}
-          checkedBoxes={checkedBoxes}
-          setCheckedBoxes={setCheckedBoxes}
-        />
+        <Freeze freeze={modalOn !== ModalType.OFF}>
+          <Table
+            content={filterSafeplaces()}
+            keys={keys}
+            checkedBoxes={checkedBoxes}
+            setCheckedBoxes={setCheckedBoxes}
+          />
+        </Freeze>
       </div>
     </div>
   );

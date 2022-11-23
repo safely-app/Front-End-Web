@@ -500,7 +500,7 @@ const CommercialCampaigns: React.FC<{
                     <div className="flex flex-auto flex-col pl-6">
                       <p className='font-bold text-xl mb-1'>{item.name}</p>
                       <CampaignLabel status={item.status} />
-                      <FaEdit className='mt-2' onClick={() => {
+                      <FaEdit className='mt-2 cursor-pointer' onClick={() => {
                         updateModal(item, ModalType.UPDATE)
                       }}/>
                       <div className='flex justify-end mb-1'>

@@ -8,6 +8,8 @@ export default interface ISafeplace {
     dayTimetable: (string | null)[];
     coordinate: string[];
     ownerId?: string;
+    adminComment?: string;
+    adminGrade?: number;
 }
 
 export interface ISafeplaceVariant {

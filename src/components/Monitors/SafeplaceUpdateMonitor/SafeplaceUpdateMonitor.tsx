@@ -101,7 +101,7 @@ const SafeplaceUpdateMonitor: React.FC = () => {
         ownerId: safeplaceUpdate.ownerId,
       };
 
-      await Safeplace.update(safeplaceUpdate.id, safeplace, userCredentials.token);
+      await Safeplace.update(safeplaceUpdate.safeplaceId, safeplace, userCredentials.token);
       await SafeplaceUpdate.delete(safeplaceUpdate.id, userCredentials.token);
       setSafeplaceUpdates(safeplaceUpdates.filter(su => su.id !== safeplaceUpdate.id));
       createNotification(safeplaceUpdate.ownerId || "", {

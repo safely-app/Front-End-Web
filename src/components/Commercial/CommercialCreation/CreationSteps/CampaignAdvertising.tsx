@@ -73,12 +73,12 @@ export const DragDropFile: React.FC<{
 const CampaignAdvertising: React.FC<{
   prevStepClick: () => void;
   nextStepClick: () => void;
-  campaignId: string;
+  getCampaignId: () => string;
   targetIds: string[];
 }> = ({
   prevStepClick,
   nextStepClick,
-  campaignId,
+  getCampaignId,
   targetIds,
 }) => {
   const userCredentials = useAppSelector(state => state.user.credentials);
@@ -112,7 +112,7 @@ const CampaignAdvertising: React.FC<{
         targets: targetIds,
         imageUrl: base64Image,
         description: description,
-        campaignId: campaignId,
+        campaignId: getCampaignId(),
         radius: 0,
       }, userCredentials.token);
 
