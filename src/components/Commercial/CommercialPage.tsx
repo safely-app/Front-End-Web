@@ -3,7 +3,7 @@ import { AppHeader } from '../Header/Header';
 import ITarget from '../interfaces/ITarget';
 import ICampaign from '../interfaces/ICampaign';
 import { useAppSelector } from '../../redux';
-import { Commercial, Safeplace } from '../../services';
+import { Commercial, RequestClaimSafeplace, Safeplace } from '../../services';
 import CommercialCampaigns from './CommercialCampaigns/CommercialCampaigns';
 import CommercialStatistics from './CommercialStatistics';
 import ISafeplace from '../interfaces/ISafeplace';
@@ -14,6 +14,7 @@ import { FiPieChart } from 'react-icons/fi';
 import log from 'loglevel';
 import { CommercialCampaignCreation } from './CommercialCreation';
 import CommercialSafeplaces from './CommercialSafeplaces';
+import IRequestClaimSafeplace from '../interfaces/IRequestClaimSafeplace';
 
 export enum SECTION {
   CAMPAIGNS,
@@ -142,6 +143,10 @@ const CommercialPage: React.FC = () => {
     type: "",
   });
 
+  const [safeplaces, setSafeplaces] = useState<ISafeplace[]>([]);
+
+  const [requestSafeplace, setRequestSafeplace] = useState<IRequestClaimSafeplace[]>([]);
+
   useEffect(() => {
     const parseUrl = (url: string): string => {
       try {
@@ -204,17 +209,32 @@ const CommercialPage: React.FC = () => {
     Safeplace.getByOwnerId(userCredentials._id, userCredentials.token)
       .then(result => {
         setSafeplace({
-          id: result.data._id,
-          name: result.data.name,
-          description: result.data.description,
-          city: result.data.city,
-          address: result.data.address,
-          type: result.data.type,
-          dayTimetable: result.data.dayTimetable,
-          coordinate: result.data.coordinate,
-          ownerId: result.data.ownerId,
+          id: result.data[0]._id,
+          name: result.data[0].name,
+          description: result.data[0].description,
+          city: result.data[0].city,
+          address: result.data[0].address,
+          type: result.data[0].type,
+          dayTimetable: result.data[0].dayTimetable,
+          coordinate: result.data[0].coordinate,
+          ownerId: result.data[0].ownerId,
         });
       }).catch(err => log.error(err));
+
+    Safeplace.getByOwnerId(userCredentials._id, userCredentials.token)
+      .then(result => {
+        const allSafeplaces = result.data.map(item => ({...item}));
+
+        setSafeplaces(allSafeplaces);
+      }).catch(err => log.error(err));
+
+    RequestClaimSafeplace.getByOwnerId(userCredentials._id, userCredentials.token)
+    .then(result => {
+      const allRequests = result.data.map(item => ({...item}));
+
+      setRequestSafeplace(allRequests);
+    }).catch(err => log.error(err));
+
   }, [userCredentials]);
 
   const getSectionComponent = (): JSX.Element => {
@@ -242,10 +262,12 @@ const CommercialPage: React.FC = () => {
       case SECTION.SAFEPLACES:
         return <CommercialSafeplaces 
           safeplace={safeplace}
+          safeplaces={safeplaces}
           campaigns={campaigns}
           setCampaigns={setCampaigns}
           targets={targets}
           setTargets={setTargets}
+          requestsSafeplaces={requestSafeplace}
           section={{ value: displayedSection, setter: setDisplayedSection }}
         />
       default:
