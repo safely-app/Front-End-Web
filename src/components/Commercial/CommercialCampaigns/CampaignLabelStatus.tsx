@@ -7,7 +7,6 @@ interface ICampaignLabelStatus {
 const CampaignLabelStatus: React.FC<ICampaignLabelStatus> = ({status}) => {
 
     const getLabel = (): JSX.Element => {
-        console.log(status)
         switch (status) {
             case "Accepted": {
                 return (
