@@ -13,6 +13,10 @@ class RequestClaimSafeplace {
         return createHttpConfig(this.baseURL, token).get(`/safeplace/requestClaimSafeplace/${id}`);
     }
 
+    getByOwnerId(userId: string, token: string) {
+        return createHttpConfig(this.baseURL, token).get(`/safeplace/requestClaimSafeplace/ownerRequestClaim/${userId}`);
+    }
+
     create(data: IRequestClaimSafeplace, token: string) {
         const { id, ...tmpData } = data;
         return createHttpConfig(this.baseURL, token).post("/safeplace/requestClaimSafeplace", tmpData);

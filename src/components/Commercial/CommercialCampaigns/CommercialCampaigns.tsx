@@ -473,7 +473,7 @@ const CommercialCampaigns: React.FC<{
               <p className="px-6 py-8 font-bold text-xl text-2xl">Mes campagnes</p>
               <div className='inline-block flex px-6 py-8 w-5/12'>
                 <div className='relative w-full'>
-                  <FaSearch className='h-5 w-5 top-3 left-4 absolute' />
+                  <FaSearch className='h-5 w-5 top-1 left-4 absolute' />
                   <input
                     className='border-transparent pl-14 text-sm w-full h-full rounded-xl bg-neutral-100'
                     placeholder={'Rechercher une campagne...'}
@@ -483,15 +483,14 @@ const CommercialCampaigns: React.FC<{
                 </div>
               </div>
             </div>
-            <AiFillPlusCircle className='mx-6 my-8 w-11 h-11' onClick={() => {
+            {campaigns && safeplace && safeplace.id !== "" && campaigns.length > 0 ? (
+              <AiFillPlusCircle className='mx-6 my-8 w-11 h-11' onClick={() => {
                 section.setter(SECTION.CAMPAIGNCREATION);
-            }} />
-
+              }} />
+            ) : null}
           </div>
-
-          <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl'>
-            {campaigns ? campaigns.map(item => (
-              <>
+            {campaigns && safeplace && safeplace.id !== "" && campaigns.length > 0 ? campaigns.map(item => (
+              <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl'>
                 <div className='flex flex-col'>
                   <div className='flex flex-row p-8'>
                     <div className="bg-safeplace-placeholder flex-initial w-48 h-36 rounded-xl">
@@ -561,9 +560,14 @@ const CommercialCampaigns: React.FC<{
                   </div>
                 </div>
                 <div className='h-1.5 w-full bg-neutral-100' />
-              </>
-              )) : null}
-          </div>
+              </div>
+              )) : (
+                <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl justify-center content-center'>
+                  <span className="text-2xl font-light select-none text-center">
+                    Commencez par réclamer un commerce !
+                  </span>
+                </div>
+              )}
         </>
       )}
 
