@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useAppSelector } from '../../redux';
 import IReport from '../../components/interfaces/IReport';
 import { AppHeader } from "../Header/Header";
-import { Button } from '../common';
 import { BugReportManager } from '../../services';
 import { notifyError, notifySuccess } from '../utils';
 import log from "loglevel";
@@ -53,11 +52,11 @@ const BugReport: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background bg-transparent space-y-2 bg-cover bg-center">
+    <div className='w-full h-full bg-neutral-100'>
       <AppHeader />
 
-      <section className="bg-white dark:bg-gray-900">
-  <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
+      <div className=' bg-white m-auto mx-6 my-6 rounded shadow-lg'>
+      <div className="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
       <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-center text-gray-900 dark:text-white">Contactez-nous</h2>
       <p className="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">Avez-vous un problème technique ? Souhaitez vous nous faire part de vos commentaires sur une fonctionnalité ? Avez-vous besoin de détails sur nos abonnements ? Faites-le nous savoir.</p>
       <form action="#" className="space-y-8">
@@ -84,7 +83,7 @@ const BugReport: React.FC = () => {
           </div>
       </form>
   </div>
-</section>
+</div>
       
       
     </div>
