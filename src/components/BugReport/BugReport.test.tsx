@@ -19,12 +19,15 @@ test('render BugReport', async () => {
     </Provider>
   );
 
-  expect(screen.getByPlaceholderText("Titre")).toBeInTheDocument();
-  expect(screen.getByPlaceholderText("Votre commentaire...")).toBeInTheDocument();
+  const titleElement = screen.getByPlaceholderText("Titre de votre requête");
+  const commentElement = screen.getByPlaceholderText("Décrivez-nous votre avis");
+
+  expect(titleElement).toBeInTheDocument();
+  expect(commentElement).toBeInTheDocument();
   expect(screen.getByText("Envoyer")).toBeInTheDocument();
 
-  fireEvent.change(screen.getByPlaceholderText("Titre"), { target: { value: "Titre" } });
-  fireEvent.change(screen.getByPlaceholderText("Votre commentaire..."), { target: { value: "Comment" } });
+  fireEvent.change(titleElement, { target: { value: "Titre" } });
+  fireEvent.change(commentElement, { target: { value: "Comment" } });
   fireEvent.click(screen.getByText("Envoyer"));
 
   await act(async () => testDelay(1000));
