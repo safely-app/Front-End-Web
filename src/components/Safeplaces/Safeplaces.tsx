@@ -36,6 +36,18 @@ import { SafeplaceModal } from '../Monitors/SafeplaceMonitor/SafeplaceMonitorMod
 import IComment from '../interfaces/IComment';
 import './Safeplaces.css';
 
+const getSafeplaceImage = (safeplaceId: string, small?: boolean) => {
+  const safeplaceImages = [ 'bg-safeplace-placeholder', 'bg-safeplace-placeholder-2', 'bg-safeplace-placeholder-3' ];
+  const safeplaceSmallImages = [ 'bg-safeplace-small-placeholder', 'bg-safeplace-small-placeholder-2', 'bg-safeplace-small-placeholder-3' ];
+
+  const idSum = safeplaceId.split('').map(c => parseInt(c)).filter(n => !isNaN(n)).reduce((sum, n) => sum + n, 0);
+
+  if (small)
+    return safeplaceSmallImages[idSum % safeplaceImages.length];
+
+  return safeplaceImages[idSum % safeplaceImages.length];
+};
+
 interface IMapProps {
   safeplaces: ISafeplace[];
   safeplaceTarget?: ISafeplace;
@@ -147,7 +159,7 @@ const SafeplaceDetails: React.FC<{
     <div>
       <div>
         <FaChevronLeft onClick={() => setSafeplace(undefined)} className="w-8 h-8 cursor-pointer mb-4" style={{ color: "black" }} />
-        <div className="bg-safeplace-placeholder h-96 rounded-3xl">
+        <div className={`${getSafeplaceImage(safeplace.id)} h-96 rounded-3xl`}>
           <img className="object-cover" alt="" />
         </div>
       </div>
@@ -261,7 +273,7 @@ export const SafeplacesList: React.FC<{
           <div className="grid grid-cols-2 gap-10 px-30">
             {safeplaces && safeplaces.length > 0 ? safeplaces.map(safeplace => (
               <div className='cursor-pointer' key={safeplace.id}>
-                <div data-testid={"safeplace-get-detail-" + safeplace.id} className="bg-safeplace-placeholder w-90 h-80 rounded-3xl" onClick={() => {
+                <div data-testid={"safeplace-get-detail-" + safeplace.id} className={`${getSafeplaceImage(safeplace.id, true)} w-90 h-80 rounded-3xl`} onClick={() => {
                   setSafeplace(safeplace);
                 }}>
                   <img className="object-cover" alt="" />
