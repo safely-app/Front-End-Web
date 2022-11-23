@@ -6,12 +6,12 @@ import { SECTION } from "./CommercialPage";
 import { FaSearch, FaStar, FaEdit, FaChevronLeft } from 'react-icons/fa';
 import { AiFillInfoCircle, AiFillPlusCircle } from 'react-icons/ai';
 import CampaignLabelStatus from './CommercialCampaigns/CampaignLabelStatus';
-import { Advertising, Commercial, Safeplace } from '../../services';
+import { Advertising, Commercial, Safeplace, SafeplaceUpdate } from '../../services';
 import { useAppSelector } from '../../redux';
 import { ModalType } from './CommercialModalType';
 import CampaignModal from './CommercialCampaignModal';
 import { ModalBtn } from '../common/Modal';
-import { convertStringToRegex, notifyError } from '../utils';
+import { convertStringToRegex, notifyError, notifySuccess } from '../utils';
 import log from 'loglevel';
 import { GrMoney } from 'react-icons/gr';
 import { MdOutlineAdsClick } from 'react-icons/md';
@@ -23,7 +23,7 @@ import { DragDropFile } from './CommercialCreation/CreationSteps/CampaignAdverti
 import { Map } from './CommercialCreation/CreationSteps/CampaignAdvertisingRadius';
 import safeplaceImg from '../../assets/image/safeplace.jpeg'
 import IRequestClaimSafeplace from '../interfaces/IRequestClaimSafeplace';
-
+import { SafeplaceModal } from '../Monitors/SafeplaceMonitor/SafeplaceMonitorModal';
 const CommercialSafeplaces: React.FC<{
     safeplace: ISafeplace;
     safeplaces: ISafeplace[];
@@ -83,6 +83,37 @@ const CommercialSafeplaces: React.FC<{
     const updateModal = (campaign: ICampaign, modalType: ModalType) => {
         setModal(modalType);
         setCampaign(campaign);
+    };
+
+    const updateSafeplaceModal = (safeplace: ISafeplace, modalType: ModalType) => {
+      setSafeplaceCampaign(safeplace);
+      setModal(modalType);
+    };
+
+    const updateSafeplace = async (safeplace: ISafeplace) => {
+      try {
+        await SafeplaceUpdate.create({ ...safeplace, safeplaceId: safeplace.id }, userCredentials.token);
+        notifySuccess("Votre demande de modification a été enregistrée.");
+        setModal(ModalType.OFF);
+        resetSafeplaceCampaign();
+      } catch (error) {
+        notifyError("Échec de modification de commerce.");
+        log.error(error);
+      }
+    };
+
+    const resetSafeplaceCampaign = () => {
+      setSafeplaceCampaign({
+        id: '',
+        name: '',
+        description: '',
+        city: '',
+        address: '',
+        type: '',
+        dayTimetable: [''],
+        coordinate: ['', ''],
+        ownerId: ''
+      });
     };
 
     const setModal = (modalType: ModalType) => {
@@ -187,6 +218,9 @@ const CommercialSafeplaces: React.FC<{
                 <div className="flex flex-auto flex-col pl-6">
                   <p className='font-bold text-xl mb-1'>{name}</p>
                   <CampaignLabelStatus status={status} />
+                  <FaEdit className='mt-2 cursor-pointer' onClick={() => {
+                    updateSafeplaceModal(safeplace, ModalType.UPDATE_SAFEPLACE);
+                  }} />
                   <div className='flex justify-end mb-1'>
                       <div className='shadow-[0_05px_09px_rgba(0,0,0,0.25)]'>
                         <button
@@ -237,6 +271,20 @@ const CommercialSafeplaces: React.FC<{
                     resetCampaign();
                 }} />
                 ]}
+            />
+
+            <SafeplaceModal
+              title='Modifier mon commerce'
+              modalOn={modalOn === ModalType.UPDATE_SAFEPLACE}
+              safeplace={safeplaceCampaign}
+              setSafeplace={setSafeplaceCampaign}
+              buttons={[
+                <ModalBtn key='usm-1' content='Modifier mon commerce' onClick={() => updateSafeplace(safeplaceCampaign)} />,
+                <ModalBtn key='usm-2' content='Annuler' onClick={() => {
+                  setModal(ModalType.OFF);
+                  resetSafeplaceCampaign();
+                }} />
+              ]}
             />
 
             <div className="flex bg-white rounded-lg shadow-xl border border-solid border-neutral-100 mb-8 flex-row">

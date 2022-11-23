@@ -10,6 +10,11 @@ module.exports = {
         'background-auth': "url('./assets/image/auth_background.png')",
         'background': "url('./assets/image/back.png')",
         'safeplace-placeholder': "url('./assets/image/safeplace.jpeg')",
+        'safeplace-placeholder-2': "url('./assets/image/safeplace_2.jpeg')",
+        'safeplace-placeholder-3': "url('./assets/image/safeplace_3.jpg')",
+        'safeplace-small-placeholder': "url('./assets/image/safeplace_small.jpeg')",
+        'safeplace-small-placeholder-2': "url('./assets/image/safeplace_small_2.jpeg')",
+        'safeplace-small-placeholder-3': "url('./assets/image/safeplace_small_3.jpg')",
       }),
       colors: {
         blue: {

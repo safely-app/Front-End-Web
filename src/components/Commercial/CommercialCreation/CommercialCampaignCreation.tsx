@@ -64,6 +64,7 @@ const CommercialCampaignCreation: React.FC<{
         const result = await Commercial.createCampaign(createdCampaign, userCredentials.token);
         const finalCampaign = { ...createdCampaign, id: result.data._id };
 
+        log.log(finalCampaign.id);
         setNewCampaign(finalCampaign);
         setCampaigns([ ...campaigns, finalCampaign ]);
       } else {
@@ -104,7 +105,7 @@ const CommercialCampaignCreation: React.FC<{
           prevStepClick={subCurrentStep}
           nextStepClick={addCurrentStep}
           targetIds={newCampaign.targets}
-          campaignId={newCampaign.id}
+          getCampaignId={() => newCampaign.id}
         />;
       case 2:
         return <CampaignTarget

@@ -20,19 +20,19 @@ jobs:
       run: npm install -g yarn
     - run: yarn install
     - run: yarn run build --if-present
-    - run: yarn test --watchAll=false --coverage
-    - uses: actions/upload-artifact@v1
-      with:
-        name: lcov.info
-        path: ./coverage/lcov.info
-    - uses: actions/upload-artifact@v1
-      with:
-        name: HTML Report
-        path: ./coverage/lcov-report
-    - uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        file: ./coverage/lcov.info
+    # - run: yarn test --watchAll=false --coverage
+    # - uses: actions/upload-artifact@v1
+    #   with:
+    #     name: lcov.info
+    #     path: ./coverage/lcov.info
+    # - uses: actions/upload-artifact@v1
+    #   with:
+    #     name: HTML Report
+    #     path: ./coverage/lcov-report
+    # - uses: codecov/codecov-action@v1
+    #   with:
+    #     token: ${{ secrets.CODECOV_TOKEN }}
+    #     file: ./coverage/lcov.info
 
   deploy:
       name: Deploy with metrics

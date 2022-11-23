@@ -17,7 +17,6 @@ import { ModalType } from './CommercialModalType';
 import { CustomDiv } from '../common/Table';
 import { ModalBtn } from '../common/Modal';
 import log from "loglevel";
-import { SECTION } from './CommercialPage';
 
 const CommercialCampaignsTable: React.FC<{
   safeplace: ISafeplace;
