@@ -165,11 +165,13 @@ const CommercialSafeplaces: React.FC<{
 
   const updateAd = async (ad) => {
     try {
+      const { _id, ...data } = ad;
+
       ad.title = title;
       ad.description = description;
       ad.imageUrl = imageUrl && imageUrl !== '' ? imageUrl : ad.imageUrl;
 
-      await Advertising.update(ad._id, ad, userCredentials.token);
+      await Advertising.update(ad._id, data, userCredentials.token);
 
       if (campaignAds) {
         const res = await Advertising.getByCampaign(campaignAds.id, userCredentials.token)
