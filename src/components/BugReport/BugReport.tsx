@@ -64,8 +64,8 @@ const BugReport: React.FC = () => {
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">J'aimerais</label>
               <select className="w-full border border-gray-200 p-2 focus:outline-none focus:border-gray-500" value={report.type} onChange={(event) => setField('type', event)}>
               <option value="Bug">Rapporter un bug</option>
-              <option value="Feature">Requête d'une fonctionalité</option>
-              <option value="Opinion">Commentaire</option>
+              <option value="Feature">Faire une requête d'une fonctionalité</option>
+              <option value="Opinion">donner un commentaire</option>
             </select>
           </div>
           <div>
@@ -74,7 +74,7 @@ const BugReport: React.FC = () => {
           </div>
           <div className="sm:col-span-2">
               <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400">Description</label>
-              <textarea  value={report.comment} onChange={(event) => setField('comment', event)} id="message" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Décrivez-nous votre avis"></textarea>
+              <textarea  value={report.comment} onChange={(event) => setField('comment', event)} id="message" className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Decrivez-nous votre avis"></textarea>
           </div>
           <div className="flex justify-center submit">
           <button className="text-lg font-bold text-white bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg float-right" onClick={sendReport}>
