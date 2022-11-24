@@ -288,7 +288,20 @@ const CommercialSafeplaces: React.FC<{
             />
 
             <div className="flex bg-white rounded-lg shadow-xl border border-solid border-neutral-100 mb-8 flex-row">
+                {campaignTab ? (
+                  <div className="flex justify-center items-center ml-2">
+                    <FaChevronLeft 
+                      className="w-8 h-8"
+                      onClick={() => {  
+                        setCampaignTab(false);
+                        setCampaignOfSafeplace(undefined);
+                      }}
+                    />
+                </div>
+                ) : null}
+
                 <div className="flex flex-row justify-between w-full">
+                  
                     <p className="px-6 py-8 font-bold text-xl text-2xl">Mes commerces</p>
 
                     <div className='inline-block flex px-6 py-8 w-5/12'>
@@ -307,15 +320,18 @@ const CommercialSafeplaces: React.FC<{
                 }} />
             </div>
 
-      <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl'>
-            {safeplaces && safeplaces.length > 0 && !campaignTab && !campaignOfSafeplaces ? safeplaces.map(item => {
-              return renderItem(item.name);
-            }) : null}
+            {!campaignTab ? (
+              <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl'>
+                {safeplaces && safeplaces.length > 0 && !campaignTab && !campaignOfSafeplaces ? safeplaces.map(item => {
+                  return renderItem(item.name);
+                }) : null}
 
-            {requestsSafeplaces && requestsSafeplaces.length > 0 && !campaignTab && !campaignOfSafeplaces ? requestsSafeplaces.map(item => {
-              return renderItem(item.safeplaceName, item.status);
-            }) : null}
-      </div>
+                {requestsSafeplaces && requestsSafeplaces.length > 0 && !campaignTab && !campaignOfSafeplaces ? requestsSafeplaces.map(item => {
+                  return renderItem(item.safeplaceName, item.status);
+                }) : null}
+              </div>
+            ) : null}
+
 
             {campaignTab && campaignOfSafeplaces ? (
                 <>
@@ -526,62 +542,31 @@ const CommercialSafeplaces: React.FC<{
                       </>
                     ) : (
                         <>
-                            <div className="flex bg-white rounded-lg shadow-xl border border-solid border-neutral-100 mb-8 flex-row">
-                            <div className="flex justify-center items-center ml-2">
-                            <FaChevronLeft 
-                              className="w-8 h-8"
-                              onClick={() => {  
-                                setCampaignTab(false);
-                                setCampaignOfSafeplace(undefined);
-                              }}
-                            />
-                          </div>
-                            <div className="flex flex-row justify-between w-full">
-                                <p className="px-6 py-8 font-bold text-xl text-2xl">Mes safeplaces</p>
-
-                                <div className='inline-block flex px-6 py-8 w-5/12'>
-                                    <div className='relative w-full'>
-                                    <FaSearch className='h-5 w-5 top-3 left-4 absolute' />
-                                    <input
-                                        className='border-transparent pl-14 text-sm w-full h-full rounded-xl bg-neutral-100'
-                                        placeholder={'Rechercher une safeplace...'}
-                                    />
+                        <div className='flex mb-6 flex-col bg-white rounded-lg shadow-xl'>
+                          <div className='flex flex-col'>
+                            <div className='flex flex-row p-8'>
+                              <div className="bg-safeplace-placeholder flex-initial w-48 h-36 rounded-xl">
+                                <img className="object-cover" alt="" />
+                              </div>
+                                <div className="flex flex-auto flex-col pl-6">                                                                      
+                                  <p className='font-bold text-xl mb-1'>{safeplace.name}</p>
+                                  <CampaignLabelStatus status="active" />
+                                  <div className='h-0.5 w-full bg-gray-300' />
+                                  <div className='flex flex-row mt-4'>
+                                      <div className='flex flex-col'>
+                                      <div className='flex flex-row'>
+                                          <FaStar color="#f7e249"/>
+                                          <FaStar color="#f7e249"/>
+                                          <FaStar color="#f7e249"/>
+                                          <FaStar color="#f7e249"/>
+                                      </div>
+                                      <p className='font-semibold text-xs text-gray-400'>Note générale</p>
                                     </div>
                                 </div>
+                              </div>
                             </div>
-
-                            <AiFillPlusCircle className='mx-6 my-8 w-11 h-11' onClick={() => {
-                                window.location.href = `${process.env.PUBLIC_URL}/shops`;
-                              }} />
+                          </div>
                         </div>
-
-                        <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl mb-6'>
-                    <div className='flex flex-col'>
-                    <div className='flex flex-row p-8'>
-                        <div className="bg-safeplace-placeholder flex-initial w-48 h-36 rounded-xl">
-                        <img className="object-cover" alt="" />
-                        </div>
-                        <div className="flex flex-auto flex-col pl-6">                                                                      
-                        <p className='font-bold text-xl mb-1'>{safeplace.name}</p>
-                        <CampaignLabelStatus status="active" />
-                        <div className='h-0.5 w-full bg-gray-300' />
-                        <div className='flex flex-row mt-4'>
-                            <div className='flex flex-col'>
-                            <div className='flex flex-row'>
-                                <FaStar color="#f7e249"/>
-                                <FaStar color="#f7e249"/>
-                                <FaStar color="#f7e249"/>
-                                <FaStar color="#f7e249"/>
-                            </div>
-                            <p className='font-semibold text-xs text-gray-400'>Note générale</p>
-
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
                         <div className='flex flex-auto flex-col bg-white rounded-lg shadow-xl overflow-y-auto'>
                         {campaigns ? campaigns.map(item => (
                             <>
